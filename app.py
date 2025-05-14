@@ -305,7 +305,8 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 BASE_URL = "https://play.limitlesstcg.com"
 
 # Main title
-st.title("Pokémon TCG Pocket Meta Deck Analyzer")
+#st.title("Pokémon TCG Pocket Meta Deck Analyzer")
+st.image("title_img.png", use_column_width=True)
 
 # Initialize session state and fetch deck list on first load
 if 'deck_list' not in st.session_state:
