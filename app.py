@@ -347,7 +347,7 @@ with col1:
     selected_option = st.selectbox(
         label_text,
         deck_options,
-        help="Showing decks with ≥0.5% meta share.\nData from Limitless TCG"
+        help="Showing decks with ≥0.5% meta share.\nData from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)"
     )
 
 with col2:
