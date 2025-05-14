@@ -316,6 +316,10 @@ if 'deck_list' not in st.session_state:
     st.session_state.deck_list = get_deck_list()
     st.session_state.fetch_time = datetime.now()
 
+# Also ensure fetch_time exists (in case it was missing from older sessions)
+if 'fetch_time' not in st.session_state:
+    st.session_state.fetch_time = datetime.now()
+
 # Top navigation bar - simplified without fetch button
 col1, col2, col3 = st.columns([2.5, 0.3, 1])
 
