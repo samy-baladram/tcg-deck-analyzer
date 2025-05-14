@@ -1,18 +1,10 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import requests
 from datetime import datetime
+from bs4 import BeautifulSoup
 import time
-
-# Handle BeautifulSoup import
-try:
-    from bs4 import BeautifulSoup
-except ImportError:
-    import subprocess
-    import sys
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "beautifulsoup4"])
-    from bs4 import BeautifulSoup
+import numpy as np
 
 # Configure page
 st.set_page_config(page_title="Meta Deck List Analysis", layout="wide")
