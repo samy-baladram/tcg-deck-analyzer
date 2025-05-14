@@ -129,7 +129,8 @@ def analyze_deck(deck_name, set_name="A3"):
         
         time.sleep(0.3)  # Be nice to the server
     
-    status_text.text("Analysis complete!")
+    #status_text.text("Analysis complete!")
+    status_text.text("")
     
     # Create dataframe and analyze
     df = pd.DataFrame(all_cards)
@@ -385,8 +386,8 @@ if selected_option:
 if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
 
-    st.metric("Analyzing",deck_info['deck_name'])
-    #st.header(f"Analyzing {deck_info['deck_name']}")
+    #st.metric("Analyzing",deck_info['deck_name'])
+    st.header(deck_info['deck_name'])
     
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
