@@ -288,18 +288,17 @@ def analyze_variants(result_df, all_cards_df):
     variant_df = pd.DataFrame(variant_summaries)
     return variant_df.sort_values('Total Decks', ascending=False)
     
-# Main Streamlit UI
+# Main Streamlit UI with top navigation
 st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 
-# Sidebar for deck selection
-with st.sidebar:
-    st.header("Deck Selection")
-    
+# Top navigation bar
+top_col1, top_col2, top_col3, top_col4 = st.columns([2, 3, 1, 2])
+
+with top_col1:
     if st.button("Fetch Deck List", type="primary"):
         st.session_state.deck_list = get_deck_list()
-    
-    # Add context information
-    st.caption("Fetches current meta decks with ≥0.5% share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")    
+
+with top_col2:
     if 'deck_list' in st.session_state:
         popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
         
@@ -308,20 +307,33 @@ with st.sidebar:
                        for _, row in popular_decks.iterrows()]
         
         selected_option = st.selectbox("Select Deck:", deck_options)
-        
-        if selected_option:
-            # Extract deck name from selection
-            deck_name = selected_option.split(' (')[0]
-            selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-            set_name = selected_row['set']
-            
-            st.info(f"Set: {set_name}")
-            
-            if st.button("Analyze Deck", type="primary"):
-                st.session_state.analyze = {
-                    'deck_name': deck_name,
-                    'set_name': set_name
-                }
+    else:
+        st.selectbox("Select Deck:", ["(First fetch deck list)"], disabled=True)
+
+with top_col3:
+    if 'deck_list' in st.session_state and selected_option:
+        deck_name = selected_option.split(' (')[0]
+        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+        set_name = selected_row['set']
+        st.info(f"Set: {set_name}")
+    else:
+        st.empty()
+
+with top_col4:
+    if 'deck_list' in st.session_state and selected_option:
+        if st.button("Analyze Deck", type="primary"):
+            st.session_state.analyze = {
+                'deck_name': deck_name,
+                'set_name': set_name
+            }
+    else:
+        st.button("Analyze Deck", type="primary", disabled=True)
+
+# Add context information
+st.caption("Fetches current meta decks with ≥0.5% share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+
+# Divider
+st.divider()
 
 # Main content area
 if 'analyze' in st.session_state:
