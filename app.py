@@ -324,7 +324,7 @@ with col1:
     selected_option = st.selectbox(
         "Select a deck to analyze:",
         deck_options,
-        help="Showing decks with ≥0.5% meta share"
+        help="Showing decks with ≥0.5% meta share.\nData from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)"
     )
 
 with col2:
@@ -345,7 +345,6 @@ with col3:
             }
 
 # Add context with refresh option in one line
-st.caption("Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
 if st.button("↻ Refresh data", type="tertiary", help="Refresh deck list from Limitless TCG"):
     st.session_state.deck_list = get_deck_list()
     st.experimental_rerun()
