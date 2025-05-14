@@ -374,9 +374,10 @@ if 'analyze' in st.session_state:
         
         # Updated to include set and number
         options_display = options[['card_name', 'set', 'num', 'pct_total', 'type']].copy()
-        # Combine card name with set info
+        # Combine card name with set info conditionally
         options_display['Card Display'] = options_display.apply(
-            lambda row: f"{row['card_name']} ({row['set']}-{row['num']})", axis=1
+            lambda row: f"{row['card_name']} ({row['set']}-{row['num']})" if row['set'] else row['card_name'], 
+            axis=1
         )
         # Select columns to show
         final_display = options_display[['Card Display', 'pct_total', 'type']].copy()
