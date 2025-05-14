@@ -4,18 +4,6 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 
-# Configure page
-st.set_page_config(page_title="TCG Deck Analyzer", layout="wide")
-
-# Hide streamlit branding
-hide_menu_style = """
-<style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-</style>
-"""
-st.markdown(hide_menu_style, unsafe_allow_html=True)
-
 # Global variables
 BASE_URL = "https://play.limitlesstcg.com"
 
