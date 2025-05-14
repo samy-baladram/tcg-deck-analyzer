@@ -242,7 +242,7 @@ if 'analyze' in st.session_state:
             category_filter = st.multiselect(
                 "Filter by category:",
                 options=['Core', 'Standard', 'Tech'],
-                default=['Core', 'Standard']
+                default=['Core', 'Standard', 'Tech']
             )
         
         filtered_results = results[results['category'].isin(category_filter)]
