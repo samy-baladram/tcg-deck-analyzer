@@ -367,16 +367,16 @@ if 'analyze' in st.session_state:
         col1, col2 = st.columns(2)
         
         with col1:
-            st.write("### Pokemon")
             pokemon_count = sum(int(c.split()[0]) for c in deck_list['Pokemon'])
-            st.write(f"**Total: {pokemon_count}**")
+            st.write(f"### Pokemon ({pokemon_count})")
+            #st.write(f"**Total: {pokemon_count}**")
             for card in deck_list['Pokemon']:
                 st.write(f"{card}")
         
         with col2:
-            st.write("### Trainer")
             trainer_count = sum(int(c.split()[0]) for c in deck_list['Trainer'])
-            st.write(f"**Total: {trainer_count}**")
+            st.write(f"### Trainer ({trainer_count})")
+            #st.write(f"**Total: {trainer_count}**")
             for card in deck_list['Trainer']:
                 st.write(f"{card}")
         
