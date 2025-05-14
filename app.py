@@ -4,6 +4,15 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 
+# Hide streamlit menu and footer
+hide_menu_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
 # Configure page
 st.set_page_config(page_title="TCG Deck Analyzer", layout="wide")
 
