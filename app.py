@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Global variables
 BASE_URL = "https://play.limitlesstcg.com"
@@ -331,9 +331,18 @@ with col1:
     deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
                    for _, row in popular_decks.iterrows()]
     
-    # Format the label with fetch time
-    fetch_time_str = st.session_state.fetch_time.strftime("%Y-%m-%d %H:%M")
-    label_text = f"Select a deck to analyze (Updated: {fetch_time_str}):"
+    # Calculate time ago
+    time_diff = datetime.now() - st.session_state.fetch_time
+    if time_diff < timedelta(minutes=1):
+        time_str = "just now"
+    elif time_diff < timedelta(hours=1):
+        minutes = int(time_diff.total_seconds() / 60)
+        time_str = f"{minutes} minutes ago"
+    else:
+        hours = int(time_diff.total_seconds() / 3600)
+        time_str = f"{hours} hours ago"
+    
+    label_text = f"Select a deck to analyze (Updated: {time_str}):"
     
     selected_option = st.selectbox(
         label_text,
