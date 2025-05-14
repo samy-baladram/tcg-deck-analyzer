@@ -355,8 +355,15 @@ if 'analyze' in st.session_state:
             type_cards = filtered_results[filtered_results['type'] == card_type]
             
             if not type_cards.empty:
-                display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'category', 'majority']].copy()
-                display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Category', 'Majority Count']
+                if card_type == 'Pokemon':
+                    # Show set and number for Pokemon
+                    display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'category', 'majority']].copy()
+                    display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Category', 'Majority Count']
+                else:
+                    # Hide set and number for Trainer
+                    display_df = type_cards[['card_name', 'pct_total', 'category', 'majority']].copy()
+                    display_df.columns = ['Card Name', 'Usage %', 'Category', 'Majority Count']
+                
                 st.dataframe(display_df, use_container_width=True, hide_index=True)
     
     with tab2:
