@@ -288,51 +288,71 @@ def analyze_variants(result_df, all_cards_df):
     variant_df = pd.DataFrame(variant_summaries)
     return variant_df.sort_values('Total Decks', ascending=False)
     
-# Main Streamlit UI with top navigation
+# Configure page
+st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
+
+# Hide streamlit branding (optional)
+hide_menu_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
+# Global variables
+BASE_URL = "https://play.limitlesstcg.com"
+
+# Initialize session state and fetch deck list on first load
+if 'deck_list' not in st.session_state:
+    st.session_state.deck_list = get_deck_list()
+
+# Main title
 st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 
-# Top navigation bar
-top_col1, top_col2, top_col3, top_col4 = st.columns([2, 3, 1, 2])
+# Top navigation bar - simplified without fetch button
+col1, col2, col3 = st.columns([3, 1, 1])
 
-with top_col1:
-    if st.button("Fetch Deck List", type="primary"):
-        st.session_state.deck_list = get_deck_list()
+with col1:
+    # Filter and display popular decks
+    popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
+    
+    # Create deck options
+    deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
+                   for _, row in popular_decks.iterrows()]
+    
+    selected_option = st.selectbox(
+        "Select a deck to analyze:",
+        deck_options,
+        help="Showing decks with ≥0.5% meta share"
+    )
 
-with top_col2:
-    if 'deck_list' in st.session_state:
-        popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
-        
-        # Create deck options
-        deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
-                       for _, row in popular_decks.iterrows()]
-        
-        selected_option = st.selectbox("Select Deck:", deck_options)
-    else:
-        st.selectbox("Select Deck:", ["(First fetch deck list)"], disabled=True)
-
-with top_col3:
-    if 'deck_list' in st.session_state and selected_option:
+with col2:
+    # Extract deck info from selection
+    if selected_option:
         deck_name = selected_option.split(' (')[0]
         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
-        st.info(f"Set: {set_name}")
-    else:
-        st.empty()
+        st.metric("Set", set_name.upper())
 
-with top_col4:
-    if 'deck_list' in st.session_state and selected_option:
-        if st.button("Analyze Deck", type="primary"):
+with col3:
+    # Analyze button
+    if selected_option:
+        if st.button("Analyze Deck", type="primary", use_container_width=True):
             st.session_state.analyze = {
                 'deck_name': deck_name,
                 'set_name': set_name
             }
-    else:
-        st.button("Analyze Deck", type="secondary", disabled=True)
 
-# Add context information
-st.caption("Fetches current meta decks with ≥0.5% share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+# Add context with refresh option
+col1, col2 = st.columns([4, 1])
+with col1:
+    st.caption("Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+with col2:
+    if st.button("↻ Refresh", help="Refresh deck list from Limitless TCG"):
+        st.session_state.deck_list = get_deck_list()
+        st.experimental_rerun()
 
-# Divider
 st.divider()
 
 # Main content area
