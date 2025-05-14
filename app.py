@@ -397,12 +397,12 @@ if 'analyze' in st.session_state:
                         if row['Single Var2'] > 0:
                             st.write(f"- Single Var2: {row['Single Var2']} decks")
             
-            # Summary chart
-            st.write("---")
-            st.write("### Variant Usage Summary")
-            chart_data = variant_df[['Card Name', 'Both Var1', 'Both Var2', 'Mixed']]
-            chart_data = chart_data.set_index('Card Name')
-            st.bar_chart(chart_data)
+            # # Summary chart
+            # st.write("---")
+            # st.write("### Variant Usage Summary")
+            # chart_data = variant_df[['Card Name', 'Both Var1', 'Both Var2', 'Mixed']]
+            # chart_data = chart_data.set_index('Card Name')
+            # st.bar_chart(chart_data)
             
         else:
             st.info("No cards with variants found in this deck.")
