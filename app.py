@@ -344,14 +344,11 @@ with col3:
                 'set_name': set_name
             }
 
-# Add context with refresh option
-col1, col2 = st.columns([4, 1])
-with col1:
-    st.caption("Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
-with col2:
-    if st.button("↻ Refresh", type="tertiary", help="Refresh deck list from Limitless TCG"):
-        st.session_state.deck_list = get_deck_list()
-        st.experimental_rerun()
+# Add context with refresh option in one line
+st.caption("Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+if st.button("↻ Refresh data", type="tertiary", help="Refresh deck list from Limitless TCG"):
+    st.session_state.deck_list = get_deck_list()
+    st.experimental_rerun()
 
 st.divider()
 
