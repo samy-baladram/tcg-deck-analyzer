@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
+from datetime import datetime
 
 # Global variables
 BASE_URL = "https://play.limitlesstcg.com"
@@ -309,8 +310,6 @@ if 'deck_list' not in st.session_state:
 
 # Main title
 st.title("Pokémon TCG Pocket Meta Deck Analyzer")
-
-from datetime import datetime
 
 # Initialize session state and fetch deck list on first load
 if 'deck_list' not in st.session_state:
