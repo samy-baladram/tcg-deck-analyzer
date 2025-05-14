@@ -168,14 +168,20 @@ def analyze_deck(deck_name, set_name="A3"):
 
 def build_deck_template(analysis_df):
     """Build a deck template from analysis results"""
-    core_cards = analysis_df[analysis_df['category'] == 'Core']
+    # Get core cards
+    core_cards = analysis_df[analysis_df['category'] == 'Core'].copy()
     
+    # Initialize deck
     deck_list = {'Pokemon': [], 'Trainer': []}
     total_cards = 0
     
-    # Add core cards with set info
+    # Define flexible core condition
+    is_flexible_core = lambda card: ((card['pct_1'] >= 25) and (card['majority'] == 2)) or \
+                                   ((card['pct_2'] >= 25) and (card['majority'] == 1))
+    
+    # Add core cards to deck
     for _, card in core_cards.iterrows():
-        count = card['majority']
+        count = 1 if is_flexible_core(card) else int(card['majority'])
         total_cards += count
         
         # Format card display based on whether set exists
@@ -186,13 +192,20 @@ def build_deck_template(analysis_df):
             
         deck_list[card['type']].append(card_display)
     
-    # Get flexible options
-    options = analysis_df[
-        (analysis_df['category'] == 'Standard') |
-        ((analysis_df['category'] == 'Core') & 
-         (analysis_df['pct_2'] >= 25) & 
-         (analysis_df['majority'] == 1))
-    ]
+    # Get options (standard + flexible core)
+    options = pd.concat([
+        analysis_df[analysis_df['category'] == 'Standard'],
+        analysis_df[(analysis_df['category'] == 'Core') & 
+                   (((analysis_df['pct_1'] >= 25) & (analysis_df['majority'] == 2)) |
+                    ((analysis_df['pct_2'] >= 25) & (analysis_df['majority'] == 1)))]
+    ]).drop_duplicates()
+    
+    # Add flexible usage column (minimum of pct_1 and pct_2 for flexible core)
+    options = options.copy()
+    options['display_usage'] = options.apply(
+        lambda row: min(row['pct_1'], row['pct_2']) if row['category'] == 'Core' else row['pct_total'], 
+        axis=1
+    )
     
     return deck_list, total_cards, options
 
@@ -373,14 +386,14 @@ if 'analyze' in st.session_state:
         st.write("Common choices include:")
         
         # Updated to include set and number
-        options_display = options[['card_name', 'set', 'num', 'pct_total', 'type']].copy()
+        options_display = options[['card_name', 'set', 'num', 'display_usage', 'type']].copy()
         # Combine card name with set info conditionally
         options_display['Card Display'] = options_display.apply(
             lambda row: f"{row['card_name']} ({row['set']}-{row['num']})" if row['set'] else row['card_name'], 
             axis=1
         )
         # Select columns to show
-        final_display = options_display[['Card Display', 'pct_total', 'type']].copy()
+        final_display = options_display[['Card Display', 'display_usage', 'type']].copy()
         final_display.columns = ['Card Name', 'Usage %', 'Type']
         st.dataframe(final_display, use_container_width=True, hide_index=True)
     
