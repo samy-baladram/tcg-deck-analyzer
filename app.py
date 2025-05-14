@@ -161,7 +161,10 @@ def analyze_deck(deck_name, set_name="A3"):
     # Sort results
     grouped = grouped.sort_values(['type', 'pct_total'], ascending=[True, False])
     
-    return grouped, total_decks
+    # Analyze variants
+    variant_df = analyze_variants(grouped, urls)
+    
+    return grouped, total_decks, variant_df
 
 def build_deck_template(analysis_df):
     """Build a deck template from analysis results"""
@@ -186,6 +189,95 @@ def build_deck_template(analysis_df):
     
     return deck_list, total_cards, options
 
+def analyze_variants(result_df, compiled_df):
+    """Analyze variant usage patterns"""
+    # Find cards with multiple entries (variants)
+    card_counts = result_df.groupby('card_name').size()
+    cards_with_variants = card_counts[card_counts > 1].index
+    
+    variant_summaries = []
+    
+    for card_name in cards_with_variants:
+        # Get all variants of this card
+        card_variants = result_df[result_df['card_name'] == card_name]
+        
+        # For now, handle up to 2 variants (most common case)
+        if len(card_variants) > 2:
+            st.warning(f"Warning: {card_name} has more than 2 variants. Only first 2 will be analyzed.")
+        
+        # Get variant IDs
+        variant_list = []
+        for idx, (_, variant) in enumerate(card_variants.iterrows()):
+            if idx < 2:  # Only take first 2 variants
+                variant_list.append(f"{variant['set']}-{variant['num']}")
+        
+        # Initialize summary
+        summary = {
+            'Card Name': card_name,
+            'Total Decks': 0,
+            'Variants': ', '.join(variant_list),
+            'Both Var1': 0,
+            'Both Var2': 0,
+            'Mixed': 0,
+            'Single Var1': 0,
+            'Single Var2': 0
+        }
+        
+        # Analyze usage patterns across decks
+        deck_count = 0
+        
+        # Create compiled dataframe from all decks
+        all_cards = []
+        for i in range(len(compiled_df)):
+            cards = extract_cards(compiled_df[i])
+            for card in cards:
+                card['deck_num'] = i
+            all_cards.extend(cards)
+        
+        compiled_data = pd.DataFrame(all_cards)
+        
+        # For each deck, check which variants it uses
+        for deck_num in compiled_data['deck_num'].unique():
+            deck_cards = compiled_data[
+                (compiled_data['deck_num'] == deck_num) &
+                (compiled_data['card_name'] == card_name)
+            ]
+            
+            if not deck_cards.empty:
+                deck_count += 1
+                
+                # Check pattern for this deck
+                var1_count = 0
+                var2_count = 0
+                
+                for _, card in deck_cards.iterrows():
+                    variant_id = f"{card['set']}-{card['num']}"
+                    if variant_id == variant_list[0]:
+                        var1_count += card['amount']
+                    elif len(variant_list) > 1 and variant_id == variant_list[1]:
+                        var2_count += card['amount']
+                
+                # Categorize the pattern
+                if var1_count == 2 and var2_count == 0:
+                    summary['Both Var1'] += 1
+                elif var2_count == 2 and var1_count == 0:
+                    summary['Both Var2'] += 1
+                elif var1_count == 1 and var2_count == 1:
+                    summary['Mixed'] += 1
+                elif var1_count == 1 and var2_count == 0:
+                    summary['Single Var1'] += 1
+                elif var2_count == 1 and var1_count == 0:
+                    summary['Single Var2'] += 1
+        
+        summary['Total Decks'] = deck_count
+        variant_summaries.append(summary)
+    
+    if not variant_summaries:
+        return pd.DataFrame()
+    
+    variant_df = pd.DataFrame(variant_summaries)
+    return variant_df.sort_values('Total Decks', ascending=False)
+    
 # Main Streamlit UI
 st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 
@@ -228,10 +320,10 @@ if 'analyze' in st.session_state:
     st.header(f"Analyzing {deck_info['deck_name']}")
     
     # Run analysis
-    results, total_decks = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
+    results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
     
     # Display results in tabs
-    tab1, tab2, tab3 = st.tabs(["Card Usage", "Deck Template", "Raw Data"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
     with tab1:
         st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
@@ -288,6 +380,44 @@ if 'analyze' in st.session_state:
         st.dataframe(options_display, use_container_width=True, hide_index=True)
     
     with tab3:
+        st.subheader("Card Variants Analysis")
+        
+        if not variant_df.empty:
+            st.write("This shows how players use different versions of the same card:")
+            
+            # Display variant analysis
+            for _, row in variant_df.iterrows():
+                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card"):
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.write("**Variants:**")
+                        st.write(row['Variants'])
+                        
+                    with col2:
+                        st.write("**Usage Patterns:**")
+                        if row['Both Var1'] > 0:
+                            st.write(f"- Both copies of Var1: {row['Both Var1']} decks")
+                        if row['Both Var2'] > 0:
+                            st.write(f"- Both copies of Var2: {row['Both Var2']} decks")
+                        if row['Mixed'] > 0:
+                            st.write(f"- Mixed (1 of each): {row['Mixed']} decks")
+                        if row['Single Var1'] > 0:
+                            st.write(f"- Single Var1: {row['Single Var1']} decks")
+                        if row['Single Var2'] > 0:
+                            st.write(f"- Single Var2: {row['Single Var2']} decks")
+            
+            # Summary chart
+            st.write("---")
+            st.write("### Variant Usage Summary")
+            chart_data = variant_df[['Card Name', 'Both Var1', 'Both Var2', 'Mixed']]
+            chart_data = chart_data.set_index('Card Name')
+            st.bar_chart(chart_data)
+            
+        else:
+            st.info("No cards with variants found in this deck.")
+            
+    with tab4:
         st.subheader("Raw Analysis Data")
         st.dataframe(results, use_container_width=True)
         
