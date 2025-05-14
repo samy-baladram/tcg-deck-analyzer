@@ -327,7 +327,7 @@ with top_col4:
                 'set_name': set_name
             }
     else:
-        st.button("Analyze Deck", type="primary", disabled=True)
+        st.button("Analyze Deck", type="secondary", disabled=True)
 
 # Add context information
 st.caption("Fetches current meta decks with ≥0.5% share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
