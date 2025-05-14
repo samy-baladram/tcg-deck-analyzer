@@ -297,7 +297,7 @@ BASE_URL = "https://play.limitlesstcg.com"
 
 # Main title
 #st.title("Pokémon TCG Pocket Meta Deck Analyzer")
-st.image("title_banner.png", use_container_width=True)
+st.image("title_banner.png", width=1200)
 
 # Initialize session state and fetch deck list on first load
 if 'deck_list' not in st.session_state:
