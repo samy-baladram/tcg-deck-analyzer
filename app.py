@@ -359,7 +359,7 @@ with col1:
     deck_name_mapping = {}  # Maps display name to original name
     
     for _, row in popular_decks.iterrows():
-        display_name = f"{format_deck_name(row['deck_name'])} ({row['share']:.1f}%)"
+        display_name = f"{format_deck_name(row['deck_name'])} - {row['share']:.2f}%"
         deck_display_names.append(display_name)
         deck_name_mapping[display_name] = row['deck_name']
     
