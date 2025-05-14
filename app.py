@@ -354,9 +354,17 @@ with col1:
     # Filter and display popular decks
     popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
     
-    # Create deck options with formatted names
-    deck_options = [f"{format_deck_name(row['deck_name'])} ({row['share']:.1f}%)" 
-                   for _, row in popular_decks.iterrows()]
+    # Create deck options with formatted names and store mapping
+    deck_display_names = []
+    deck_name_mapping = {}  # Maps display name to original name
+    
+    for _, row in popular_decks.iterrows():
+        display_name = f"{format_deck_name(row['deck_name'])} ({row['share']:.1f}%)"
+        deck_display_names.append(display_name)
+        deck_name_mapping[display_name] = row['deck_name']
+    
+    # Store mapping in session state
+    st.session_state.deck_name_mapping = deck_name_mapping
     
     # Calculate time ago
     time_diff = datetime.now() - st.session_state.fetch_time
@@ -375,13 +383,13 @@ with col1:
     def on_deck_change():
         selection = st.session_state.deck_select
         if selection:
-            st.session_state.selected_deck_index = deck_options.index(selection)
+            st.session_state.selected_deck_index = deck_display_names.index(selection)
         else:
             st.session_state.selected_deck_index = None
     
     selected_option = st.selectbox(
         label_text,
-        deck_options,
+        deck_display_names,
         index=st.session_state.selected_deck_index,
         placeholder="Select a deck...",
         help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
@@ -389,14 +397,12 @@ with col1:
         on_change=on_deck_change
     )
 
-
 with col2:
     # Extract deck info from selection and show set
     if selected_option:
-        # Extract the original deck name by finding it in popular_decks
-        selected_share = float(selected_option.split('(')[-1].replace('%)', ''))
-        selected_row = popular_decks[popular_decks['share'] == selected_share].iloc[0]
-        deck_name = selected_row['deck_name']
+        # Get original deck name from mapping
+        deck_name = st.session_state.deck_name_mapping[selected_option]
+        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
         st.metric("Set", set_name.upper())
     else:
@@ -404,10 +410,9 @@ with col2:
 
 # Auto-analyze when selection is made
 if selected_option:
-    # Extract the original deck name by finding it in popular_decks
-    selected_share = float(selected_option.split('(')[-1].replace('%)', ''))
-    selected_row = popular_decks[popular_decks['share'] == selected_share].iloc[0]
-    deck_name = selected_row['deck_name']
+    # Get original deck name from mapping
+    deck_name = st.session_state.deck_name_mapping[selected_option]
+    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
     set_name = selected_row['set']
     
     current_selection = {
