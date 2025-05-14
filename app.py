@@ -315,6 +315,7 @@ st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 if 'deck_list' not in st.session_state:
     st.session_state.deck_list = get_deck_list()
     st.session_state.fetch_time = datetime.now()
+    st.session_state.first_load = True  # Add this flag
 
 # Also ensure fetch_time exists (in case it was missing from older sessions)
 if 'fetch_time' not in st.session_state:
@@ -327,9 +328,9 @@ with col1:
     # Filter and display popular decks
     popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
     
-    # Create deck options
-    deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
-                   for _, row in popular_decks.iterrows()]
+    # Create deck options with a placeholder
+    deck_options = ["Select a deck..."] + [f"{row['deck_name']} ({row['share']:.1f}%)" 
+                                          for _, row in popular_decks.iterrows()]
     
     # Calculate time ago
     time_diff = datetime.now() - st.session_state.fetch_time
@@ -344,35 +345,46 @@ with col1:
     
     label_text = f"Select a deck to analyze (Updated: {time_str}):"
     
+    # Use index=0 to default to placeholder
     selected_option = st.selectbox(
         label_text,
         deck_options,
-        help="Showing decks with ≥0.5% meta share. Analysis will start automatically.",
+        index=0,  # Default to "Select a deck..."
+        help="Showing decks with ≥0.5% meta share. Analysis will start automatically after selection.",
         key="deck_selector"
     )
 
 with col2:
     # Extract deck info from selection and show set
-    if selected_option:
+    if selected_option and selected_option != "Select a deck...":
         deck_name = selected_option.split(' (')[0]
         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
         st.metric("Set", set_name.upper())
+    else:
+        st.empty()
 
-# Auto-analyze when selection changes
-if selected_option:
+# Auto-analyze when selection changes (but not on first load)
+if selected_option and selected_option != "Select a deck...":
+    deck_name = selected_option.split(' (')[0]
+    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+    set_name = selected_row['set']
+    
     current_selection = {
         'deck_name': deck_name,
         'set_name': set_name
     }
     
-    # Check if this is a new selection or if we need to analyze
+    # Check if this is a new selection
     if 'last_analyzed' not in st.session_state or st.session_state.last_analyzed != current_selection:
         st.session_state.analyze = current_selection
         st.session_state.last_analyzed = current_selection
+        
+    # Clear first load flag
+    if 'first_load' in st.session_state:
+        del st.session_state.first_load
 
 st.divider()
-
 # Main content area
 if 'analyze' in st.session_state:
     deck_info = st.session_state.analyze
