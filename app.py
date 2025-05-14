@@ -316,6 +316,10 @@ if 'deck_list' not in st.session_state:
 if 'fetch_time' not in st.session_state:
     st.session_state.fetch_time = datetime.now()
 
+# Initialize selected deck if not exists
+if 'selected_deck_index' not in st.session_state:
+    st.session_state.selected_deck_index = None
+
 # Top navigation bar - simplified without analyze button
 col1, col2 = st.columns([3, 0.5])
 
@@ -340,12 +344,22 @@ with col1:
     
     label_text = f"Select a deck to analyze (Updated: {time_str}):"
     
+    # Use on_change callback to handle selection
+    def on_deck_change():
+        selection = st.session_state.deck_select
+        if selection:
+            st.session_state.selected_deck_index = deck_options.index(selection)
+        else:
+            st.session_state.selected_deck_index = None
+    
     selected_option = st.selectbox(
         label_text,
         deck_options,
-        index=None,  # This makes the placeholder show by default
+        index=st.session_state.selected_deck_index,
         placeholder="Select a deck...",
         help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
+        key="deck_select",
+        on_change=on_deck_change
     )
 
 with col2:
@@ -367,10 +381,9 @@ if selected_option:
     current_selection = {
         'deck_name': deck_name,
         'set_name': set_name,
-        'option_text': selected_option  # Store the full option text
     }
     
-    # Trigger analysis
+    # Update analysis state
     st.session_state.analyze = current_selection
 
 st.divider()
@@ -379,137 +392,135 @@ st.divider()
 if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
     
-    # Only analyze if the current selection matches what's in session state
-    if deck_info.get('option_text') == selected_option:
-        st.header(f"Analyzing {deck_info['deck_name']}")
+    st.header(f"Analyzing {deck_info['deck_name']}")
+    
+    # Run analysis
+    results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
+    
+    # Display results in tabs
+    tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
+    
+    with tab1:
+        st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
         
-        # Run analysis
-        results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
-        
-        # Display results in tabs
-        tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
-        
-        with tab1:
-            st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
+        # Display cards by type
+        for card_type in ['Pokemon', 'Trainer']:
+            st.write(f"### {card_type}")
+            type_cards = results[results['type'] == card_type]
             
-            # Display cards by type
-            for card_type in ['Pokemon', 'Trainer']:
-                st.write(f"### {card_type}")
-                type_cards = results[results['type'] == card_type]
+            if not type_cards.empty:
+                if card_type == 'Pokemon':
+                    # Show set and number for Pokemon
+                    display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'category', 'majority']].copy()
+                    display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Category', 'Majority Count']
+                else:
+                    # Hide set and number for Trainer
+                    display_df = type_cards[['card_name', 'pct_total', 'category', 'majority']].copy()
+                    display_df.columns = ['Card Name', 'Usage %', 'Category', 'Majority Count']
                 
-                if not type_cards.empty:
-                    if card_type == 'Pokemon':
-                        # Show set and number for Pokemon
-                        display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'category', 'majority']].copy()
-                        display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Category', 'Majority Count']
-                    else:
-                        # Hide set and number for Trainer
-                        display_df = type_cards[['card_name', 'pct_total', 'category', 'majority']].copy()
-                        display_df.columns = ['Card Name', 'Usage %', 'Category', 'Majority Count']
+                st.dataframe(display_df, use_container_width=True, hide_index=True)
+    
+    with tab2:
+        st.subheader("Deck Template")
+        
+        deck_list, total_cards, options = build_deck_template(results)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            pokemon_count = sum(int(c.split()[0]) for c in deck_list['Pokemon'])
+            st.write(f"### Pokemon ({pokemon_count})")
+            #st.write(f"**Total: {pokemon_count}**")
+            for card in deck_list['Pokemon']:
+                st.write(f"{card}")
+        
+        with col2:
+            trainer_count = sum(int(c.split()[0]) for c in deck_list['Trainer'])
+            st.write(f"### Trainer ({trainer_count})")
+            #st.write(f"**Total: {trainer_count}**")
+            for card in deck_list['Trainer']:
+                st.write(f"{card}")
+        
+        st.write("---")
+        remaining = 20 - total_cards
+        st.write(f"### Flexible Slots ({remaining} cards)")
+        st.write("Common choices include:")
+        
+        # Updated to include set and number
+        options_display = options[['card_name', 'set', 'num', 'display_usage', 'type']].copy()
+        # Combine card name with set info conditionally
+        options_display['Card Display'] = options_display.apply(
+            lambda row: f"{row['card_name']} ({row['set']}-{row['num']})" if row['set'] else row['card_name'], 
+            axis=1
+        )
+        # Select columns to show
+        final_display = options_display[['Card Display', 'display_usage', 'type']].copy()
+        final_display.columns = ['Card Name', 'Usage %', 'Type']
+        st.dataframe(final_display, use_container_width=True, hide_index=True)
+    
+    with tab3:
+        st.subheader("Card Variants Analysis")
+        
+        if not variant_df.empty:
+            st.write("This shows how players use different versions of the same card:")
+            
+            # Display variant analysis
+            for _, row in variant_df.iterrows():
+                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card"):
+                    col1, col2 = st.columns(2)
                     
-                    st.dataframe(display_df, use_container_width=True, hide_index=True)
-        
-        with tab2:
-            st.subheader("Deck Template")
-            
-            deck_list, total_cards, options = build_deck_template(results)
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                pokemon_count = sum(int(c.split()[0]) for c in deck_list['Pokemon'])
-                st.write(f"### Pokemon ({pokemon_count})")
-                #st.write(f"**Total: {pokemon_count}**")
-                for card in deck_list['Pokemon']:
-                    st.write(f"{card}")
-            
-            with col2:
-                trainer_count = sum(int(c.split()[0]) for c in deck_list['Trainer'])
-                st.write(f"### Trainer ({trainer_count})")
-                #st.write(f"**Total: {trainer_count}**")
-                for card in deck_list['Trainer']:
-                    st.write(f"{card}")
-            
-            st.write("---")
-            remaining = 20 - total_cards
-            st.write(f"### Flexible Slots ({remaining} cards)")
-            st.write("Common choices include:")
-            
-            # Updated to include set and number
-            options_display = options[['card_name', 'set', 'num', 'display_usage', 'type']].copy()
-            # Combine card name with set info conditionally
-            options_display['Card Display'] = options_display.apply(
-                lambda row: f"{row['card_name']} ({row['set']}-{row['num']})" if row['set'] else row['card_name'], 
-                axis=1
-            )
-            # Select columns to show
-            final_display = options_display[['Card Display', 'display_usage', 'type']].copy()
-            final_display.columns = ['Card Name', 'Usage %', 'Type']
-            st.dataframe(final_display, use_container_width=True, hide_index=True)
-        
-        with tab3:
-            st.subheader("Card Variants Analysis")
-            
-            if not variant_df.empty:
-                st.write("This shows how players use different versions of the same card:")
-                
-                # Display variant analysis
-                for _, row in variant_df.iterrows():
-                    with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card"):
-                        col1, col2 = st.columns(2)
+                    with col1:
+                        st.write("**Variants:**")
+                        st.write(row['Variants'])
                         
-                        with col1:
-                            st.write("**Variants:**")
-                            st.write(row['Variants'])
-                            
-                        with col2:
-                            st.write("**Usage Patterns:**")
-                            if row['Both Var1'] > 0:
-                                st.write(f"- Both copies of Var1: {row['Both Var1']} decks")
-                            if row['Both Var2'] > 0:
-                                st.write(f"- Both copies of Var2: {row['Both Var2']} decks")
-                            if row['Mixed'] > 0:
-                                st.write(f"- Mixed (1 of each): {row['Mixed']} decks")
-                            if row['Single Var1'] > 0:
-                                st.write(f"- Single Var1: {row['Single Var1']} decks")
-                            if row['Single Var2'] > 0:
-                                st.write(f"- Single Var2: {row['Single Var2']} decks")
-                
-            else:
-                st.info("No cards with variants found in this deck.")
-                
-        with tab4:
-            st.subheader("Raw Analysis Data")
+                    with col2:
+                        st.write("**Usage Patterns:**")
+                        if row['Both Var1'] > 0:
+                            st.write(f"- Both copies of Var1: {row['Both Var1']} decks")
+                        if row['Both Var2'] > 0:
+                            st.write(f"- Both copies of Var2: {row['Both Var2']} decks")
+                        if row['Mixed'] > 0:
+                            st.write(f"- Mixed (1 of each): {row['Mixed']} decks")
+                        if row['Single Var1'] > 0:
+                            st.write(f"- Single Var1: {row['Single Var1']} decks")
+                        if row['Single Var2'] > 0:
+                            st.write(f"- Single Var2: {row['Single Var2']} decks")
             
-            # Main analysis data
-            st.write("### Card Usage Data")
-            st.dataframe(results, use_container_width=True)
+        else:
+            st.info("No cards with variants found in this deck.")
             
-            # Variant analysis data
+    with tab4:
+        st.subheader("Raw Analysis Data")
+        
+        # Main analysis data
+        st.write("### Card Usage Data")
+        st.dataframe(results, use_container_width=True)
+        
+        # Variant analysis data
+        if not variant_df.empty:
+            st.write("### Variant Analysis Data")
+            st.dataframe(variant_df, use_container_width=True)
+        
+        # Download buttons for both datasets
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            csv_main = results.to_csv(index=False)
+            st.download_button(
+                label="Download Card Usage CSV",
+                data=csv_main,
+                file_name=f"{deck_info['deck_name']}_analysis.csv",
+                mime="text/csv"
+            )
+        
+        with col2:
             if not variant_df.empty:
-                st.write("### Variant Analysis Data")
-                st.dataframe(variant_df, use_container_width=True)
-            
-            # Download buttons for both datasets
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                csv_main = results.to_csv(index=False)
+                csv_variant = variant_df.to_csv(index=False)
                 st.download_button(
-                    label="Download Card Usage CSV",
-                    data=csv_main,
-                    file_name=f"{deck_info['deck_name']}_analysis.csv",
+                    label="Download Variant Analysis CSV",
+                    data=csv_variant,
+                    file_name=f"{deck_info['deck_name']}_variants.csv",
                     mime="text/csv"
                 )
-            
-            with col2:
-                if not variant_df.empty:
-                    csv_variant = variant_df.to_csv(index=False)
-                    st.download_button(
-                        label="Download Variant Analysis CSV",
-                        data=csv_variant,
-                        file_name=f"{deck_info['deck_name']}_variants.csv",
-                        mime="text/csv"
-                    )
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
