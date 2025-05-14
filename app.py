@@ -5,23 +5,6 @@ import pandas as pd
 import time
 from datetime import datetime, timedelta
 
-# Add this after your imports
-st.markdown("""
-<style>
-    /* Make selectbox non-editable */
-    .stSelectbox input {
-        cursor: pointer !important;
-        caret-color: transparent !important;
-    }
-    
-    /* Optional: Remove the typing cursor completely */
-    .stSelectbox input:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-</style>
-""", unsafe_allow_html=True)
-
 # Global variables
 BASE_URL = "https://play.limitlesstcg.com"
 
