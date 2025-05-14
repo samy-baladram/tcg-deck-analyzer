@@ -5,6 +5,39 @@ import pandas as pd
 import time
 from datetime import datetime, timedelta
 
+def format_deck_name(deck_name):
+    """Convert deck names from URL format to display format."""
+    parts = deck_name.split('-')
+    set_pattern = re.compile(r'^[a-z]\d+[a-z]?$', re.IGNORECASE)
+    
+    result = []
+    i = 0
+    
+    while i < len(parts):
+        part = parts[i]
+        
+        if set_pattern.match(part):
+            # Format set code: A3b format
+            formatted = part[0].upper() + part[1:].lower()
+            if result and not result[-1].endswith(')'):
+                result[-1] += f" ({formatted})"
+            i += 1
+        else:
+            word = part.title()
+            
+            # Check if next part is a set code
+            if i + 1 < len(parts) and set_pattern.match(parts[i + 1]):
+                set_code = parts[i + 1]
+                formatted = set_code[0].upper() + set_code[1:].lower()
+                word += f" ({formatted})"
+                i += 2
+            else:
+                i += 1
+                
+            result.append(word)
+    
+    return ' '.join(result)
+    
 # Global variables
 BASE_URL = "https://play.limitlesstcg.com"
 
@@ -320,8 +353,8 @@ with col1:
     # Filter and display popular decks
     popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
     
-    # Create deck options without placeholder in the list
-    deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
+    # Create deck options with formatted names
+    deck_options = [f"{format_deck_name(row['deck_name'])} ({row['share']:.1f}%)" 
                    for _, row in popular_decks.iterrows()]
     
     # Calculate time ago
@@ -359,8 +392,10 @@ with col1:
 with col2:
     # Extract deck info from selection and show set
     if selected_option:
-        deck_name = selected_option.split(' (')[0]
-        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+        # Extract the original deck name by finding it in popular_decks
+        selected_share = float(selected_option.split('(')[-1].replace('%)', ''))
+        selected_row = popular_decks[popular_decks['share'] == selected_share].iloc[0]
+        deck_name = selected_row['deck_name']
         set_name = selected_row['set']
         st.metric("Set", set_name.upper())
     else:
@@ -368,8 +403,10 @@ with col2:
 
 # Auto-analyze when selection is made
 if selected_option:
-    deck_name = selected_option.split(' (')[0]
-    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+    # Extract the original deck name by finding it in popular_decks
+    selected_share = float(selected_option.split('(')[-1].replace('%)', ''))
+    selected_row = popular_decks[popular_decks['share'] == selected_share].iloc[0]
+    deck_name = selected_row['deck_name']
     set_name = selected_row['set']
     
     current_selection = {
@@ -385,9 +422,8 @@ if selected_option:
 # Main content area
 if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
-
     #st.metric("Analyzing",deck_info['deck_name'])
-    st.header(deck_info['deck_name'])
+    st.header(format_deck_name(deck_info['deck_name']))
     
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
@@ -434,14 +470,14 @@ if 'analyze' in st.session_state and selected_option:
         
         with col1:
             pokemon_count = sum(int(c.split()[0]) for c in deck_list['Pokemon'])
-            st.write(f"### Pokemon ({pokemon_count})")
+            st.write(f"#### Pokemon ({pokemon_count})")
             #st.write(f"**Total: {pokemon_count}**")
             for card in deck_list['Pokemon']:
                 st.write(f"{card}")
         
         with col2:
             trainer_count = sum(int(c.split()[0]) for c in deck_list['Trainer'])
-            st.write(f"### Trainer ({trainer_count})")
+            st.write(f"#### Trainer ({trainer_count})")
             #st.write(f"**Total: {trainer_count}**")
             for card in deck_list['Trainer']:
                 st.write(f"{card}")
@@ -498,12 +534,12 @@ if 'analyze' in st.session_state and selected_option:
         st.subheader("Raw Analysis Data")
         
         # Main analysis data
-        st.write("### Card Usage Data")
+        st.write("#### Card Usage Data")
         st.dataframe(results, use_container_width=True)
         
         # Variant analysis data
         if not variant_df.empty:
-            st.write("### Variant Analysis Data")
+            st.write("#### Variant Analysis Data")
             st.dataframe(variant_df, use_container_width=True)
         
 else:
