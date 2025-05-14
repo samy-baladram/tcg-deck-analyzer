@@ -200,9 +200,7 @@ with st.sidebar:
         st.session_state.deck_list = get_deck_list()
     
     # Add context information
-    st.caption("Fetches current meta decks with ≥0.5% share from Limitless TCG")
-    st.caption("[play.limitlesstcg.com](https://play.limitlesstcg.com/decks?game=pocket)")
-    
+    st.caption("Fetches current meta decks with ≥0.5% share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")    
     if 'deck_list' in st.session_state:
         popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
         
