@@ -311,7 +311,7 @@ if 'deck_list' not in st.session_state:
 st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 
 # Top navigation bar - simplified without fetch button
-col1, col2, col3 = st.columns([3, 0.25, 1])
+col1, col2, col3 = st.columns([2.5, 0.3, 1])
 
 with col1:
     # Filter and display popular decks
