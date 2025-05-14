@@ -347,7 +347,7 @@ with col3:
 # Add context with refresh option in one line
 if st.button("↻ Refresh data", type="tertiary", help="Refresh deck list from Limitless TCG"):
     st.session_state.deck_list = get_deck_list()
-    st.experimental_rerun()
+    #st.experimental_rerun()
 
 st.divider()
 
