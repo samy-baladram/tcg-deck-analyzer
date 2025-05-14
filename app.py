@@ -173,11 +173,12 @@ def build_deck_template(analysis_df):
     deck_list = {'Pokemon': [], 'Trainer': []}
     total_cards = 0
     
-    # Add core cards
+    # Add core cards with set info
     for _, card in core_cards.iterrows():
         count = card['majority']
         total_cards += count
-        deck_list[card['type']].append(f"{count} {card['card_name']}")
+        card_display = f"{count} {card['card_name']} ({card['set']}-{card['num']})"
+        deck_list[card['type']].append(card_display)
     
     # Get flexible options
     options = analysis_df[
@@ -365,9 +366,16 @@ if 'analyze' in st.session_state:
         st.write(f"### Flexible Slots ({remaining} cards)")
         st.write("Common choices include:")
         
-        options_display = options[['card_name', 'pct_total', 'type']].copy()
-        options_display.columns = ['Card Name', 'Usage %', 'Type']
-        st.dataframe(options_display, use_container_width=True, hide_index=True)
+        # Updated to include set and number
+        options_display = options[['card_name', 'set', 'num', 'pct_total', 'type']].copy()
+        # Combine card name with set info
+        options_display['Card Display'] = options_display.apply(
+            lambda row: f"{row['card_name']} ({row['set']}-{row['num']})", axis=1
+        )
+        # Select columns to show
+        final_display = options_display[['Card Display', 'pct_total', 'type']].copy()
+        final_display.columns = ['Card Name', 'Usage %', 'Type']
+        st.dataframe(final_display, use_container_width=True, hide_index=True)
     
     with tab3:
         st.subheader("Card Variants Analysis")
