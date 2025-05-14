@@ -310,6 +310,13 @@ if 'deck_list' not in st.session_state:
 # Main title
 st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 
+from datetime import datetime
+
+# Initialize session state and fetch deck list on first load
+if 'deck_list' not in st.session_state:
+    st.session_state.deck_list = get_deck_list()
+    st.session_state.fetch_time = datetime.now()
+
 # Top navigation bar - simplified without fetch button
 col1, col2, col3 = st.columns([2.5, 0.3, 1])
 
@@ -321,10 +328,14 @@ with col1:
     deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
                    for _, row in popular_decks.iterrows()]
     
+    # Format the label with fetch time
+    fetch_time_str = st.session_state.fetch_time.strftime("%Y-%m-%d %H:%M")
+    label_text = f"Select a deck to analyze (Updated: {fetch_time_str}):"
+    
     selected_option = st.selectbox(
-        "Select a deck to analyze:",
+        label_text,
         deck_options,
-        help="Showing decks with ≥0.5% meta share.\nData from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)"
+        help="Showing decks with ≥0.5% meta share.\nData from Limitless TCG"
     )
 
 with col2:
@@ -343,11 +354,6 @@ with col3:
                 'deck_name': deck_name,
                 'set_name': set_name
             }
-
-# Add context with refresh option in one line
-if st.button("↻ Refresh data", type="tertiary", help="Refresh deck list from Limitless TCG"):
-    st.session_state.deck_list = get_deck_list()
-    #st.experimental_rerun()
 
 st.divider()
 
