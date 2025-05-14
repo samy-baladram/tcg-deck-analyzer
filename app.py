@@ -384,8 +384,9 @@ if selected_option:
 # Main content area
 if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
-    
-    st.header(f"Analyzing {deck_info['deck_name']}")
+
+    st.metric("Analyzing",deck_info['deck_name'])
+    #st.header(f"Analyzing {deck_info['deck_name']}")
     
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
