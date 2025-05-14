@@ -190,7 +190,7 @@ def build_deck_template(analysis_df):
     return deck_list, total_cards, options
 
 # Main Streamlit UI
-st.title("TCG Deck Analyzer")
+st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 
 # Sidebar for deck selection
 with st.sidebar:
@@ -198,6 +198,10 @@ with st.sidebar:
     
     if st.button("Fetch Deck List", type="primary"):
         st.session_state.deck_list = get_deck_list()
+    
+    # Add context information
+    st.caption("Fetches current meta decks with ≥0.5% share from Limitless TCG")
+    st.caption("[play.limitlesstcg.com](https://play.limitlesstcg.com/decks?game=pocket)")
     
     if 'deck_list' in st.session_state:
         popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
