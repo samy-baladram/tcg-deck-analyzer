@@ -313,7 +313,7 @@ if 'selected_deck_index' not in st.session_state:
     st.session_state.selected_deck_index = None
 
 # Top navigation bar - simplified without analyze button
-col1, col2 = st.columns([1.5, 0])
+col1, col2 = st.columns([1.5, 0.5])
 
 with col1:
     # Filter and display popular decks
@@ -368,6 +368,7 @@ with col2:
         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
         st.metric("Set", set_name.upper())
+        st.empty()
     else:
         st.empty()
 
