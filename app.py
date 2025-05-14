@@ -501,26 +501,5 @@ if 'analyze' in st.session_state and selected_option:
             st.write("### Variant Analysis Data")
             st.dataframe(variant_df, use_container_width=True)
         
-        # Download buttons for both datasets
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            csv_main = results.to_csv(index=False)
-            st.download_button(
-                label="Download Card Usage CSV",
-                data=csv_main,
-                file_name=f"{deck_info['deck_name']}_analysis.csv",
-                mime="text/csv"
-            )
-        
-        with col2:
-            if not variant_df.empty:
-                csv_variant = variant_df.to_csv(index=False)
-                st.download_button(
-                    label="Download Variant Analysis CSV",
-                    data=csv_variant,
-                    file_name=f"{deck_info['deck_name']}_variants.csv",
-                    mime="text/csv"
-                )
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
