@@ -292,15 +292,6 @@ def analyze_variants(result_df, all_cards_df):
 # Configure page
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
-# Hide streamlit branding (optional)
-hide_menu_style = """
-<style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-</style>
-"""
-st.markdown(hide_menu_style, unsafe_allow_html=True)
-
 # Global variables
 BASE_URL = "https://play.limitlesstcg.com"
 
