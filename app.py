@@ -177,7 +177,13 @@ def build_deck_template(analysis_df):
     for _, card in core_cards.iterrows():
         count = card['majority']
         total_cards += count
-        card_display = f"{count} {card['card_name']} ({card['set']}-{card['num']})"
+        
+        # Format card display based on whether set exists
+        if card['set']:
+            card_display = f"{count} {card['card_name']} ({card['set']}-{card['num']})"
+        else:
+            card_display = f"{count} {card['card_name']}"
+            
         deck_list[card['type']].append(card_display)
     
     # Get flexible options
