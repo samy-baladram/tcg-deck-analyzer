@@ -161,8 +161,8 @@ def analyze_deck(deck_name, set_name="A3"):
     # Sort results
     grouped = grouped.sort_values(['type', 'pct_total'], ascending=[True, False])
     
-    # Analyze variants
-    variant_df = analyze_variants(grouped, urls)
+    # Analyze variants - pass the raw dataframe instead of URLs
+    variant_df = analyze_variants(grouped, df)
     
     return grouped, total_decks, variant_df
 
@@ -189,7 +189,7 @@ def build_deck_template(analysis_df):
     
     return deck_list, total_cards, options
 
-def analyze_variants(result_df, compiled_df):
+def analyze_variants(result_df, all_cards_df):
     """Analyze variant usage patterns"""
     # Find cards with multiple entries (variants)
     card_counts = result_df.groupby('card_name').size()
@@ -226,21 +226,11 @@ def analyze_variants(result_df, compiled_df):
         # Analyze usage patterns across decks
         deck_count = 0
         
-        # Create compiled dataframe from all decks
-        all_cards = []
-        for i in range(len(compiled_df)):
-            cards = extract_cards(compiled_df[i])
-            for card in cards:
-                card['deck_num'] = i
-            all_cards.extend(cards)
-        
-        compiled_data = pd.DataFrame(all_cards)
-        
         # For each deck, check which variants it uses
-        for deck_num in compiled_data['deck_num'].unique():
-            deck_cards = compiled_data[
-                (compiled_data['deck_num'] == deck_num) &
-                (compiled_data['card_name'] == card_name)
+        for deck_num in all_cards_df['deck_num'].unique():
+            deck_cards = all_cards_df[
+                (all_cards_df['deck_num'] == deck_num) &
+                (all_cards_df['card_name'] == card_name)
             ]
             
             if not deck_cards.empty:
