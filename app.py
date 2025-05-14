@@ -313,64 +313,63 @@ if 'selected_deck_index' not in st.session_state:
     st.session_state.selected_deck_index = None
 
 # Top navigation bar - simplified without analyze button
-col1, col2 = st.columns([1.5, 0.5])
+#col1, col2 = st.columns([1.5, 0.5])
 
-with col1:
-    # Filter and display popular decks
-    popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
-    
-    # Create deck options without placeholder in the list
-    deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
-                   for _, row in popular_decks.iterrows()]
-    
-    # Calculate time ago
-    time_diff = datetime.now() - st.session_state.fetch_time
-    if time_diff < timedelta(minutes=1):
-        time_str = "just now"
-    elif time_diff < timedelta(hours=1):
-        minutes = int(time_diff.total_seconds() / 60)
-        time_str = f"{minutes} minutes ago"
-    else:
-        hours = int(time_diff.total_seconds() / 3600)
-        time_str = f"{hours} hours ago"
-    
-    label_text = f"Select a deck to analyze (Updated: {time_str}):"
-    
-    # Use on_change callback to handle selection
-    def on_deck_change():
-        selection = st.session_state.deck_select
-        if selection:
-            st.session_state.selected_deck_index = deck_options.index(selection)
-        else:
-            st.session_state.selected_deck_index = None
-    
-    selected_option = st.selectbox(
-        label_text,
-        deck_options,
-        index=st.session_state.selected_deck_index,
-        placeholder="Select a deck...",
-        help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
-        key="deck_select",
-        on_change=on_deck_change
-    )
-    if selected_option:
-        deck_name = selected_option.split(' (')[0]
-        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-        set_name = selected_row['set']
-        st.metric("Set", set_name.upper())
-    else:
-        st.empty()
+#with col1:
+# Filter and display popular decks
+popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
 
-with col2:
-    # Extract deck info from selection and show set
-    if selected_option:
-        deck_name = selected_option.split(' (')[0]
-        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-        set_name = selected_row['set']
-        st.metric("Set", set_name.upper())
-        st.empty()
+# Create deck options without placeholder in the list
+deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
+               for _, row in popular_decks.iterrows()]
+
+# Calculate time ago
+time_diff = datetime.now() - st.session_state.fetch_time
+if time_diff < timedelta(minutes=1):
+    time_str = "just now"
+elif time_diff < timedelta(hours=1):
+    minutes = int(time_diff.total_seconds() / 60)
+    time_str = f"{minutes} minutes ago"
+else:
+    hours = int(time_diff.total_seconds() / 3600)
+    time_str = f"{hours} hours ago"
+
+label_text = f"Select a deck to analyze (Updated: {time_str}):"
+
+# Use on_change callback to handle selection
+def on_deck_change():
+    selection = st.session_state.deck_select
+    if selection:
+        st.session_state.selected_deck_index = deck_options.index(selection)
     else:
-        st.empty()
+        st.session_state.selected_deck_index = None
+
+selected_option = st.selectbox(
+    label_text,
+    deck_options,
+    index=st.session_state.selected_deck_index,
+    placeholder="Select a deck...",
+    help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
+    key="deck_select",
+    on_change=on_deck_change
+)
+if selected_option:
+    deck_name = selected_option.split(' (')[0]
+    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+    set_name = selected_row['set']
+    st.metric("Set", set_name.upper())
+else:
+    st.empty()
+
+# with col2:
+#     # Extract deck info from selection and show set
+#     if selected_option:
+#         deck_name = selected_option.split(' (')[0]
+#         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+#         set_name = selected_row['set']
+#         st.metric("Set", set_name.upper())
+#     else:
+#         st.empty()
 
 # Auto-analyze when selection is made
 if selected_option:
