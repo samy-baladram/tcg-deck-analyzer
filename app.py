@@ -398,22 +398,32 @@ if 'analyze' in st.session_state and selected_option:
     with tab1:
         st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
         
-        # Display cards by type
-        for card_type in ['Pokemon', 'Trainer']:
-            st.write(f"### {card_type}")
-            type_cards = results[results['type'] == card_type]
+        # Create two columns for Pokemon and Trainer
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("#### Pokemon")
+            type_cards = results[results['type'] == 'Pokemon']
             
             if not type_cards.empty:
-                if card_type == 'Pokemon':
-                    # Show set and number for Pokemon
-                    display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'category', 'majority']].copy()
-                    display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Category', 'Majority Count']
-                else:
-                    # Hide set and number for Trainer
-                    display_df = type_cards[['card_name', 'pct_total', 'category', 'majority']].copy()
-                    display_df.columns = ['Card Name', 'Usage %', 'Category', 'Majority Count']
-                
+                # Show set and number for Pokemon
+                display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'majority']].copy()
+                display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Majority Count']
                 st.dataframe(display_df, use_container_width=True, hide_index=True)
+            else:
+                st.info("No Pokemon cards found")
+    
+        with col2:
+            st.write("#### Trainer")
+            type_cards = results[results['type'] == 'Trainer']
+            
+            if not type_cards.empty:
+                # Hide set and number for Trainer
+                display_df = type_cards[['card_name', 'pct_total', 'majority']].copy()
+                display_df.columns = ['Card Name', 'Usage %', 'Majority Count']
+                st.dataframe(display_df, use_container_width=True, hide_index=True)
+            else:
+                st.info("No Trainer cards found")
     
     with tab2:
         st.subheader("Deck Template")
