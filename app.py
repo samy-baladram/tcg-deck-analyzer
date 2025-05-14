@@ -320,8 +320,8 @@ if 'deck_list' not in st.session_state:
 if 'fetch_time' not in st.session_state:
     st.session_state.fetch_time = datetime.now()
 
-# Top navigation bar - simplified without fetch button
-col1, col2, col3 = st.columns([2.5, 0.3, 1])
+# Top navigation bar - simplified without analyze button
+col1, col2 = st.columns([3, 0.5])
 
 with col1:
     # Filter and display popular decks
@@ -347,25 +347,29 @@ with col1:
     selected_option = st.selectbox(
         label_text,
         deck_options,
-        help="Showing decks with ≥0.5% meta share.\nData from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)"
+        help="Showing decks with ≥0.5% meta share. Analysis will start automatically.",
+        key="deck_selector"
     )
 
 with col2:
-    # Extract deck info from selection
+    # Extract deck info from selection and show set
     if selected_option:
         deck_name = selected_option.split(' (')[0]
         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
         st.metric("Set", set_name.upper())
 
-with col3:
-    # Analyze button
-    if selected_option:
-        if st.button("Analyze Deck", type="primary", use_container_width=True):
-            st.session_state.analyze = {
-                'deck_name': deck_name,
-                'set_name': set_name
-            }
+# Auto-analyze when selection changes
+if selected_option:
+    current_selection = {
+        'deck_name': deck_name,
+        'set_name': set_name
+    }
+    
+    # Check if this is a new selection or if we need to analyze
+    if 'last_analyzed' not in st.session_state or st.session_state.last_analyzed != current_selection:
+        st.session_state.analyze = current_selection
+        st.session_state.last_analyzed = current_selection
 
 st.divider()
 
