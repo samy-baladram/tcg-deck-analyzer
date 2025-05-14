@@ -304,10 +304,6 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 # Global variables
 BASE_URL = "https://play.limitlesstcg.com"
 
-# Initialize session state and fetch deck list on first load
-if 'deck_list' not in st.session_state:
-    st.session_state.deck_list = get_deck_list()
-
 # Main title
 st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 
@@ -315,7 +311,6 @@ st.title("Pokémon TCG Pocket Meta Deck Analyzer")
 if 'deck_list' not in st.session_state:
     st.session_state.deck_list = get_deck_list()
     st.session_state.fetch_time = datetime.now()
-    st.session_state.first_load = True  # Add this flag
 
 # Also ensure fetch_time exists (in case it was missing from older sessions)
 if 'fetch_time' not in st.session_state:
@@ -328,9 +323,9 @@ with col1:
     # Filter and display popular decks
     popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
     
-    # Create deck options with a placeholder
-    deck_options = ["Select a deck..."] + [f"{row['deck_name']} ({row['share']:.1f}%)" 
-                                          for _, row in popular_decks.iterrows()]
+    # Create deck options without placeholder in the list
+    deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
+                   for _, row in popular_decks.iterrows()]
     
     # Calculate time ago
     time_diff = datetime.now() - st.session_state.fetch_time
@@ -345,18 +340,27 @@ with col1:
     
     label_text = f"Select a deck to analyze (Updated: {time_str}):"
     
-    # Use index=0 to default to placeholder
+    # Check if we have a previous selection
+    default_index = None
+    if 'last_selected' in st.session_state and st.session_state.last_selected in deck_options:
+        default_index = deck_options.index(st.session_state.last_selected)
+    
     selected_option = st.selectbox(
         label_text,
         deck_options,
-        index=0,  # Default to "Select a deck..."
-        help="Showing decks with ≥0.5% meta share. Analysis will start automatically after selection.",
+        index=default_index,
+        placeholder="Select a deck...",  # This is the placeholder
+        help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
         key="deck_selector"
     )
+    
+    # Store the selection
+    if selected_option:
+        st.session_state.last_selected = selected_option
 
 with col2:
     # Extract deck info from selection and show set
-    if selected_option and selected_option != "Select a deck...":
+    if selected_option:
         deck_name = selected_option.split(' (')[0]
         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
@@ -364,8 +368,8 @@ with col2:
     else:
         st.empty()
 
-# Auto-analyze when selection changes (but not on first load)
-if selected_option and selected_option != "Select a deck...":
+# Auto-analyze when selection changes
+if selected_option:
     deck_name = selected_option.split(' (')[0]
     selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
     set_name = selected_row['set']
@@ -379,14 +383,11 @@ if selected_option and selected_option != "Select a deck...":
     if 'last_analyzed' not in st.session_state or st.session_state.last_analyzed != current_selection:
         st.session_state.analyze = current_selection
         st.session_state.last_analyzed = current_selection
-        
-    # Clear first load flag
-    if 'first_load' in st.session_state:
-        del st.session_state.first_load
 
 st.divider()
+
 # Main content area
-if 'analyze' in st.session_state:
+if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
     
     st.header(f"Analyzing {deck_info['deck_name']}")
@@ -494,13 +495,6 @@ if 'analyze' in st.session_state:
                         if row['Single Var2'] > 0:
                             st.write(f"- Single Var2: {row['Single Var2']} decks")
             
-            # # Summary chart
-            # st.write("---")
-            # st.write("### Variant Usage Summary")
-            # chart_data = variant_df[['Card Name', 'Both Var1', 'Both Var2', 'Mixed']]
-            # chart_data = chart_data.set_index('Card Name')
-            # st.bar_chart(chart_data)
-            
         else:
             st.info("No cards with variants found in this deck.")
             
@@ -539,4 +533,4 @@ if 'analyze' in st.session_state:
                 )
 
 else:
-    st.info("👈 Click 'Fetch Deck List' in the sidebar to start")
+    st.info("👆 Select a deck from the dropdown to view detailed analysis")
