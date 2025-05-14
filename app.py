@@ -1,412 +1,305 @@
 import streamlit as st
-import pandas as pd
 import requests
-from datetime import datetime
-from html.parser import HTMLParser
-import re
+from bs4 import BeautifulSoup
+import pandas as pd
 import time
-import numpy as np
 
 # Configure page
-st.set_page_config(page_title="Meta Deck List Analysis", layout="wide")
+st.set_page_config(page_title="TCG Deck Analyzer", layout="wide")
 
-# Initialize session state
-if 'df_decks' not in st.session_state:
-    st.session_state.df_decks = None
-if 'current_set' not in st.session_state:
-    st.session_state.current_set = None
+# Global variables
+BASE_URL = "https://play.limitlesstcg.com"
 
-@st.cache_data
-def get_decklists_urls(deck_name, set_name="A3"):
-    """Get all decklist URLs for a specific deck archetype"""
-    url = f"https://play.limitlesstcg.com/decks/{deck_name}/?game=POCKET&format=standard&set={set_name}"
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def get_deck_list():
+    """Get all available decks with their share percentages"""
+    url = f"{BASE_URL}/decks?game=pocket"
     response = requests.get(url)
-    html_content = response.text
-    
-    # Find all href links in the table using regex
-    hrefs = []
-    
-    # Find table content
-    table_match = re.search(r'<table\s+class="striped"[^>]*>(.*?)</table>', html_content, re.DOTALL)
-    if table_match:
-        table_content = table_match.group(1)
-        # Find all links in last column of each row
-        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_content, re.DOTALL)
-        
-        for row in rows[1:]:  # Skip header row
-            # Find the last td in the row
-            tds = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
-            if tds:
-                last_td = tds[-1]
-                # Find href in the last td
-                href_match = re.search(r'href="([^"]*)"', last_td)
-                if href_match:
-                    href = href_match.group(1)
-                    hrefs.append(f"https://play.limitlesstcg.com{href}")
-    
-    return pd.DataFrame(hrefs, columns=['decklist_urls'])
-
-def extract_deck_cards(link):
-    """Extract cards from a single decklist URL"""
-    response = requests.get(link)
-    html_content = response.text
-    
-    cards_data = []
-    
-    # More specific regex to find only the deck list sections
-    # Look for divs with class="heading" followed by card lists
-    sections = re.findall(
-        r'<div[^>]*class="heading"[^>]*>\s*(.*?)\s*</div>\s*<div[^>]*>\s*(.*?)</div>',
-        html_content, re.DOTALL
-    )
-    
-    for heading, content in sections:
-        # Clean the heading text
-        section_text = re.sub(r'<[^>]+>', '', heading).strip()
-        section_text = re.sub(r'\s+', ' ', section_text)  # Normalize whitespace
-        
-        if any(keyword in section_text for keyword in ['Pokémon', 'Trainer']):
-            section_type = 'Pokemon' if 'Pokémon' in section_text else 'Trainer'
-            
-            # Look for card entries - more specific pattern
-            # Match entries like "2 Card Name (SET-123)"
-            card_pattern = r'<p[^>]*>\s*(\d+)\s+([^<(]+?)(?:\s*\(([^)]+)\))?\s*</p>'
-            card_matches = re.findall(card_pattern, content)
-            
-            for match in card_matches:
-                try:
-                    amount = int(match[0])
-                    card_name = match[1].strip()
-                    set_info = match[2].strip() if match[2] else ""
-                    
-                    set_code = ""
-                    num = ""
-                    
-                    if set_info:
-                        if '-' in set_info:
-                            parts = set_info.split('-', 1)
-                            set_code = parts[0]
-                            num = parts[1]
-                        else:
-                            set_code = set_info
-                    
-                    cards_data.append({
-                        'type': section_type,
-                        'card_name': card_name,
-                        'amount': amount,
-                        'set': set_code,
-                        'num': num
-                    })
-                except ValueError:
-                    # Skip entries that don't match the expected format
-                    continue
-    
-    return cards_data
-
-def process_all_decks(df):
-    """Process all decklists and return aggregated statistics"""
-    all_decks_data = []
-    total_decks = len(df)
-
-    progress_bar = st.progress(0)
-    status_text = st.empty()
-
-    for i in range(total_decks):
-        link = df.iloc[i, 0]
-
-        if i % 5 == 0:
-            progress_bar.progress((i + 1) / total_decks)
-            status_text.text(f"Processing... {i}/{total_decks}")
-
-        try:
-            deck_cards = extract_deck_cards(link)
-
-            for card in deck_cards:
-                card['deck_num'] = i
-
-            all_decks_data.extend(deck_cards)
-            time.sleep(0.5)
-
-        except Exception as e:
-            st.error(f"Error processing deck {i+1}: {e}")
-
-    progress_bar.progress(1.0)
-    status_text.text(f"Completed processing {total_decks} decks")
-
-    compiled_df = pd.DataFrame(all_decks_data)
-
-    result_df = compiled_df.groupby(['type', 'card_name', 'set', 'num']).agg(
-        amount_1=('amount', lambda x: sum(x == 1)),
-        amount_2=('amount', lambda x: sum(x == 2))
-    ).reset_index()
-
-    result_df['pct_amount_1'] = (result_df['amount_1'] / total_decks * 100).astype(int)
-    result_df['pct_amount_2'] = (result_df['amount_2'] / total_decks * 100).astype(int)
-
-    result_df['total_usage'] = (result_df['amount_1'] + result_df['amount_2']/ total_decks * 100).round(2)
-    result_df = result_df.sort_values(['type', 'total_usage'], ascending=[True, False])
-
-    result_df = result_df.drop('total_usage', axis=1)
-
-    return result_df, compiled_df
-
-def categorize_cards_tcg(result_df):
-    """Categorize cards using TCG terminology"""
-    conditions = [
-        (result_df['pct_usage'] >= 70),
-        (result_df['pct_usage'] >= 25),
-        (result_df['pct_usage'] < 25)
-    ]
-
-    categories = ['Core', 'Standard', 'Tech']
-
-    result_df['category'] = np.select(conditions, categories, default='Experimental')
-
-    result_df.insert(6, 'majority', result_df.apply(
-        lambda row: 1 if row['amount_1'] > row['amount_2'] else
-                   (2 if row['amount_2'] > row['amount_1'] else 1),
-        axis=1
-    ))
-
-    return result_df
-
-def analyze_variants(result_df, compiled_df):
-    """Analyze variant usage patterns"""
-    card_counts = result_df.groupby('card_name').size()
-    cards_with_variants = card_counts[card_counts > 1].index
-
-    variant_summaries = []
-
-    for card_name in cards_with_variants:
-        card_variants = result_df[result_df['card_name'] == card_name]
-
-        if len(card_variants) > 2:
-            st.warning(f"Warning: {card_name} has more than 2 variants. Only first 2 will be analyzed.")
-
-        variant_list = []
-        for idx, (_, variant) in enumerate(card_variants.iterrows()):
-            if idx < 2:
-                variant_list.append(f"{variant['set']}-{variant['num']}")
-
-        summary = {
-            'Card Name': card_name,
-            'Total Decks': 0,
-            'Variants': ', '.join(variant_list),
-            'Both Var1': 0,
-            'Both Var2': 0,
-            'Mixed': 0,
-            'Single Var1': 0,
-            'Single Var2': 0
-        }
-
-        deck_count = 0
-
-        for deck_num in compiled_df['deck_num'].unique():
-            deck_cards = compiled_df[
-                (compiled_df['deck_num'] == deck_num) &
-                (compiled_df['card_name'] == card_name)
-            ]
-
-            if not deck_cards.empty:
-                deck_count += 1
-
-                var1_count = 0
-                var2_count = 0
-
-                for _, card in deck_cards.iterrows():
-                    variant_id = f"{card['set']}-{card['num']}"
-                    if variant_id == variant_list[0]:
-                        var1_count += card['amount']
-                    elif len(variant_list) > 1 and variant_id == variant_list[1]:
-                        var2_count += card['amount']
-
-                if var1_count == 2 and var2_count == 0:
-                    summary['Both Var1'] += 1
-                elif var2_count == 2 and var1_count == 0:
-                    summary['Both Var2'] += 1
-                elif var1_count == 1 and var2_count == 1:
-                    summary['Mixed'] += 1
-                elif var1_count == 1 and var2_count == 0:
-                    summary['Single Var1'] += 1
-                elif var2_count == 1 and var1_count == 0:
-                    summary['Single Var2'] += 1
-
-        summary['Total Decks'] = deck_count
-        variant_summaries.append(summary)
-
-    if not variant_summaries:
-        return pd.DataFrame()
-
-    variant_df = pd.DataFrame(variant_summaries)
-    return variant_df.sort_values('Total Decks', ascending=False)
-
-@st.cache_data
-def get_deck_list_with_shares():
-    """Get deck list with shares from the main page"""
-    url = "https://play.limitlesstcg.com/decks?game=pocket"
-    response = requests.get(url)
-    html_content = response.text
+    soup = BeautifulSoup(response.text, 'html.parser')
     
     decks = []
-    
-    # Find all table rows
-    rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html_content, re.DOTALL)
-    
-    for row in rows:
-        cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
-        
+    for row in soup.find_all('tr'):
+        cells = row.find_all('td')
         if len(cells) >= 7:
-            # Deck name is in cell 2
-            deck_cell = cells[2]
-            href_match = re.search(r'href="([^"]*)"', deck_cell)
+            deck_link = cells[2].find('a', href=True)
             
-            if href_match:
-                href = href_match.group(1)
+            if deck_link and '/decks/' in deck_link['href'] and 'matchup' not in deck_link['href']:
+                href = deck_link['href']
+                deck_name = href.split('/decks/')[1].split('?')[0]
                 
-                if '/decks/' in href and 'matchup' not in href:
-                    # Extract deck name from URL
-                    deck_name = href.split('/decks/')[1].split('?')[0]
-                    
-                    # Extract set
-                    set_name = 'A3'  # Default
-                    if 'set=' in href:
-                        set_name = href.split('set=')[1].split('&')[0]
-                    
-                    # Get share from cell 5 (index 4)
-                    share_text = re.sub(r'<[^>]+>', '', cells[4]).strip()
-                    share = None
-                    if '%' in share_text:
-                        try:
-                            share = float(share_text.replace('%', ''))
-                        except:
-                            pass
-                    
-                    decks.append({
-                        'deck_name': deck_name,
-                        'set': set_name,
-                        'share': share
-                    })
+                # Extract set name
+                set_name = 'A3'  # Default
+                if 'set=' in href:
+                    set_name = href.split('set=')[1].split('&')[0]
+                
+                # Extract share percentage
+                share_text = cells[4].text.strip()
+                share = float(share_text.replace('%', '')) if '%' in share_text else 0
+                
+                decks.append({
+                    'deck_name': deck_name,
+                    'set': set_name,
+                    'share': share
+                })
     
-    df = pd.DataFrame(decks)
-    return df.sort_values('share', ascending=False).reset_index(drop=True)
+    return pd.DataFrame(decks).sort_values('share', ascending=False)
 
-def build_deck_template(result_df):
-    """Build deck template based on categories and usage patterns"""
-    core_cards = result_df[result_df['category'] == 'Core'].copy()
+@st.cache_data
+def get_deck_urls(deck_name, set_name="A3"):
+    """Get URLs for all decklists of a specific archetype"""
+    url = f"{BASE_URL}/decks/{deck_name}/?game=POCKET&format=standard&set={set_name}"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    urls = []
+    table = soup.find('table', class_='striped')
+    
+    if table:
+        for row in table.find_all('tr')[1:]:  # Skip header
+            last_cell = row.find_all('td')[-1]
+            link = last_cell.find('a')
+            if link and 'href' in link.attrs:
+                urls.append(f"{BASE_URL}{link['href']}")
+    
+    return urls
 
-    total_cards = 0
+def extract_cards(url):
+    """Extract cards from a single decklist"""
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    cards = []
+    
+    # Find Pokemon and Trainer sections
+    for div in soup.find_all('div', class_='heading'):
+        section_text = div.text.strip()
+        
+        if any(section in section_text for section in ['Pokémon', 'Trainer']):
+            section_type = 'Pokemon' if 'Pokémon' in section_text else 'Trainer'
+            cards_container = div.parent
+            
+            # Extract each card
+            for p in cards_container.find_all('p'):
+                card_text = p.get_text(strip=True)
+                if card_text:
+                    parts = card_text.split(' ', 1)
+                    if len(parts) == 2:
+                        amount = int(parts[0])
+                        
+                        # Parse card name and set info
+                        if '(' in parts[1] and ')' in parts[1]:
+                            name, set_info = parts[1].rsplit(' (', 1)
+                            set_info = set_info.rstrip(')')
+                            
+                            if '-' in set_info:
+                                set_code, num = set_info.split('-', 1)
+                            else:
+                                set_code, num = set_info, ""
+                        else:
+                            name = parts[1]
+                            set_code = num = ""
+                        
+                        cards.append({
+                            'type': section_type,
+                            'card_name': name,
+                            'amount': amount,
+                            'set': set_code,
+                            'num': num
+                        })
+    
+    return cards
+
+def analyze_deck(deck_name, set_name="A3"):
+    """Main analysis function for a deck archetype"""
+    # Get all decklist URLs
+    urls = get_deck_urls(deck_name, set_name)
+    
+    # Show progress
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    
+    # Extract cards from all decks
+    all_cards = []
+    for i, url in enumerate(urls):
+        progress_bar.progress((i + 1) / len(urls))
+        status_text.text(f"Processing deck {i+1}/{len(urls)}...")
+        
+        cards = extract_cards(url)
+        for card in cards:
+            card['deck_num'] = i
+        all_cards.extend(cards)
+        
+        time.sleep(0.3)  # Be nice to the server
+    
+    status_text.text("Analysis complete!")
+    
+    # Create dataframe and analyze
+    df = pd.DataFrame(all_cards)
+    
+    # Aggregate card usage
+    grouped = df.groupby(['type', 'card_name', 'set', 'num']).agg(
+        count_1=('amount', lambda x: sum(x == 1)),
+        count_2=('amount', lambda x: sum(x == 2))
+    ).reset_index()
+    
+    # Calculate percentages
+    total_decks = len(urls)
+    grouped['pct_1'] = (grouped['count_1'] / total_decks * 100).astype(int)
+    grouped['pct_2'] = (grouped['count_2'] / total_decks * 100).astype(int)
+    grouped['pct_total'] = grouped['pct_1'] + grouped['pct_2']
+    
+    # Categorize cards
+    grouped['category'] = pd.cut(
+        grouped['pct_total'], 
+        bins=[-1, 25, 70, 100],
+        labels=['Tech', 'Standard', 'Core']
+    )
+    
+    # Determine majority count
+    grouped['majority'] = grouped.apply(
+        lambda row: 2 if row['count_2'] > row['count_1'] else 1,
+        axis=1
+    )
+    
+    # Sort results
+    grouped = grouped.sort_values(['type', 'pct_total'], ascending=[True, False])
+    
+    return grouped, total_decks
+
+def build_deck_template(analysis_df):
+    """Build a deck template from analysis results"""
+    core_cards = analysis_df[analysis_df['category'] == 'Core']
+    
     deck_list = {'Pokemon': [], 'Trainer': []}
-
-    is_flexible_core = lambda card: ((card['pct_amount_1'] >= 25) and (card['majority'] == 2)) or \
-                                   ((card['pct_amount_2'] >= 25) and (card['majority'] == 1))
-
+    total_cards = 0
+    
+    # Add core cards
     for _, card in core_cards.iterrows():
-        count = 1 if is_flexible_core(card) else int(card['majority'])
+        count = card['majority']
         total_cards += count
         deck_list[card['type']].append(f"{count} {card['card_name']}")
+    
+    # Get flexible options
+    options = analysis_df[
+        (analysis_df['category'] == 'Standard') |
+        ((analysis_df['category'] == 'Core') & 
+         (analysis_df['pct_2'] >= 25) & 
+         (analysis_df['majority'] == 1))
+    ]
+    
+    return deck_list, total_cards, options
 
-    options = pd.concat([
-        result_df[result_df['category'] == 'Standard'],
-        result_df[(result_df['category'] == 'Core') &
-                 (((result_df['pct_amount_1'] >= 25) & (result_df['majority'] == 2)) |
-                  ((result_df['pct_amount_2'] >= 25) & (result_df['majority'] == 1)))]
-    ]).drop_duplicates()
+# Main Streamlit UI
+st.title("TCG Deck Analyzer")
 
-    pokemon_count = sum(int(card.split(' ', 1)[0]) for card in deck_list['Pokemon'])
-    trainer_count = sum(int(card.split(' ', 1)[0]) for card in deck_list['Trainer'])
+# Sidebar for deck selection
+with st.sidebar:
+    st.header("Deck Selection")
+    
+    if st.button("Fetch Deck List", type="primary"):
+        st.session_state.deck_list = get_deck_list()
+    
+    if 'deck_list' in st.session_state:
+        popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
+        
+        # Create deck options
+        deck_options = [f"{row['deck_name']} ({row['share']:.1f}%)" 
+                       for _, row in popular_decks.iterrows()]
+        
+        selected_option = st.selectbox("Select Deck:", deck_options)
+        
+        if selected_option:
+            # Extract deck name from selection
+            deck_name = selected_option.split(' (')[0]
+            selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+            set_name = selected_row['set']
+            
+            st.info(f"Set: {set_name}")
+            
+            if st.button("Analyze Deck", type="primary"):
+                st.session_state.analyze = {
+                    'deck_name': deck_name,
+                    'set_name': set_name
+                }
 
-    return {
-        'core_deck': deck_list,
-        'pokemon_count': pokemon_count,
-        'trainer_count': trainer_count,
-        'core_count': total_cards,
-        'remaining_slots': 20 - total_cards,
-        'options': options
-    }
-
-# Main app UI
-st.title("Meta Deck List Analysis")
-
-# Fetch deck list section
-col1, col2 = st.columns([1, 3])
-with col1:
-    if st.button('Fetch Deck List', type='primary'):
-        with st.spinner('Fetching deck list...'):
-            st.session_state.df_decks = get_deck_list_with_shares()
-
-            if not st.session_state.df_decks.empty:
-                st.session_state.current_set = st.session_state.df_decks.iloc[0]['set']
-                st.success("Deck list fetched successfully!")
-
-# Display deck selection if data is available
-if st.session_state.df_decks is not None:
-    df_filtered = st.session_state.df_decks[st.session_state.df_decks['share'] >= 0.5]
-
-    # Create deck options
-    deck_options = []
-    for _, row in df_filtered.iterrows():
-        option_text = f"{row['deck_name']} ({row['share']:.1f}%)"
-        deck_options.append(option_text)
-
-    # Selection widgets
-    col1, col2, col3 = st.columns([3, 1, 1])
-    with col1:
-        selected_option = st.selectbox('Select Deck:', options=deck_options)
-        selected_deck = selected_option.split(' (')[0] if selected_option else None
-
-    with col2:
-        st.text(f"Set: {st.session_state.current_set.title()}")
-
-    with col3:
-        run_analysis = st.button('Run Analysis', type='primary')
-
+# Main content area
+if 'analyze' in st.session_state:
+    deck_info = st.session_state.analyze
+    
+    st.header(f"Analyzing {deck_info['deck_name']}")
+    
     # Run analysis
-    if run_analysis and selected_deck:
-        st.divider()
+    results, total_decks = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
+    
+    # Display results in tabs
+    tab1, tab2, tab3 = st.tabs(["Card Usage", "Deck Template", "Raw Data"])
+    
+    with tab1:
+        st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
+        
+        # Filter by category
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            category_filter = st.multiselect(
+                "Filter by category:",
+                options=['Core', 'Standard', 'Tech'],
+                default=['Core', 'Standard']
+            )
+        
+        filtered_results = results[results['category'].isin(category_filter)]
+        
+        # Display cards by type
+        for card_type in ['Pokemon', 'Trainer']:
+            st.write(f"### {card_type}")
+            type_cards = filtered_results[filtered_results['type'] == card_type]
+            
+            if not type_cards.empty:
+                display_df = type_cards[['card_name', 'pct_total', 'category', 'majority']].copy()
+                display_df.columns = ['Card Name', 'Usage %', 'Category', 'Majority Count']
+                st.dataframe(display_df, use_container_width=True, hide_index=True)
+    
+    with tab2:
+        st.subheader("Deck Template")
+        
+        deck_list, total_cards, options = build_deck_template(results)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("### Pokemon")
+            pokemon_count = sum(int(c.split()[0]) for c in deck_list['Pokemon'])
+            st.write(f"**Total: {pokemon_count}**")
+            for card in deck_list['Pokemon']:
+                st.write(f"- {card}")
+        
+        with col2:
+            st.write("### Trainer")
+            trainer_count = sum(int(c.split()[0]) for c in deck_list['Trainer'])
+            st.write(f"**Total: {trainer_count}**")
+            for card in deck_list['Trainer']:
+                st.write(f"- {card}")
+        
+        st.write("---")
+        remaining = 20 - total_cards
+        st.write(f"### Flexible Slots ({remaining} cards)")
+        st.write("Common choices include:")
+        
+        options_display = options[['card_name', 'pct_total', 'type']].copy()
+        options_display.columns = ['Card Name', 'Usage %', 'Type']
+        st.dataframe(options_display, use_container_width=True, hide_index=True)
+    
+    with tab3:
+        st.subheader("Raw Analysis Data")
+        st.dataframe(results, use_container_width=True)
+        
+        # Download button
+        csv = results.to_csv(index=False)
+        st.download_button(
+            label="Download as CSV",
+            data=csv,
+            file_name=f"{deck_info['deck_name']}_analysis.csv",
+            mime="text/csv"
+        )
 
-        with st.spinner(f"Analyzing {selected_deck}..."):
-            # Fetch decklists
-            df_urls = get_decklists_urls(selected_deck, st.session_state.current_set)
-            st.write(f"Found {len(df_urls)} decklists")
-
-            # Process all decks
-            result_df, compiled_df = process_all_decks(df_urls)
-            result_df['pct_usage'] = result_df['pct_amount_1'] + result_df['pct_amount_2']
-
-            # Categorize cards
-            result_df = categorize_cards_tcg(result_df)
-
-            # Sort results
-            category_order = {'Core': 1, 'Standard': 2, 'Tech': 3}
-            result_df['category_order'] = result_df['category'].map(category_order)
-            result_df = result_df.sort_values(['category_order','type','pct_usage'], ascending=[True,True,False])
-            result_df = result_df.drop('category_order', axis=1)
-
-            # Display results
-            st.subheader("Card Usage Summary")
-            st.dataframe(result_df, use_container_width=True)
-
-            # Analyze variants
-            variant_df = analyze_variants(result_df, compiled_df)
-            if not variant_df.empty:
-                st.subheader("Cards with Variants")
-                st.dataframe(variant_df, use_container_width=True)
-
-            # Build deck template
-            st.subheader("Majority Deck Composition")
-            deck_template = build_deck_template(result_df)
-
-            col1, col2 = st.columns(2)
-            with col1:
-                st.write(f"**Pokemon ({deck_template['pokemon_count']}):**")
-                for card in deck_template['core_deck']['Pokemon']:
-                    st.write(f"- {card}")
-
-            with col2:
-                st.write(f"**Trainer ({deck_template['trainer_count']}):**")
-                for card in deck_template['core_deck']['Trainer']:
-                    st.write(f"- {card}")
-
-            st.write(f"**The remaining {deck_template['remaining_slots']} card(s) are usually from this list:**")
-            for _, option in deck_template['options'].iterrows():
-                st.write(f"- {option['card_name']}")
+else:
+    st.info("👈 Click 'Fetch Deck List' in the sidebar to start")
