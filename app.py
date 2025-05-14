@@ -357,7 +357,7 @@ if selected_option:
     deck_name = selected_option.split(' (')[0]
     selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
     set_name = selected_row['set']
-    st.metric("Set", set_name.upper())
+    st.metric(f"Set: {set_name.upper()}")
 else:
     st.empty()
 
@@ -385,7 +385,7 @@ if selected_option:
     # Update analysis state
     st.session_state.analyze = current_selection
 
-st.divider()
+#st.divider()
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
