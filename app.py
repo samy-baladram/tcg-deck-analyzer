@@ -53,50 +53,53 @@ def extract_deck_cards(link):
     
     cards_data = []
     
-    # Find Pokemon and Trainer sections
-    sections = re.findall(r'<div\s+class="heading"[^>]*>(.*?)</div>(.*?)(?=<div\s+class="heading"|$)', 
-                         html_content, re.DOTALL)
+    # More specific regex to find only the deck list sections
+    # Look for divs with class="heading" followed by card lists
+    sections = re.findall(
+        r'<div[^>]*class="heading"[^>]*>\s*(.*?)\s*</div>\s*<div[^>]*>\s*(.*?)</div>',
+        html_content, re.DOTALL
+    )
     
     for heading, content in sections:
+        # Clean the heading text
         section_text = re.sub(r'<[^>]+>', '', heading).strip()
+        section_text = re.sub(r'\s+', ' ', section_text)  # Normalize whitespace
         
-        if any(section in section_text for section in ['Pokémon', 'Trainer']):
+        if any(keyword in section_text for keyword in ['Pokémon', 'Trainer']):
             section_type = 'Pokemon' if 'Pokémon' in section_text else 'Trainer'
             
-            # Extract card paragraphs
-            card_paragraphs = re.findall(r'<p[^>]*>(.*?)</p>', content, re.DOTALL)
+            # Look for card entries - more specific pattern
+            # Match entries like "2 Card Name (SET-123)"
+            card_pattern = r'<p[^>]*>\s*(\d+)\s+([^<(]+?)(?:\s*\(([^)]+)\))?\s*</p>'
+            card_matches = re.findall(card_pattern, content)
             
-            for p in card_paragraphs:
-                # Clean the text
-                card_text = re.sub(r'<[^>]+>', '', p).strip()
-                
-                if card_text:
-                    parts = card_text.split(' ', 1)
-                    if len(parts) == 2:
-                        amount = int(parts[0])
-                        
-                        # Extract name, set, and number
-                        if '(' in parts[1] and ')' in parts[1]:
-                            name_part, set_info = parts[1].rsplit(' (', 1)
-                            set_info = set_info.rstrip(')')
-                            
-                            if '-' in set_info:
-                                set_code, num = set_info.split('-', 1)
-                            else:
-                                set_code = set_info
-                                num = ""
+            for match in card_matches:
+                try:
+                    amount = int(match[0])
+                    card_name = match[1].strip()
+                    set_info = match[2].strip() if match[2] else ""
+                    
+                    set_code = ""
+                    num = ""
+                    
+                    if set_info:
+                        if '-' in set_info:
+                            parts = set_info.split('-', 1)
+                            set_code = parts[0]
+                            num = parts[1]
                         else:
-                            name_part = parts[1]
-                            set_code = ""
-                            num = ""
-                        
-                        cards_data.append({
-                            'type': section_type,
-                            'card_name': name_part,
-                            'amount': amount,
-                            'set': set_code,
-                            'num': num
-                        })
+                            set_code = set_info
+                    
+                    cards_data.append({
+                        'type': section_type,
+                        'card_name': card_name,
+                        'amount': amount,
+                        'set': set_code,
+                        'num': num
+                    })
+                except ValueError:
+                    # Skip entries that don't match the expected format
+                    continue
     
     return cards_data
 
