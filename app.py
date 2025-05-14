@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import requests
 from datetime import datetime
-from bs4 import BeautifulSoup
+from html.parser import HTMLParser
+import re
 import time
 import numpy as np
 
@@ -20,43 +21,65 @@ def get_decklists_urls(deck_name, set_name="A3"):
     """Get all decklist URLs for a specific deck archetype"""
     url = f"https://play.limitlesstcg.com/decks/{deck_name}/?game=POCKET&format=standard&set={set_name}"
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    table = soup.find('table', class_='striped')
+    html_content = response.text
+    
+    # Find all href links in the table using regex
     hrefs = []
-
-    for row in table.find_all('tr')[1:]:
-        list_column = row.find_all('td')[-1]
-        link = list_column.find('a')
-        if link and 'href' in link.attrs:
-            hrefs.append(f"https://play.limitlesstcg.com{link['href']}")
-
+    
+    # Find table content
+    table_match = re.search(r'<table\s+class="striped"[^>]*>(.*?)</table>', html_content, re.DOTALL)
+    if table_match:
+        table_content = table_match.group(1)
+        # Find all links in last column of each row
+        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_content, re.DOTALL)
+        
+        for row in rows[1:]:  # Skip header row
+            # Find the last td in the row
+            tds = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
+            if tds:
+                last_td = tds[-1]
+                # Find href in the last td
+                href_match = re.search(r'href="([^"]*)"', last_td)
+                if href_match:
+                    href = href_match.group(1)
+                    hrefs.append(f"https://play.limitlesstcg.com{href}")
+    
     return pd.DataFrame(hrefs, columns=['decklist_urls'])
 
 def extract_deck_cards(link):
     """Extract cards from a single decklist URL"""
     response = requests.get(link)
-    soup = BeautifulSoup(response.text, 'html.parser')
-
+    html_content = response.text
+    
     cards_data = []
-
-    for div in soup.find_all('div', class_='heading'):
-        section_text = div.text.strip()
+    
+    # Find Pokemon and Trainer sections
+    sections = re.findall(r'<div\s+class="heading"[^>]*>(.*?)</div>(.*?)(?=<div\s+class="heading"|$)', 
+                         html_content, re.DOTALL)
+    
+    for heading, content in sections:
+        section_text = re.sub(r'<[^>]+>', '', heading).strip()
+        
         if any(section in section_text for section in ['Pokémon', 'Trainer']):
             section_type = 'Pokemon' if 'Pokémon' in section_text else 'Trainer'
-            cards_container = div.parent
-
-            for p in cards_container.find_all('p'):
-                card_text = p.get_text(strip=True)
+            
+            # Extract card paragraphs
+            card_paragraphs = re.findall(r'<p[^>]*>(.*?)</p>', content, re.DOTALL)
+            
+            for p in card_paragraphs:
+                # Clean the text
+                card_text = re.sub(r'<[^>]+>', '', p).strip()
+                
                 if card_text:
                     parts = card_text.split(' ', 1)
                     if len(parts) == 2:
                         amount = int(parts[0])
-
+                        
+                        # Extract name, set, and number
                         if '(' in parts[1] and ')' in parts[1]:
                             name_part, set_info = parts[1].rsplit(' (', 1)
                             set_info = set_info.rstrip(')')
-
+                            
                             if '-' in set_info:
                                 set_code, num = set_info.split('-', 1)
                             else:
@@ -66,7 +89,7 @@ def extract_deck_cards(link):
                             name_part = parts[1]
                             set_code = ""
                             num = ""
-
+                        
                         cards_data.append({
                             'type': section_type,
                             'card_name': name_part,
@@ -74,7 +97,7 @@ def extract_deck_cards(link):
                             'set': set_code,
                             'num': num
                         })
-
+    
     return cards_data
 
 def process_all_decks(df):
@@ -219,39 +242,48 @@ def get_deck_list_with_shares():
     """Get deck list with shares from the main page"""
     url = "https://play.limitlesstcg.com/decks?game=pocket"
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-
+    html_content = response.text
+    
     decks = []
-
-    for row in soup.find_all('tr'):
-        cells = row.find_all('td')
-
+    
+    # Find all table rows
+    rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html_content, re.DOTALL)
+    
+    for row in rows:
+        cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
+        
         if len(cells) >= 7:
+            # Deck name is in cell 2
             deck_cell = cells[2]
-            deck_link = deck_cell.find('a', href=True)
-
-            if deck_link and '/decks/' in deck_link['href'] and 'matchup' not in deck_link['href']:
-                href = deck_link['href']
-                deck_name = href.split('/decks/')[1].split('?')[0]
-
-                set_name = 'A3'
-                if 'set=' in href:
-                    set_name = href.split('set=')[1].split('&')[0]
-
-                share_text = cells[4].text.strip()
-                share = None
-                if '%' in share_text:
-                    try:
-                        share = float(share_text.replace('%', ''))
-                    except:
-                        pass
-
-                decks.append({
-                    'deck_name': deck_name,
-                    'set': set_name,
-                    'share': share
-                })
-
+            href_match = re.search(r'href="([^"]*)"', deck_cell)
+            
+            if href_match:
+                href = href_match.group(1)
+                
+                if '/decks/' in href and 'matchup' not in href:
+                    # Extract deck name from URL
+                    deck_name = href.split('/decks/')[1].split('?')[0]
+                    
+                    # Extract set
+                    set_name = 'A3'  # Default
+                    if 'set=' in href:
+                        set_name = href.split('set=')[1].split('&')[0]
+                    
+                    # Get share from cell 5 (index 4)
+                    share_text = re.sub(r'<[^>]+>', '', cells[4]).strip()
+                    share = None
+                    if '%' in share_text:
+                        try:
+                            share = float(share_text.replace('%', ''))
+                        except:
+                            pass
+                    
+                    decks.append({
+                        'deck_name': deck_name,
+                        'set': set_name,
+                        'share': share
+                    })
+    
     df = pd.DataFrame(decks)
     return df.sort_values('share', ascending=False).reset_index(drop=True)
 
