@@ -392,21 +392,10 @@ if 'analyze' in st.session_state and selected_option:
         with tab1:
             st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
             
-            # Filter by category
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                category_filter = st.multiselect(
-                    "Filter by category:",
-                    options=['Core', 'Standard', 'Tech'],
-                    default=['Core', 'Standard', 'Tech']
-                )
-            
-            filtered_results = results[results['category'].isin(category_filter)]
-            
             # Display cards by type
             for card_type in ['Pokemon', 'Trainer']:
                 st.write(f"### {card_type}")
-                type_cards = filtered_results[filtered_results['type'] == card_type]
+                type_cards = results[results['type'] == card_type]
                 
                 if not type_cards.empty:
                     if card_type == 'Pokemon':
