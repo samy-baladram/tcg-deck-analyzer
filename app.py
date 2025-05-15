@@ -377,12 +377,16 @@ with col1:
         hours = int(time_diff.total_seconds() / 3600)
         time_str = f"{hours} hours ago"
 
-    deck_name = st.session_state.deck_name_mapping[selected_option]
-    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-    set_name = selected_row['set']
-    label_text = f"Current Set: {set_name}\t (Updated: {time_str}):"
     #label_text = f"Select a deck to analyze (Updated: {time_str}):"
-    
+    if selected_option:
+        deck_name = st.session_state.deck_name_mapping[selected_option]
+        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+        set_name = selected_row['set']
+        label_text = f"Current Set: {set_name}\t (Updated: {time_str}):"
+        #label_text = f"Select a deck to analyze (Updated: {time_str}):"
+    else:
+        label_text = f"Updated: {time_str}:"
+        
     # Use on_change callback to handle selection
     def on_deck_change():
         selection = st.session_state.deck_select
