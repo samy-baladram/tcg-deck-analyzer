@@ -48,7 +48,7 @@ def create_usage_bar_chart(type_cards, card_type):
         text=plot_df['1 Copy'].apply(
             lambda x: f"{format_percentage(x)}  🂠" if x >= 20 else (format_percentage(x) if x > CHART_TEXT_THRESHOLD else '')
         ),
-        textposition='inside left',
+        textposition='auto',
         textfont=dict(size=CHART_FONT_SIZE, color='black'),
         insidetextanchor='start'
     ))
@@ -62,7 +62,7 @@ def create_usage_bar_chart(type_cards, card_type):
         text=plot_df['2 Copies'].apply(
             lambda x: f"{format_percentage(x)}  🂠 🂠" if x >= 20 else (format_percentage(x) if x > CHART_TEXT_THRESHOLD else '')
         ),
-        textposition='inside',
+        textposition='auto',
         textfont=dict(size=CHART_FONT_SIZE, color='black'),
         insidetextanchor='start'
     ))
