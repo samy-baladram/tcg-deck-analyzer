@@ -19,23 +19,22 @@ st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="
 # Add custom CSS for blue theme
 st.markdown("""
 <style>
-/* Override primary color */
-.st-emotion-cache-16idsys p {
-    color: #4169E1;
+/* Change primary color to blue */
+div[data-baseweb="select"] > div {
+    border-color: #4169E1 !important;
 }
 
-/* Selectbox and dropdowns */
-div[data-baseweb="select"] > div,
-div[data-baseweb="select"] > div:hover {
-    border-color: #4169E1;
+/* Selected option */
+div[data-baseweb="select"] [aria-selected="true"] {
+    background-color: #4169E1 !important;
 }
 
-/* Selected items */
-div[role="button"][aria-selected="true"] {
-    background-color: #4169E1;
+/* Hover effect */
+div[role="option"]:hover {
+    background-color: #4169E1 !important;
 }
 
-/* Buttons */
+/* Button primary color */
 .stButton > button {
     border-color: #4169E1;
     color: #4169E1;
@@ -44,6 +43,40 @@ div[role="button"][aria-selected="true"] {
 .stButton > button:hover {
     border-color: #4169E1;
     color: #4169E1;
+}
+
+/* Progress bar */
+.stProgress > div > div > div > div {
+    background-color: #4169E1;
+}
+
+/* TAB NAVIGATION STYLES */
+/* Active tab */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+    background-color: transparent !important;
+    border-bottom-color: #4169E1 !important;
+    color: #4169E1 !important;
+}
+
+/* Tab underline on active */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="true"]::after {
+    background-color: #4169E1 !important;
+}
+
+/* Tab hover */
+.stTabs [data-baseweb="tab-list"] button:hover {
+    color: #4169E1 !important;
+}
+
+/* Tab focus */
+.stTabs [data-baseweb="tab-list"] button:focus {
+    background-color: transparent !important;
+    color: #4169E1 !important;
+}
+
+/* Tab panel border */
+.stTabs [data-baseweb="tab-panel"] {
+    border-top-color: #4169E1 !important;
 }
 </style>
 """, unsafe_allow_html=True)
