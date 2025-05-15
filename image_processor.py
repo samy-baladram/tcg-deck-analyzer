@@ -79,43 +79,49 @@ def fetch_and_process_vertical_gradient(set_code, number):
 def extract_pokemon_from_deck_name(deck_name):
     """
     Extract Pokemon names from deck name
+    Handles cases like:
+    - garchomp-ex-a2-raichu-ex-a3b (with set codes)
+    - lucario-rampardos-a2 (last Pokemon without set code)
+    - pikachu-ex (single Pokemon without set code)
     Returns list of Pokemon names
     """
     parts = deck_name.split('-')
     pokemon_names = []
-    
-    i = 0
     current_pokemon = []
     
+    i = 0
     while i < len(parts):
         part = parts[i]
         
         if is_set_code(part):
-            # End of current Pokemon name
+            # We hit a set code, so end the current Pokemon name
             if current_pokemon:
                 pokemon_names.append('-'.join(current_pokemon))
                 current_pokemon = []
             i += 1
         else:
-            # Check if this is the start of a new Pokemon name
-            # (could be separated by set codes or end of string)
+            # This is part of a Pokemon name
+            current_pokemon.append(part)
+            
+            # Check if this could be the end of a Pokemon name
+            # (next part is a set code or we're at the end of the string)
             if i + 1 < len(parts) and is_set_code(parts[i + 1]):
-                # This is the last part of current Pokemon
-                current_pokemon.append(part)
+                # Next part is a set code, so this Pokemon is complete
                 pokemon_names.append('-'.join(current_pokemon))
                 current_pokemon = []
-                i += 1
-            else:
-                # Part of current Pokemon name
-                current_pokemon.append(part)
-                i += 1
-    
-    # Don't forget the last Pokemon if no set code follows
-    if current_pokemon:
-        pokemon_names.append('-'.join(current_pokemon))
+            elif i == len(parts) - 1:
+                # We're at the last part, so this Pokemon is complete
+                pokemon_names.append('-'.join(current_pokemon))
+                current_pokemon = []
+            
+            i += 1
     
     # Filter out empty strings and limit to first 2 Pokemon
     pokemon_names = [name for name in pokemon_names if name][:2]
+    
+    # Handle the case where the entire string might be one Pokemon name
+    if not pokemon_names and parts:
+        pokemon_names = [deck_name]
     
     return pokemon_names
 
