@@ -110,7 +110,7 @@ if 'analyze' in st.session_state and selected_option:
     if header_images:
         st.markdown(f"""
         <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-            <img src="data:image/png;base64,{header_images[0]}" style="width: 50%; max-width: 300px; height: auto; margin-right: -3%; margin-bottom:-2.3em;">
+            <img src="data:image/png;base64,{header_images[0]}" style="width: 50%; max-width: 300px; height: auto; margin-right: -7%; margin-bottom:-2.3em;">
             <img src="data:image/png;base64,{header_images[1]}" style="width: 50%; max-width: 300px; height: auto; margin-right: 0em; margin-bottom:-2.3em;">
         </div>
         <div style="display: flex; align-items: center; margin-bottom: -2rem;">
