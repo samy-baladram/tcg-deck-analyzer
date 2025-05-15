@@ -77,24 +77,12 @@ div[role="option"]:hover {
     border-bottom: none !important;
 }
 
-/* Increase tab navigation font size - more specific selectors */
-div[data-testid="stTabs"] [data-baseweb="tab"] span {
-    font-size: 18px !important;
-    padding: 8px 16px !important;
-}
-
 /* Even more specific selector targeting the text */
 div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
     font-size: 18px !important;
     padding: 8px 16px !important;
 }
 
-/* Target with !important */
-.stTabs [data-baseweb="tab-list"] button span {
-    font-size: 18px !important;
-    padding: 8px 16px !important;
-    font-weight: 500 !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
