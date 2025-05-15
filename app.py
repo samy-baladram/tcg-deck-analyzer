@@ -477,7 +477,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='skyblue',
+                    marker_color='turquoise',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                     textfont=dict(size=14),  # Set text size inside bars
@@ -491,7 +491,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='cornflowerblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=12, color='white'),  # Force white text color
+                    textfont=dict(size=14, color='white'),  # Force white text color
                 ))
                 
                 # Update layout
@@ -552,7 +552,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='skyblue',
+                    marker_color='turquoise',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                 ))
@@ -565,7 +565,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='cornflowerblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=12, color='white'),  # Force white text color
+                    textfont=dict(size=14, color='white'),  # Force white text color
                 ))
 
                 # Update layout
