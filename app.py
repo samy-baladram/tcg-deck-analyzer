@@ -528,7 +528,13 @@ if 'analyze' in st.session_state and selected_option:
                     height=max(400, len(type_cards) * 40),  # Minimum height of 400px
                     margin=dict(l=0, r=0, t=0, b=0),
                     xaxis_title="Usage %",
-                    xaxis=dict(range=[0, 100]),
+                    xaxis=dict(
+                        range=[0, 100],
+                        showticklabels=False,  # Hide x-axis tick labels
+                        showgrid=False,  # Optional: hide gridlines too
+                        side='right',  # Move y-axis labels to the right
+                        ticklabelposition='outside right'  # Position labels outside
+                    ),
                     showlegend=True,
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
