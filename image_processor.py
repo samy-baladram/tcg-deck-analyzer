@@ -156,13 +156,12 @@ def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
     # Calculate positions
     # Image 1 keeps full width
     # Image 2 starts at: width1 * cutoff_percentage + gap
-    # This is because image1 is cut at 70% (cutoff_percentage)
     img2_x_position = int(width1 * cutoff_percentage) + gap
     
     # Calculate new dimensions
     max_height = max(height1, height2)
-    # Total width is where img2 starts plus the non-cut portion of img2
-    total_width = img2_x_position + int(width2 * cutoff_percentage)
+    # Total width needs to accommodate the full width of img2
+    total_width = img2_x_position + width2
     
     # Create new image with transparent background
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
@@ -175,7 +174,7 @@ def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
     # Paste img1 at the beginning
     merged.paste(img1, (0, y1), img1)
     
-    # Paste img2 at calculated position
+    # Paste img2 at calculated position (this includes its transparent portion)
     merged.paste(img2, (img2_x_position, y2), img2)
     
     return merged
