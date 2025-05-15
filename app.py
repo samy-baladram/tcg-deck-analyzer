@@ -376,8 +376,12 @@ with col1:
     else:
         hours = int(time_diff.total_seconds() / 3600)
         time_str = f"{hours} hours ago"
-    
-    label_text = f"Select a deck to analyze (Updated: {time_str}):"
+
+    deck_name = st.session_state.deck_name_mapping[selected_option]
+    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+    set_name = selected_row['set']
+    label_text = f"Current Set: {set_name}\t (Updated: {time_str}):"
+    #label_text = f"Select a deck to analyze (Updated: {time_str}):"
     
     # Use on_change callback to handle selection
     def on_deck_change():
@@ -391,22 +395,23 @@ with col1:
         label_text,
         deck_display_names,
         index=st.session_state.selected_deck_index,
-        placeholder="Select a deck...",
+        placeholder="Select a deck to analyze...",
         help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
         key="deck_select",
         on_change=on_deck_change
     )
+    
 
-with col2:
-    # Extract deck info from selection and show set
-    if selected_option:
-        # Get original deck name from mapping
-        deck_name = st.session_state.deck_name_mapping[selected_option]
-        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-        set_name = selected_row['set']
-        st.metric("Set", set_name.upper())
-    else:
-        st.empty()
+# with col2:
+#     # Extract deck info from selection and show set
+#     if selected_option:
+#         # Get original deck name from mapping
+#         deck_name = st.session_state.deck_name_mapping[selected_option]
+#         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+#         set_name = selected_row['set']
+#         st.metric("Set", set_name.upper())
+#     else:
+#         st.empty()
 
 # Auto-analyze when selection is made
 if selected_option:
@@ -423,7 +428,7 @@ if selected_option:
     # Update analysis state
     st.session_state.analyze = current_selection
 
-#st.divider()
+st.divider()
 
 import base64
 
