@@ -347,32 +347,8 @@ if 'fetch_time' not in st.session_state:
 if 'selected_deck_index' not in st.session_state:
     st.session_state.selected_deck_index = None
 
-# Create a single column layout with inline elements
-st.markdown("""
-<style>
-.stSelectbox {
-    display: inline-block;
-    width: 80%;
-    vertical-align: middle;
-}
-.stMetric {
-    display: inline-block;
-    width: 18%;
-    vertical-align: middle;
-    margin-left: 2%;
-}
-@media (max-width: 768px) {
-    .stSelectbox, .stMetric {
-        display: block;
-        width: 100%;
-        margin: 0;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
-
 # Then use your columns as before but with adjusted ratios
-col1, col2 = st.columns([5, 1])
+col1, col2 = st.columns([4, 1])
 
 with col1:
     # Your existing selectbox code
