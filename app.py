@@ -109,9 +109,9 @@ if 'analyze' in st.session_state and selected_option:
     # Only show images if we have them
     if header_images:
         st.markdown(f"""
-        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-            <img src="data:image/png;base64,{header_images[0]}" style="width: 60%; max-width: 300px; height: auto; margin-right: -50px; margin-bottom:-2.3em;">
-            <img src="data:image/png;base64,{header_images[1]}" style="width: 60%; max-width: 300px; height: auto; margin-right: 0em; margin-bottom:-2.3em;">
+        <div style="display: flex; align-items: center; margin-bottom: 0rem; justify-content: center;">
+            <img src="data:image/png;base64,{header_images[0]}" style="width: 48%; max-width: 300px; height: auto; margin-right: 0.5%;">
+            <img src="data:image/png;base64,{header_images[1]}" style="width: 48%; max-width: 300px; height: auto; margin-left: 0.5%;">
         </div>
         <div style="display: flex; align-items: center; margin-bottom: -2rem;">
              <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
