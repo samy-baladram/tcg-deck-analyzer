@@ -438,7 +438,8 @@ if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
     #st.metric("Analyzing",deck_info['deck_name'])
     #st.header(format_deck_name(deck_info['deck_name']))
-    img_base64 = get_base64_image("pokeball.png")
+    #img_base64 = get_base64_image("solgaleo_sample.png")
+    #img_base64 = get_base64_image("pokeball.png")
     st.markdown(f"""
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
         <img src="data:image/png;base64,{img_base64}" style="height: 2em; margin-right: 0.5em; margin-bottom:0.2em;">
