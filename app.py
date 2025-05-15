@@ -438,7 +438,8 @@ if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
     #st.metric("Analyzing",deck_info['deck_name'])
     #st.header(format_deck_name(deck_info['deck_name']))
-    
+
+    # OPTION 1
     # img_base64 = get_base64_image("pokeball.png")
     # st.markdown(f"""
     # <div style="display: flex; align-items: center; margin-bottom: 0rem;">
@@ -447,20 +448,30 @@ if 'analyze' in st.session_state and selected_option:
     # </div>
     # """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        st.markdown(f"""
-        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-            <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        img_base64 = get_base64_image("solgaleo_sample.png")
-        st.markdown(f"""
-        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-            <img src="data:image/png;base64,{img_base64}" style="height: 4em; margin-right: 0.5em; margin-bottom:0.2em;">
-        </div>
-        """, unsafe_allow_html=True)
+    # OPTION 2
+    # col1, col2 = st.columns([1, 1])
+    # with col1:
+    #     st.markdown(f"""
+    #     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+    #         <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
+    #     </div>
+    #     """, unsafe_allow_html=True)
+    # with col2:
+    #     img_base64 = get_base64_image("solgaleo_sample.png")
+    #     st.markdown(f"""
+    #     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+    #         <img src="data:image/png;base64,{img_base64}" style="height: 4em; margin-right: 0.5em; margin-bottom:0.2em;">
+    #     </div>
+    #     """, unsafe_allow_html=True)
+
+    # OPTION 3
+    img_base64 = get_base64_image("solgaleo_sample.png")
+    st.markdown(f"""
+    <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+        <img src="data:image/png;base64,{img_base64}" style="height: 5em; margin-right: 0.5em; margin-bottom:-2em;">\br
+        <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
