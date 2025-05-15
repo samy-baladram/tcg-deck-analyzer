@@ -13,6 +13,38 @@ from image_processor import get_base64_image, create_deck_header_images
 from visualizations import create_usage_bar_chart, display_chart
 from utils import calculate_time_ago, format_card_display
 
+# Add custom CSS for blue theme
+st.markdown("""
+<style>
+/* Override primary color */
+.st-emotion-cache-16idsys p {
+    color: #4169E1;
+}
+
+/* Selectbox and dropdowns */
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] > div:hover {
+    border-color: #4169E1;
+}
+
+/* Selected items */
+div[role="button"][aria-selected="true"] {
+    background-color: #4169E1;
+}
+
+/* Buttons */
+.stButton > button {
+    border-color: #4169E1;
+    color: #4169E1;
+}
+
+.stButton > button:hover {
+    border-color: #4169E1;
+    color: #4169E1;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Add this right after st.set_page_config()
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
