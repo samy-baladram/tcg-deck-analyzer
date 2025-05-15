@@ -251,3 +251,21 @@ if 'analyze' in st.session_state and selected_option:
 
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
+
+# Add this at the very end of app.py, after the main content
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; font-size: 0.8em; color: #666; margin-top: 2rem; padding: 1rem;">
+    <p><strong>Disclaimer:</strong></p>
+    <p>The literal and graphical information presented on this website about the Pokémon Trading Card Game Pocket, 
+    including card images and text, is copyright The Pokémon Company, DeNA Co., Ltd., and/or Creatures, Inc. 
+    This website is not produced by, endorsed by, supported by, or affiliated with any of those copyright holders.</p>
+    
+    <p>Deck composition data is sourced from <a href="https://play.limitlesstcg.com" target="_blank">Limitless TCG</a>, 
+    which aggregates tournament results and decklists from competitive play. Card images are retrieved from 
+    Limitless TCG's image repository. This tool is intended for educational and analytical purposes only.</p>
+    
+    <p>This is an independent, fan-made project and is not affiliated with Limitless TCG, The Pokémon Company, 
+    or any other official entities.</p>
+</div>
+""", unsafe_allow_html=True)
