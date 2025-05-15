@@ -508,7 +508,7 @@ if 'analyze' in st.session_state and selected_option:
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=15),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=15)),  # Card names font size
-                    bargap=0.3,  # Add space between bars
+                    bargap=0.2,  # Add space between bars
                     uniformtext=dict(minsize=12, mode='show')  # Ensure text inside bars is visible
                 )
                 
@@ -582,7 +582,7 @@ if 'analyze' in st.session_state and selected_option:
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=14)),  # Card names font size
-                    bargap=0.3,  # Add space between bars
+                    bargap=0.2,  # Add space between bars
                     uniformtext=dict(minsize=12, mode='show')  # Ensure text inside bars is visible
                 )
                 
