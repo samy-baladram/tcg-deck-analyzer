@@ -468,7 +468,9 @@ if 'analyze' in st.session_state and selected_option:
     img_base64 = get_base64_image("solgaleo_sample.png")
     st.markdown(f"""
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-        <p><img src="data:image/png;base64,{img_base64}" style="height: 6em; margin-right: 0.5em; margin-bottom:-2em;"></p>
+        <img src="data:image/png;base64,{img_base64}" style="height: 6em; margin-right: 0.5em; margin-bottom:-2em;">
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 0rem;">
         <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
     </div>
     """, unsafe_allow_html=True)
