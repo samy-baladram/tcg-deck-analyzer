@@ -491,7 +491,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='cornflowerblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=14),  # Set text size inside bars
+                    textfont=dict(size=12, color='white'),  # Force white text color
                 ))
                 
                 # Update layout
@@ -565,6 +565,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='cornflowerblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
+                    textfont=dict(size=12, color='white'),  # Force white text color
                 ))
 
                 # Update layout
