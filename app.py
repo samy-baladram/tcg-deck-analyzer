@@ -405,8 +405,8 @@ with col2:
         deck_name = st.session_state.deck_name_mapping[selected_option]
         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
-        st.text(f"Current Set: {set_name.upper()}")
-        #st.metric("Set", set_name.upper())
+        #st.text(f"Current Set: {set_name.upper()}")
+        st.metric("Set", set_name.upper())
     else:
         st.empty()
 
@@ -425,7 +425,7 @@ if selected_option:
     # Update analysis state
     st.session_state.analyze = current_selection
 
-st.divider()
+#st.divider()
 
 import base64
 
@@ -656,8 +656,8 @@ if 'analyze' in st.session_state and selected_option:
         st.dataframe(final_display, use_container_width=True, hide_index=True)
     
     with tab3:
-        #st.subheader("Card Variants Analysis")
-        st.write("C A R D&ensp;V A R I A N T S&ensp;A N A L Y S I S")
+        st.subheader("Card Variants Analysis")
+        #st.write("C A R D&ensp;V A R I A N T S&ensp;A N A L Y S I S")
         if not variant_df.empty:
             st.write("This shows how players use different versions of the same card:")
             
