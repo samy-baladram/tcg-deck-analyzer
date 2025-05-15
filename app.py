@@ -525,8 +525,8 @@ if 'analyze' in st.session_state and selected_option:
     img_base64_2 = get_base64_image("charizard_sample.png")
     st.markdown(f"""
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-        <img src="data:image/png;base64,{img_base64_1}" style="width: 49.5%; max-width: 200px; height: auto; margin-right: 0.5%; margin-bottom:-2.3em;">
-        <img src="data:image/png;base64,{img_base64_2}" style="width: 49.5%; max-width: 200px; height: auto; margin-right: 0em; margin-bottom:-2.3em;">
+        <img src="data:image/png;base64,{img_base64_1}" style="width: 49.5%; max-width: 300px; height: auto; margin-right: 0.5%; margin-bottom:-2.3em;">
+        <img src="data:image/png;base64,{img_base64_2}" style="width: 49.5%; max-width: 300px; height: auto; margin-right: 0em; margin-bottom:-2.3em;">
     </div>
     <div style="display: flex; align-items: center; margin-bottom: -2rem;">
          <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
