@@ -48,9 +48,6 @@ div[role="button"][aria-selected="true"] {
 </style>
 """, unsafe_allow_html=True)
 
-# Add this right after st.set_page_config()
-st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
-
 # Main title
 st.image("title_banner.png", use_container_width=True)
 
