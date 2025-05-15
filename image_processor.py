@@ -75,7 +75,54 @@ def fetch_and_process_vertical_gradient(set_code, number):
     except Exception as e:
         print(f"Error fetching image for {set_code}-{number}: {e}")
         return None
-
+        
+def apply_diagonal_cut(image, cut_type):
+    """
+    Apply a diagonal cut to an image
+    
+    Parameters:
+    image: PIL Image
+    cut_type: String - "left" for left image, "right" for right image
+    
+    Returns:
+    PIL Image with diagonal cut applied
+    """
+    if cut_type not in ["left", "right"]:
+        return image
+    
+    # Ensure image has alpha channel
+    if image.mode != 'RGBA':
+        image = image.convert('RGBA')
+    
+    # Create a mask for the diagonal cut
+    width, height = image.size
+    cut_mask = Image.new('L', image.size, 255)
+    draw = ImageDraw.Draw(cut_mask)
+    
+    if cut_type == "left":
+        # Cut lower right triangle
+        points = [
+            (width, 0),        # Top right
+            (width, height),   # Bottom right
+            (0, height),       # Bottom left
+        ]
+        draw.polygon(points, fill=0)
+    else:  # cut_type == "right"
+        # Cut upper left triangle
+        points = [
+            (0, 0),           # Top left
+            (width, 0),       # Top right
+            (0, height),      # Bottom left
+        ]
+        draw.polygon(points, fill=0)
+    
+    # Apply the cut mask to the alpha channel
+    alpha = image.split()[-1]
+    alpha = Image.composite(alpha, Image.new('L', alpha.size, 0), cut_mask)
+    image.putalpha(alpha)
+    
+    return image
+    
 def extract_pokemon_from_deck_name(deck_name):
     """
     Extract Pokemon names from deck name
@@ -176,7 +223,7 @@ def format_card_number(num):
 def create_deck_header_images(deck_info, analysis_results):
     """
     Create header images for a deck based on Pokemon in the deck name
-    Returns list of base64 encoded images (empty if no valid images found)
+    Returns list of base64 encoded images with diagonal cuts
     """
     # Extract Pokemon from deck name
     pokemon_names = extract_pokemon_from_deck_name(deck_info['deck_name'])
@@ -184,25 +231,42 @@ def create_deck_header_images(deck_info, analysis_results):
     # Get card info for each Pokemon
     images = []
     
-    for pokemon_name in pokemon_names:
+    for i, pokemon_name in enumerate(pokemon_names[:2]):  # Limit to 2
         card_info = get_pokemon_card_info(pokemon_name, analysis_results)
         
         if card_info:
             formatted_num = format_card_number(card_info['num'])
             
-            # Fetch and process the image
+            # Fetch and process the image with gradient
             img = fetch_and_process_vertical_gradient(card_info['set'], formatted_num)
             
             if img:
+                # Apply diagonal cut based on position
+                cut_type = "left" if i == 0 else "right"
+                img = apply_diagonal_cut(img, cut_type)
+                
                 # Convert to base64
                 buffered = BytesIO()
                 img.save(buffered, format="PNG")
                 img_base64 = base64.b64encode(buffered.getvalue()).decode()
                 images.append(img_base64)
     
-    # If we only found one Pokemon, duplicate it
+    # If we only found one Pokemon, duplicate it with opposite cut
     if len(images) == 1:
-        images.append(images[0])
+        card_info = get_pokemon_card_info(pokemon_names[0], analysis_results)
+        if card_info:
+            formatted_num = format_card_number(card_info['num'])
+            
+            # Fetch the same image again
+            img = fetch_and_process_vertical_gradient(card_info['set'], formatted_num)
+            
+            if img:
+                # Apply opposite cut
+                img = apply_diagonal_cut(img, "right")
+                
+                buffered = BytesIO()
+                img.save(buffered, format="PNG")
+                img_base64 = base64.b64encode(buffered.getvalue()).decode()
+                images.append(img_base64)
     
-    # Return empty list if no valid images found
     return images
