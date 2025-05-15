@@ -120,7 +120,7 @@ if 'analyze' in st.session_state and selected_option:
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
     with tab1:
-        st.subheader(f"Card Usage Summary")
+        #st.subheader(f"Card Usage Summary")
         
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
@@ -147,7 +147,7 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Trainer cards found")
     
     with tab2:
-        st.subheader("Deck Template")
+        #st.subheader("Deck Template")
         
         deck_list, total_cards, options = build_deck_template(results)
         
@@ -165,7 +165,7 @@ if 'analyze' in st.session_state and selected_option:
             for card in deck_list['Trainer']:
                 st.write(f"{card}")
         
-        st.write("---")
+        #st.write("---")
         remaining = 20 - total_cards
         st.write(f"### Flexible Slots ({remaining} cards)")
         st.write("Common choices include:")
@@ -181,7 +181,7 @@ if 'analyze' in st.session_state and selected_option:
         st.dataframe(final_display, use_container_width=True, hide_index=True)
     
     with tab3:
-        st.subheader("Card Variants Analysis")
+        #st.subheader("Card Variants Analysis")
         
         if not variant_df.empty:
             st.write("This shows how players use different versions of the same card:")
@@ -211,7 +211,7 @@ if 'analyze' in st.session_state and selected_option:
             st.info("No cards with variants found in this deck.")
     
     with tab4:
-        st.subheader("Raw Analysis Data")
+        #st.subheader("Raw Analysis Data")
         
         # Main analysis data
         st.write("#### Card Usage Data")
