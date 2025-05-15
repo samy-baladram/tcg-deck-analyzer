@@ -79,12 +79,11 @@ def fetch_and_process_vertical_gradient(set_code, number):
 def extract_pokemon_from_deck_name(deck_name):
     """
     Extract Pokemon names from deck name
-    Handles cases like:
-    - garchomp-ex-a2-raichu-ex-a3b (with set codes)
-    - lucario-rampardos-a2 (last Pokemon without set code)
-    - pikachu-ex (single Pokemon without set code)
-    Returns list of Pokemon names
+    Handles cases with and without set codes as separators
     """
+    # Pokemon suffixes that belong to the previous word
+    POKEMON_SUFFIXES = ['ex', 'v', 'vmax', 'vstar', 'gx', 'sp']
+    
     parts = deck_name.split('-')
     pokemon_names = []
     current_pokemon = []
@@ -96,17 +95,38 @@ def extract_pokemon_from_deck_name(deck_name):
                 pokemon_names.append('-'.join(current_pokemon))
                 current_pokemon = []
         else:
-            # Not a set code, add to current Pokemon
-            current_pokemon.append(part)
+            # Check if this part is a suffix
+            is_suffix = part.lower() in POKEMON_SUFFIXES
+            
+            if is_suffix and current_pokemon:
+                # Add suffix to current Pokemon
+                current_pokemon.append(part)
+            else:
+                # This is a new word (not a suffix)
+                # If we have a current Pokemon and this is not a suffix,
+                # we need to determine if this starts a new Pokemon
+                if current_pokemon:
+                    # If the last part of current Pokemon is not a suffix,
+                    # and this part is not a suffix, this is likely a new Pokemon
+                    last_was_suffix = current_pokemon[-1].lower() in POKEMON_SUFFIXES
+                    
+                    if not is_suffix and not last_was_suffix:
+                        # Start a new Pokemon
+                        pokemon_names.append('-'.join(current_pokemon))
+                        current_pokemon = [part]
+                    else:
+                        # Continue current Pokemon
+                        current_pokemon.append(part)
+                else:
+                    # Start first Pokemon
+                    current_pokemon = [part]
     
-    # Don't forget the last Pokemon if no set code follows
+    # Don't forget the last Pokemon
     if current_pokemon:
         pokemon_names.append('-'.join(current_pokemon))
     
-    # Filter out empty strings and limit to first 2 Pokemon
-    pokemon_names = [name for name in pokemon_names if name][:2]
-    
-    return pokemon_names
+    # Limit to first 2 Pokemon
+    return pokemon_names[:2]
 
 def get_pokemon_card_info(pokemon_name, analysis_results):
     """
