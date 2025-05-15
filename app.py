@@ -377,15 +377,7 @@ with col1:
         hours = int(time_diff.total_seconds() / 3600)
         time_str = f"{hours} hours ago"
 
-    #label_text = f"Select a deck to analyze (Updated: {time_str}):"
-    if selected_option:
-        deck_name = st.session_state.deck_name_mapping[selected_option]
-        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-        set_name = selected_row['set']
-        label_text = f"Current Set: {set_name}\t (Updated: {time_str}):"
-        #label_text = f"Select a deck to analyze (Updated: {time_str}):"
-    else:
-        label_text = f"Updated: {time_str}:"
+    label_text = f"Select a deck to analyze (Updated: {time_str}):"
         
     # Use on_change callback to handle selection
     def on_deck_change():
@@ -406,16 +398,17 @@ with col1:
     )
     
 
-# with col2:
-#     # Extract deck info from selection and show set
-#     if selected_option:
-#         # Get original deck name from mapping
-#         deck_name = st.session_state.deck_name_mapping[selected_option]
-#         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-#         set_name = selected_row['set']
-#         st.metric("Set", set_name.upper())
-#     else:
-#         st.empty()
+with col2:
+    # Extract deck info from selection and show set
+    if selected_option:
+        # Get original deck name from mapping
+        deck_name = st.session_state.deck_name_mapping[selected_option]
+        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+        set_name = selected_row['set']
+        st.text(f"Current Set:{set_name.upper()}")
+        #st.metric("Set", set_name.upper())
+    else:
+        st.empty()
 
 # Auto-analyze when selection is made
 if selected_option:
