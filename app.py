@@ -454,7 +454,8 @@ if 'analyze' in st.session_state and selected_option:
     
     with tab1:
         #st.subheader(f"Card Usage Summary")
-        st.write("C A R D&ensp;U S A G E&ensp;S U M M A R Y") 
+        st.markdown('<p style="color: #70a1e2;">C A R D&ensp;U S A G E&ensp;S U M M A R Y</p>', unsafe_allow_html=True)
+        #st.write("C A R D&ensp;U S A G E&ensp;S U M M A R Y") 
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
         
