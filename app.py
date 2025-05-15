@@ -425,18 +425,25 @@ if selected_option:
 
 #st.divider()
 
+import base64
+
+def get_base64_image(path):
+    with open(path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+        
 # Main content area
 if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
     #st.metric("Analyzing",deck_info['deck_name'])
     #st.header(format_deck_name(deck_info['deck_name']))
-    
+    img_base64 = get_base64_image("pokeball.png")
     st.markdown(f"""
-    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-        <img src="pokeball.png" style="height: 2em; margin-right: 10px;">
+    <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+        <img src="data:image/png;base64,{img_base64}" style="height: 1em; margin-right: 5px;">
         <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
     </div>
     """, unsafe_allow_html=True)
+    
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
     
