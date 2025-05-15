@@ -176,7 +176,7 @@ def format_card_number(num):
 def create_deck_header_images(deck_info, analysis_results):
     """
     Create header images for a deck based on Pokemon in the deck name
-    Returns list of base64 encoded images
+    Returns list of base64 encoded images (empty if no valid images found)
     """
     # Extract Pokemon from deck name
     pokemon_names = extract_pokemon_from_deck_name(deck_info['deck_name'])
@@ -199,20 +199,10 @@ def create_deck_header_images(deck_info, analysis_results):
                 img.save(buffered, format="PNG")
                 img_base64 = base64.b64encode(buffered.getvalue()).decode()
                 images.append(img_base64)
-            else:
-                # Use placeholder image if fetch fails
-                images.append(get_base64_image("placeholder.png"))
-        else:
-            # Use placeholder if Pokemon not found
-            images.append(get_base64_image("placeholder.png"))
     
     # If we only found one Pokemon, duplicate it
     if len(images) == 1:
         images.append(images[0])
     
-    # If no Pokemon found, use placeholders
-    if not images:
-        placeholder = get_base64_image("placeholder.png")
-        images = [placeholder, placeholder]
-    
+    # Return empty list if no valid images found
     return images
