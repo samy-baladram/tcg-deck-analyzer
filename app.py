@@ -466,11 +466,12 @@ if 'analyze' in st.session_state and selected_option:
     #     """, unsafe_allow_html=True)
 
     # OPTION 3
-    img_base64 = get_base64_image("solgaleo_sample.png")
+    img_base64_1 = get_base64_image("solgaleo_sample.png")
+    img_base64_2 = get_base64_image("charizard_sample.png")
     st.markdown(f"""
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-        <img src="data:image/png;base64,{img_base64}" style="height: 5em; margin-right: 0.5em; margin-bottom:-1em;">
-        <img src="data:image/png;base64,{img_base64}" style="height: 5em; margin-right: 0.5em; margin-bottom:-1em;">
+        <img src="data:image/png;base64,{img_base64_1}" style="height: 5em; margin-right: 0.5em; margin-bottom:-1em;">
+        <img src="data:image/png;base64,{img_base64_2}" style="height: 5em; margin-right: 0.5em; margin-bottom:-1em;">
     </div>
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
         <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
