@@ -48,8 +48,9 @@ def create_usage_bar_chart(type_cards, card_type):
         text=plot_df['1 Copy'].apply(
             lambda x: f"{format_percentage(x)}  🂠" if x >= 20 else (format_percentage(x) if x > CHART_TEXT_THRESHOLD else '')
         ),
-        textposition='inside',
-        textfont=dict(size=CHART_FONT_SIZE),
+        textposition='outside left',
+        textfont=dict(size=CHART_FONT_SIZE, color='black'),
+        insidetextanchor='start'
     ))
     
     fig.add_trace(go.Bar(
@@ -61,8 +62,9 @@ def create_usage_bar_chart(type_cards, card_type):
         text=plot_df['2 Copies'].apply(
             lambda x: f"{format_percentage(x)}  🂠 🂠" if x >= 20 else (format_percentage(x) if x > CHART_TEXT_THRESHOLD else '')
         ),
-        textposition='inside',
-        textfont=dict(size=CHART_FONT_SIZE, color='white'),
+        textposition='outside left',
+        textfont=dict(size=CHART_FONT_SIZE, color='black'),
+        insidetextanchor='start'
     ))
     
     # Update layout
