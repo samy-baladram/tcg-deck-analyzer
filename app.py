@@ -461,7 +461,7 @@ if 'analyze' in st.session_state and selected_option:
     #     st.markdown(f"""
     #     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
     #         <img src="data:image/png;base64,{img_base64}" style="height: 4em; margin-right: 0.5em; margin-bottom:0.2em;">
-             <img src="data:image/png;base64,{img_base64}" style="height: 4em; margin-right: 0.5em; margin-bottom:0.2em;">
+    #          <img src="data:image/png;base64,{img_base64}" style="height: 4em; margin-right: 0.5em; margin-bottom:0.2em;">
     #     </div>
     #     """, unsafe_allow_html=True)
 
@@ -469,6 +469,7 @@ if 'analyze' in st.session_state and selected_option:
     img_base64 = get_base64_image("solgaleo_sample.png")
     st.markdown(f"""
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+        <img src="data:image/png;base64,{img_base64}" style="height: 5em; margin-right: 0.5em; margin-bottom:-1em;">
         <img src="data:image/png;base64,{img_base64}" style="height: 5em; margin-right: 0.5em; margin-bottom:-1em;">
     </div>
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
