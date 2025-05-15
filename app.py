@@ -507,6 +507,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='lightblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
+                    textfont=dict(size=12),  # Set text size inside bars
                 ))
                 
                 fig.add_trace(go.Bar(
@@ -517,17 +518,22 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='darkblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
+                    textfont=dict(size=12),  # Set text size inside bars
                 ))
                 
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=len(type_cards) * 40,  # Dynamic height based on number of cards
-                    margin=dict(l=0, r=0, t=0, b=0),
+                    height=max(400, len(type_cards) * 30),  # Minimum height of 400px
+                    margin=dict(l=0, r=0, t=30, b=0),
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                    font=dict(size=14),  # Increase base font size
+                    yaxis=dict(tickfont=dict(size=12)),  # Card names font size
+                    bargap=0.3,  # Add space between bars
+                    uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
                 )
                 
                 # Reverse the order to show highest usage at top
@@ -572,6 +578,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='lightgreen',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
+                    textfont=dict(size=12),  # Set text size inside bars
                 ))
                 
                 fig.add_trace(go.Bar(
@@ -582,17 +589,22 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='darkgreen',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
+                    textfont=dict(size=12),  # Set text size inside bars
                 ))
                 
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=len(type_cards) * 40,  # Dynamic height based on number of cards
-                    margin=dict(l=0, r=0, t=0, b=0),
+                    height=max(400, len(type_cards) * 30),  # Minimum height of 400px
+                    margin=dict(l=0, r=0, t=30, b=0),
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                    font=dict(size=14),  # Increase base font size
+                    yaxis=dict(tickfont=dict(size=12)),  # Card names font size
+                    bargap=0.3,  # Add space between bars
+                    uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
                 )
                 
                 # Reverse the order to show highest usage at top
