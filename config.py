@@ -14,9 +14,9 @@ MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
 # Chart colors
 CHART_COLORS = {
     'pokemon_1': '#89EBFA',
-    'pokemon_2': '#97B7FF',
+    'pokemon_2': '#A6C1FF',
     'trainer_1': '#89EBFA',
-    'trainer_2': '#97B7FF'
+    'trainer_2': '#A6C1FF'
 }
 
 # Chart settings
