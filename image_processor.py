@@ -89,39 +89,22 @@ def extract_pokemon_from_deck_name(deck_name):
     pokemon_names = []
     current_pokemon = []
     
-    i = 0
-    while i < len(parts):
-        part = parts[i]
-        
+    for i, part in enumerate(parts):
         if is_set_code(part):
-            # We hit a set code, so end the current Pokemon name
+            # Found a set code, save current Pokemon if exists
             if current_pokemon:
                 pokemon_names.append('-'.join(current_pokemon))
                 current_pokemon = []
-            i += 1
         else:
-            # This is part of a Pokemon name
+            # Not a set code, add to current Pokemon
             current_pokemon.append(part)
-            
-            # Check if this could be the end of a Pokemon name
-            # (next part is a set code or we're at the end of the string)
-            if i + 1 < len(parts) and is_set_code(parts[i + 1]):
-                # Next part is a set code, so this Pokemon is complete
-                pokemon_names.append('-'.join(current_pokemon))
-                current_pokemon = []
-            elif i == len(parts) - 1:
-                # We're at the last part, so this Pokemon is complete
-                pokemon_names.append('-'.join(current_pokemon))
-                current_pokemon = []
-            
-            i += 1
+    
+    # Don't forget the last Pokemon if no set code follows
+    if current_pokemon:
+        pokemon_names.append('-'.join(current_pokemon))
     
     # Filter out empty strings and limit to first 2 Pokemon
     pokemon_names = [name for name in pokemon_names if name][:2]
-    
-    # Handle the case where the entire string might be one Pokemon name
-    if not pokemon_names and parts:
-        pokemon_names = [deck_name]
     
     return pokemon_names
 
