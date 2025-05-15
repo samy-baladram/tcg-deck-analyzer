@@ -13,36 +13,8 @@ from image_processor import get_base64_image, create_deck_header_images
 from visualizations import create_usage_bar_chart, display_chart
 from utils import calculate_time_ago, format_card_display
 
-import base64
-
-# Function to set background
-def set_background():
-    with open("background2.png", "rb") as f:
-        data = base64.b64encode(f.read()).decode()
-    
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/png;base64,{data}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        
-        /* Optional: Ensure content remains readable */
-        .main {{
-            background-color: transparent;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
 # Add this right after st.set_page_config()
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
-set_background()
 
 # Main title
 st.image("title_banner.png", use_container_width=True)
