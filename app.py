@@ -466,6 +466,142 @@ if 'analyze' in st.session_state and selected_option:
                 st.dataframe(display_df, use_container_width=True, hide_index=True)
             else:
                 st.info("No Trainer cards found")
+         
+        # Create two columns for Pokemon and Trainer
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("#### Pokemon")
+            type_cards = results[results['type'] == 'Pokemon']
+            
+            if not type_cards.empty:
+                # Create stacked bar chart data
+                fig_data = []
+                
+                for _, card in type_cards.iterrows():
+                    # Create card label with set info
+                    card_label = f"{card['card_name']} ({card['set']}-{card['num']})"
+                    
+                    # Add data for stacked bars
+                    fig_data.append({
+                        'Card': card_label,
+                        '1 Copy': card['pct_1'],
+                        '2 Copies': card['pct_2'],
+                        'Total': card['pct_total']
+                    })
+                
+                # Create DataFrame for plotting
+                plot_df = pd.DataFrame(fig_data)
+                
+                # Create stacked bar chart using Streamlit's native chart
+                import plotly.graph_objects as go
+                
+                fig = go.Figure()
+                
+                # Add bars for each count type
+                fig.add_trace(go.Bar(
+                    name='1 Copy',
+                    y=plot_df['Card'],
+                    x=plot_df['1 Copy'],
+                    orientation='h',
+                    marker_color='lightblue',
+                    text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    textposition='inside',
+                ))
+                
+                fig.add_trace(go.Bar(
+                    name='2 Copies',
+                    y=plot_df['Card'],
+                    x=plot_df['2 Copies'],
+                    orientation='h',
+                    marker_color='darkblue',
+                    text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    textposition='inside',
+                ))
+                
+                # Update layout
+                fig.update_layout(
+                    barmode='stack',
+                    height=len(type_cards) * 40,  # Dynamic height based on number of cards
+                    margin=dict(l=0, r=0, t=0, b=0),
+                    xaxis_title="Usage %",
+                    xaxis=dict(range=[0, 100]),
+                    showlegend=True,
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                
+                # Reverse the order to show highest usage at top
+                fig.update_yaxes(autorange='reversed')
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+            else:
+                st.info("No Pokemon cards found")
+        
+        with col2:
+            st.write("#### Trainer")
+            type_cards = results[results['type'] == 'Trainer']
+            
+            if not type_cards.empty:
+                # Create stacked bar chart data
+                fig_data = []
+                
+                for _, card in type_cards.iterrows():
+                    # Trainer cards don't show set info
+                    card_label = card['card_name']
+                    
+                    fig_data.append({
+                        'Card': card_label,
+                        '1 Copy': card['pct_1'],
+                        '2 Copies': card['pct_2'],
+                        'Total': card['pct_total']
+                    })
+                
+                # Create DataFrame for plotting
+                plot_df = pd.DataFrame(fig_data)
+                
+                # Create stacked bar chart
+                fig = go.Figure()
+                
+                # Add bars for each count type
+                fig.add_trace(go.Bar(
+                    name='1 Copy',
+                    y=plot_df['Card'],
+                    x=plot_df['1 Copy'],
+                    orientation='h',
+                    marker_color='lightgreen',
+                    text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    textposition='inside',
+                ))
+                
+                fig.add_trace(go.Bar(
+                    name='2 Copies',
+                    y=plot_df['Card'],
+                    x=plot_df['2 Copies'],
+                    orientation='h',
+                    marker_color='darkgreen',
+                    text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    textposition='inside',
+                ))
+                
+                # Update layout
+                fig.update_layout(
+                    barmode='stack',
+                    height=len(type_cards) * 40,  # Dynamic height based on number of cards
+                    margin=dict(l=0, r=0, t=0, b=0),
+                    xaxis_title="Usage %",
+                    xaxis=dict(range=[0, 100]),
+                    showlegend=True,
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                )
+                
+                # Reverse the order to show highest usage at top
+                fig.update_yaxes(autorange='reversed')
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
+            else:
+                st.info("No Trainer cards found")       
     
     with tab2:
         st.subheader("Deck Template")
