@@ -468,7 +468,14 @@ if 'analyze' in st.session_state and selected_option:
                 
                 # Create stacked bar chart using Streamlit's native chart
                 import plotly.graph_objects as go
-                
+                config = {
+                    'displayModeBar': False,  # Hide the toolbar
+                    'staticPlot': True,       # Disable all interactivity
+                    'displaylogo': False,     # Hide Plotly logo
+                    'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'zoom2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d'],
+                    'doubleClick': False,     # Disable double-click
+                    'showTips': False        # Disable tooltips
+                }
                 fig = go.Figure()
                 
                 # Add bars for each count type
@@ -515,7 +522,7 @@ if 'analyze' in st.session_state and selected_option:
                 # Reverse the order to show highest usage at top
                 fig.update_yaxes(autorange='reversed')
                 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, config=config)
                 st.text(f"{total_decks} decks analyzed")
                 
             else:
@@ -589,7 +596,7 @@ if 'analyze' in st.session_state and selected_option:
                 # Reverse the order to show highest usage at top
                 fig.update_yaxes(autorange='reversed')
                 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, config=config)
                 
             else:
                 st.info("No Trainer cards found")       
