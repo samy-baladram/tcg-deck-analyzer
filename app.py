@@ -473,11 +473,11 @@ if 'analyze' in st.session_state and selected_option:
         <img src="data:image/png;base64,{img_base64_1}" style="height: 5.2em; margin-right: 0.2em; margin-bottom:-2.5em;">
         <img src="data:image/png;base64,{img_base64_2}" style="height: 5.2em; margin-right: 0.5em; margin-bottom:-2.5em;">
     </div>
-    # <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-    #     <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
-    # </div>
+    <div style="display: flex; align-items: center; margin-bottom: -2rem;">
+         <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
+    </div>
     """, unsafe_allow_html=True)
-    st.header(format_deck_name(deck_info['deck_name']))
+    #st.header(format_deck_name(deck_info['deck_name']))
 
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
