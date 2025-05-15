@@ -129,6 +129,45 @@ def apply_diagonal_cut(image, cut_type):
     image.putalpha(alpha)
     
     return image
+
+def merge_header_images(img1, img2, gap=5):
+    """
+    Merge two images side by side with optional gap
+    
+    Parameters:
+    img1: PIL Image - left image
+    img2: PIL Image - right image  
+    gap: int - gap in pixels between images
+    
+    Returns:
+    PIL Image - merged image
+    """
+    # Ensure both images have alpha channel
+    if img1.mode != 'RGBA':
+        img1 = img1.convert('RGBA')
+    if img2.mode != 'RGBA':
+        img2 = img2.convert('RGBA')
+    
+    # Get dimensions
+    width1, height1 = img1.size
+    width2, height2 = img2.size
+    
+    # Calculate new dimensions
+    max_height = max(height1, height2)
+    total_width = width1 + width2 + gap
+    
+    # Create new image with transparent background
+    merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
+    
+    # Paste images
+    # Center images vertically if heights differ
+    y1 = (max_height - height1) // 2
+    y2 = (max_height - height2) // 2
+    
+    merged.paste(img1, (0, y1), img1)
+    merged.paste(img2, (width1 + gap, y2), img2)
+    
+    return merged
     
 def extract_pokemon_from_deck_name(deck_name):
     """
@@ -230,15 +269,18 @@ def format_card_number(num):
 def create_deck_header_images(deck_info, analysis_results):
     """
     Create header images for a deck based on Pokemon in the deck name
-    Returns list of base64 encoded images with diagonal cuts
+    Returns a single base64 encoded merged image
     """
     # Extract Pokemon from deck name
     pokemon_names = extract_pokemon_from_deck_name(deck_info['deck_name'])
     
-    # Get card info for each Pokemon
-    images = []
+    if not pokemon_names:
+        return None
     
-    for i, pokemon_name in enumerate(pokemon_names[:2]):  # Limit to 2
+    pil_images = []
+    
+    # Get images for each Pokemon
+    for i, pokemon_name in enumerate(pokemon_names[:2]):
         card_info = get_pokemon_card_info(pokemon_name, analysis_results)
         
         if card_info:
@@ -251,29 +293,23 @@ def create_deck_header_images(deck_info, analysis_results):
                 # Apply diagonal cut based on position
                 cut_type = "left" if i == 0 else "right"
                 img = apply_diagonal_cut(img, cut_type)
-                
-                # Convert to base64
-                buffered = BytesIO()
-                img.save(buffered, format="PNG")
-                img_base64 = base64.b64encode(buffered.getvalue()).decode()
-                images.append(img_base64)
+                pil_images.append(img)
     
-    # If we only found one Pokemon, duplicate it with opposite cut
-    if len(images) == 1:
-        card_info = get_pokemon_card_info(pokemon_names[0], analysis_results)
-        if card_info:
-            formatted_num = format_card_number(card_info['num'])
-            
-            # Fetch the same image again
-            img = fetch_and_process_vertical_gradient(card_info['set'], formatted_num)
-            
-            if img:
-                # Apply opposite cut
-                img = apply_diagonal_cut(img, "right")
-                
-                buffered = BytesIO()
-                img.save(buffered, format="PNG")
-                img_base64 = base64.b64encode(buffered.getvalue()).decode()
-                images.append(img_base64)
+    # Handle cases with less than 2 images
+    if len(pil_images) == 0:
+        return None
+    elif len(pil_images) == 1:
+        # Duplicate the image with opposite cut
+        img_copy = pil_images[0].copy()
+        img_copy = apply_diagonal_cut(img_copy, "right")
+        pil_images.append(img_copy)
     
-    return images
+    # Merge the two images
+    merged_image = merge_header_images(pil_images[0], pil_images[1], gap=0)  # Adjust gap as needed
+    
+    # Convert to base64
+    buffered = BytesIO()
+    merged_image.save(buffered, format="PNG")
+    img_base64 = base64.b64encode(buffered.getvalue()).decode()
+    
+    return img_base64
