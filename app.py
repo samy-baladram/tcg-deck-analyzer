@@ -560,7 +560,7 @@ if 'analyze' in st.session_state and selected_option:
                     x=plot_df['1 Copy'],
                     orientation='h',
                     marker_color='lightskyblue',
-                    text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 5 else ''),
                     textposition='inside',
                 ))
                 
@@ -570,7 +570,7 @@ if 'analyze' in st.session_state and selected_option:
                     x=plot_df['2 Copies'],
                     orientation='h',
                     marker_color='cornflowerblue',
-                    text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 5 else ''),
                     textposition='inside',
                     textfont=dict(size=14, color='white'),  # Force white text color
                 ))
