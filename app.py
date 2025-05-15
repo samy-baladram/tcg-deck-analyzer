@@ -453,8 +453,8 @@ if 'analyze' in st.session_state and selected_option:
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
     with tab1:
-        st.subheader(f"Card Usage Summary")
-         
+        #st.subheader(f"Card Usage Summary")
+        st.write("C A R D  U S A G E  S U M M A R Y") 
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
         
