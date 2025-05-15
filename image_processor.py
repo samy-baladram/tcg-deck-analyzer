@@ -26,7 +26,50 @@ def fetch_and_process_vertical_gradient(set_code, number, cut_type=None):
     Returns:
     PIL Image with gradient transparency and diagonal cut if specified
     """
-    # ... existing code for fetching and initial processing ...
+    # Build URL
+    url = f"{IMAGE_BASE_URL}/{set_code}/{set_code}_{number}_EN.webp"
+    
+    try:
+        # Get image
+        response = requests.get(url)
+        response.raise_for_status()
+        img = Image.open(BytesIO(response.content))
+        
+        # Crop
+        width, height = img.size
+        crop_box = (
+            int(width * IMAGE_CROP_BOX['left']),
+            int(height * IMAGE_CROP_BOX['top']),
+            int(width * IMAGE_CROP_BOX['right']),
+            int(height * IMAGE_CROP_BOX['bottom'])
+        )
+        cropped = img.crop(crop_box)
+        
+        # Convert to RGBA
+        if cropped.mode != 'RGBA':
+            cropped = cropped.convert('RGBA')
+        
+        # Create mask with full opacity
+        mask = Image.new('L', cropped.size, 255)
+        draw = ImageDraw.Draw(mask)
+        
+        # Calculate gradient heights
+        gradient_height_top = int(cropped.height * IMAGE_GRADIENT['top_height'])
+        gradient_height_bottom = int(cropped.height * IMAGE_GRADIENT['bottom_height'])
+        
+        # Draw top gradient (fade in from top)
+        for y in range(gradient_height_top):
+            opacity = int(255 * (y / gradient_height_top))
+            draw.rectangle([(0, y), (cropped.width, y)], fill=opacity)
+        
+        # Draw bottom gradient (fade out to bottom)
+        for y in range(gradient_height_bottom):
+            y_pos = cropped.height - gradient_height_bottom + y
+            opacity = int(255 * (1 - y / gradient_height_bottom))
+            draw.rectangle([(0, y_pos), (cropped.width, y_pos)], fill=opacity)
+        
+        # Apply mask to alpha channel
+        cropped.putalpha(mask)
     
     # After applying the gradient mask, add diagonal cut if specified
     if cut_type in ["left", "right"]:
