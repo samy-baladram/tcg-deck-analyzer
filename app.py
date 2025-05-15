@@ -17,7 +17,7 @@ import base64
 
 # Function to set background
 def set_background():
-    with open("background.png", "rb") as f:
+    with open("background2.png", "rb") as f:
         data = base64.b64encode(f.read()).decode()
     
     st.markdown(
