@@ -71,7 +71,7 @@ def create_usage_bar_chart(type_cards, card_type):
     fig.update_layout(
         barmode='stack',
         height=max(CHART_MIN_HEIGHT, len(type_cards) * CHART_ROW_HEIGHT),
-        margin=dict(l=0, r=0, t=0, b=0),
+        margin=dict(l=0, r=20, t=0, b=0),
         xaxis_title="",
         xaxis=dict(
             range=[0, 100],
