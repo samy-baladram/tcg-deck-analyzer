@@ -86,6 +86,7 @@ div[data-testid="stTabs"] [data-baseweb="tab"] span {
 /* Even more specific selector targeting the text */
 div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
     font-size: 18px !important;
+    padding: 8px 16px !important;
 }
 
 /* Target with !important */
