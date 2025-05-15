@@ -438,7 +438,8 @@ if 'analyze' in st.session_state and selected_option:
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
     with tab1:
-        st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
+        st.subheader(f"Card Usage Summary")
+        st.text(f"{total_decks} decks analyzed")
         
     #     # Create two columns for Pokemon and Trainer
     #     col1, col2 = st.columns(2)
@@ -529,7 +530,7 @@ if 'analyze' in st.session_state and selected_option:
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="top", y=-0.04, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
@@ -600,7 +601,7 @@ if 'analyze' in st.session_state and selected_option:
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="top", y=-0.04, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
