@@ -431,17 +431,12 @@ if 'analyze' in st.session_state and selected_option:
     #st.metric("Analyzing",deck_info['deck_name'])
     #st.header(format_deck_name(deck_info['deck_name']))
     
-    # Create custom header with image
-    header_col1, header_col2 = st.columns([0.5, 5])
-    
-    with header_col1:
-        # Add your image here - adjust the path as needed
-        st.image("pokeball.png", width=30)  # Adjust width as needed
-        
-    with header_col2:
-        # Use markdown for header styling
-        st.markdown(f"<h3 style='margin-top: 0;'>{format_deck_name(deck_info['deck_name'])}</h3>", 
-                   unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+        <img src="pokeball.png" style="height: 2em; margin-right: 10px;">
+        <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
+    </div>
+    """, unsafe_allow_html=True)
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
     
