@@ -569,32 +569,7 @@ if 'analyze' in st.session_state and selected_option:
                 
                 # Create stacked bar chart
                 fig = go.Figure()
-                
-                # Add bars for each count type
-                fig.add_trace(go.Bar(
-                    name='1 Copy',
-                    y=plot_df['Card'],
-                    x=plot_df['1 Copy'],
-                    orientation='h',
-                    marker_color='lightskyblue',
-                    text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
-                    textposition='inside',
-                    textfont=dict(size=14),  # Set text size inside bars
-                ))
-                
-                fig.add_trace(go.Bar(
-                    name='2 Copies',
-                    y=plot_df['Card'],
-                    x=plot_df['2 Copies'],
-                    orientation='h',
-                    marker_color='dodgerblue',
-                    text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
-                    textposition='inside',
-                    textfont=dict(size=14),  # Set text size inside bars
-                ))
 
-                fig.update_traces(textfont_size=14, textangle=0)
-                
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
@@ -609,6 +584,29 @@ if 'analyze' in st.session_state and selected_option:
                     bargap=0.3,  # Add space between bars
                     uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
                 )
+                
+                # Add bars for each count type
+                fig.add_trace(go.Bar(
+                    name='1 Copy',
+                    y=plot_df['Card'],
+                    x=plot_df['1 Copy'],
+                    orientation='h',
+                    marker_color='lightskyblue',
+                    text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    textposition='inside',
+                ))
+                
+                fig.add_trace(go.Bar(
+                    name='2 Copies',
+                    y=plot_df['Card'],
+                    x=plot_df['2 Copies'],
+                    orientation='h',
+                    marker_color='dodgerblue',
+                    text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
+                    textposition='inside',
+                ))
+
+                fig.update_traces(textfont_size=14, textangle=0)
                 
                 # Reverse the order to show highest usage at top
                 fig.update_yaxes(autorange='reversed')
