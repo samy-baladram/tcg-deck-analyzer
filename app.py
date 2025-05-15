@@ -477,7 +477,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='turquoise',
+                    marker_color='lightskyblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                     textfont=dict(size=14),  # Set text size inside bars
@@ -507,7 +507,7 @@ if 'analyze' in st.session_state and selected_option:
                     showlegend=True,
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
-                    yaxis=dict(tickfont=dict(size=12)),  # Card names font size
+                    yaxis=dict(tickfont=dict(size=14)),  # Card names font size
                     bargap=0.3,  # Add space between bars
                     uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
                 )
@@ -552,7 +552,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='turquoise',
+                    marker_color='lightskyblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                 ))
@@ -581,7 +581,7 @@ if 'analyze' in st.session_state and selected_option:
                     showlegend=True,
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
-                    yaxis=dict(tickfont=dict(size=12)),  # Card names font size
+                    yaxis=dict(tickfont=dict(size=14)),  # Card names font size
                     bargap=0.3,  # Add space between bars
                     uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
                 )
