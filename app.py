@@ -91,6 +91,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 /* Target with !important */
 .stTabs [data-baseweb="tab-list"] button span {
     font-size: 18px !important;
+    padding: 8px 16px !important;
     font-weight: 500 !important;
 }
 </style>
