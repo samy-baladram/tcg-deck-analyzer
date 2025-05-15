@@ -530,7 +530,7 @@ if 'analyze' in st.session_state and selected_option:
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
@@ -592,6 +592,8 @@ if 'analyze' in st.session_state and selected_option:
                     textposition='inside',
                     textfont=dict(size=14),  # Set text size inside bars
                 ))
+
+                fig.update_traces(textfont_size=14, textangle=0)
                 
                 # Update layout
                 fig.update_layout(
@@ -601,7 +603,7 @@ if 'analyze' in st.session_state and selected_option:
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="top", y=-0.1, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
