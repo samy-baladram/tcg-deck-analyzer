@@ -477,7 +477,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='dodgerblue',
+                    marker_color='cornflowerblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                     textfont=dict(size=14),  # Set text size inside bars
@@ -552,7 +552,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='dodgerblue',
+                    marker_color='cornflowerblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                 ))
