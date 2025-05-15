@@ -447,7 +447,7 @@ if 'analyze' in st.session_state and selected_option:
     # </div>
     # """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1.5, 0.5])
+    col1, col2 = st.columns([1, 1])
     with col1:
         st.markdown(f"""
         <div style="display: flex; align-items: center; margin-bottom: 0rem;">
