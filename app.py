@@ -453,8 +453,8 @@ if 'analyze' in st.session_state and selected_option:
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
     with tab1:
-        #st.subheader(f"Card Usage Summary")
-        st.markdown('<h3 style="color: #70a1e2;">C A R D&ensp;&ensp;U S A G E&ensp;&ensp;S U M M A R Y</h3>', unsafe_allow_html=True)
+        st.subheader(f"Card Usage Summary")
+        #st.markdown('<h3 style="color: #70a1e2;">C A R D&ensp;&ensp;U S A G E&ensp;&ensp;S U M M A R Y</h3>', unsafe_allow_html=True)
         #st.write("C A R D&ensp;U S A G E&ensp;S U M M A R Y") 
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
@@ -618,8 +618,8 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Trainer cards found")       
     
     with tab2:
-        #st.subheader("Deck Template")
-        st.write("D E C K&ensp;T E M P L A T E")
+        st.subheader("Deck Template")
+        #st.write("D E C K&ensp;T E M P L A T E")
         deck_list, total_cards, options = build_deck_template(results)
         
         col1, col2 = st.columns(2)
@@ -687,8 +687,8 @@ if 'analyze' in st.session_state and selected_option:
             st.info("No cards with variants found in this deck.")
             
     with tab4:
-        #st.subheader("Raw Analysis Data")
-        st.write("R A W&ensp;A N A L Y S I S&ensp;D A T A")
+        st.subheader("Raw Analysis Data")
+        #st.write("R A W&ensp;A N A L Y S I S&ensp;D A T A")
         # Main analysis data
         st.write("#### Card Usage Data")
         st.dataframe(results, use_container_width=True)
