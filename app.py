@@ -439,7 +439,6 @@ if 'analyze' in st.session_state and selected_option:
     
     with tab1:
         st.subheader(f"Card Usage Summary")
-        st.text(f"{total_decks} decks analyzed")
          
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
@@ -517,6 +516,7 @@ if 'analyze' in st.session_state and selected_option:
                 fig.update_yaxes(autorange='reversed')
                 
                 st.plotly_chart(fig, use_container_width=True)
+                st.text(f"{total_decks} decks analyzed")
                 
             else:
                 st.info("No Pokemon cards found")
@@ -545,24 +545,6 @@ if 'analyze' in st.session_state and selected_option:
                 
                 # Create stacked bar chart
                 fig = go.Figure()
-
-                # Update layout
-                fig.update_layout(
-                    barmode='stack',
-                    height=max(400, len(type_cards) * 40),  # Minimum height of 400px
-                    margin=dict(l=0, r=0, t=0, b=0),
-                    xaxis_title="",
-                    xaxis=dict(
-                        range=[0, 100],
-                        showticklabels=False,  # Hide x-axis tick labels                        
-                    ),
-                    showlegend=True,
-                    legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
-                    font=dict(size=14),  # Increase base font size
-                    yaxis=dict(tickfont=dict(size=12)),  # Card names font size
-                    bargap=0.3,  # Add space between bars
-                    uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
-                )
                 
                 # Add bars for each count type
                 fig.add_trace(go.Bar(
@@ -585,7 +567,23 @@ if 'analyze' in st.session_state and selected_option:
                     textposition='inside',
                 ))
 
-                fig.update_traces(textfont_size=14, textangle=0)
+                # Update layout
+                fig.update_layout(
+                    barmode='stack',
+                    height=max(400, len(type_cards) * 40),  # Minimum height of 400px
+                    margin=dict(l=0, r=0, t=0, b=0),
+                    xaxis_title="",
+                    xaxis=dict(
+                        range=[0, 100],
+                        showticklabels=False,  # Hide x-axis tick labels                        
+                    ),
+                    showlegend=True,
+                    legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
+                    font=dict(size=14),  # Increase base font size
+                    yaxis=dict(tickfont=dict(size=12)),  # Card names font size
+                    bargap=0.3,  # Add space between bars
+                    uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
+                )
                 
                 # Reverse the order to show highest usage at top
                 fig.update_yaxes(autorange='reversed')
