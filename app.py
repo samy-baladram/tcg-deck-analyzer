@@ -437,35 +437,35 @@ if 'analyze' in st.session_state and selected_option:
     # Display results in tabs
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
-    with tab1:
-        st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
+    # with tab1:
+    #     st.subheader(f"Card Usage Summary ({total_decks} decks analyzed)")
         
-        # Create two columns for Pokemon and Trainer
-        col1, col2 = st.columns(2)
+    #     # Create two columns for Pokemon and Trainer
+    #     col1, col2 = st.columns(2)
         
-        with col1:
-            st.write("#### Pokemon")
-            type_cards = results[results['type'] == 'Pokemon']
+    #     with col1:
+    #         st.write("#### Pokemon")
+    #         type_cards = results[results['type'] == 'Pokemon']
             
-            if not type_cards.empty:
-                # Show set and number for Pokemon
-                display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'majority']].copy()
-                display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Majority Count']
-                st.dataframe(display_df, use_container_width=True, hide_index=True)
-            else:
-                st.info("No Pokemon cards found")
+    #         if not type_cards.empty:
+    #             # Show set and number for Pokemon
+    #             display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'majority']].copy()
+    #             display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Majority Count']
+    #             st.dataframe(display_df, use_container_width=True, hide_index=True)
+    #         else:
+    #             st.info("No Pokemon cards found")
     
-        with col2:
-            st.write("#### Trainer")
-            type_cards = results[results['type'] == 'Trainer']
+    #     with col2:
+    #         st.write("#### Trainer")
+    #         type_cards = results[results['type'] == 'Trainer']
             
-            if not type_cards.empty:
-                # Hide set and number for Trainer
-                display_df = type_cards[['card_name', 'pct_total', 'majority']].copy()
-                display_df.columns = ['Card Name', 'Usage %', 'Majority Count']
-                st.dataframe(display_df, use_container_width=True, hide_index=True)
-            else:
-                st.info("No Trainer cards found")
+    #         if not type_cards.empty:
+    #             # Hide set and number for Trainer
+    #             display_df = type_cards[['card_name', 'pct_total', 'majority']].copy()
+    #             display_df.columns = ['Card Name', 'Usage %', 'Majority Count']
+    #             st.dataframe(display_df, use_container_width=True, hide_index=True)
+    #         else:
+    #             st.info("No Trainer cards found")
          
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
@@ -504,10 +504,10 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='lightblue',
+                    marker_color='cadetblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=12),  # Set text size inside bars
+                    textfont=dict(size=14),  # Set text size inside bars
                 ))
                 
                 fig.add_trace(go.Bar(
@@ -515,10 +515,10 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['2 Copies'],
                     orientation='h',
-                    marker_color='darkblue',
+                    marker_color='dodgerblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=12),  # Set text size inside bars
+                    textfont=dict(size=14),  # Set text size inside bars
                 ))
                 
                 # Update layout
@@ -529,7 +529,7 @@ if 'analyze' in st.session_state and selected_option:
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.02, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
@@ -575,10 +575,10 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='lightgreen',
+                    marker_color='cadetblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=12),  # Set text size inside bars
+                    textfont=dict(size=14),  # Set text size inside bars
                 ))
                 
                 fig.add_trace(go.Bar(
@@ -586,10 +586,10 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['2 Copies'],
                     orientation='h',
-                    marker_color='darkgreen',
+                    marker_color='dodgerblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=12),  # Set text size inside bars
+                    textfont=dict(size=14),  # Set text size inside bars
                 ))
                 
                 # Update layout
@@ -600,7 +600,7 @@ if 'analyze' in st.session_state and selected_option:
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.02, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
