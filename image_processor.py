@@ -100,7 +100,7 @@ def apply_diagonal_cut(image, cut_type):
     draw = ImageDraw.Draw(cut_mask)
     
     # Define the cutoff percentage (80% of width at bottom)
-    cutoff_percentage = 0.8
+    cutoff_percentage = 0.7
     
     if cut_type == "left":
         # Cut lower right trapezoid
