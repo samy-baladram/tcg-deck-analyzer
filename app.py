@@ -30,7 +30,7 @@ div[data-baseweb="select"] [aria-selected="true"] {
 
 /* Hover effect */
 div[role="option"]:hover {
-    background-color: #48BBFF !important;
+    background-color: #00A0FF !important;
 }
 
 /* Button primary color */
@@ -55,9 +55,10 @@ div[role="option"]:hover {
     color: #00A0FF !important;
 }
 
-/* Tab hover */
+/* Tab hover with 50% transparency */
 .stTabs [data-baseweb="tab-list"] button:hover {
-    color: #48BBFF !important;
+    color: rgba(65, 105, 225, 0.6) !important;
+    transition: color 0.3s;
 }
 
 /* SELECTED TAB UNDERLINE ONLY */
