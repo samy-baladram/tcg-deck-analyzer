@@ -504,7 +504,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='cadetblue',
+                    marker_color='lightskyblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                     textfont=dict(size=14),  # Set text size inside bars
@@ -524,12 +524,12 @@ if 'analyze' in st.session_state and selected_option:
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=max(400, len(type_cards) * 30),  # Minimum height of 400px
-                    margin=dict(l=0, r=0, t=30, b=0),
+                    height=max(400, len(type_cards) * 40),  # Minimum height of 400px
+                    margin=dict(l=0, r=0, t=0, b=0),
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="top", y=-0.02, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.04, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
@@ -575,7 +575,7 @@ if 'analyze' in st.session_state and selected_option:
                     y=plot_df['Card'],
                     x=plot_df['1 Copy'],
                     orientation='h',
-                    marker_color='cadetblue',
+                    marker_color='lightskyblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
                     textfont=dict(size=14),  # Set text size inside bars
@@ -595,12 +595,12 @@ if 'analyze' in st.session_state and selected_option:
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=max(400, len(type_cards) * 30),  # Minimum height of 400px
-                    margin=dict(l=0, r=0, t=30, b=0),
+                    height=max(400, len(type_cards) * 40),  # Minimum height of 400px
+                    margin=dict(l=0, r=0, t=0, b=0),
                     xaxis_title="Usage %",
                     xaxis=dict(range=[0, 100]),
                     showlegend=True,
-                    legend=dict(orientation="h", yanchor="top", y=-0.02, xanchor="right", x=1),
+                    legend=dict(orientation="h", yanchor="top", y=-0.04, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=12)),  # Card names font size
                     bargap=0.3,  # Add space between bars
