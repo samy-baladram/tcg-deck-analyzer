@@ -20,50 +20,50 @@ st.markdown("""
 <style>
 /* Change primary color to blue */
 div[data-baseweb="select"] > div {
-    border-color: #00AAFF !important;
+    border-color: #00A0FF !important;
 }
 
 /* Selected option */
 div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #00AAFF !important;
+    background-color: #00A0FF !important;
 }
 
 /* Hover effect */
 div[role="option"]:hover {
-    background-color: #00AAFF !important;
+    background-color: #00A0FF !important;
 }
 
 /* Button primary color */
 .stButton > button {
-    border-color: #00AAFF;
-    color: #00AAFF;
+    border-color: #00A0FF;
+    color: #00A0FF;
 }
 
 .stButton > button:hover {
-    border-color: #00AAFF;
-    color: #00AAFF;
+    border-color: #00A0FF;
+    color: #00A0FF;
 }
 
 /* Progress bar */
 .stProgress > div > div > div > div {
-    background-color: #00AAFF;
+    background-color: #00A0FF;
 }
 
 /* TAB NAVIGATION STYLES */
 /* Active tab text color */
 .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-    color: #00AAFF !important;
+    color: #00A0FF !important;
 }
 
 /* Tab hover */
 .stTabs [data-baseweb="tab-list"] button:hover {
-    color: #00AAFF !important;
+    color: #00A0FF !important;
 }
 
 /* SELECTED TAB UNDERLINE ONLY */
 /* This targets the moving underline indicator */
 .stTabs [data-baseweb="tab-highlight"] {
-    background-color: #00AAFF !important;
+    background-color: #00A0FF !important;
 }
 
 /* Remove any background color from tab list */
