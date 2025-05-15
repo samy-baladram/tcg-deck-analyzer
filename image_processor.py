@@ -103,15 +103,17 @@ def extract_pokemon_from_deck_name(deck_name):
                 current_pokemon.append(part)
             else:
                 # This is a new word (not a suffix)
-                # If we have a current Pokemon and this is not a suffix,
-                # we need to determine if this starts a new Pokemon
                 if current_pokemon:
-                    # If the last part of current Pokemon is not a suffix,
-                    # and this part is not a suffix, this is likely a new Pokemon
+                    # Check if we should start a new Pokemon
                     last_was_suffix = current_pokemon[-1].lower() in POKEMON_SUFFIXES
                     
-                    if not is_suffix and not last_was_suffix:
-                        # Start a new Pokemon
+                    # If the last part was a suffix (like 'ex'), 
+                    # and this is a new non-suffix word, it's a new Pokemon
+                    if last_was_suffix and not is_suffix:
+                        pokemon_names.append('-'.join(current_pokemon))
+                        current_pokemon = [part]
+                    # If neither is a suffix, it's also a new Pokemon
+                    elif not last_was_suffix and not is_suffix:
                         pokemon_names.append('-'.join(current_pokemon))
                         current_pokemon = [part]
                     else:
