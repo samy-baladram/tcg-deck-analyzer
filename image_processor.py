@@ -14,16 +14,16 @@ def get_base64_image(path):
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-def fetch_and_process_vertical_gradient(set_code, number):
+def fetch_and_crop_image(set_code, number):
     """
-    Fetch, crop, and add gradient transparency to top and bottom.
+    Fetch and crop image without applying gradient
     
     Parameters:
     set_code: String (example: "A3")
     number: String (example: "122")
     
     Returns:
-    PIL Image with gradient transparency at top and bottom
+    PIL Image cropped but without gradient
     """
     # Build URL
     url = f"{IMAGE_BASE_URL}/{set_code}/{set_code}_{number}_EN.webp"
@@ -47,35 +47,52 @@ def fetch_and_process_vertical_gradient(set_code, number):
         # Convert to RGBA
         if cropped.mode != 'RGBA':
             cropped = cropped.convert('RGBA')
-        
-        # Create mask with full opacity
-        mask = Image.new('L', cropped.size, 255)
-        draw = ImageDraw.Draw(mask)
-        
-        # Calculate gradient heights
-        gradient_height_top = int(cropped.height * IMAGE_GRADIENT['top_height'])
-        gradient_height_bottom = int(cropped.height * IMAGE_GRADIENT['bottom_height'])
-        
-        # Draw top gradient (fade in from top)
-        for y in range(gradient_height_top):
-            opacity = int(255 * (y / gradient_height_top))
-            draw.rectangle([(0, y), (cropped.width, y)], fill=opacity)
-        
-        # Draw bottom gradient (fade out to bottom)
-        for y in range(gradient_height_bottom):
-            y_pos = cropped.height - gradient_height_bottom + y
-            opacity = int(255 * (1 - y / gradient_height_bottom))
-            draw.rectangle([(0, y_pos), (cropped.width, y_pos)], fill=opacity)
-        
-        # Apply mask to alpha channel
-        cropped.putalpha(mask)
-        
+            
         return cropped
     
     except Exception as e:
         print(f"Error fetching image for {set_code}-{number}: {e}")
         return None
-        
+
+def apply_vertical_gradient(image):
+    """
+    Apply gradient transparency to top and bottom of an image
+    
+    Parameters:
+    image: PIL Image
+    
+    Returns:
+    PIL Image with gradient transparency
+    """
+    # Ensure image has alpha channel
+    if image.mode != 'RGBA':
+        image = image.convert('RGBA')
+    
+    # Create mask with full opacity
+    mask = Image.new('L', image.size, 255)
+    draw = ImageDraw.Draw(mask)
+    
+    # Calculate gradient heights
+    gradient_height_top = int(image.height * IMAGE_GRADIENT['top_height'])
+    gradient_height_bottom = int(image.height * IMAGE_GRADIENT['bottom_height'])
+    
+    # Draw top gradient (fade in from top)
+    for y in range(gradient_height_top):
+        opacity = int(255 * (y / gradient_height_top))
+        draw.rectangle([(0, y), (image.width, y)], fill=opacity)
+    
+    # Draw bottom gradient (fade out to bottom)
+    for y in range(gradient_height_bottom):
+        y_pos = image.height - gradient_height_bottom + y
+        opacity = int(255 * (1 - y / gradient_height_bottom))
+        draw.rectangle([(0, y_pos), (image.width, y_pos)], fill=opacity)
+    
+    # Apply mask to alpha channel
+    result = image.copy()
+    result.putalpha(mask)
+    
+    return result
+
 def apply_diagonal_cut(image, cut_type):
     """
     Apply a diagonal cut to an image (trapezoid shape)
@@ -99,46 +116,45 @@ def apply_diagonal_cut(image, cut_type):
     cut_mask = Image.new('L', image.size, 255)
     draw = ImageDraw.Draw(cut_mask)
     
-    # Define the cutoff percentage (80% of width at bottom)
+    # Define the cutoff percentage
     cutoff_percentage = 0.7
     
     if cut_type == "left":
         # Cut lower right trapezoid
-        # Top stays full width, bottom is 80% width
         points = [
             (width, 0),                             # Top right (full width)
             (width, height),                        # Bottom right
-            (width * cutoff_percentage, height),    # Bottom cut point (80% from left)
+            (width * cutoff_percentage, height),    # Bottom cut point
             (width, 0),                             # Back to top right
         ]
         draw.polygon(points, fill=0)
     else:  # cut_type == "right"
         # Cut upper left trapezoid
-        # Top is 20% width, bottom stays full width
         points = [
             (0, 0),                                      # Top left
-            (width * (1 - cutoff_percentage), 0),        # Top cut point (20% from left)
+            (width * (1 - cutoff_percentage), 0),        # Top cut point
             (0, height),                                 # Bottom left (full width)
             (0, 0),                                      # Back to top left
         ]
         draw.polygon(points, fill=0)
     
     # Apply the cut mask to the alpha channel
-    alpha = image.split()[-1]
+    result = image.copy()
+    alpha = result.split()[-1]
     alpha = Image.composite(alpha, Image.new('L', alpha.size, 0), cut_mask)
-    image.putalpha(alpha)
+    result.putalpha(alpha)
     
-    return image
+    return result
 
 def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
     """
-    Merge two diagonally cut images side by side with proper overlap calculation
+    Merge two diagonally cut images side by side
     
     Parameters:
     img1: PIL Image - left image with right side cut
     img2: PIL Image - right image with left side cut
     gap: int - gap in pixels between the visible parts
-    cutoff_percentage: float - the percentage used in the diagonal cut (default 0.7)
+    cutoff_percentage: float - the percentage used in the diagonal cut
     
     Returns:
     PIL Image - merged image
@@ -154,84 +170,23 @@ def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
     width2, height2 = img2.size
     
     # Calculate positions
-    # Image 1 keeps full width
-    # Image 2 starts at: width1 * cutoff_percentage + gap
     img2_x_position = int(width1 * cutoff_percentage) + gap
     
     # Calculate new dimensions
     max_height = max(height1, height2)
-    # Total width needs to accommodate the full width of img2
     total_width = img2_x_position + width2
     
     # Create new image with transparent background
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
     # Paste images
-    # Center images vertically if heights differ
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
-    # Paste img1 at the beginning
     merged.paste(img1, (0, y1), img1)
-    
-    # Paste img2 at calculated position (this includes its transparent portion)
     merged.paste(img2, (img2_x_position, y2), img2)
     
     return merged
-    
-def extract_pokemon_from_deck_name(deck_name):
-    """
-    Extract Pokemon names from deck name
-    Handles cases with and without set codes as separators
-    """
-    # Pokemon suffixes that belong to the previous word
-    POKEMON_SUFFIXES = ['ex', 'v', 'vmax', 'vstar', 'gx', 'sp']
-    
-    parts = deck_name.split('-')
-    pokemon_names = []
-    current_pokemon = []
-    
-    for i, part in enumerate(parts):
-        if is_set_code(part):
-            # Found a set code, save current Pokemon if exists
-            if current_pokemon:
-                pokemon_names.append('-'.join(current_pokemon))
-                current_pokemon = []
-        else:
-            # Check if this part is a suffix
-            is_suffix = part.lower() in POKEMON_SUFFIXES
-            
-            if is_suffix and current_pokemon:
-                # Add suffix to current Pokemon
-                current_pokemon.append(part)
-            else:
-                # This is a new word (not a suffix)
-                if current_pokemon:
-                    # Check if we should start a new Pokemon
-                    last_was_suffix = current_pokemon[-1].lower() in POKEMON_SUFFIXES
-                    
-                    # If the last part was a suffix (like 'ex'), 
-                    # and this is a new non-suffix word, it's a new Pokemon
-                    if last_was_suffix and not is_suffix:
-                        pokemon_names.append('-'.join(current_pokemon))
-                        current_pokemon = [part]
-                    # If neither is a suffix, it's also a new Pokemon
-                    elif not last_was_suffix and not is_suffix:
-                        pokemon_names.append('-'.join(current_pokemon))
-                        current_pokemon = [part]
-                    else:
-                        # Continue current Pokemon
-                        current_pokemon.append(part)
-                else:
-                    # Start first Pokemon
-                    current_pokemon = [part]
-    
-    # Don't forget the last Pokemon
-    if current_pokemon:
-        pokemon_names.append('-'.join(current_pokemon))
-    
-    # Limit to first 2 Pokemon
-    return pokemon_names[:2]
 
 def get_pokemon_card_info(pokemon_name, analysis_results):
     """
@@ -296,8 +251,8 @@ def create_deck_header_images(deck_info, analysis_results):
         if card_info:
             formatted_num = format_card_number(card_info['num'])
             
-            # Fetch and process the image with gradient
-            img = fetch_and_process_vertical_gradient(card_info['set'], formatted_num)
+            # Fetch and crop the image (without gradient)
+            img = fetch_and_crop_image(card_info['set'], formatted_num)
             
             if img:
                 # Apply diagonal cut based on position
@@ -309,25 +264,34 @@ def create_deck_header_images(deck_info, analysis_results):
     if len(pil_images) == 0:
         return None
     elif len(pil_images) == 1:
-        # Duplicate the image with opposite cut
-        img_copy = pil_images[0].copy()
-        img_copy = apply_diagonal_cut(img_copy, "right")
-        pil_images.append(img_copy)
+        # Fetch the same image again for the right side
+        pokemon_name = pokemon_names[0]
+        card_info = get_pokemon_card_info(pokemon_name, analysis_results)
+        if card_info:
+            formatted_num = format_card_number(card_info['num'])
+            img = fetch_and_crop_image(card_info['set'], formatted_num)
+            if img:
+                img = apply_diagonal_cut(img, "right")
+                pil_images.append(img)
     
-    # After getting both images:
-    cutoff_percentage = 0.7  # This should match the value used in apply_diagonal_cut
+    if len(pil_images) < 2:
+        return None
     
-    # Merge the two images
+    # Merge the two images (without gradient)
+    cutoff_percentage = 0.7
     merged_image = merge_header_images(
         pil_images[0], 
         pil_images[1], 
-        gap=5,  # Adjust gap as needed
+        gap=5,
         cutoff_percentage=cutoff_percentage
     )
     
+    # Apply gradient to the merged image
+    merged_with_gradient = apply_vertical_gradient(merged_image)
+    
     # Convert to base64
     buffered = BytesIO()
-    merged_image.save(buffered, format="PNG")
+    merged_with_gradient.save(buffered, format="PNG")
     img_base64 = base64.b64encode(buffered.getvalue()).decode()
     
     return img_base64
