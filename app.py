@@ -386,6 +386,16 @@ with col1:
             st.session_state.selected_deck_index = deck_display_names.index(selection)
         else:
             st.session_state.selected_deck_index = None
+    
+    selected_option = st.selectbox(
+        label_text,
+        deck_display_names,
+        index=st.session_state.selected_deck_index,
+        placeholder="Select a deck to analyze...",
+        help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
+        key="deck_select",
+        on_change=on_deck_change
+    )            
 
 with col2:
     # Extract deck info from selection and show set
