@@ -1,0 +1,180 @@
+# analyzer.py
+"""Analysis functions for deck data"""
+
+import pandas as pd
+import time
+import streamlit as st
+from scraper import get_deck_urls, extract_cards
+from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD
+from utils import is_flexible_core, calculate_display_usage, format_card_display
+
+def analyze_deck(deck_name, set_name="A3"):
+    """Main analysis function for a deck archetype"""
+    # Get all decklist URLs
+    urls = get_deck_urls(deck_name, set_name)
+    
+    # Show progress
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    
+    # Extract cards from all decks
+    all_cards = []
+    for i, url in enumerate(urls):
+        progress_bar.progress((i + 1) / len(urls))
+        status_text.text(f"Processing deck {i+1}/{len(urls)}...")
+        
+        cards = extract_cards(url)
+        for card in cards:
+            card['deck_num'] = i
+        all_cards.extend(cards)
+        
+        time.sleep(0.3)  # Be nice to the server
+    
+    status_text.text("")
+    
+    # Create dataframe and analyze
+    df = pd.DataFrame(all_cards)
+    
+    # Aggregate card usage
+    grouped = df.groupby(['type', 'card_name', 'set', 'num']).agg(
+        count_1=('amount', lambda x: sum(x == 1)),
+        count_2=('amount', lambda x: sum(x == 2))
+    ).reset_index()
+    
+    # Calculate percentages
+    total_decks = len(urls)
+    grouped['pct_1'] = (grouped['count_1'] / total_decks * 100).astype(int)
+    grouped['pct_2'] = (grouped['count_2'] / total_decks * 100).astype(int)
+    grouped['pct_total'] = grouped['pct_1'] + grouped['pct_2']
+    
+    # Categorize cards
+    grouped['category'] = pd.cut(
+        grouped['pct_total'], 
+        bins=CATEGORY_BINS,
+        labels=CATEGORY_LABELS
+    )
+    
+    # Determine majority count
+    grouped['majority'] = grouped.apply(
+        lambda row: 2 if row['count_2'] > row['count_1'] else 1,
+        axis=1
+    )
+    
+    # Sort results
+    grouped = grouped.sort_values(['type', 'pct_total'], ascending=[True, False])
+    
+    # Analyze variants
+    variant_df = analyze_variants(grouped, df)
+    
+    return grouped, total_decks, variant_df
+
+def build_deck_template(analysis_df):
+    """Build a deck template from analysis results"""
+    # Get core cards
+    core_cards = analysis_df[analysis_df['category'] == 'Core'].copy()
+    
+    # Initialize deck
+    deck_list = {'Pokemon': [], 'Trainer': []}
+    total_cards = 0
+    
+    # Add core cards to deck
+    for _, card in core_cards.iterrows():
+        count = 1 if is_flexible_core(card) else int(card['majority'])
+        total_cards += count
+        
+        # Format card display
+        card_display = f"{count} {format_card_display(card['card_name'], card['set'], card['num'])}"
+        deck_list[card['type']].append(card_display)
+    
+    # Get options (standard + flexible core)
+    options = pd.concat([
+        analysis_df[analysis_df['category'] == 'Standard'],
+        analysis_df[(analysis_df['category'] == 'Core') & 
+                   (((analysis_df['pct_1'] >= FLEXIBLE_CORE_THRESHOLD) & (analysis_df['majority'] == 2)) |
+                    ((analysis_df['pct_2'] >= FLEXIBLE_CORE_THRESHOLD) & (analysis_df['majority'] == 1)))]
+    ]).drop_duplicates()
+    
+    # Add flexible usage column
+    options = options.copy()
+    options['display_usage'] = options.apply(calculate_display_usage, axis=1)
+    
+    return deck_list, total_cards, options
+
+def analyze_variants(result_df, all_cards_df):
+    """Analyze variant usage patterns"""
+    # Find cards with multiple entries (variants)
+    card_counts = result_df.groupby('card_name').size()
+    cards_with_variants = card_counts[card_counts > 1].index
+    
+    variant_summaries = []
+    
+    for card_name in cards_with_variants:
+        # Get all variants of this card
+        card_variants = result_df[result_df['card_name'] == card_name]
+        
+        # For now, handle up to 2 variants (most common case)
+        if len(card_variants) > 2:
+            st.warning(f"Warning: {card_name} has more than 2 variants. Only first 2 will be analyzed.")
+        
+        # Get variant IDs
+        variant_list = []
+        for idx, (_, variant) in enumerate(card_variants.iterrows()):
+            if idx < 2:  # Only take first 2 variants
+                variant_list.append(f"{variant['set']}-{variant['num']}")
+        
+        # Initialize summary
+        summary = {
+            'Card Name': card_name,
+            'Total Decks': 0,
+            'Variants': ', '.join(variant_list),
+            'Both Var1': 0,
+            'Both Var2': 0,
+            'Mixed': 0,
+            'Single Var1': 0,
+            'Single Var2': 0
+        }
+        
+        # Analyze usage patterns across decks
+        deck_count = 0
+        
+        # For each deck, check which variants it uses
+        for deck_num in all_cards_df['deck_num'].unique():
+            deck_cards = all_cards_df[
+                (all_cards_df['deck_num'] == deck_num) &
+                (all_cards_df['card_name'] == card_name)
+            ]
+            
+            if not deck_cards.empty:
+                deck_count += 1
+                
+                # Check pattern for this deck
+                var1_count = 0
+                var2_count = 0
+                
+                for _, card in deck_cards.iterrows():
+                    variant_id = f"{card['set']}-{card['num']}"
+                    if variant_id == variant_list[0]:
+                        var1_count += card['amount']
+                    elif len(variant_list) > 1 and variant_id == variant_list[1]:
+                        var2_count += card['amount']
+                
+                # Categorize the pattern
+                if var1_count == 2 and var2_count == 0:
+                    summary['Both Var1'] += 1
+                elif var2_count == 2 and var1_count == 0:
+                    summary['Both Var2'] += 1
+                elif var1_count == 1 and var2_count == 1:
+                    summary['Mixed'] += 1
+                elif var1_count == 1 and var2_count == 0:
+                    summary['Single Var1'] += 1
+                elif var2_count == 1 and var1_count == 0:
+                    summary['Single Var2'] += 1
+        
+        summary['Total Decks'] = deck_count
+        variant_summaries.append(summary)
+    
+    if not variant_summaries:
+        return pd.DataFrame()
+    
+    variant_df = pd.DataFrame(variant_summaries)
+    return variant_df.sort_values('Total Decks', ascending=False)
