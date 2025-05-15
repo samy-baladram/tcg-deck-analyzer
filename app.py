@@ -480,7 +480,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='lightskyblue',
                     text=plot_df['1 Copy'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=14),  # Set text size inside bars
+                    textfont=dict(size=15),  # Set text size inside bars
                 ))
                 
                 fig.add_trace(go.Bar(
@@ -491,7 +491,7 @@ if 'analyze' in st.session_state and selected_option:
                     marker_color='cornflowerblue',
                     text=plot_df['2 Copies'].apply(lambda x: f'{x}%' if x > 0 else ''),
                     textposition='inside',
-                    textfont=dict(size=14, color='white'),  # Force white text color
+                    textfont=dict(size=15, color='white'),  # Force white text color
                 ))
                 
                 # Update layout
@@ -506,8 +506,8 @@ if 'analyze' in st.session_state and selected_option:
                     ),
                     showlegend=True,
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
-                    font=dict(size=14),  # Increase base font size
-                    yaxis=dict(tickfont=dict(size=14)),  # Card names font size
+                    font=dict(size=15),  # Increase base font size
+                    yaxis=dict(tickfont=dict(size=15)),  # Card names font size
                     bargap=0.3,  # Add space between bars
                     uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
                 )
