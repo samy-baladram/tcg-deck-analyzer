@@ -405,7 +405,7 @@ with col2:
         deck_name = st.session_state.deck_name_mapping[selected_option]
         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
         set_name = selected_row['set']
-        st.text(f"Current Set:{set_name.upper()}")
+        st.text(f"Current Set: {set_name.upper()}")
         #st.metric("Set", set_name.upper())
     else:
         st.empty()
@@ -454,7 +454,7 @@ if 'analyze' in st.session_state and selected_option:
     
     with tab1:
         #st.subheader(f"Card Usage Summary")
-        st.write("C A R D\tU S A G E\tS U M M A R Y") 
+        st.write("C A R D&emsp;U S A G E&emsp;S U M M A R Y") 
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
         
