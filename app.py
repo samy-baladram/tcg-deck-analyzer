@@ -109,7 +109,7 @@ if 'analyze' in st.session_state and selected_option:
     # Only show images if we have them
     if header_images:
         st.markdown(f"""
-        <div style="display: flex; align-items: center; margin-bottom: 0rem; justify-content: center;">
+        <div style="display: flex; align-items: left; margin-bottom: 0rem; justify-content: left;">
             <img src="data:image/png;base64,{header_images[0]}" style="width: 55%; max-width: 300px; height: auto; margin-right: -5%;">
             <img src="data:image/png;base64,{header_images[1]}" style="width: 55%; max-width: 300px; height: auto; margin-left: -5%;">
         </div>
