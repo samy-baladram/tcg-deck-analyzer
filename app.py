@@ -440,33 +440,6 @@ if 'analyze' in st.session_state and selected_option:
     with tab1:
         st.subheader(f"Card Usage Summary")
         st.text(f"{total_decks} decks analyzed")
-        
-    #     # Create two columns for Pokemon and Trainer
-    #     col1, col2 = st.columns(2)
-        
-    #     with col1:
-    #         st.write("#### Pokemon")
-    #         type_cards = results[results['type'] == 'Pokemon']
-            
-    #         if not type_cards.empty:
-    #             # Show set and number for Pokemon
-    #             display_df = type_cards[['card_name', 'set', 'num', 'pct_total', 'majority']].copy()
-    #             display_df.columns = ['Card Name', 'Set', 'Number', 'Usage %', 'Majority Count']
-    #             st.dataframe(display_df, use_container_width=True, hide_index=True)
-    #         else:
-    #             st.info("No Pokemon cards found")
-    
-    #     with col2:
-    #         st.write("#### Trainer")
-    #         type_cards = results[results['type'] == 'Trainer']
-            
-    #         if not type_cards.empty:
-    #             # Hide set and number for Trainer
-    #             display_df = type_cards[['card_name', 'pct_total', 'majority']].copy()
-    #             display_df.columns = ['Card Name', 'Usage %', 'Majority Count']
-    #             st.dataframe(display_df, use_container_width=True, hide_index=True)
-    #         else:
-    #             st.info("No Trainer cards found")
          
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns(2)
@@ -527,13 +500,10 @@ if 'analyze' in st.session_state and selected_option:
                     barmode='stack',
                     height=max(400, len(type_cards) * 40),  # Minimum height of 400px
                     margin=dict(l=0, r=0, t=0, b=0),
-                    xaxis_title="Usage %",
+                    xaxis_title="",
                     xaxis=dict(
                         range=[0, 100],
-                        showticklabels=False,  # Hide x-axis tick labels
-                        showgrid=False,  # Optional: hide gridlines too
-                        side='right',  # Move y-axis labels to the right
-                        ticklabelposition='outside right'  # Position labels outside
+                        showticklabels=False,  # Hide x-axis tick labels                        
                     ),
                     showlegend=True,
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
@@ -581,8 +551,11 @@ if 'analyze' in st.session_state and selected_option:
                     barmode='stack',
                     height=max(400, len(type_cards) * 40),  # Minimum height of 400px
                     margin=dict(l=0, r=0, t=0, b=0),
-                    xaxis_title="Usage %",
-                    xaxis=dict(range=[0, 100]),
+                    xaxis_title="",
+                    xaxis=dict(
+                        range=[0, 100],
+                        showticklabels=False,  # Hide x-axis tick labels                        
+                    ),
                     showlegend=True,
                     legend=dict(orientation="h", yanchor="top", y=-0.06, xanchor="right", x=1),
                     font=dict(size=14),  # Increase base font size
