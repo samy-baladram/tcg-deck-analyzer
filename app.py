@@ -57,7 +57,7 @@ div[role="option"]:hover {
 
 /* Tab hover with 50% transparency */
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
-    color: rgba(72, 187, 255, 0.6) !important;
+    color: rgba(72, 187, 255, 0.4) !important;
     transition: color 0.3s;
 }
 
