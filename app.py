@@ -104,21 +104,16 @@ if 'analyze' in st.session_state and selected_option:
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
     
     # Create header with images
-    header_images = create_deck_header_images(deck_info, results)
+    header_image = create_deck_header_images(deck_info, results)
     
-    # Only show images if we have them
-    if header_images:
+    if header_image:
         st.markdown(f"""
-        <div style="display: flex; align-items: left; margin-bottom: 0rem; justify-content: left;">
-            <img src="data:image/png;base64,{header_images[0]}" style="width: 55%; max-width: 300px; height: auto; margin-right: -2.5%;">
-            <img src="data:image/png;base64,{header_images[1]}" style="width: 55%; max-width: 300px; height: auto; margin-left: -2.5%;">
-        </div>
-        <div style="display: flex; align-items: center; margin-bottom: -2rem;">
-             <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
+        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem;">
+            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 600px; height: auto;">
+            <h2 style="margin: 0.5rem 0 0 0;">{format_deck_name(deck_info['deck_name'])}</h2>
         </div>
         """, unsafe_allow_html=True)
     else:
-        # Just show the header without images
         st.header(format_deck_name(deck_info['deck_name']))
     
     # Display results in tabs
