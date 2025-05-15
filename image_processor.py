@@ -14,67 +14,51 @@ def get_base64_image(path):
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-def fetch_and_process_vertical_gradient(set_code, number):
+def fetch_and_process_vertical_gradient(set_code, number, cut_type=None):
     """
     Fetch, crop, and add gradient transparency to top and bottom.
     
     Parameters:
     set_code: String (example: "A3")
     number: String (example: "122")
+    cut_type: String - "left" for left image, "right" for right image, None for no cut
     
     Returns:
-    PIL Image with gradient transparency at top and bottom
+    PIL Image with gradient transparency and diagonal cut if specified
     """
-    # Build URL
-    url = f"{IMAGE_BASE_URL}/{set_code}/{set_code}_{number}_EN.webp"
+    # ... existing code for fetching and initial processing ...
     
-    try:
-        # Get image
-        response = requests.get(url)
-        response.raise_for_status()
-        img = Image.open(BytesIO(response.content))
+    # After applying the gradient mask, add diagonal cut if specified
+    if cut_type in ["left", "right"]:
+        # Create a mask for the diagonal cut
+        cut_mask = Image.new('L', cropped.size, 255)
+        cut_draw = ImageDraw.Draw(cut_mask)
         
-        # Crop
-        width, height = img.size
-        crop_box = (
-            int(width * IMAGE_CROP_BOX['left']),
-            int(height * IMAGE_CROP_BOX['top']),
-            int(width * IMAGE_CROP_BOX['right']),
-            int(height * IMAGE_CROP_BOX['bottom'])
-        )
-        cropped = img.crop(crop_box)
+        width, height = cropped.size
         
-        # Convert to RGBA
-        if cropped.mode != 'RGBA':
-            cropped = cropped.convert('RGBA')
+        if cut_type == "left":
+            # Cut lower right triangle
+            points = [
+                (width, 0),        # Top right
+                (width, height),   # Bottom right
+                (0, height),       # Bottom left
+            ]
+            cut_draw.polygon(points, fill=0)
+        else:  # cut_type == "right"
+            # Cut upper left triangle
+            points = [
+                (0, 0),           # Top left
+                (width, 0),       # Top right
+                (0, height),      # Bottom left
+            ]
+            cut_draw.polygon(points, fill=0)
         
-        # Create mask with full opacity
-        mask = Image.new('L', cropped.size, 255)
-        draw = ImageDraw.Draw(mask)
-        
-        # Calculate gradient heights
-        gradient_height_top = int(cropped.height * IMAGE_GRADIENT['top_height'])
-        gradient_height_bottom = int(cropped.height * IMAGE_GRADIENT['bottom_height'])
-        
-        # Draw top gradient (fade in from top)
-        for y in range(gradient_height_top):
-            opacity = int(255 * (y / gradient_height_top))
-            draw.rectangle([(0, y), (cropped.width, y)], fill=opacity)
-        
-        # Draw bottom gradient (fade out to bottom)
-        for y in range(gradient_height_bottom):
-            y_pos = cropped.height - gradient_height_bottom + y
-            opacity = int(255 * (1 - y / gradient_height_bottom))
-            draw.rectangle([(0, y_pos), (cropped.width, y_pos)], fill=opacity)
-        
-        # Apply mask to alpha channel
-        cropped.putalpha(mask)
-        
-        return cropped
+        # Apply the cut mask to the alpha channel
+        alpha = cropped.split()[-1]
+        alpha = Image.composite(alpha, Image.new('L', alpha.size, 0), cut_mask)
+        cropped.putalpha(alpha)
     
-    except Exception as e:
-        print(f"Error fetching image for {set_code}-{number}: {e}")
-        return None
+    return cropped
 
 def extract_pokemon_from_deck_name(deck_name):
     """
@@ -176,7 +160,7 @@ def format_card_number(num):
 def create_deck_header_images(deck_info, analysis_results):
     """
     Create header images for a deck based on Pokemon in the deck name
-    Returns list of base64 encoded images (empty if no valid images found)
+    Returns list of base64 encoded images with diagonal cuts
     """
     # Extract Pokemon from deck name
     pokemon_names = extract_pokemon_from_deck_name(deck_info['deck_name'])
@@ -184,14 +168,21 @@ def create_deck_header_images(deck_info, analysis_results):
     # Get card info for each Pokemon
     images = []
     
-    for pokemon_name in pokemon_names:
+    for i, pokemon_name in enumerate(pokemon_names[:2]):  # Limit to 2
         card_info = get_pokemon_card_info(pokemon_name, analysis_results)
         
         if card_info:
             formatted_num = format_card_number(card_info['num'])
             
-            # Fetch and process the image
-            img = fetch_and_process_vertical_gradient(card_info['set'], formatted_num)
+            # Determine cut type based on position
+            cut_type = "left" if i == 0 else "right"
+            
+            # Fetch and process the image with diagonal cut
+            img = fetch_and_process_vertical_gradient(
+                card_info['set'], 
+                formatted_num, 
+                cut_type=cut_type
+            )
             
             if img:
                 # Convert to base64
@@ -200,9 +191,22 @@ def create_deck_header_images(deck_info, analysis_results):
                 img_base64 = base64.b64encode(buffered.getvalue()).decode()
                 images.append(img_base64)
     
-    # If we only found one Pokemon, duplicate it
+    # If we only found one Pokemon, duplicate it with opposite cut
     if len(images) == 1:
-        images.append(images[0])
+        # Re-fetch the same image with opposite cut
+        card_info = get_pokemon_card_info(pokemon_names[0], analysis_results)
+        formatted_num = format_card_number(card_info['num'])
+        
+        img = fetch_and_process_vertical_gradient(
+            card_info['set'], 
+            formatted_num, 
+            cut_type="right"
+        )
+        
+        if img:
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+            img_base64 = base64.b64encode(buffered.getvalue()).decode()
+            images.append(img_base64)
     
-    # Return empty list if no valid images found
     return images
