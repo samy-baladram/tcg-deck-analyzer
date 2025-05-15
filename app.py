@@ -106,15 +106,15 @@ if 'analyze' in st.session_state and selected_option:
     # Create header with images
     header_images = create_deck_header_images(deck_info, results)
     
-    # st.markdown(f"""
-    # <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-    #     <img src="data:image/png;base64,{header_images[0]}" style="width: 49.5%; max-width: 300px; height: auto; margin-right: 0.5%; margin-bottom:-2.3em;">
-    #     <img src="data:image/png;base64,{header_images[1]}" style="width: 49.5%; max-width: 300px; height: auto; margin-right: 0em; margin-bottom:-2.3em;">
-    # </div>
-    # <div style="display: flex; align-items: center; margin-bottom: -2rem;">
-    #      <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
-    # </div>
-    # """, unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+        <img src="data:image/png;base64,{header_images[0]}" style="width: 49.5%; max-width: 300px; height: auto; margin-right: 0.5%; margin-bottom:-2.3em;">
+        <img src="data:image/png;base64,{header_images[1]}" style="width: 49.5%; max-width: 300px; height: auto; margin-right: 0em; margin-bottom:-2.3em;">
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: -2rem;">
+         <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Display results in tabs
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
