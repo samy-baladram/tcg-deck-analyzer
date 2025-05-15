@@ -497,7 +497,7 @@ if 'analyze' in st.session_state and selected_option:
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=max(400, len(type_cards) * 45),  # Minimum height of 400px
+                    height=max(350, len(type_cards) * 40),  # Minimum height of 400px
                     margin=dict(l=0, r=0, t=0, b=0),
                     xaxis_title="",
                     xaxis=dict(
@@ -571,7 +571,7 @@ if 'analyze' in st.session_state and selected_option:
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=max(400, len(type_cards) * 45),  # Minimum height of 400px
+                    height=max(350, len(type_cards) * 40),  # Minimum height of 400px
                     margin=dict(l=0, r=0, t=0, b=0),
                     xaxis_title="",
                     xaxis=dict(
