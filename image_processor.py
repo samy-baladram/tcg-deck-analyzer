@@ -78,7 +78,7 @@ def fetch_and_process_vertical_gradient(set_code, number):
         
 def apply_diagonal_cut(image, cut_type):
     """
-    Apply a diagonal cut to an image
+    Apply a diagonal cut to an image (trapezoid shape)
     
     Parameters:
     image: PIL Image
@@ -99,20 +99,27 @@ def apply_diagonal_cut(image, cut_type):
     cut_mask = Image.new('L', image.size, 255)
     draw = ImageDraw.Draw(cut_mask)
     
+    # Define the cutoff percentage (80% of width at bottom)
+    cutoff_percentage = 0.8
+    
     if cut_type == "left":
-        # Cut lower right triangle
+        # Cut lower right trapezoid
+        # Top stays full width, bottom is 80% width
         points = [
-            (width, 0),        # Top right
-            (width, height),   # Bottom right
-            (0, height),       # Bottom left
+            (width, 0),                             # Top right (full width)
+            (width, height),                        # Bottom right
+            (width * cutoff_percentage, height),    # Bottom cut point (80% from left)
+            (width, 0),                             # Back to top right
         ]
         draw.polygon(points, fill=0)
     else:  # cut_type == "right"
-        # Cut upper left triangle
+        # Cut upper left trapezoid
+        # Top is 20% width, bottom stays full width
         points = [
-            (0, 0),           # Top left
-            (width, 0),       # Top right
-            (0, height),      # Bottom left
+            (0, 0),                                      # Top left
+            (width * (1 - cutoff_percentage), 0),        # Top cut point (20% from left)
+            (0, height),                                 # Bottom left (full width)
+            (0, 0),                                      # Back to top left
         ]
         draw.polygon(points, fill=0)
     
