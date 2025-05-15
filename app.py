@@ -473,7 +473,7 @@ if 'analyze' in st.session_state and selected_option:
         <img src="data:image/png;base64,{img_base64}" style="height: 5em; margin-right: 0.5em; margin-bottom:-1em;">
     </div>
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-        <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
+        <h2 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h2>
     </div>
     """, unsafe_allow_html=True)
     
