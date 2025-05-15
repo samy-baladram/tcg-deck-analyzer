@@ -16,67 +16,77 @@ from utils import calculate_time_ago, format_card_display
 # Add this right after st.set_page_config()
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
-# Add custom CSS for blue theme
 st.markdown("""
 <style>
 /* Change primary color to blue */
 div[data-baseweb="select"] > div {
-    border-color: #4169E1 !important;
+    border-color: #00DEFF !important;
 }
 
 /* Selected option */
 div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #4169E1 !important;
+    background-color: #00DEFF !important;
 }
 
 /* Hover effect */
 div[role="option"]:hover {
-    background-color: #4169E1 !important;
+    background-color: #00DEFF !important;
 }
 
 /* Button primary color */
 .stButton > button {
-    border-color: #4169E1;
-    color: #4169E1;
+    border-color: #00DEFF;
+    color: #00DEFF;
 }
 
 .stButton > button:hover {
-    border-color: #4169E1;
-    color: #4169E1;
+    border-color: #00DEFF;
+    color: #00DEFF;
 }
 
 /* Progress bar */
 .stProgress > div > div > div > div {
-    background-color: #4169E1;
+    background-color: #00DEFF;
 }
 
 /* TAB NAVIGATION STYLES */
 /* Active tab */
 .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
     background-color: transparent !important;
-    border-bottom-color: #4169E1 !important;
-    color: #4169E1 !important;
-}
-
-/* Tab underline on active */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="true"]::after {
-    background-color: #4169E1 !important;
+    border-bottom-color: #00DEFF !important;
+    color: #00DEFF !important;
 }
 
 /* Tab hover */
 .stTabs [data-baseweb="tab-list"] button:hover {
-    color: #4169E1 !important;
+    color: #00DEFF !important;
 }
 
 /* Tab focus */
 .stTabs [data-baseweb="tab-list"] button:focus {
     background-color: transparent !important;
-    color: #4169E1 !important;
+    color: #00DEFF !important;
 }
 
-/* Tab panel border */
-.stTabs [data-baseweb="tab-panel"] {
-    border-top-color: #4169E1 !important;
+/* CURSOR/FOCUS INDICATOR FOR TABS */
+/* Tab cursor/underline indicator */
+.stTabs [data-baseweb="tab-highlight"] {
+    background-color: #00DEFF !important;
+}
+
+/* Alternative selector for tab indicator */
+.stTabs [data-baseweb="tab-border"] {
+    background-color: #00DEFF !important;
+}
+
+/* Tab bottom border indicator */
+div[data-baseweb="tab-list"] > div[data-baseweb="tab-highlight"] {
+    background-color: #00DEFF !important;
+}
+
+/* Focus outline */
+.stTabs [data-baseweb="tab-list"] button:focus::after {
+    background-color: #00DEFF !important;
 }
 </style>
 """, unsafe_allow_html=True)
