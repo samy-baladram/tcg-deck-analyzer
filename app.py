@@ -497,7 +497,7 @@ if 'analyze' in st.session_state and selected_option:
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=max(400, len(type_cards) * 40),  # Minimum height of 400px
+                    height=max(400, len(type_cards) * 45),  # Minimum height of 400px
                     margin=dict(l=0, r=0, t=0, b=0),
                     xaxis_title="",
                     xaxis=dict(
@@ -509,7 +509,7 @@ if 'analyze' in st.session_state and selected_option:
                     font=dict(size=15),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=15)),  # Card names font size
                     bargap=0.3,  # Add space between bars
-                    uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
+                    uniformtext=dict(minsize=12, mode='show')  # Ensure text inside bars is visible
                 )
                 
                 # Reverse the order to show highest usage at top
@@ -571,7 +571,7 @@ if 'analyze' in st.session_state and selected_option:
                 # Update layout
                 fig.update_layout(
                     barmode='stack',
-                    height=max(400, len(type_cards) * 40),  # Minimum height of 400px
+                    height=max(400, len(type_cards) * 45),  # Minimum height of 400px
                     margin=dict(l=0, r=0, t=0, b=0),
                     xaxis_title="",
                     xaxis=dict(
@@ -583,7 +583,7 @@ if 'analyze' in st.session_state and selected_option:
                     font=dict(size=14),  # Increase base font size
                     yaxis=dict(tickfont=dict(size=14)),  # Card names font size
                     bargap=0.3,  # Add space between bars
-                    uniformtext=dict(minsize=10, mode='show')  # Ensure text inside bars is visible
+                    uniformtext=dict(minsize=12, mode='show')  # Ensure text inside bars is visible
                 )
                 
                 # Reverse the order to show highest usage at top
