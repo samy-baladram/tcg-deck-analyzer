@@ -130,14 +130,15 @@ def apply_diagonal_cut(image, cut_type):
     
     return image
 
-def merge_header_images(img1, img2, gap=5):
+def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
     """
-    Merge two images side by side with optional gap
+    Merge two diagonally cut images side by side with proper overlap calculation
     
     Parameters:
-    img1: PIL Image - left image
-    img2: PIL Image - right image  
-    gap: int - gap in pixels between images
+    img1: PIL Image - left image with right side cut
+    img2: PIL Image - right image with left side cut
+    gap: int - gap in pixels between the visible parts
+    cutoff_percentage: float - the percentage used in the diagonal cut (default 0.7)
     
     Returns:
     PIL Image - merged image
@@ -152,9 +153,16 @@ def merge_header_images(img1, img2, gap=5):
     width1, height1 = img1.size
     width2, height2 = img2.size
     
+    # Calculate positions
+    # Image 1 keeps full width
+    # Image 2 starts at: width1 * cutoff_percentage + gap
+    # This is because image1 is cut at 70% (cutoff_percentage)
+    img2_x_position = int(width1 * cutoff_percentage) + gap
+    
     # Calculate new dimensions
     max_height = max(height1, height2)
-    total_width = width1 + width2 + gap
+    # Total width is where img2 starts plus the non-cut portion of img2
+    total_width = img2_x_position + int(width2 * cutoff_percentage)
     
     # Create new image with transparent background
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
@@ -164,8 +172,11 @@ def merge_header_images(img1, img2, gap=5):
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
+    # Paste img1 at the beginning
     merged.paste(img1, (0, y1), img1)
-    merged.paste(img2, (width1 + gap, y2), img2)
+    
+    # Paste img2 at calculated position
+    merged.paste(img2, (img2_x_position, y2), img2)
     
     return merged
     
@@ -304,8 +315,16 @@ def create_deck_header_images(deck_info, analysis_results):
         img_copy = apply_diagonal_cut(img_copy, "right")
         pil_images.append(img_copy)
     
+    # After getting both images:
+    cutoff_percentage = 0.7  # This should match the value used in apply_diagonal_cut
+    
     # Merge the two images
-    merged_image = merge_header_images(pil_images[0], pil_images[1], gap=0)  # Adjust gap as needed
+    merged_image = merge_header_images(
+        pil_images[0], 
+        pil_images[1], 
+        gap=5,  # Adjust gap as needed
+        cutoff_percentage=cutoff_percentage
+    )
     
     # Convert to base64
     buffered = BytesIO()
