@@ -348,7 +348,7 @@ if 'selected_deck_index' not in st.session_state:
     st.session_state.selected_deck_index = None
 
 # Top navigation bar - simplified without analyze button
-col1, col2 = st.columns([1.5, 0.5])
+col1, col2, col3 = st.columns([0.8, 0.2,1])
 
 with col1:
     # Filter and display popular decks
@@ -386,17 +386,9 @@ with col1:
             st.session_state.selected_deck_index = deck_display_names.index(selection)
         else:
             st.session_state.selected_deck_index = None
-    
-    selected_option = st.selectbox(
-        label_text,
-        deck_display_names,
-        index=st.session_state.selected_deck_index,
-        placeholder="Select a deck to analyze...",
-        help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
-        key="deck_select",
-        on_change=on_deck_change
-    )
 
+with col2:
+    # Extract deck info from selection and show set
     if selected_option:
         # Get original deck name from mapping
         deck_name = st.session_state.deck_name_mapping[selected_option]
@@ -407,17 +399,8 @@ with col1:
     else:
         st.empty()
 
-# with col2:
-#     # Extract deck info from selection and show set
-#     if selected_option:
-#         # Get original deck name from mapping
-#         deck_name = st.session_state.deck_name_mapping[selected_option]
-#         selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-#         set_name = selected_row['set']
-#         #st.text(f"Current Set: {set_name.upper()}")
-#         st.metric("Set", set_name.upper())
-#     else:
-#         st.empty()
+with col3:
+    st.empty()
 
 # Auto-analyze when selection is made
 if selected_option:
