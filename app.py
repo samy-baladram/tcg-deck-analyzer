@@ -20,73 +20,60 @@ st.markdown("""
 <style>
 /* Change primary color to blue */
 div[data-baseweb="select"] > div {
-    border-color: #00DEFF !important;
+    border-color: #00AAFF !important;
 }
 
 /* Selected option */
 div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #00DEFF !important;
+    background-color: #00AAFF !important;
 }
 
 /* Hover effect */
 div[role="option"]:hover {
-    background-color: #00DEFF !important;
+    background-color: #00AAFF !important;
 }
 
 /* Button primary color */
 .stButton > button {
-    border-color: #00DEFF;
-    color: #00DEFF;
+    border-color: #00AAFF;
+    color: #00AAFF;
 }
 
 .stButton > button:hover {
-    border-color: #00DEFF;
-    color: #00DEFF;
+    border-color: #00AAFF;
+    color: #00AAFF;
 }
 
 /* Progress bar */
 .stProgress > div > div > div > div {
-    background-color: #00DEFF;
+    background-color: #00AAFF;
 }
 
 /* TAB NAVIGATION STYLES */
-/* Active tab */
+/* Active tab text color */
 .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-    background-color: transparent !important;
-    border-bottom-color: #00DEFF !important;
-    color: #00DEFF !important;
+    color: #00AAFF !important;
 }
 
 /* Tab hover */
 .stTabs [data-baseweb="tab-list"] button:hover {
-    color: #00DEFF !important;
+    color: #00AAFF !important;
 }
 
-/* Tab focus */
-.stTabs [data-baseweb="tab-list"] button:focus {
-    background-color: transparent !important;
-    color: #00DEFF !important;
-}
-
-/* CURSOR/FOCUS INDICATOR FOR TABS */
-/* Tab cursor/underline indicator */
+/* SELECTED TAB UNDERLINE ONLY */
+/* This targets the moving underline indicator */
 .stTabs [data-baseweb="tab-highlight"] {
-    background-color: #00DEFF !important;
+    background-color: #00AAFF !important;
 }
 
-/* Alternative selector for tab indicator */
-.stTabs [data-baseweb="tab-border"] {
-    background-color: #00DEFF !important;
+/* Remove any background color from tab list */
+.stTabs [data-baseweb="tab-list"] {
+    background-color: transparent !important;
 }
 
-/* Tab bottom border indicator */
-div[data-baseweb="tab-list"] > div[data-baseweb="tab-highlight"] {
-    background-color: #00DEFF !important;
-}
-
-/* Focus outline */
-.stTabs [data-baseweb="tab-list"] button:focus::after {
-    background-color: #00DEFF !important;
+/* Ensure only selected tab has the indicator */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
+    border-bottom: none !important;
 }
 </style>
 """, unsafe_allow_html=True)
