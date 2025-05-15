@@ -347,70 +347,90 @@ if 'fetch_time' not in st.session_state:
 if 'selected_deck_index' not in st.session_state:
     st.session_state.selected_deck_index = None
 
-# Top navigation bar - simplified without analyze button
-col1, col2, col3 = st.columns([0.8, 0.2,1])
+# Top navigation bar - use container to group elements
+nav_container = st.container()
 
-with col1:
-    # Filter and display popular decks
-    popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
+with nav_container:
+    # Use a single column with internal layout
+    st.markdown("""
+    <style>
+    .nav-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 1rem;
+        flex-wrap: nowrap;
+    }
+    .nav-select {
+        flex: 1;
+        min-width: 300px;
+    }
+    .nav-metric {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    </style>
+    """, unsafe_allow_html=True)
     
-    # Create deck options with formatted names and store mapping
-    deck_display_names = []
-    deck_name_mapping = {}  # Maps display name to original name
+    col1, col2 = st.columns([4, 1])
     
-    for _, row in popular_decks.iterrows():
-        display_name = f"{format_deck_name(row['deck_name'])} - {row['share']:.2f}%"
-        deck_display_names.append(display_name)
-        deck_name_mapping[display_name] = row['deck_name']
-    
-    # Store mapping in session state
-    st.session_state.deck_name_mapping = deck_name_mapping
-    
-    # Calculate time ago
-    time_diff = datetime.now() - st.session_state.fetch_time
-    if time_diff < timedelta(minutes=1):
-        time_str = "just now"
-    elif time_diff < timedelta(hours=1):
-        minutes = int(time_diff.total_seconds() / 60)
-        time_str = f"{minutes} minutes ago"
-    else:
-        hours = int(time_diff.total_seconds() / 3600)
-        time_str = f"{hours} hours ago"
-
-    label_text = f"Select a deck to analyze (Updated: {time_str}):"
+    with col1:
+        # Your existing selectbox code
+        # Filter and display popular decks
+        popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= 0.5]
         
-    # Use on_change callback to handle selection
-    def on_deck_change():
-        selection = st.session_state.deck_select
-        if selection:
-            st.session_state.selected_deck_index = deck_display_names.index(selection)
+        # Create deck options with formatted names and store mapping
+        deck_display_names = []
+        deck_name_mapping = {}
+        
+        for _, row in popular_decks.iterrows():
+            display_name = f"{format_deck_name(row['deck_name'])} - {row['share']:.2f}%"
+            deck_display_names.append(display_name)
+            deck_name_mapping[display_name] = row['deck_name']
+        
+        # Store mapping in session state
+        st.session_state.deck_name_mapping = deck_name_mapping
+        
+        # Calculate time ago
+        time_diff = datetime.now() - st.session_state.fetch_time
+        if time_diff < timedelta(minutes=1):
+            time_str = "just now"
+        elif time_diff < timedelta(hours=1):
+            minutes = int(time_diff.total_seconds() / 60)
+            time_str = f"{minutes} minutes ago"
         else:
-            st.session_state.selected_deck_index = None
+            hours = int(time_diff.total_seconds() / 3600)
+            time_str = f"{hours} hours ago"
+
+        label_text = f"Select a deck to analyze (Updated: {time_str}):"
+        
+        # Use on_change callback to handle selection
+        def on_deck_change():
+            selection = st.session_state.deck_select
+            if selection:
+                st.session_state.selected_deck_index = deck_display_names.index(selection)
+            else:
+                st.session_state.selected_deck_index = None
+        
+        selected_option = st.selectbox(
+            label_text,
+            deck_display_names,
+            index=st.session_state.selected_deck_index,
+            placeholder="Select a deck to analyze...",
+            help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
+            key="deck_select",
+            on_change=on_deck_change
+        )
     
-    selected_option = st.selectbox(
-        label_text,
-        deck_display_names,
-        index=st.session_state.selected_deck_index,
-        placeholder="Select a deck to analyze...",
-        help="Showing decks with ≥0.5% meta share from [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). Analysis will start automatically after selection.",
-        key="deck_select",
-        on_change=on_deck_change
-    )            
-
-with col2:
-    # Extract deck info from selection and show set
-    if selected_option:
-        # Get original deck name from mapping
-        deck_name = st.session_state.deck_name_mapping[selected_option]
-        selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-        set_name = selected_row['set']
-        #st.text(f"Current Set: {set_name.upper()}")
-        st.metric("Set", set_name.upper())
-    else:
-        st.empty()
-
-with col3:
-    st.empty()
+    with col2:
+        # Extract deck info from selection and show set
+        if selected_option:
+            # Get original deck name from mapping
+            deck_name = st.session_state.deck_name_mapping[selected_option]
+            selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
+            set_name = selected_row['set']
+            st.metric("Set", set_name.upper())
+        else:
+            st.empty()
 
 # Auto-analyze when selection is made
 if selected_option:
