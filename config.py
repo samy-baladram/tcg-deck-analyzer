@@ -21,7 +21,7 @@ CHART_COLORS = {
 
 # Chart settings
 CHART_MIN_HEIGHT = 350
-CHART_ROW_HEIGHT = 40
+CHART_ROW_HEIGHT = 45
 CHART_FONT_SIZE = 15
 CHART_BAR_GAP = 0.2
 CHART_TEXT_THRESHOLD = 5  # Don't show percentage if less than this
