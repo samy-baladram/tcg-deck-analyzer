@@ -439,7 +439,7 @@ if 'analyze' in st.session_state and selected_option:
     img_base64 = get_base64_image("pokeball.png")
     st.markdown(f"""
     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-        <img src="data:image/png;base64,{img_base64}" style="height: 2em; margin-right: 1em; margin-bottom:0.5em;">
+        <img src="data:image/png;base64,{img_base64}" style="height: 2em; margin-right: 0.5em; margin-bottom:0.25em;">
         <h3 style="margin: 0;">{format_deck_name(deck_info['deck_name'])}</h3>
     </div>
     """, unsafe_allow_html=True)
