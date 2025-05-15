@@ -76,6 +76,12 @@ div[role="option"]:hover {
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
     border-bottom: none !important;
 }
+
+/* Increase tab navigation font size */
+.stTabs [data-baseweb="tab-list"] button {
+    font-size: 18px !important;  /* Adjust this value as needed */
+    padding: 8px 16px !important; /* Optional: increase padding for better spacing */
+}
 </style>
 """, unsafe_allow_html=True)
 
