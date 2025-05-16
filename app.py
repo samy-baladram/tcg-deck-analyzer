@@ -292,7 +292,6 @@ if 'analyze' in st.session_state and selected_option:
                                     '<div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                                 }
                             </div>
-                            
                             <!-- Variant 2 -->
                             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                                 <div style="text-align:center; margin-bottom:3px;"><strong>{var2}</strong></div>
