@@ -14,7 +14,56 @@ from visualizations import create_usage_bar_chart, display_chart, create_variant
 from utils import calculate_time_ago, format_card_display
 
 # Add this right after st.set_page_config()
-st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
+# Set page configuration
+st.set_page_config(
+    page_title="Pokémon TCG Pocket Deck Analysis",
+    page_icon="🎴",
+    layout="wide"
+)
+
+# Add custom CSS to set Nunito as the default font
+st.markdown("""
+<style>
+    /* Import Nunito font from Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900&display=swap');
+    
+    /* Apply Nunito font to all HTML elements */
+    html, body, [class*="css"] {
+        font-family: 'Nunito', sans-serif;
+    }
+    
+    /* Set specific weights for different elements */
+    h1, h2, h3 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+    }
+    
+    h4, h5, h6 {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 600;
+    }
+    
+    p, div {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 400;
+    }
+    
+    .stButton>button {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 600;
+    }
+    
+    .stDataFrame {
+        font-family: 'Nunito', sans-serif;
+    }
+    
+    /* Custom class for card percentages */
+    .card-percentage {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 600;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
