@@ -282,7 +282,7 @@ if 'analyze' in st.session_state and selected_option:
                     # Column 1: Both Variants side by side
                     with col1:
                         st.markdown(f"""
-                        <div style="height:240px; display:flex; justify-content:space-between; gap:0px;">
+                        <div style="height:240px; display:flex; justify-content:space-between; margin-top:-10px;">
                             <!-- Variant 1 -->
                             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                                 <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
