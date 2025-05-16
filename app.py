@@ -276,51 +276,37 @@ if 'analyze' in st.session_state and selected_option:
                     formatted_num1 = format_card_number(var1_num) if var1_num else ""
                     formatted_num2 = format_card_number(var2_num) if var2_num else ""
                     
-                    # Create the 3-column layout
-                    col1, col2, col3 = st.columns([1, 1, 3])
+                    # Create the 2-column layout
+                    col1, col2 = st.columns([1, 1])
                     
-                    # Column 1: Variant 1
+                    # Column 1: Both Variants side by side
                     with col1:
-                        if var1_set and formatted_num1:
-                            st.markdown(f"""
-                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:5px;"><strong>{var1}</strong></div>
-                                <img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" 
-                                     style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
+                        st.markdown(f"""
+                        <div style="height:150px; display:flex; justify-content:space-between; gap:10px;">
+                            <!-- Variant 1 -->
+                            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <div style="text-align:center; margin-bottom:3px;"><strong>{var1}</strong></div>
+                                {
+                                    f'<img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
+                                    if var1_set and formatted_num1 else
+                                    '<div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
+                                }
                             </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown(f"""
-                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:5px;"><strong>{var1}</strong></div>
-                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">
-                                    Image not available
-                                </div>
+                            
+                            <!-- Variant 2 -->
+                            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <div style="text-align:center; margin-bottom:3px;"><strong>{var2}</strong></div>
+                                {
+                                    f'<img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
+                                    if var2_set and formatted_num2 else
+                                    '<div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
+                                }
                             </div>
-                            """, unsafe_allow_html=True)
+                        </div>
+                        """, unsafe_allow_html=True)
                     
-                    # Column 2: Variant 2
+                    # Column 2: Bar Chart
                     with col2:
-                        if var2_set and formatted_num2:
-                            st.markdown(f"""
-                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:5px;"><strong>{var2}</strong></div>
-                                <img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" 
-                                     style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown(f"""
-                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:5px;"><strong>{var2}</strong></div>
-                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">
-                                    Image not available
-                                </div>
-                            </div>
-                            """, unsafe_allow_html=True)
-                    
-                    # Column 3: Bar Chart
-                    with col3:
                         # Create variant bar chart with fixed height
                         fig = create_variant_bar_chart(row)
                         fig.update_layout(height=150)
