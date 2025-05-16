@@ -14,154 +14,77 @@ from visualizations import create_usage_bar_chart, display_chart, create_variant
 from utils import calculate_time_ago, format_card_display
 
 # Add this right after st.set_page_config()
-# Set page configuration
-st.set_page_config(
-    page_title="Pokémon TCG Pocket Deck Analysis",
-    page_icon="🎴",
-    layout="wide"
-)
+st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
-# Add custom CSS to set Nunito as the default font
-st.markdown("""
-<style>
-    /* Import Nunito font from Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900&display=swap');
-    
-    /* Apply Nunito font to all HTML elements */
-    html, body, [class*="css"] {
-        font-family: 'Nunito', sans-serif !important;
-    }
-    
-    /* Target Streamlit elements more specifically */
-    .main .block-container {
-        font-family: 'Nunito', sans-serif !important;
-    }
-    
-    /* Target headers specifically */
-    .main .block-container h1,
-    .main .block-container h2,
-    .main .block-container h3,
-    .main .block-container h4,
-    .main .block-container h5,
-    .main .block-container h6 {
-        font-family: 'Nunito', sans-serif !important;
-        font-weight: 900 !important;
-    }
-    
-    /* Target st.header and st.subheader */
-    section[data-testid="stSidebar"] .block-container div[data-testid="stMarkdownContainer"] > h1,
-    section[data-testid="stSidebar"] .block-container div[data-testid="stMarkdownContainer"] > h2,
-    section[data-testid="stSidebar"] .block-container div[data-testid="stMarkdownContainer"] > h3,
-    .main .block-container div[data-testid="stMarkdownContainer"] > h1,
-    .main .block-container div[data-testid="stMarkdownContainer"] > h2,
-    .main .block-container div[data-testid="stMarkdownContainer"] > h3 {
-        font-family: 'Nunito', sans-serif !important;
-        font-weight: 900 !important;
-    }
-    
-    /* Target specific Streamlit components */
-    .stButton > button {
-        font-family: 'Nunito', sans-serif !important;
-        font-weight: 600 !important;
-    }
-    
-    .stSelectbox > div > div,
-    .stMultiSelect > div > div {
-        font-family: 'Nunito', sans-serif !important;
-    }
-    
-    .stDataFrame {
-        font-family: 'Nunito', sans-serif !important;
-    }
-    
-    /* Target tab labels */
-    button[role="tab"] {
-        font-family: 'Nunito', sans-serif !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Make sure the sidebar also uses Nunito */
-    section[data-testid="stSidebar"] .block-container {
-        font-family: 'Nunito', sans-serif !important;
-    }
-    
-    /* Custom class for card percentages */
-    .card-percentage {
-        font-family: 'Nunito', sans-serif !important;
-        font-weight: 600 !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+# st.markdown("""
+# <style>
+# /* Change primary color to blue */
+# div[data-baseweb="select"] > div {
+#     border-color: #00A0FF !important;
+# }
 
-st.markdown("""
-<style>
-/* Change primary color to blue */
-div[data-baseweb="select"] > div {
-    border-color: #00A0FF !important;
-}
+# /* Selected option */
+# div[data-baseweb="select"] [aria-selected="true"] {
+#     background-color: #00A0FF !important;
+# }
 
-/* Selected option */
-div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #00A0FF !important;
-}
+# /* Hover effect */
+# div[role="option"]:hover {
+#     background-color: #00A0FF !important;
+# }
 
-/* Hover effect */
-div[role="option"]:hover {
-    background-color: #00A0FF !important;
-}
+# /* Button primary color */
+# .stButton > button {
+#     border-color: #00A0FF;
+#     color: #00A0FF;
+# }
 
-/* Button primary color */
-.stButton > button {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
+# .stButton > button:hover {
+#     border-color: #00A0FF;
+#     color: #00A0FF;
+# }
 
-.stButton > button:hover {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
+# /* Progress bar */
+# .stProgress > div > div > div > div {
+#     background-color: #00A0FF;
+# }
 
-/* Progress bar */
-.stProgress > div > div > div > div {
-    background-color: #00A0FF;
-}
+# /* TAB NAVIGATION STYLES */
+# /* Active tab text color */
+# .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+#     color: #00A0FF !important;
+# }
 
-/* TAB NAVIGATION STYLES */
-/* Active tab text color */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-    color: #00A0FF !important;
-}
+# /* Tab hover with 50% transparency */
+# .stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
+#     color: rgba(72, 187, 255, 0.4) !important;
+#     transition: color 0.3s;
+# }
 
-/* Tab hover with 50% transparency */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
-    color: rgba(72, 187, 255, 0.4) !important;
-    transition: color 0.3s;
-}
+# /* SELECTED TAB UNDERLINE ONLY */
+# /* This targets the moving underline indicator */
+# .stTabs [data-baseweb="tab-highlight"] {
+#     background-color: #00A0FF !important;
+# }
 
-/* SELECTED TAB UNDERLINE ONLY */
-/* This targets the moving underline indicator */
-.stTabs [data-baseweb="tab-highlight"] {
-    background-color: #00A0FF !important;
-}
+# /* Remove any background color from tab list */
+# .stTabs [data-baseweb="tab-list"] {
+#     background-color: transparent !important;
+# }
 
-/* Remove any background color from tab list */
-.stTabs [data-baseweb="tab-list"] {
-    background-color: transparent !important;
-}
+# /* Ensure only selected tab has the indicator */
+# .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
+#     border-bottom: none !important;
+# }
 
-/* Ensure only selected tab has the indicator */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
-    border-bottom: none !important;
-}
+# /* Even more specific selector targeting the text */
+# div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
+#     font-size: 18px !important;
+#     padding: 8px 16px !important;
+# }
 
-/* Even more specific selector targeting the text */
-div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
-    font-size: 18px !important;
-    padding: 8px 16px !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
+# </style>
+# """, unsafe_allow_html=True)
 
 # Main title
 #st.image("title_banner.png", use_container_width=True)
@@ -270,7 +193,7 @@ if 'analyze' in st.session_state and selected_option:
     if header_image:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0rem; margin-top:-1rem">
-            <h1 style="margin: 0rem 0 0 0; font-family: Nunito, sans-serif; font-weight: 900;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(deck_info['deck_name'])}</h1>
+            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(deck_info['deck_name'])}</h1>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -286,7 +209,7 @@ if 'analyze' in st.session_state and selected_option:
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Pokémon</h4>", unsafe_allow_html=True)
+            st.write("#### Pokemon")
             type_cards = results[results['type'] == 'Pokemon']
             
             if not type_cards.empty:
@@ -297,7 +220,7 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Pokemon cards found")
         
         with col2:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Trainer</h4>", unsafe_allow_html=True)
+            st.write("#### Trainer")
             type_cards = results[results['type'] == 'Trainer']
             
             if not type_cards.empty:
@@ -307,18 +230,20 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Trainer cards found")
     
     with tab2:
+        #st.subheader("Deck Template")
         
         # Use the updated function that returns deck_info
         deck_list, deck_info, total_cards, options = build_deck_template(results)
         
         # Import needed functions (if not already imported)
         from image_processor import format_card_number, IMAGE_BASE_URL
-        st.markdown("<h3 style='font-family: Nunito, sans-serif; font-weight: 900;'>Core Cards</h3>", unsafe_allow_html=True)
+        
         col1, col2 = st.columns([1, 2])
         
         with col1:
             pokemon_count = sum(card['count'] for card in deck_info['Pokemon'])
-            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Pokémon ({pokemon_count})</h4>", unsafe_allow_html=True)
+            st.write(f"#### Pokemon ({pokemon_count})")
+            
             # Create a grid layout for Pokémon cards
             pokemon_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
             
@@ -337,7 +262,7 @@ if 'analyze' in st.session_state and selected_option:
         
         with col2:
             trainer_count = sum(card['count'] for card in deck_info['Trainer'])
-            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Trainer ({trainer_count})</h4>", unsafe_allow_html=True)
+            st.write(f"#### Trainer ({trainer_count})")
             
             # Create a grid layout for Trainer cards
             trainer_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -357,7 +282,8 @@ if 'analyze' in st.session_state and selected_option:
         
         # Display flexible slots section
         remaining = 20 - total_cards
-        st.markdown(f"<h3 style='font-family: Nunito, sans-serif; font-weight: 900;'>Flexible Slots ({remaining} cards)</h3>", unsafe_allow_html=True)
+        st.write(f"### Flexible Slots ({remaining} cards)")
+        st.write("Common choices include:")
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
@@ -368,7 +294,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Left column: Pokémon options
         with flex_col1:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Pokémon Options</h4>", unsafe_allow_html=True)
+            st.write("#### Pokémon Options")
             
             # Create a grid layout for Pokémon options
             pokemon_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -385,7 +311,7 @@ if 'analyze' in st.session_state and selected_option:
                         if set_code and formatted_num else
                         f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
                     }
-                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 700;">
+                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
                         {usage_pct}%
                     </div>
                 </div>"""
@@ -395,7 +321,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Right column: Trainer options
         with flex_col2:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Trainer Options</h4>", unsafe_allow_html=True)
+            st.write("#### Trainer Options")
             
             # Create a grid layout for Trainer options
             trainer_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -412,7 +338,7 @@ if 'analyze' in st.session_state and selected_option:
                         if set_code and formatted_num else
                         f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
                     }
-                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 700;">
+                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
                         {usage_pct}%
                     </div>
                 </div>"""
@@ -422,7 +348,7 @@ if 'analyze' in st.session_state and selected_option:
     
     with tab3:
         if not variant_df.empty:
-            st.markdown("<h5 style='font-family: Nunito, sans-serif; font-weight: 300;'>This shows how players use different versions of the same card:</h5>", unsafe_allow_html=True)
+            st.write("This shows how players use different versions of the same card:")
             
             # Import needed functions
             from image_processor import format_card_number, IMAGE_BASE_URL
@@ -484,12 +410,12 @@ if 'analyze' in st.session_state and selected_option:
         #st.subheader("Raw Analysis Data")
         
         # Main analysis data
-        st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Card Usage Data</h4>", unsafe_allow_html=True)
+        st.write("#### Card Usage Data")
         st.dataframe(results, use_container_width=True)
         
         # Variant analysis data
         if not variant_df.empty:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Variant Analysis Data</h4>", unsafe_allow_html=True)
+            st.write("#### Variant Analysis Data")
             st.dataframe(variant_df, use_container_width=True)
 
 else:
