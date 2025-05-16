@@ -282,7 +282,7 @@ if 'analyze' in st.session_state and selected_option:
                     # Column 1: Both Variants side by side
                     with col1:
                         st.markdown(f"""
-                        <div style="height:240px; display:flex; justify-content:space-between; margin-top:-10px;">
+                        <div style="height:240px; display:flex; justify-content:space-between; margin-top:-20px;">
                             <!-- Variant 1 -->
                             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                                 <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
@@ -308,7 +308,7 @@ if 'analyze' in st.session_state and selected_option:
                     with col2:
                         # Create variant bar chart with fixed height
                         fig = create_variant_bar_chart(row)
-                        fig.update_layout(height=150)
+                        fig.update_layout(height=250)
                         display_chart(fig)
         else:
             st.info("No cards with variants found in this deck.")
