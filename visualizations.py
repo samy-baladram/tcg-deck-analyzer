@@ -3,31 +3,20 @@
 
 import plotly.graph_objects as go
 import pandas as pd
-from io import BytesIO
-import base64
-from PIL import Image
 from config import (
     CHART_COLORS, CHART_MIN_HEIGHT, CHART_ROW_HEIGHT, 
-    CHART_FONT_SIZE, CHART_BAR_GAP, CHART_TEXT_THRESHOLD
+    CHART_FONT_SIZE, CHART_BAR_GAP, CHART_TEXT_THRESHOLD,
+    PLOTLY_CONFIG
 )
 from formatters import format_percentage, format_card_label
-from image_processor import fetch_and_crop_image, format_card_number
 
 def create_usage_bar_chart(type_cards, card_type):
-    """Create horizontal stacked bar chart for card usage with card thumbnails"""
+    """Create horizontal stacked bar chart for card usage"""
     if type_cards.empty:
         return None
     
-    # Import necessary functions
-    from image_processor import fetch_and_crop_image, format_card_number
-    import base64
-    from io import BytesIO
-    
     # Create stacked bar chart data
     fig_data = []
-    
-    # Prepare image data for y-axis labels
-    y_labels = []
     
     for _, card in type_cards.iterrows():
         # Format card label based on type
@@ -36,41 +25,12 @@ def create_usage_bar_chart(type_cards, card_type):
         else:
             card_label = card['card_name']
         
-        # Store data for chart
         fig_data.append({
             'Card': card_label,
             '1 Copy': card['pct_1'],
             '2 Copies': card['pct_2'],
             'Total': card['pct_total']
         })
-        
-        # Prepare custom label with image for Pokémon cards
-        custom_label = card_label
-        if card_type == 'Pokemon' and card['set'] and card['num']:
-            try:
-                # Format card number
-                formatted_num = format_card_number(card['num'])
-                
-                # Try to get small image thumbnail
-                img = fetch_and_crop_image(card['set'], formatted_num)
-                if img:
-                    # Resize to thumbnail (30px height)
-                    height = 30
-                    width = int(img.width * (height / img.height))
-                    img = img.resize((width, height))
-                    
-                    # Convert to base64
-                    buffered = BytesIO()
-                    img.save(buffered, format="PNG")
-                    img_str = base64.b64encode(buffered.getvalue()).decode()
-                    
-                    # Create HTML with image and text
-                    custom_label = f'<img src="data:image/png;base64,{img_str}" style="height:30px;vertical-align:middle;margin-right:5px;">{card_label}'
-            except Exception as e:
-                # Fallback to text only
-                pass
-        
-        y_labels.append(custom_label)
     
     # Create DataFrame for plotting
     plot_df = pd.DataFrame(fig_data)
@@ -81,7 +41,7 @@ def create_usage_bar_chart(type_cards, card_type):
     # Add bars for each count type
     fig.add_trace(go.Bar(
         name='1 Copy',
-        y=y_labels,
+        y=plot_df['Card'],
         x=plot_df['1 Copy'],
         orientation='h',
         marker_color=CHART_COLORS[f'{card_type.lower()}_1'],
@@ -95,7 +55,7 @@ def create_usage_bar_chart(type_cards, card_type):
     
     fig.add_trace(go.Bar(
         name='2 Copies',
-        y=y_labels,
+        y=plot_df['Card'],
         x=plot_df['2 Copies'],
         orientation='h',
         marker_color=CHART_COLORS[f'{card_type.lower()}_2'],
@@ -110,8 +70,8 @@ def create_usage_bar_chart(type_cards, card_type):
     # Update layout
     fig.update_layout(
         barmode='stack',
-        height=max(CHART_MIN_HEIGHT, len(type_cards) * (CHART_ROW_HEIGHT + 10)),  # Add extra height for images
-        margin=dict(l=10, r=0, t=0, b=0),  # Add left margin for images
+        height=max(CHART_MIN_HEIGHT, len(type_cards) * CHART_ROW_HEIGHT),
+        margin=dict(l=0, r=0, t=0, b=0),
         xaxis_title="",
         xaxis=dict(
             range=[0, 100],
@@ -126,9 +86,7 @@ def create_usage_bar_chart(type_cards, card_type):
             x=1
         ),
         font=dict(size=CHART_FONT_SIZE),
-        yaxis=dict(
-            tickfont=dict(size=CHART_FONT_SIZE)
-        ),
+        yaxis=dict(tickfont=dict(size=CHART_FONT_SIZE)),
         bargap=CHART_BAR_GAP,
         uniformtext=dict(minsize=12, mode='show')
     )
@@ -249,13 +207,7 @@ def display_chart(fig, use_container_width=True):
     import streamlit as st
     
     # Enable HTML in labels
-    config = {
-        'displayModeBar': False,
-        'staticPlot': True,
-        'displaylogo': False,
-        'doubleClick': False,
-        'showTips': False,
-        'allowHTML': True  # Important for showing images
-    }
+    config = PLOTLY_CONFIG.copy()
+    config['displayModeBar'] = False
     
     st.plotly_chart(fig, use_container_width=use_container_width, config=config)
