@@ -46,8 +46,8 @@ IMAGE_CROP_BOX = {
 }
 
 IMAGE_GRADIENT = {
-    'top_height': 0.0,
-    'bottom_height': 0.0
+    'top_height': 0.01,
+    'bottom_height': 0.01
 }
 
 # Category thresholds
