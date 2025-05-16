@@ -103,8 +103,13 @@ def create_variant_bar_chart(variant_data):
     var1 = variant_data['Var1']
     var2 = variant_data['Var2']
     
-    # Prepare labels for the chart
-    labels = [var1, var2, "Mixed (1 of each)"]
+    # Determine if Mixed should be included
+    include_mixed = variant_data['Mixed'] > 0
+    
+    # Prepare labels for the chart - conditionally include Mixed
+    labels = [var1, var2]
+    if include_mixed:
+        labels.append("Mixed (1 of each)")
     
     # Get counts directly from the variant data
     total_decks = variant_data['Total Decks']
@@ -116,22 +121,33 @@ def create_variant_bar_chart(variant_data):
     var2_double_pct = int((variant_data['Both Var2'] / total_decks * 100) if total_decks > 0 else 0)
     mixed_pct = int((variant_data['Mixed'] / total_decks * 100) if total_decks > 0 else 0)
     
-    # Prepare data arrays
-    single_data = [var1_single_pct, var2_single_pct, mixed_pct]
-    double_data = [var1_double_pct, var2_double_pct, 0]  # Mixed has no "double" component
+    # Prepare data arrays - conditionally include Mixed
+    single_data = [var1_single_pct, var2_single_pct]
+    double_data = [var1_double_pct, var2_double_pct]
+    
+    if include_mixed:
+        single_data.append(mixed_pct)
+        double_data.append(0)  # Mixed has no "double" component
     
     # Format text labels with card symbols
     text_single = [
-        f"  🂠 {var1_single_pct}%  " if var1_single_pct >= 20 else (f"  {var1_single_pct}%  " if var1_single_pct > CHART_TEXT_THRESHOLD else ""),
-        f"  🂠 {var2_single_pct}%  " if var2_single_pct >= 20 else (f"  {var2_single_pct}%  " if var2_single_pct > CHART_TEXT_THRESHOLD else ""),
-        f"  🂠 + 🂠 {mixed_pct}%  " if mixed_pct >= 20 else (f"  {mixed_pct}%  " if mixed_pct > CHART_TEXT_THRESHOLD else "")
+        f"  🂠 {var1_single_pct}%  " if var1_single_pct >= 10 else (f"  {var1_single_pct}%  " if var1_single_pct > CHART_TEXT_THRESHOLD else ""),
+        f"  🂠 {var2_single_pct}%  " if var2_single_pct >= 10 else (f"  {var2_single_pct}%  " if var2_single_pct > CHART_TEXT_THRESHOLD else "")
     ]
     
     text_double = [
-        f"  🂠 🂠 {var1_double_pct}%  " if var1_double_pct >= 20 else (f"  {var1_double_pct}%  " if var1_double_pct > CHART_TEXT_THRESHOLD else ""),
-        f"  🂠 🂠 {var2_double_pct}%  " if var2_double_pct >= 20 else (f"  {var2_double_pct}%  " if var2_double_pct > CHART_TEXT_THRESHOLD else ""),
-        ""  # No double for mixed
+        f"  🂠 🂠 {var1_double_pct}%  " if var1_double_pct >= 10 else (f"  {var1_double_pct}%  " if var1_double_pct > CHART_TEXT_THRESHOLD else ""),
+        f"  🂠 🂠 {var2_double_pct}%  " if var2_double_pct >= 10 else (f"  {var2_double_pct}%  " if var2_double_pct > CHART_TEXT_THRESHOLD else "")
     ]
+    
+    # Add Mixed text if included
+    if include_mixed:
+        text_single.append(f"  🂠 + 🂠 {mixed_pct}%  " if mixed_pct >= 10 else (f"  {mixed_pct}%  " if mixed_pct > CHART_TEXT_THRESHOLD else ""))
+        text_double.append("")  # No double for mixed
+    
+    # Calculate dynamic height based on number of bars
+    row_count = len(labels)
+    chart_height = max(200, row_count * 100)  # Minimum 120px, 60px per row
     
     # Create figure
     fig = go.Figure()
@@ -159,13 +175,13 @@ def create_variant_bar_chart(variant_data):
         text=text_double,
         textposition='inside',
         insidetextanchor='start',
-        textfont=dict(size=CHART_FONT_SIZE, color='white'),
+        textfont=dict(size=CHART_FONT_SIZE),  # Removed color='white'
     ))
     
     # Update layout
     fig.update_layout(
         barmode='stack',
-        height=180,  # Height for 3 bars
+        height=chart_height,  # Dynamic height based on number of bars
         margin=dict(l=0, r=0, t=10, b=10),
         xaxis_title="",
         xaxis=dict(
