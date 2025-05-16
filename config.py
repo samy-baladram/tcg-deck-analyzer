@@ -16,7 +16,8 @@ CHART_COLORS = {
     'pokemon_1': '#89EBFA',
     'pokemon_2': '#A6C1FF',
     'trainer_1': '#89EBFA',
-    'trainer_2': '#A6C1FF'
+    'trainer_2': '#A6C1FF',
+    'mixed': '#89CEFA'
 }
 
 # Chart settings
