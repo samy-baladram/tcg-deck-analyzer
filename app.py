@@ -255,7 +255,7 @@ if 'analyze' in st.session_state and selected_option:
             st.write("This shows how players use different versions of the same card:")
             
             # Import needed functions
-            from image_processor import get_card_thumbnail, format_card_number
+            from image_processor import format_card_number, IMAGE_BASE_URL
             
             # Display variant analysis
             for _, row in variant_df.iterrows():
@@ -272,49 +272,65 @@ if 'analyze' in st.session_state and selected_option:
                     var2_set = var2_parts[0] if len(var2_parts) > 0 else ""
                     var2_num = var2_parts[1] if len(var2_parts) > 1 else ""
                     
-                    # Display direct URLs for debugging
-                    st.write("Debug Information:")
-                    if var1_set and var1_num:
-                        formatted_num1 = format_card_number(var1_num)  # Format the number
-                        url1 = f"{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp"
-                        st.write(f"URL 1: {url1}")
+                    # Format numbers for URL
+                    formatted_num1 = format_card_number(var1_num) if var1_num else ""
+                    formatted_num2 = format_card_number(var2_num) if var2_num else ""
                     
-                    if var2_set and var2_num:
-                        formatted_num2 = format_card_number(var2_num)  # Format the number
-                        url2 = f"{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp"
-                        st.write(f"URL 2: {url2}")
+                    # Create the 3-column layout
+                    col1, col2, col3 = st.columns([1, 1, 2])
                     
-                    # Try fetching images
-                    var1_img = get_card_thumbnail(var1_set, var1_num, size=100) if var1_set and var1_num else None
-                    var2_img = get_card_thumbnail(var2_set, var2_num, size=100) if var2_set and var2_num else None
-                    
-                    # Display images side by side if available
-                    col1, col2 = st.columns(2)
+                    # Column 1: Variant 1
                     with col1:
-                        if var1_img:
-                            st.markdown(f"**Variant 1: {var1}**")
-                            st.markdown(f'<img src="data:image/png;base64,{var1_img}" style="border:1px solid #ddd; border-radius:5px;">', unsafe_allow_html=True)
+                        st.markdown(f"**Variant 1:**")
+                        st.markdown(f"**{var1}**")
+                        if var1_set and formatted_num1:
+                            st.markdown(f"""
+                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
+                                <img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" 
+                                     style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
+                            </div>
+                            """, unsafe_allow_html=True)
                         else:
-                            st.markdown(f"**Variant 1: {var1}** (Image not available)")
-                            # Try direct embed for debugging
-                            if var1_set and var1_num:
-                                formatted_num1 = format_card_number(var1_num)
-                                st.markdown(f'<img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" width="200" style="border:1px solid #ddd; border-radius:5px;">', unsafe_allow_html=True)
+                            st.markdown("""
+                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
+                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center;">
+                                    Image not available
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
                     
+                    # Column 2: Variant 2
                     with col2:
-                        if var2_img:
-                            st.markdown(f"**Variant 2: {var2}**")
-                            st.markdown(f'<img src="data:image/png;base64,{var2_img}" style="border:1px solid #ddd; border-radius:5px;">', unsafe_allow_html=True)
+                        st.markdown(f"**Variant 2:**")
+                        st.markdown(f"**{var2}**")
+                        if var2_set and formatted_num2:
+                            st.markdown(f"""
+                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
+                                <img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" 
+                                     style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
+                            </div>
+                            """, unsafe_allow_html=True)
                         else:
-                            st.markdown(f"**Variant 2: {var2}** (Image not available)")
-                            # Try direct embed for debugging
-                            if var2_set and var2_num:
-                                formatted_num2 = format_card_number(var2_num)
-                                st.markdown(f'<img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" width="200" style="border:1px solid #ddd; border-radius:5px;">', unsafe_allow_html=True)
+                            st.markdown("""
+                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
+                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center;">
+                                    Image not available
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
                     
-                    # Create and display bar chart
-                    fig = create_variant_bar_chart(row)
-                    display_chart(fig)
+                    # Column 3: Bar Chart
+                    with col3:
+                        # Update the create_variant_bar_chart function call to use fixed height
+                        fig = create_variant_bar_chart(row)
+                        
+                        # Set fixed height for the chart
+                        fig.update_layout(
+                            height=150,  # Fixed height to match images
+                            margin=dict(l=0, r=0, t=10, b=10),
+                        )
+                        
+                        display_chart(fig)
         else:
             st.info("No cards with variants found in this deck.")
     
