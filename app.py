@@ -481,16 +481,16 @@ if 'analyze' in st.session_state and selected_option:
             st.info("No cards with variants found in this deck.")
     
     with tab4:
-        # #st.subheader("Raw Analysis Data")
+        #st.subheader("Raw Analysis Data")
         
-        # # Main analysis data
-        # st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Card Usage Data</h4>", unsafe_allow_html=True)
-        # st.dataframe(results, use_container_width=True)
+        # Main analysis data
+        st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Card Usage Data</h4>", unsafe_allow_html=True)
+        st.dataframe(results, use_container_width=True)
         
-        # # Variant analysis data
-        # if not variant_df.empty:
-        #     st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Variant Analysis Data</h4>", unsafe_allow_html=True)
-        #     st.dataframe(variant_df, use_container_width=True)
+        # Variant analysis data
+        if not variant_df.empty:
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Variant Analysis Data</h4>", unsafe_allow_html=True)
+            st.dataframe(variant_df, use_container_width=True)
 
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
