@@ -232,21 +232,77 @@ if 'analyze' in st.session_state and selected_option:
     with tab2:
         #st.subheader("Deck Template")
         
-        deck_list, total_cards, options = build_deck_template(results)
+        # Use the updated function that returns deck_info
+        deck_list, deck_info, total_cards, options = build_deck_template(results)
+        
+        # Import needed functions (if not already imported)
+        from image_processor import format_card_number, IMAGE_BASE_URL
         
         col1, col2 = st.columns(2)
         
         with col1:
-            pokemon_count = sum(int(c.split()[0]) for c in deck_list['Pokemon'])
+            pokemon_count = sum(card['count'] for card in deck_info['Pokemon'])
             st.write(f"#### Pokemon ({pokemon_count})")
-            for card in deck_list['Pokemon']:
-                st.write(f"{card}")
+            
+            # Create a grid layout for Pokémon cards
+            pokemon_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">'
+            
+            for card in deck_info['Pokemon']:
+                # Format number for URL
+                formatted_num = format_card_number(card['num']) if card['num'] else ""
+                set_code = card['set']
+                
+                # Generate card HTML with count overlay
+                pokemon_html += f"""
+                <div style="position: relative; width: 120px; margin-bottom: 15px;">
+                    <div style="position: absolute; top: -8px; left: -8px; background-color: #1E88E5; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 1;">
+                        {card['count']}
+                    </div>
+                    {
+                        f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 10px; border: 1px solid #ddd;">' 
+                        if set_code and formatted_num else
+                        f'<div style="border: 1px dashed #ddd; border-radius: 10px; padding: 10px; height: 168px; display: flex; align-items: center; justify-content: center; text-align: center;">{card["name"]}</div>'
+                    }
+                    <div style="font-size: 12px; text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{card['name']}">
+                        {card['name']}
+                    </div>
+                </div>
+                """
+            
+            pokemon_html += '</div>'
+            st.markdown(pokemon_html, unsafe_allow_html=True)
         
         with col2:
-            trainer_count = sum(int(c.split()[0]) for c in deck_list['Trainer'])
+            trainer_count = sum(card['count'] for card in deck_info['Trainer'])
             st.write(f"#### Trainer ({trainer_count})")
-            for card in deck_list['Trainer']:
-                st.write(f"{card}")
+            
+            # Create a grid layout for Trainer cards
+            trainer_html = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">'
+            
+            for card in deck_info['Trainer']:
+                # Format number for URL
+                formatted_num = format_card_number(card['num']) if card['num'] else ""
+                set_code = card['set']
+                
+                # Generate card HTML with count overlay
+                trainer_html += f"""
+                <div style="position: relative; width: 120px; margin-bottom: 15px;">
+                    <div style="position: absolute; top: -8px; left: -8px; background-color: #FF5722; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 1;">
+                        {card['count']}
+                    </div>
+                    {
+                        f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 10px; border: 1px solid #ddd;">' 
+                        if set_code and formatted_num else
+                        f'<div style="border: 1px dashed #ddd; border-radius: 10px; padding: 10px; height: 168px; display: flex; align-items: center; justify-content: center; text-align: center;">{card["name"]}</div>'
+                    }
+                    <div style="font-size: 12px; text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{card['name']}">
+                        {card['name']}
+                    </div>
+                </div>
+                """
+            
+            trainer_html += '</div>'
+            st.markdown(trainer_html, unsafe_allow_html=True)
         
         #st.write("---")
         remaining = 20 - total_cards
