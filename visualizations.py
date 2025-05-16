@@ -109,7 +109,7 @@ def create_variant_bar_chart(variant_data):
     # Prepare labels for the chart - conditionally include Mixed
     labels = [var1, var2]
     if include_mixed:
-        labels.append("Mixed (1 of each)")
+        labels.append("Mixed")
     
     # Get counts directly from the variant data
     total_decks = variant_data['Total Decks']
