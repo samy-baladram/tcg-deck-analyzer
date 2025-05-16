@@ -110,7 +110,7 @@ def create_variant_bar_chart(variant_data):
     # Start with Mixed at the top, then var2, then var1 for inverted order
     labels = []
     if include_mixed:
-        labels.append("Mixed (1 of each)")
+        labels.append("1 of each")
     labels.extend([var2, var1])  # Add in reverse order
     
     # Get counts directly from the variant data
