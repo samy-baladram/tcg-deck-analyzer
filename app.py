@@ -259,24 +259,35 @@ if 'analyze' in st.session_state and selected_option:
             # Display variant analysis
             for _, row in variant_df.iterrows():
                 with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card"):
+                    # Top section with variant info in two columns
                     col1, col2 = st.columns(2)
                     
+                    # Split variants
+                    variants = row['Variants'].split(', ')
+                    var1 = variants[0] if len(variants) > 0 else "N/A"
+                    var2 = variants[1] if len(variants) > 1 else "N/A"
+                    
                     with col1:
-                        st.write("**Variants:**")
-                        st.write(row['Variants'])
+                        st.write(f"**Variant 1:**")
+                        st.write(var1)
                         
                     with col2:
-                        st.write("**Usage Patterns:**")
-                        if row['Both Var1'] > 0:
-                            st.write(f"- Both copies of Var1: {row['Both Var1']} decks")
-                        if row['Both Var2'] > 0:
-                            st.write(f"- Both copies of Var2: {row['Both Var2']} decks")
-                        if row['Mixed'] > 0:
-                            st.write(f"- Mixed (1 of each): {row['Mixed']} decks")
+                        st.write(f"**Variant 2:**")
+                        st.write(var2)
+                    
+                    # Create and display bar chart
+                    fig = create_variant_bar_chart(row)
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Additional stats in small text
+                    st.write("<small>Other patterns:</small>", unsafe_allow_html=True)
+                    stats_col1, stats_col2 = st.columns(2)
+                    with stats_col1:
                         if row['Single Var1'] > 0:
-                            st.write(f"- Single Var1: {row['Single Var1']} decks")
+                            st.write(f"<small>• Single copy of Var1: {row['Single Var1']} decks</small>", unsafe_allow_html=True)
+                    with stats_col2:
                         if row['Single Var2'] > 0:
-                            st.write(f"- Single Var2: {row['Single Var2']} decks")
+                            st.write(f"<small>• Single copy of Var2: {row['Single Var2']} decks</small>", unsafe_allow_html=True)
         else:
             st.info("No cards with variants found in this deck.")
     
