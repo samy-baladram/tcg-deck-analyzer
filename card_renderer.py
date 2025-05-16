@@ -37,6 +37,10 @@ class CardGrid:
         """Add a card to the grid, repeating it 'count' times"""
         formatted_num = format_card_number(num) if num else ""
         
+        # Debug: print the URL that will be used
+        image_url = f"{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" if set_code and formatted_num else "No URL"
+        print(f"Adding card: {card_name}, URL: {image_url}")
+        
         # Generate HTML for each copy of the card
         for _ in range(count):
             card_html = self._generate_card_html(card_name, set_code, formatted_num, usage_pct)
@@ -120,7 +124,7 @@ def render_deck_section(cards, section_title, card_count=None):
 
 def render_option_section(cards_df, section_title):
     """Render options section with percentages"""
-    st.markdown(f"####{section_title}", unsafe_allow_html=True)
+    st.markdown(f"#### {section_title}", unsafe_allow_html=True)
     
     grid = CardGrid(
         card_width=95,
