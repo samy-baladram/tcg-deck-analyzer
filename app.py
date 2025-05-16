@@ -280,20 +280,40 @@ if 'analyze' in st.session_state and selected_option:
             trainer_html += '</div>'
             st.markdown(trainer_html, unsafe_allow_html=True)
         
-        #st.write("---")
+        # Display flexible slots with card images
         remaining = 20 - total_cards
         st.write(f"### Flexible Slots ({remaining} cards)")
         st.write("Common choices include:")
         
-        # Format options for display
-        options_display = options[['card_name', 'set', 'num', 'display_usage', 'type']].copy()
-        options_display['Card Display'] = options_display.apply(
-            lambda row: format_card_display(row['card_name'], row['set'], row['num']), 
-            axis=1
-        )
-        final_display = options_display[['Card Display', 'display_usage', 'type']].copy()
-        final_display.columns = ['Card Name', 'Usage %', 'Type']
-        st.dataframe(final_display, use_container_width=True, hide_index=True)
+        # Sort options by usage percentage (descending)
+        sorted_options = options.sort_values(by='display_usage', ascending=False)
+        
+        # Create a grid layout for flexible slot cards
+        flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
+        
+        # Include all options
+        for _, card in sorted_options.iterrows():
+            # Format number for URL
+            formatted_num = format_card_number(card['num']) if card['num'] else ""
+            set_code = card['set']
+            usage_pct = card['display_usage']
+            card_type = card['type']
+            
+            # Set text color based on card type
+            text_color = "#1565C0" if card_type == "Pokemon" else "#D84315"
+            
+            flex_html += f"""<div style="width: 90px; margin-bottom: 5px;" title="{card['card_name']}">
+                {
+                    f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 6px; border: 1px solid #eee;">' 
+                    if set_code and formatted_num else
+                    f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 125px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 10px;">{card["card_name"]}</div>'
+                }
+                <div style="text-align: center; margin-top: 2px; font-size: 11px; font-weight: 500; color: {text_color};">
+                    {usage_pct}%
+                </div>
+            </div>"""
+        flex_html += '</div>'
+        st.markdown(flex_html, unsafe_allow_html=True)
     
     with tab3:
         if not variant_df.empty:
