@@ -286,7 +286,7 @@ if 'analyze' in st.session_state and selected_option:
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            st.write("#### Pokemon")
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Pokémon</h4>", unsafe_allow_html=True)
             type_cards = results[results['type'] == 'Pokemon']
             
             if not type_cards.empty:
@@ -297,7 +297,7 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Pokemon cards found")
         
         with col2:
-            st.write("#### Trainer")
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Trainer</h4>", unsafe_allow_html=True)
             type_cards = results[results['type'] == 'Trainer']
             
             if not type_cards.empty:
@@ -307,20 +307,18 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Trainer cards found")
     
     with tab2:
-        #st.subheader("Deck Template")
         
         # Use the updated function that returns deck_info
         deck_list, deck_info, total_cards, options = build_deck_template(results)
         
         # Import needed functions (if not already imported)
         from image_processor import format_card_number, IMAGE_BASE_URL
-        
+        st.markdown("<h3 style='font-family: Nunito, sans-serif; font-weight: 700;'>Core Cards</h3>", unsafe_allow_html=True)
         col1, col2 = st.columns([1, 2])
         
         with col1:
             pokemon_count = sum(card['count'] for card in deck_info['Pokemon'])
-            st.write(f"#### Pokemon ({pokemon_count})")
-            
+            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Pokémon ({pokemon_count})</h4>", unsafe_allow_html=True)
             # Create a grid layout for Pokémon cards
             pokemon_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
             
@@ -339,7 +337,7 @@ if 'analyze' in st.session_state and selected_option:
         
         with col2:
             trainer_count = sum(card['count'] for card in deck_info['Trainer'])
-            st.write(f"#### Trainer ({trainer_count})")
+            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Trainer ({pokemon_count})</h4>", unsafe_allow_html=True)
             
             # Create a grid layout for Trainer cards
             trainer_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -359,8 +357,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Display flexible slots section
         remaining = 20 - total_cards
-        st.write(f"### Flexible Slots ({remaining} cards)")
-        st.write("Common choices include:")
+        st.markdown(f"<h3 style='font-family: Nunito, sans-serif; font-weight: 700;'>Flexible Slots ({remaining} cards)</h3>", unsafe_allow_html=True)
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
@@ -371,7 +368,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Left column: Pokémon options
         with flex_col1:
-            st.write("#### Pokémon Options")
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Pokémon Options</h4>", unsafe_allow_html=True)
             
             # Create a grid layout for Pokémon options
             pokemon_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -398,7 +395,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Right column: Trainer options
         with flex_col2:
-            st.write("#### Trainer Options")
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Trainer Options</h4>", unsafe_allow_html=True)
             
             # Create a grid layout for Trainer options
             trainer_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -425,7 +422,7 @@ if 'analyze' in st.session_state and selected_option:
     
     with tab3:
         if not variant_df.empty:
-            st.write("This shows how players use different versions of the same card:")
+            st.markdown("<h5 style='font-family: Nunito, sans-serif; font-weight: 300;'>This shows how players use different versions of the same card:</h5>", unsafe_allow_html=True)
             
             # Import needed functions
             from image_processor import format_card_number, IMAGE_BASE_URL
@@ -487,12 +484,12 @@ if 'analyze' in st.session_state and selected_option:
         #st.subheader("Raw Analysis Data")
         
         # Main analysis data
-        st.write("#### Card Usage Data")
+        st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Card Usage Data</h4>", unsafe_allow_html=True)
         st.dataframe(results, use_container_width=True)
         
         # Variant analysis data
         if not variant_df.empty:
-            st.write("#### Variant Analysis Data")
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Variant Analysis Data</h4>", unsafe_allow_html=True)
             st.dataframe(variant_df, use_container_width=True)
 
 else:
