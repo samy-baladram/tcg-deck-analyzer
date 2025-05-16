@@ -9,7 +9,6 @@ from config import (
     PLOTLY_CONFIG
 )
 from formatters import format_percentage, format_card_label
-from image_processor import get_card_thumbnail  # Add this import at the top
 
 def create_usage_bar_chart(type_cards, card_type):
     """Create horizontal stacked bar chart for card usage"""
@@ -68,113 +67,38 @@ def create_usage_bar_chart(type_cards, card_type):
         insidetextanchor='start'
     ))
     
-    # Add custom images using annotations instead of HTML
-    for i, (label, img) in enumerate(zip([var1, var2], [var1_img, var2_img])):
-        if img:
-            fig.add_layout_image(
-                dict(
-                    source=f"data:image/png;base64,{img}",
-                    x=0,  # Position at left edge
-                    y=i,  # Position at each tick value
-                    xref="paper",
-                    yref="y",
-                    sizex=0.1,  # Width as percentage of plot
-                    sizey=0.9,  # Height as percentage of row
-                    xanchor="right",
-                    yanchor="middle",
-                    opacity=1
-                )
-            )
-            
-            # Add text label next to image
-            fig.add_annotation(
-                x=0.01,  # Slightly offset from left edge
-                y=i,     # Position at each tick value
-                text=label,
-                showarrow=False,
-                xref="paper",
-                yref="y",
-                xanchor="left",
-                yanchor="middle"
-            )
-        else:
-            # Just add text label if no image
-            fig.add_annotation(
-                x=0,     # At left edge
-                y=i,     # Position at each tick value
-                text=label,
-                showarrow=False,
-                xref="paper",
-                yref="y",
-                xanchor="left",
-                yanchor="middle"
-            )
+    # Update layout
+    fig.update_layout(
+        barmode='stack',
+        height=max(CHART_MIN_HEIGHT, len(type_cards) * CHART_ROW_HEIGHT),
+        margin=dict(l=0, r=0, t=0, b=0),
+        xaxis_title="",
+        xaxis=dict(
+            range=[0, 100],
+            showticklabels=False,
+        ),
+        showlegend=False,
+        legend=dict(
+            orientation="h", 
+            yanchor="top", 
+            y=-0.06, 
+            xanchor="right", 
+            x=1
+        ),
+        font=dict(size=CHART_FONT_SIZE),
+        yaxis=dict(tickfont=dict(size=CHART_FONT_SIZE)),
+        bargap=CHART_BAR_GAP,
+        uniformtext=dict(minsize=12, mode='show')
+    )
     
-    # If mixed is included
-    if include_mixed:
-        if var1_img and var2_img:
-            # Add both images for mixed
-            fig.add_layout_image(
-                dict(
-                    source=f"data:image/png;base64,{var1_img}",
-                    x=0,
-                    y=2,  # Third position
-                    xref="paper",
-                    yref="y",
-                    sizex=0.05,  # Smaller width
-                    sizey=0.9,
-                    xanchor="right",
-                    yanchor="middle",
-                    opacity=1
-                )
-            )
-            
-            fig.add_layout_image(
-                dict(
-                    source=f"data:image/png;base64,{var2_img}",
-                    x=0.05,  # Offset from first image
-                    y=2,     # Third position
-                    xref="paper",
-                    yref="y",
-                    sizex=0.05,  # Smaller width
-                    sizey=0.9,
-                    xanchor="right",
-                    yanchor="middle",
-                    opacity=1
-                )
-            )
-            
-            # Add mixed label
-            fig.add_annotation(
-                x=0.01,
-                y=2,
-                text="Mixed (1 of each)",
-                showarrow=False,
-                xref="paper",
-                yref="y",
-                xanchor="left",
-                yanchor="middle"
-            )
-        else:
-            # Just add text if no images
-            fig.add_annotation(
-                x=0,
-                y=2,
-                text="Mixed (1 of each)",
-                showarrow=False,
-                xref="paper",
-                yref="y",
-                xanchor="left",
-                yanchor="middle"
-            )
-    
-    # Hide the default y-axis labels
-    fig.update_yaxes(showticklabels=False)
+    # Reverse the order to show highest usage at top
+    fig.update_yaxes(autorange='reversed')
     
     return fig
 
 def create_variant_bar_chart(variant_data):
     """Create horizontal stacked bar chart for variant usage patterns with card images"""
+    from image_processor import get_card_thumbnail
     
     # Extract data from the updated variant data structure
     var1 = variant_data['Var1']
@@ -315,11 +239,6 @@ def create_variant_bar_chart(variant_data):
         tickvals=tick_vals,
         ticktext=tick_text,
         tickfont=dict(size=14),
-        tickangle=0,  # Ensure labels are horizontal
-        side='left',  # Position labels on the left
-        showline=False,  # Remove axis line
-        showticklabels=True,  # Ensure labels are visible
-        rendermode='svg'  # Ensure HTML renders properly
     )
     
     return fig
@@ -328,15 +247,8 @@ def display_chart(fig, use_container_width=True):
     """Display a plotly chart with standard config"""
     import streamlit as st
     
-    # Create config that enables HTML
-    config = {
-        'displayModeBar': False,
-        'staticPlot': False,  # Allow HTML to render
-        'displaylogo': False,
-        'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'zoom2d', 'zoomIn2d', 
-                                  'zoomOut2d', 'autoScale2d', 'resetScale2d'],
-        'doubleClick': False,
-        'showTips': False
-    }
+    # Enable HTML in labels
+    config = PLOTLY_CONFIG.copy()
+    config['displayModeBar'] = False
     
     st.plotly_chart(fig, use_container_width=use_container_width, config=config)
