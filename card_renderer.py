@@ -10,7 +10,7 @@ DEFAULT_BORDER_RADIUS = 3
 DEFAULT_BORDER_COLOR = "rgba(102, 102, 102, 0.5)"
 DEFAULT_FALLBACK_HEIGHT = 140
 DEFAULT_PERCENTAGE_FONT_SIZE = 14
-IMAGE_BASE_URL = "https://limitlesstcg.nyc3.digitaloceanspaces.com/tpci/cards/poke"  # Make sure to import this correctly
+IMAGE_BASE_URL = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"  # Make sure to import this correctly
 
 class CardGrid:
     """Class for rendering grids of Pokémon TCG cards"""
@@ -112,7 +112,7 @@ def render_deck_section(cards, section_title, card_count=None):
     if card_count is None and isinstance(cards, list):
         card_count = sum(card.get('count', 1) for card in cards)
     
-    st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 600;'>{section_title} ({card_count})</h4>", unsafe_allow_html=True)
+    st.markdown(f"#### {section_title} {card_count}", unsafe_allow_html=True)
     
     grid = CardGrid()
     if isinstance(cards, list):
