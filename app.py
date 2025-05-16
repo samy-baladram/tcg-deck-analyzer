@@ -16,75 +16,75 @@ from utils import calculate_time_ago, format_card_display
 # Add this right after st.set_page_config()
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
-# st.markdown("""
-# <style>
-# /* Change primary color to blue */
-# div[data-baseweb="select"] > div {
-#     border-color: #00A0FF !important;
-# }
+st.markdown("""
+<style>
+/* Change primary color to blue */
+div[data-baseweb="select"] > div {
+    border-color: #00A0FF !important;
+}
 
-# /* Selected option */
-# div[data-baseweb="select"] [aria-selected="true"] {
-#     background-color: #00A0FF !important;
-# }
+/* Selected option */
+div[data-baseweb="select"] [aria-selected="true"] {
+    background-color: #00A0FF !important;
+}
 
-# /* Hover effect */
-# div[role="option"]:hover {
-#     background-color: #00A0FF !important;
-# }
+/* Hover effect */
+div[role="option"]:hover {
+    background-color: #00A0FF !important;
+}
 
-# /* Button primary color */
-# .stButton > button {
-#     border-color: #00A0FF;
-#     color: #00A0FF;
-# }
+/* Button primary color */
+.stButton > button {
+    border-color: #00A0FF;
+    color: #00A0FF;
+}
 
-# .stButton > button:hover {
-#     border-color: #00A0FF;
-#     color: #00A0FF;
-# }
+.stButton > button:hover {
+    border-color: #00A0FF;
+    color: #00A0FF;
+}
 
-# /* Progress bar */
-# .stProgress > div > div > div > div {
-#     background-color: #00A0FF;
-# }
+/* Progress bar */
+.stProgress > div > div > div > div {
+    background-color: #00A0FF;
+}
 
-# /* TAB NAVIGATION STYLES */
-# /* Active tab text color */
-# .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-#     color: #00A0FF !important;
-# }
+/* TAB NAVIGATION STYLES */
+/* Active tab text color */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+    color: #00A0FF !important;
+}
 
-# /* Tab hover with 50% transparency */
-# .stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
-#     color: rgba(72, 187, 255, 0.4) !important;
-#     transition: color 0.3s;
-# }
+/* Tab hover with 50% transparency */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
+    color: rgba(72, 187, 255, 0.4) !important;
+    transition: color 0.3s;
+}
 
-# /* SELECTED TAB UNDERLINE ONLY */
-# /* This targets the moving underline indicator */
-# .stTabs [data-baseweb="tab-highlight"] {
-#     background-color: #00A0FF !important;
-# }
+/* SELECTED TAB UNDERLINE ONLY */
+/* This targets the moving underline indicator */
+.stTabs [data-baseweb="tab-highlight"] {
+    background-color: #00A0FF !important;
+}
 
-# /* Remove any background color from tab list */
-# .stTabs [data-baseweb="tab-list"] {
-#     background-color: transparent !important;
-# }
+/* Remove any background color from tab list */
+.stTabs [data-baseweb="tab-list"] {
+    background-color: transparent !important;
+}
 
-# /* Ensure only selected tab has the indicator */
-# .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
-#     border-bottom: none !important;
-# }
+/* Ensure only selected tab has the indicator */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
+    border-bottom: none !important;
+}
 
-# /* Even more specific selector targeting the text */
-# div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
-#     font-size: 18px !important;
-#     padding: 8px 16px !important;
-# }
+/* Even more specific selector targeting the text */
+div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
+    font-size: 18px !important;
+    padding: 8px 16px !important;
+}
 
-# </style>
-# """, unsafe_allow_html=True)
+</style>
+""", unsafe_allow_html=True)
 
 # Main title
 #st.image("title_banner.png", use_container_width=True)
