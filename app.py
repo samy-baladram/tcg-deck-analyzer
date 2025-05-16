@@ -14,7 +14,7 @@ from visualizations import create_usage_bar_chart, display_chart, create_variant
 from utils import calculate_time_ago, format_card_display
 
 # Add this right after st.set_page_config()
-st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="centered")
+st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
 st.markdown("""
 <style>
