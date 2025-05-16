@@ -235,8 +235,9 @@ if 'analyze' in st.session_state and selected_option:
         # Import card renderer
         from card_renderer import render_deck_section, render_option_section
         
-        col1, col2 = st.columns([2, 3])
         st.write(f"### Core Cards", unsafe_allow_html=True)
+        col1, col2 = st.columns([2, 3])
+
         with col1:
             # Render Pokemon cards
             render_deck_section(deck_info['Pokemon'], "Pokemon")
