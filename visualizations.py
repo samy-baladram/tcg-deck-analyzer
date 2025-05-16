@@ -19,11 +19,15 @@ def create_usage_bar_chart(type_cards, card_type):
         return None
     
     # Import necessary functions
-    from image_processor import get_card_thumbnail
+    from image_processor import fetch_and_crop_image, format_card_number
     import base64
+    from io import BytesIO
     
     # Create stacked bar chart data
     fig_data = []
+    
+    # Prepare image data for y-axis labels
+    y_labels = []
     
     for _, card in type_cards.iterrows():
         # Format card label based on type
@@ -32,35 +36,47 @@ def create_usage_bar_chart(type_cards, card_type):
         else:
             card_label = card['card_name']
         
+        # Store data for chart
         fig_data.append({
             'Card': card_label,
             '1 Copy': card['pct_1'],
             '2 Copies': card['pct_2'],
-            'Total': card['pct_total'],
-            'set': card['set'],
-            'num': card['num']
+            'Total': card['pct_total']
         })
+        
+        # Prepare custom label with image for Pokémon cards
+        custom_label = card_label
+        if card_type == 'Pokemon' and card['set'] and card['num']:
+            try:
+                # Format card number
+                formatted_num = format_card_number(card['num'])
+                
+                # Try to get small image thumbnail
+                img = fetch_and_crop_image(card['set'], formatted_num)
+                if img:
+                    # Resize to thumbnail (30px height)
+                    height = 30
+                    width = int(img.width * (height / img.height))
+                    img = img.resize((width, height))
+                    
+                    # Convert to base64
+                    buffered = BytesIO()
+                    img.save(buffered, format="PNG")
+                    img_str = base64.b64encode(buffered.getvalue()).decode()
+                    
+                    # Create HTML with image and text
+                    custom_label = f'<img src="data:image/png;base64,{img_str}" style="height:30px;vertical-align:middle;margin-right:5px;">{card_label}'
+            except Exception as e:
+                # Fallback to text only
+                pass
+        
+        y_labels.append(custom_label)
     
     # Create DataFrame for plotting
     plot_df = pd.DataFrame(fig_data)
     
     # Create figure
     fig = go.Figure()
-    
-    # Prepare card images for y-axis labels
-    y_labels = []
-    for _, row in plot_df.iterrows():
-        # Default label is just text
-        label = row['Card']
-        
-        # Try to get thumbnail if set and num are available
-        if row['set'] and row['num']:
-            thumbnail = get_card_thumbnail(row['set'], row['num'], size=30)
-            if thumbnail:
-                # Create HTML with image and text
-                label = f'<img src="data:image/png;base64,{thumbnail}" style="height:30px;vertical-align:middle;margin-right:5px;">{row["Card"]}'
-        
-        y_labels.append(label)
     
     # Add bars for each count type
     fig.add_trace(go.Bar(
@@ -91,11 +107,11 @@ def create_usage_bar_chart(type_cards, card_type):
         insidetextanchor='start'
     ))
     
-    # Update layout to accommodate images
+    # Update layout
     fig.update_layout(
         barmode='stack',
         height=max(CHART_MIN_HEIGHT, len(type_cards) * (CHART_ROW_HEIGHT + 10)),  # Add extra height for images
-        margin=dict(l=0, r=0, t=0, b=0),
+        margin=dict(l=10, r=0, t=0, b=0),  # Add left margin for images
         xaxis_title="",
         xaxis=dict(
             range=[0, 100],
@@ -111,10 +127,7 @@ def create_usage_bar_chart(type_cards, card_type):
         ),
         font=dict(size=CHART_FONT_SIZE),
         yaxis=dict(
-            tickfont=dict(size=CHART_FONT_SIZE),
-            tickmode='array',
-            tickvals=list(range(len(y_labels))),
-            ticktext=y_labels
+            tickfont=dict(size=CHART_FONT_SIZE)
         ),
         bargap=CHART_BAR_GAP,
         uniformtext=dict(minsize=12, mode='show')
@@ -236,7 +249,13 @@ def display_chart(fig, use_container_width=True):
     import streamlit as st
     
     # Enable HTML in labels
-    config = PLOTLY_CONFIG.copy()
-    config['displayModeBar'] = False
+    config = {
+        'displayModeBar': False,
+        'staticPlot': True,
+        'displaylogo': False,
+        'doubleClick': False,
+        'showTips': False,
+        'allowHTML': True  # Important for showing images
+    }
     
     st.plotly_chart(fig, use_container_width=use_container_width, config=config)
