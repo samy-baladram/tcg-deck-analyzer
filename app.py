@@ -87,7 +87,21 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 """, unsafe_allow_html=True)
 
 # Main title
-st.image("title_banner.png", use_container_width=True)
+#st.image("title_banner.png", use_container_width=True)
+
+# Get the base64 string of your image
+img_path = "title_banner.png"
+img_base64 = get_base64_image(img_path)
+
+# Define the maximum width you want for the banner
+max_banner_width = 800  # Adjust this value as needed
+
+# Display the image with restricted width
+st.markdown(f"""
+<div style="display: flex; justify-content: center; width: 100%;">
+    <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_banner_width}px; height: auto;">
+</div>
+""", unsafe_allow_html=True)
 
 # Initialize session state and fetch deck list on first load
 if 'deck_list' not in st.session_state:
