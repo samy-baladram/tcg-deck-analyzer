@@ -235,7 +235,7 @@ if 'analyze' in st.session_state and selected_option:
         # Import card renderer
         from card_renderer import render_deck_section, render_option_section
         
-        col1, col2 = st.columns([1, 2])
+        col1, col2 = st.columns([2, 3])
         
         with col1:
             # Render Pokemon cards
@@ -247,6 +247,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Display flexible slots section
         remaining = 20 - total_cards
+        st.write("<br>", unsafe_allow_html=True)
         st.write(f"### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
         st.write("Common choices include:", unsafe_allow_html=True)
         
@@ -255,7 +256,7 @@ if 'analyze' in st.session_state and selected_option:
         trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
         # Create two columns for flexible slots
-        flex_col1, flex_col2 = st.columns([1, 2])
+        flex_col1, flex_col2 = st.columns([2, 3])
         
         with flex_col1:
             # Render Pokemon options
