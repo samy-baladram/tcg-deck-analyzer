@@ -73,37 +73,20 @@ class CardGrid:
                 count=count,
                 usage_pct=usage_pct
             )
-    
     def _generate_card_html(self, card_name, set_code, formatted_num, usage_pct=None):
         """Generate HTML for a single card"""
-        card_html = f"""<div style="width: {self.card_width}px; margin-bottom: {self.margin_bottom}px;" title="{card_name}">"""
+        card_html = f"<div style=\"width: {self.card_width}px; margin-bottom: {self.margin_bottom}px;\" title=\"{card_name}\">"
         
         # Card image or fallback
         if set_code and formatted_num:
-            card_html += f"""<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" 
-                 style="width: 100%; border-radius: {self.border_radius}px; border: 1px solid {self.border_color};">"""
+            # Make sure the URL matches exactly what was working before
+            card_html += f"<img src=\"{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp\" style=\"width: 100%; border-radius: {self.border_radius}px; border: 1px solid {self.border_color};\">"
         else:
-            card_html += f"""<div style="border: 1px dashed {self.border_color}; 
-                        border-radius: {self.border_radius}px; 
-                        padding: 5px; 
-                        height: {DEFAULT_FALLBACK_HEIGHT}px; 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center; 
-                        text-align: center; 
-                        font-size: 11px;">
-                {card_name}
-            </div>"""
+            card_html += f"<div style=\"border: 1px dashed {self.border_color}; border-radius: {self.border_radius}px; padding: 5px; height: {DEFAULT_FALLBACK_HEIGHT}px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;\">{card_name}</div>"
         
         # Add percentage if requested
         if self.show_percentage and usage_pct is not None:
-            card_html += f"""<div class="card-percentage" 
-                 style="text-align: center; 
-                        margin-top: 4px; 
-                        font-size: {self.percentage_font_size}px; 
-                        font-weight: 500;">
-                {usage_pct}%
-            </div>"""
+            card_html += f"<div class=\"card-percentage\" style=\"text-align: center; margin-top: 4px; font-size: {self.percentage_font_size}px; font-weight: 500;\">{usage_pct}%</div>"
             
         card_html += "</div>"
         return card_html
