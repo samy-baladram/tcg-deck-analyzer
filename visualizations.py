@@ -11,9 +11,13 @@ from config import (
 from formatters import format_percentage, format_card_label
 
 def create_usage_bar_chart(type_cards, card_type):
-    """Create horizontal stacked bar chart for card usage"""
+    """Create horizontal stacked bar chart for card usage with card thumbnails"""
     if type_cards.empty:
         return None
+    
+    # Import necessary functions
+    from image_processor import get_card_thumbnail
+    import base64
     
     # Create stacked bar chart data
     fig_data = []
@@ -29,7 +33,9 @@ def create_usage_bar_chart(type_cards, card_type):
             'Card': card_label,
             '1 Copy': card['pct_1'],
             '2 Copies': card['pct_2'],
-            'Total': card['pct_total']
+            'Total': card['pct_total'],
+            'set': card['set'],
+            'num': card['num']
         })
     
     # Create DataFrame for plotting
@@ -38,10 +44,25 @@ def create_usage_bar_chart(type_cards, card_type):
     # Create figure
     fig = go.Figure()
     
+    # Prepare card images for y-axis labels
+    y_labels = []
+    for _, row in plot_df.iterrows():
+        # Default label is just text
+        label = row['Card']
+        
+        # Try to get thumbnail if set and num are available
+        if row['set'] and row['num']:
+            thumbnail = get_card_thumbnail(row['set'], row['num'], size=30)
+            if thumbnail:
+                # Create HTML with image and text
+                label = f'<img src="data:image/png;base64,{thumbnail}" style="height:30px;vertical-align:middle;margin-right:5px;">{row["Card"]}'
+        
+        y_labels.append(label)
+    
     # Add bars for each count type
     fig.add_trace(go.Bar(
         name='1 Copy',
-        y=plot_df['Card'],
+        y=y_labels,
         x=plot_df['1 Copy'],
         orientation='h',
         marker_color=CHART_COLORS[f'{card_type.lower()}_1'],
@@ -55,7 +76,7 @@ def create_usage_bar_chart(type_cards, card_type):
     
     fig.add_trace(go.Bar(
         name='2 Copies',
-        y=plot_df['Card'],
+        y=y_labels,
         x=plot_df['2 Copies'],
         orientation='h',
         marker_color=CHART_COLORS[f'{card_type.lower()}_2'],
@@ -67,10 +88,10 @@ def create_usage_bar_chart(type_cards, card_type):
         insidetextanchor='start'
     ))
     
-    # Update layout
+    # Update layout to accommodate images
     fig.update_layout(
         barmode='stack',
-        height=max(CHART_MIN_HEIGHT, len(type_cards) * CHART_ROW_HEIGHT),
+        height=max(CHART_MIN_HEIGHT, len(type_cards) * (CHART_ROW_HEIGHT + 10)),  # Add extra height for images
         margin=dict(l=0, r=0, t=0, b=0),
         xaxis_title="",
         xaxis=dict(
@@ -86,7 +107,12 @@ def create_usage_bar_chart(type_cards, card_type):
             x=1
         ),
         font=dict(size=CHART_FONT_SIZE),
-        yaxis=dict(tickfont=dict(size=CHART_FONT_SIZE)),
+        yaxis=dict(
+            tickfont=dict(size=CHART_FONT_SIZE),
+            tickmode='array',
+            tickvals=list(range(len(y_labels))),
+            ticktext=y_labels
+        ),
         bargap=CHART_BAR_GAP,
         uniformtext=dict(minsize=12, mode='show')
     )
