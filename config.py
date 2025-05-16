@@ -11,13 +11,12 @@ CACHE_TTL = 3600  # 1 hour in seconds
 # Display settings
 MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
 
-# Chart colors
 CHART_COLORS = {
-    'pokemon_1': '#89EBFA',
-    'pokemon_2': '#A6C1FF',
-    'trainer_1': '#89EBFA',
-    'trainer_2': '#A6C1FF',
-    'mixed': '#89CEFA'
+    'pokemon_1': '#81D4FA',  # Light blue
+    'pokemon_2': '#0288D1',  # Darker blue
+    'trainer_1': '#A5D6A7',  # Light green
+    'trainer_2': '#2E7D32',  # Darker green
+    'mixed': '#90CAF9'       # Medium blue
 }
 
 # Chart settings
