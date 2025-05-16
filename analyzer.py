@@ -128,7 +128,7 @@ def analyze_variants(result_df, all_cards_df):
             'Total Decks': 0,
             'Var1': variant_list[0] if len(variant_list) > 0 else "",
             'Var2': variant_list[1] if len(variant_list) > 1 else "",
-            'Variants': ', '.join(variant_list),  # Keep this for compatibility with existing code
+            #'Variants': ', '.join(variant_list),  # Keep this for compatibility with existing code
             'Both Var1': 0,
             'Both Var2': 0,
             'Mixed': 0,
