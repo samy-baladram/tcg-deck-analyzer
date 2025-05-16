@@ -277,23 +277,23 @@ if 'analyze' in st.session_state and selected_option:
                     formatted_num2 = format_card_number(var2_num) if var2_num else ""
                     
                     # Create the 3-column layout
-                    col1, col2, col3 = st.columns([1, 1, 2])
+                    col1, col2, col3 = st.columns([1, 1, 3])
                     
                     # Column 1: Variant 1
                     with col1:
-                        st.markdown(f"**Variant 1:**")
-                        st.markdown(f"**{var1}**")
                         if var1_set and formatted_num1:
                             st.markdown(f"""
-                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
+                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <div style="text-align:center; margin-bottom:5px;"><strong>{var1}</strong></div>
                                 <img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" 
-                                     style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
+                                     style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
-                            st.markdown("""
-                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
-                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center;">
+                            st.markdown(f"""
+                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <div style="text-align:center; margin-bottom:5px;"><strong>{var1}</strong></div>
+                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">
                                     Image not available
                                 </div>
                             </div>
@@ -301,19 +301,19 @@ if 'analyze' in st.session_state and selected_option:
                     
                     # Column 2: Variant 2
                     with col2:
-                        st.markdown(f"**Variant 2:**")
-                        st.markdown(f"**{var2}**")
                         if var2_set and formatted_num2:
                             st.markdown(f"""
-                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
+                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <div style="text-align:center; margin-bottom:5px;"><strong>{var2}</strong></div>
                                 <img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" 
-                                     style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
+                                     style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
-                            st.markdown("""
-                            <div style="height:150px; display:flex; align-items:center; justify-content:center;">
-                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center;">
+                            st.markdown(f"""
+                            <div style="height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <div style="text-align:center; margin-bottom:5px;"><strong>{var2}</strong></div>
+                                <div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">
                                     Image not available
                                 </div>
                             </div>
@@ -321,15 +321,9 @@ if 'analyze' in st.session_state and selected_option:
                     
                     # Column 3: Bar Chart
                     with col3:
-                        # Update the create_variant_bar_chart function call to use fixed height
+                        # Create variant bar chart with fixed height
                         fig = create_variant_bar_chart(row)
-                        
-                        # Set fixed height for the chart
-                        fig.update_layout(
-                            height=150,  # Fixed height to match images
-                            margin=dict(l=0, r=0, t=10, b=10),
-                        )
-                        
+                        fig.update_layout(height=150)
                         display_chart(fig)
         else:
             st.info("No cards with variants found in this deck.")
