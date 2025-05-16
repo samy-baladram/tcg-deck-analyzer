@@ -96,48 +96,87 @@ def create_usage_bar_chart(type_cards, card_type):
     
     return fig
 
-def create_variant_bar_chart(variant_df):
-    """Create bar chart for variant usage patterns"""
-    if variant_df.empty:
-        return None
+def create_variant_bar_chart(variant_data):
+    """Create horizontal bar chart for variant usage patterns"""
+    
+    # Extract data
+    card_name = variant_data['Card Name']
+    variant_list = variant_data['Variants'].split(', ')
     
     # Prepare data for chart
-    chart_data = variant_df[['Card Name', 'Both Var1', 'Both Var2', 'Mixed']]
-    chart_data = chart_data.set_index('Card Name')
+    var1_count = variant_data['Both Var1']
+    var2_count = variant_data['Both Var2']
+    mixed_count = variant_data['Mixed']
+    
+    # Total count for percentage calculation
+    total_decks = variant_data['Total Decks']
+    
+    # Calculate percentages
+    var1_pct = int((var1_count / total_decks * 100) if total_decks > 0 else 0)
+    var2_pct = int((var2_count / total_decks * 100) if total_decks > 0 else 0)
+    mixed_pct = int((mixed_count / total_decks * 100) if total_decks > 0 else 0)
     
     # Create figure
     fig = go.Figure()
     
-    # Add traces for each variant pattern
+    # Format variant labels
+    var1_label = f"{variant_list[0]}" if len(variant_list) > 0 else "Variant 1"
+    var2_label = f"{variant_list[1]}" if len(variant_list) > 1 else "Variant 2"
+    
+    # Add bars for each variant pattern
+    # Var1 - Both copies
     fig.add_trace(go.Bar(
-        name='Both Var1',
-        x=chart_data.index,
-        y=chart_data['Both Var1'],
-        marker_color='lightblue'
+        name='Both copies of Variant 1',
+        y=[var1_label],
+        x=[var1_pct],
+        orientation='h',
+        marker_color=CHART_COLORS['pokemon_1'],
+        text=[f"  🂠 🂠 {var1_pct}%  " if var1_pct >= 20 else (f"  {var1_pct}%  " if var1_pct > CHART_TEXT_THRESHOLD else "")],
+        textposition='inside',
+        insidetextanchor='start',
+        textfont=dict(size=CHART_FONT_SIZE),
     ))
     
+    # Var2 - Both copies
     fig.add_trace(go.Bar(
-        name='Both Var2',
-        x=chart_data.index,
-        y=chart_data['Both Var2'],
-        marker_color='darkblue'
+        name='Both copies of Variant 2',
+        y=[var2_label],
+        x=[var2_pct],
+        orientation='h',
+        marker_color=CHART_COLORS['pokemon_2'],
+        text=[f"  🂠 🂠 {var2_pct}%  " if var2_pct >= 20 else (f"  {var2_pct}%  " if var2_pct > CHART_TEXT_THRESHOLD else "")],
+        textposition='inside',
+        insidetextanchor='start',
+        textfont=dict(size=CHART_FONT_SIZE),
     ))
     
+    # Mixed - One of each
     fig.add_trace(go.Bar(
-        name='Mixed',
-        x=chart_data.index,
-        y=chart_data['Mixed'],
-        marker_color='purple'
+        name='Mixed (1 of each)',
+        y=["Mixed (1 of each)"],
+        x=[mixed_pct],
+        orientation='h',
+        marker_color="#A378FF",  # Purple for mixed
+        text=[f"  🂠 + 🂠 {mixed_pct}%  " if mixed_pct >= 20 else (f"  {mixed_pct}%  " if mixed_pct > CHART_TEXT_THRESHOLD else "")],
+        textposition='inside',
+        insidetextanchor='start',
+        textfont=dict(size=CHART_FONT_SIZE),
     ))
     
     # Update layout
     fig.update_layout(
-        barmode='stack',
-        height=400,
-        xaxis_title="Card Name",
-        yaxis_title="Number of Decks",
-        showlegend=True,
-        font=dict(size=14)
+        height=150,  # Smaller height for expander
+        margin=dict(l=0, r=0, t=10, b=0),
+        xaxis_title="",
+        xaxis=dict(
+            range=[0, 105],  # Extend range beyond 100 to add padding
+            showticklabels=False,
+        ),
+        showlegend=False,
+        bargap=0.3,
+        uniformtext=dict(minsize=12, mode='show'),
+        paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+        plot_bgcolor='rgba(0,0,0,0)',   # Transparent plot area
     )
     
     return fig
