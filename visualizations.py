@@ -133,20 +133,21 @@ def create_variant_bar_chart(variant_data):
     if include_mixed:
         single_data.append(mixed_pct)
         double_data.append(0)  # Mixed has no "double" component
-        text_single.append(f" {mixed_pct}%    🂠 + 🂠" if mixed_pct >= 0 else (f"  {mixed_pct}%  " if mixed_pct > CHART_TEXT_THRESHOLD else ""))
+        text_single.append(f" {mixed_pct}%    🂠 + 🂠" if mixed_pct > 0 else "")
         text_double.append("")  # No double for mixed
     
     # Add var2 data
     single_data.append(var2_single_pct)
     double_data.append(var2_double_pct)
-    text_single.append(f" {var2_single_pct}%  🂠  " if var2_single_pct >= 0 else (f"  {var2_single_pct}%  " if var2_single_pct > CHART_TEXT_THRESHOLD else ""))
-    text_double.append(f" {var2_double_pct}%  🂠 🂠 " if var2_double_pct >= 0 else (f"  {var2_double_pct}%  " if var2_double_pct > CHART_TEXT_THRESHOLD else ""))
+    text_single.append(f" {var2_single_pct}%  🂠  " if var2_single_pct > 0 else "")
+    text_double.append(f" {var2_double_pct}%  🂠 🂠 " if var2_double_pct > 0 else "")
     
     # Add var1 data
     single_data.append(var1_single_pct)
     double_data.append(var1_double_pct)
-    text_single.append(f" {var2_single_pct}%  🂠  " if var1_single_pct >= 0 else (f"  {var1_single_pct}%  " if var1_single_pct > CHART_TEXT_THRESHOLD else ""))
-    text_double.append(f" {var2_double_pct}%  🂠 🂠 " if var1_double_pct >= 0 else (f"  {var1_double_pct}%  " if var1_double_pct > CHART_TEXT_THRESHOLD else ""))
+    # FIXED: These were incorrectly showing var2 values
+    text_single.append(f" {var1_single_pct}%  🂠  " if var1_single_pct > 0 else "")  # Fixed
+    text_double.append(f" {var1_double_pct}%  🂠 🂠 " if var1_double_pct > 0 else "")  # Fixed
     
     # Create figure
     fig = go.Figure()
