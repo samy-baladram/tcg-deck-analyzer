@@ -64,52 +64,51 @@ def extract_cards(url):
     
     cards = []
     
-    # Find Pokemon and Trainer sections
+    # Find sections containing cards
     for div in soup.find_all('div', class_='heading'):
         section_text = div.text.strip()
         
-        if any(section in section_text for section in ['Pokémon', 'Trainer']):
+        # Check if section is Pokémon or Trainer
+        if 'Pokémon' in section_text or 'Trainer' in section_text:
             section_type = 'Pokemon' if 'Pokémon' in section_text else 'Trainer'
-            cards_container = div.parent
             
-            # Extract each card
-            for p in cards_container.find_all('p'):
+            # Process each card entry in this section
+            for p in div.parent.find_all('p'):
                 card_text = p.get_text(strip=True)
-                if card_text:
-                    # Find the link inside the paragraph
+                if not card_text:
+                    continue
+                
+                # Extract card quantity and name
+                parts = card_text.split(' ', 1)
+                if len(parts) != 2:
+                    continue
+                
+                try:
+                    # Parse amount and clean name
+                    amount = int(parts[0])
+                    full_name = parts[1]
+                    name = full_name.split(' (')[0] if ' (' in full_name else full_name
+                    
+                    # Extract set code and number from link
+                    set_code = num = ""
                     card_link = p.find('a', href=True)
                     
-                    # Parse the card text for quantity and name
-                    parts = card_text.split(' ', 1)
-                    if len(parts) == 2:
-                        amount = int(parts[0])
-                        name_with_set = parts[1]
-                        
-                        # Extract just the name (without set info)
-                        if '(' in name_with_set and ')' in name_with_set:
-                            name = name_with_set.rsplit(' (', 1)[0]
-                        else:
-                            name = name_with_set
-                        
-                        # Extract set and number from link if available
-                        set_code = ""
-                        num = ""
-                        if card_link and 'href' in card_link.attrs:
-                            href = card_link['href']
-                            if 'pocket.limitlesstcg.com/cards/' in href:
-                                # Extract set and number from URL like:
-                                # https://pocket.limitlesstcg.com/cards/A1/87
-                                parts = href.strip('/').split('/')
-                                if len(parts) >= 2:
-                                    set_code = parts[-2]  # Second to last part is set code
-                                    num = parts[-1]      # Last part is card number
-                        
-                        cards.append({
-                            'type': section_type,
-                            'card_name': name,
-                            'amount': amount,
-                            'set': set_code,
-                            'num': num
-                        })
+                    if card_link and '/cards/' in card_link['href']:
+                        url_parts = card_link['href'].rstrip('/').split('/')
+                        if len(url_parts) >= 2:
+                            set_code = url_parts[-2]
+                            num = url_parts[-1]
+                    
+                    # Add card to result list
+                    cards.append({
+                        'type': section_type,
+                        'card_name': name,
+                        'amount': amount,
+                        'set': set_code,
+                        'num': num
+                    })
+                except (ValueError, IndexError):
+                    # Skip entries that can't be properly parsed
+                    continue
     
     return cards
