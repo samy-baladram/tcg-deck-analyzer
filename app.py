@@ -173,18 +173,18 @@ if 'analyze' in st.session_state and selected_option:
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
     
-    # Create header with images
-    header_image = create_deck_header_images(deck_info, results)
+    # # Create header with images
+    # header_image = create_deck_header_images(deck_info, results)
     
-    if header_image:
-        st.markdown(f"""
-        <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 1rem;">
-            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 500px; height: auto; margin-bottom:-1em; border-radius: 12px">
-            <h2 style="margin: 0.5rem 0 0 0;">{format_deck_name(deck_info['deck_name'])}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.header(format_deck_name(deck_info['deck_name']))
+    # if header_image:
+    #     st.markdown(f"""
+    #     <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 1rem;">
+    #         <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 500px; height: auto; margin-bottom:-1em; border-radius: 12px">
+    #         <h2 style="margin: 0.5rem 0 0 0;">{format_deck_name(deck_info['deck_name'])}</h2>
+    #     </div>
+    #     """, unsafe_allow_html=True)
+    # else:
+    #     st.header(format_deck_name(deck_info['deck_name']))
     
     # Display results in tabs
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
