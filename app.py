@@ -45,7 +45,7 @@ st.markdown("""
     .main .block-container h5,
     .main .block-container h6 {
         font-family: 'Nunito', sans-serif !important;
-        font-weight: 700 !important;
+        font-weight: 900 !important;
     }
     
     /* Target st.header and st.subheader */
@@ -56,7 +56,7 @@ st.markdown("""
     .main .block-container div[data-testid="stMarkdownContainer"] > h2,
     .main .block-container div[data-testid="stMarkdownContainer"] > h3 {
         font-family: 'Nunito', sans-serif !important;
-        font-weight: 700 !important;
+        font-weight: 900 !important;
     }
     
     /* Target specific Streamlit components */
@@ -270,7 +270,7 @@ if 'analyze' in st.session_state and selected_option:
     if header_image:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0rem; margin-top:-1rem">
-            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(deck_info['deck_name'])}</h1>
+            <h1 style="margin: 0rem 0 0 0; font-family: Nunito, sans-serif; font-weight: 900;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(deck_info['deck_name'])}</h1>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -286,7 +286,7 @@ if 'analyze' in st.session_state and selected_option:
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Pokémon</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Pokémon</h4>", unsafe_allow_html=True)
             type_cards = results[results['type'] == 'Pokemon']
             
             if not type_cards.empty:
@@ -297,7 +297,7 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Pokemon cards found")
         
         with col2:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Trainer</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Trainer</h4>", unsafe_allow_html=True)
             type_cards = results[results['type'] == 'Trainer']
             
             if not type_cards.empty:
@@ -313,12 +313,12 @@ if 'analyze' in st.session_state and selected_option:
         
         # Import needed functions (if not already imported)
         from image_processor import format_card_number, IMAGE_BASE_URL
-        st.markdown("<h3 style='font-family: Nunito, sans-serif; font-weight: 700;'>Core Cards</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='font-family: Nunito, sans-serif; font-weight: 900;'>Core Cards</h3>", unsafe_allow_html=True)
         col1, col2 = st.columns([1, 2])
         
         with col1:
             pokemon_count = sum(card['count'] for card in deck_info['Pokemon'])
-            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Pokémon ({pokemon_count})</h4>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Pokémon ({pokemon_count})</h4>", unsafe_allow_html=True)
             # Create a grid layout for Pokémon cards
             pokemon_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
             
@@ -337,7 +337,7 @@ if 'analyze' in st.session_state and selected_option:
         
         with col2:
             trainer_count = sum(card['count'] for card in deck_info['Trainer'])
-            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Trainer ({pokemon_count})</h4>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Trainer ({trainer_count})</h4>", unsafe_allow_html=True)
             
             # Create a grid layout for Trainer cards
             trainer_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -357,7 +357,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Display flexible slots section
         remaining = 20 - total_cards
-        st.markdown(f"<h3 style='font-family: Nunito, sans-serif; font-weight: 700;'>Flexible Slots ({remaining} cards)</h3>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='font-family: Nunito, sans-serif; font-weight: 900;'>Flexible Slots ({remaining} cards)</h3>", unsafe_allow_html=True)
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
@@ -368,7 +368,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Left column: Pokémon options
         with flex_col1:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Pokémon Options</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Pokémon Options</h4>", unsafe_allow_html=True)
             
             # Create a grid layout for Pokémon options
             pokemon_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -385,7 +385,7 @@ if 'analyze' in st.session_state and selected_option:
                         if set_code and formatted_num else
                         f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
                     }
-                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
+                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 700;">
                         {usage_pct}%
                     </div>
                 </div>"""
@@ -395,7 +395,7 @@ if 'analyze' in st.session_state and selected_option:
         
         # Right column: Trainer options
         with flex_col2:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Trainer Options</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Trainer Options</h4>", unsafe_allow_html=True)
             
             # Create a grid layout for Trainer options
             trainer_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
@@ -412,7 +412,7 @@ if 'analyze' in st.session_state and selected_option:
                         if set_code and formatted_num else
                         f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
                     }
-                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
+                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 700;">
                         {usage_pct}%
                     </div>
                 </div>"""
@@ -484,12 +484,12 @@ if 'analyze' in st.session_state and selected_option:
         #st.subheader("Raw Analysis Data")
         
         # Main analysis data
-        st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Card Usage Data</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Card Usage Data</h4>", unsafe_allow_html=True)
         st.dataframe(results, use_container_width=True)
         
         # Variant analysis data
         if not variant_df.empty:
-            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 500;'>Variant Analysis Data</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='font-family: Nunito, sans-serif; font-weight: 700;'>Variant Analysis Data</h4>", unsafe_allow_html=True)
             st.dataframe(variant_df, use_container_width=True)
 
 else:
