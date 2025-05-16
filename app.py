@@ -180,14 +180,14 @@ if selected_option:
     # Update analysis state
     st.session_state.analyze = current_selection
 
-# Main content area
+# Main content area - simplified
 if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
     
     # Run analysis
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
     
-    # # Create header with images
+    # Create header with images
     header_image = create_deck_header_images(deck_info, results)
     
     if header_image:
@@ -203,8 +203,6 @@ if 'analyze' in st.session_state and selected_option:
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
     with tab1:
-        #st.subheader(f"Card Usage Summary")
-        
         # Create two columns for Pokemon and Trainer
         col1, col2 = st.columns([1, 1])
         
@@ -230,60 +228,26 @@ if 'analyze' in st.session_state and selected_option:
                 st.info("No Trainer cards found")
     
     with tab2:
-        #st.subheader("Deck Template")
-        
         # Use the updated function that returns deck_info
         deck_list, deck_info, total_cards, options = build_deck_template(results)
         
-        # Import needed functions (if not already imported)
-        from image_processor import format_card_number, IMAGE_BASE_URL
+        # Import card renderer
+        from card_renderer import render_deck_section, render_option_section
         
         col1, col2 = st.columns([1, 2])
         
         with col1:
-            pokemon_count = sum(card['count'] for card in deck_info['Pokemon'])
-            st.write(f"#### Pokemon ({pokemon_count})")
-            
-            # Create a grid layout for Pokémon cards
-            pokemon_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
-            
-            for card in deck_info['Pokemon']:
-                # Format number for URL
-                formatted_num = format_card_number(card['num']) if card['num'] else ""
-                set_code = card['set']
-                
-                # Display card image multiple times based on count
-                for i in range(card['count']):
-                    pokemon_html += f"""<div style="width: 100px; margin-bottom: 8px;" title="{card['name']}">
-                        {f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 8px; border: 1px solid #eee;">'}
-                    </div>"""
-            pokemon_html += '</div>'
-            st.markdown(pokemon_html, unsafe_allow_html=True)
+            # Render Pokemon cards
+            render_deck_section(deck_info['Pokemon'], "Pokemon")
         
         with col2:
-            trainer_count = sum(card['count'] for card in deck_info['Trainer'])
-            st.write(f"#### Trainer ({trainer_count})")
-            
-            # Create a grid layout for Trainer cards
-            trainer_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
-            
-            for card in deck_info['Trainer']:
-                # Format number for URL
-                formatted_num = format_card_number(card['num']) if card['num'] else ""
-                set_code = card['set']
-                
-                # Display card image multiple times based on count
-                for i in range(card['count']):
-                    trainer_html += f"""<div style="width: 100px; margin-bottom: 8px;" title="{card['name']}">
-                        {f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 8px; border: 1px solid #eee;">'}
-                    </div>"""
-            trainer_html += '</div>'
-            st.markdown(trainer_html, unsafe_allow_html=True)
+            # Render Trainer cards
+            render_deck_section(deck_info['Trainer'], "Trainer")
         
         # Display flexible slots section
         remaining = 20 - total_cards
-        st.write(f"### Flexible Slots ({remaining} cards)")
-        st.write("Common choices include:")
+        st.write(f"### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+        st.write("Common choices include:", unsafe_allow_html=True)
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
@@ -292,66 +256,20 @@ if 'analyze' in st.session_state and selected_option:
         # Create two columns for flexible slots
         flex_col1, flex_col2 = st.columns([1, 2])
         
-        # Left column: Pokémon options
         with flex_col1:
-            st.write("#### Pokémon Options")
-            
-            # Create a grid layout for Pokémon options
-            pokemon_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
-            
-            for _, card in pokemon_options.iterrows():
-                # Format number for URL
-                formatted_num = format_card_number(card['num']) if card['num'] else ""
-                set_code = card['set']
-                usage_pct = card['display_usage']
-                
-                pokemon_flex_html += f"""<div style="width: 95px; margin-bottom: 12px;" title="{card['card_name']}">
-                    {
-                        f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 6px; border: 1px solid #ddd;">' 
-                        if set_code and formatted_num else
-                        f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
-                    }
-                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
-                        {usage_pct}%
-                    </div>
-                </div>"""
-            
-            pokemon_flex_html += '</div>'
-            st.markdown(pokemon_flex_html, unsafe_allow_html=True)
+            # Render Pokemon options
+            render_option_section(pokemon_options, "Pokémon Options")
         
-        # Right column: Trainer options
         with flex_col2:
-            st.write("#### Trainer Options")
-            
-            # Create a grid layout for Trainer options
-            trainer_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
-            
-            for _, card in trainer_options.iterrows():
-                # Format number for URL
-                formatted_num = format_card_number(card['num']) if card['num'] else ""
-                set_code = card['set']
-                usage_pct = card['display_usage']
-                
-                trainer_flex_html += f"""<div style="width: 95px; margin-bottom: 12px;" title="{card['card_name']}">
-                    {
-                        f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 6px; border: 1px solid #ddd;">' 
-                        if set_code and formatted_num else
-                        f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
-                    }
-                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
-                        {usage_pct}%
-                    </div>
-                </div>"""
-            
-            trainer_flex_html += '</div>'
-            st.markdown(trainer_flex_html, unsafe_allow_html=True)
+            # Render Trainer options
+            render_option_section(trainer_options, "Trainer Options")
     
     with tab3:
         if not variant_df.empty:
             st.write("This shows how players use different versions of the same card:")
             
-            # Import needed functions
-            from image_processor import format_card_number, IMAGE_BASE_URL
+            # Import variant renderer
+            from card_renderer import render_variant_cards
             
             # Display variant analysis
             for _, row in variant_df.iterrows():
@@ -365,37 +283,13 @@ if 'analyze' in st.session_state and selected_option:
                     var2_set = '-'.join(var2.split('-')[:-1])
                     var2_num = var2.split('-')[-1]
                     
-                    # Format numbers for URL
-                    formatted_num1 = format_card_number(var1_num) if var1_num else ""
-                    formatted_num2 = format_card_number(var2_num) if var2_num else ""
-                    
                     # Create the 2-column layout
                     col1, col2 = st.columns([1, 1])
                     
                     # Column 1: Both Variants side by side
                     with col1:
-                        st.markdown(f"""
-                        <div style="height:240px; display:flex; justify-content:space-between; margin-top:-20px;">
-                            <!-- Variant 1 -->
-                            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
-                                {
-                                    f'<img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:180px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
-                                    if var1_set and formatted_num1 else
-                                    '<div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
-                                }
-                            </div>
-                            <!-- Variant 2 -->
-                            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
-                                {
-                                    f'<img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:180px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
-                                    if var2_set and formatted_num2 else
-                                    '<div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
-                                }
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                        st.markdown(variant_html, unsafe_allow_html=True)
                     
                     # Column 2: Bar Chart
                     with col2:
@@ -407,8 +301,6 @@ if 'analyze' in st.session_state and selected_option:
             st.info("No cards with variants found in this deck.")
     
     with tab4:
-        #st.subheader("Raw Analysis Data")
-        
         # Main analysis data
         st.write("#### Card Usage Data")
         st.dataframe(results, use_container_width=True)
