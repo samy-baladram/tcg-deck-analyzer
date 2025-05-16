@@ -179,8 +179,7 @@ if 'analyze' in st.session_state and selected_option:
     if header_image:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 1rem;">
-            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 500px; height: auto; margin-bottom:-1em; border-radius: 12px; border: 10px solid #DDD;">
-            <h2 style="margin: 0.5rem 0 0 0;">{format_deck_name(deck_info['deck_name'])}</h2>
+            <h2 style="margin: 0.5rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 100px; height: auto; margin-bottom:-2em; border-radius: 12px; border: 1% solid #DDD;">{format_deck_name(deck_info['deck_name'])}</h2>
         </div>
         """, unsafe_allow_html=True)
     else:
