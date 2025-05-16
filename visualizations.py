@@ -68,32 +68,108 @@ def create_usage_bar_chart(type_cards, card_type):
         insidetextanchor='start'
     ))
     
-    # Update layout
-    fig.update_layout(
-        barmode='stack',
-        height=max(CHART_MIN_HEIGHT, len(type_cards) * CHART_ROW_HEIGHT),
-        margin=dict(l=0, r=0, t=0, b=0),
-        xaxis_title="",
-        xaxis=dict(
-            range=[0, 100],
-            showticklabels=False,
-        ),
-        showlegend=False,
-        legend=dict(
-            orientation="h", 
-            yanchor="top", 
-            y=-0.06, 
-            xanchor="right", 
-            x=1
-        ),
-        font=dict(size=CHART_FONT_SIZE),
-        yaxis=dict(tickfont=dict(size=CHART_FONT_SIZE)),
-        bargap=CHART_BAR_GAP,
-        uniformtext=dict(minsize=12, mode='show')
-    )
+    # Add custom images using annotations instead of HTML
+    for i, (label, img) in enumerate(zip([var1, var2], [var1_img, var2_img])):
+        if img:
+            fig.add_layout_image(
+                dict(
+                    source=f"data:image/png;base64,{img}",
+                    x=0,  # Position at left edge
+                    y=i,  # Position at each tick value
+                    xref="paper",
+                    yref="y",
+                    sizex=0.1,  # Width as percentage of plot
+                    sizey=0.9,  # Height as percentage of row
+                    xanchor="right",
+                    yanchor="middle",
+                    opacity=1
+                )
+            )
+            
+            # Add text label next to image
+            fig.add_annotation(
+                x=0.01,  # Slightly offset from left edge
+                y=i,     # Position at each tick value
+                text=label,
+                showarrow=False,
+                xref="paper",
+                yref="y",
+                xanchor="left",
+                yanchor="middle"
+            )
+        else:
+            # Just add text label if no image
+            fig.add_annotation(
+                x=0,     # At left edge
+                y=i,     # Position at each tick value
+                text=label,
+                showarrow=False,
+                xref="paper",
+                yref="y",
+                xanchor="left",
+                yanchor="middle"
+            )
     
-    # Reverse the order to show highest usage at top
-    fig.update_yaxes(autorange='reversed')
+    # If mixed is included
+    if include_mixed:
+        if var1_img and var2_img:
+            # Add both images for mixed
+            fig.add_layout_image(
+                dict(
+                    source=f"data:image/png;base64,{var1_img}",
+                    x=0,
+                    y=2,  # Third position
+                    xref="paper",
+                    yref="y",
+                    sizex=0.05,  # Smaller width
+                    sizey=0.9,
+                    xanchor="right",
+                    yanchor="middle",
+                    opacity=1
+                )
+            )
+            
+            fig.add_layout_image(
+                dict(
+                    source=f"data:image/png;base64,{var2_img}",
+                    x=0.05,  # Offset from first image
+                    y=2,     # Third position
+                    xref="paper",
+                    yref="y",
+                    sizex=0.05,  # Smaller width
+                    sizey=0.9,
+                    xanchor="right",
+                    yanchor="middle",
+                    opacity=1
+                )
+            )
+            
+            # Add mixed label
+            fig.add_annotation(
+                x=0.01,
+                y=2,
+                text="Mixed (1 of each)",
+                showarrow=False,
+                xref="paper",
+                yref="y",
+                xanchor="left",
+                yanchor="middle"
+            )
+        else:
+            # Just add text if no images
+            fig.add_annotation(
+                x=0,
+                y=2,
+                text="Mixed (1 of each)",
+                showarrow=False,
+                xref="paper",
+                yref="y",
+                xanchor="left",
+                yanchor="middle"
+            )
+    
+    # Hide the default y-axis labels
+    fig.update_yaxes(showticklabels=False)
     
     return fig
 
