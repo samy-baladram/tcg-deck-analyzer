@@ -236,7 +236,7 @@ if 'analyze' in st.session_state and selected_option:
         from card_renderer import render_deck_section, render_option_section
         
         col1, col2 = st.columns([2, 3])
-        
+        st.write(f"### Core Cards", unsafe_allow_html=True)
         with col1:
             # Render Pokemon cards
             render_deck_section(deck_info['Pokemon'], "Pokemon")
@@ -249,7 +249,6 @@ if 'analyze' in st.session_state and selected_option:
         remaining = 20 - total_cards
         st.write("<br>", unsafe_allow_html=True)
         st.write(f"### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
-        st.write("Common choices include:", unsafe_allow_html=True)
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
