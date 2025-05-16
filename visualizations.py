@@ -9,6 +9,7 @@ from config import (
     PLOTLY_CONFIG
 )
 from formatters import format_percentage, format_card_label
+from image_processor import get_card_thumbnail  # Add this import at the top
 
 def create_usage_bar_chart(type_cards, card_type):
     """Create horizontal stacked bar chart for card usage"""
@@ -98,7 +99,6 @@ def create_usage_bar_chart(type_cards, card_type):
 
 def create_variant_bar_chart(variant_data):
     """Create horizontal stacked bar chart for variant usage patterns with card images"""
-    from image_processor import get_card_thumbnail
     
     # Extract data from the updated variant data structure
     var1 = variant_data['Var1']
@@ -239,6 +239,11 @@ def create_variant_bar_chart(variant_data):
         tickvals=tick_vals,
         ticktext=tick_text,
         tickfont=dict(size=14),
+        tickangle=0,  # Ensure labels are horizontal
+        side='left',  # Position labels on the left
+        showline=False,  # Remove axis line
+        showticklabels=True,  # Ensure labels are visible
+        rendermode='svg'  # Ensure HTML renders properly
     )
     
     return fig
@@ -247,8 +252,15 @@ def display_chart(fig, use_container_width=True):
     """Display a plotly chart with standard config"""
     import streamlit as st
     
-    # Enable HTML in labels
-    config = PLOTLY_CONFIG.copy()
-    config['displayModeBar'] = False
+    # Create config that enables HTML
+    config = {
+        'displayModeBar': False,
+        'staticPlot': False,  # Allow HTML to render
+        'displaylogo': False,
+        'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'zoom2d', 'zoomIn2d', 
+                                  'zoomOut2d', 'autoScale2d', 'resetScale2d'],
+        'doubleClick': False,
+        'showTips': False
+    }
     
     st.plotly_chart(fig, use_container_width=use_container_width, config=config)
