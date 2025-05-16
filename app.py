@@ -206,7 +206,7 @@ if 'analyze' in st.session_state and selected_option:
         #st.subheader(f"Card Usage Summary")
         
         # Create two columns for Pokemon and Trainer
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([1, 1])
         
         with col1:
             st.write("#### Pokemon")
@@ -238,7 +238,7 @@ if 'analyze' in st.session_state and selected_option:
         # Import needed functions (if not already imported)
         from image_processor import format_card_number, IMAGE_BASE_URL
         
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([1, 2])
         
         with col1:
             pokemon_count = sum(card['count'] for card in deck_info['Pokemon'])
@@ -290,7 +290,7 @@ if 'analyze' in st.session_state and selected_option:
         trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
         # Create two columns for flexible slots
-        flex_col1, flex_col2 = st.columns(2)
+        flex_col1, flex_col2 = st.columns([1, 2])
         
         # Left column: Pokémon options
         with flex_col1:
