@@ -69,7 +69,38 @@ def fetch_and_crop_image(set_code, number):
     except Exception as e:
         print(f"Error fetching image for {set_code}-{number}: {e}")
         return None
-
+        
+def get_card_thumbnail(set_code, number, size=40):
+    """
+    Fetch a small thumbnail of a card for chart labels
+    
+    Parameters:
+    set_code: String (example: "A3")
+    number: String (example: "122")
+    size: Integer - height in pixels
+    
+    Returns:
+    Base64 encoded image string
+    """
+    try:
+        # Reuse existing function to fetch and crop
+        img = fetch_and_crop_image(set_code, number)
+        
+        if img:
+            # Resize to thumbnail
+            width = int(img.width * (size / img.height))
+            thumbnail = img.resize((width, size), Image.Resampling.LANCZOS)
+            
+            # Convert to base64
+            buffered = BytesIO()
+            thumbnail.save(buffered, format="PNG")
+            return base64.b64encode(buffered.getvalue()).decode()
+        
+        return None
+    except Exception as e:
+        print(f"Error creating thumbnail for {set_code}-{number}: {e}")
+        return None
+        
 def apply_vertical_gradient(image):
     """
     Apply gradient transparency to top and bottom of an image
