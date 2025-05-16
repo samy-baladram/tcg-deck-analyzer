@@ -10,7 +10,7 @@ from scraper import get_deck_list
 from analyzer import analyze_deck, build_deck_template
 from formatters import format_deck_name, format_deck_option
 from image_processor import get_base64_image, create_deck_header_images
-from visualizations import create_usage_bar_chart, display_chart
+from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
 from utils import calculate_time_ago, format_card_display
 
 # Add this right after st.set_page_config()
