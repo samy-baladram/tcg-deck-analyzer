@@ -174,7 +174,7 @@ if 'analyze' in st.session_state and selected_option:
     results, total_decks, variant_df = analyze_deck(deck_info['deck_name'], deck_info['set_name'])
     
     # # Create header with images
-    # header_image = create_deck_header_images(deck_info, results)
+    header_image = create_deck_header_images(deck_info, results)
     
     if header_image:
         st.markdown(f"""
