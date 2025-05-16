@@ -46,7 +46,7 @@ def create_usage_bar_chart(type_cards, card_type):
         orientation='h',
         marker_color=CHART_COLORS[f'{card_type.lower()}_1'],
         text=plot_df['1 Copy'].apply(
-            lambda x: f" {format_percentage(x)}   <b><span style='font-size: 20px;'>1</span></b>" if x >= 20 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
+            lambda x: f" {format_percentage(x)}   <b><span style='font-size: 22px;'>1</span></b>" if x >= 20 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
         textposition='inside',
         textfont=dict(size=CHART_FONT_SIZE),
@@ -60,7 +60,7 @@ def create_usage_bar_chart(type_cards, card_type):
         orientation='h',
         marker_color=CHART_COLORS[f'{card_type.lower()}_2'],
         text=plot_df['2 Copies'].apply(
-            lambda x: f" {format_percentage(x)}   <b><span style='font-size: 20px;'>2</span></b>" if x >= 20 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
+            lambda x: f" {format_percentage(x)}   <b><span style='font-size: 22px;'>2</span></b>" if x >= 20 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
         textposition='inside',
         textfont=dict(size=CHART_FONT_SIZE),
@@ -133,21 +133,21 @@ def create_variant_bar_chart(variant_data):
     if include_mixed:
         single_data.append(mixed_pct)
         double_data.append(0)  # Mixed has no "double" component
-        text_single.append(f" {mixed_pct}%    🂠 + 🂠" if mixed_pct > 0 else "")
+        text_single.append(f" {mixed_pct}% <b><span style='font-size: 22px;'>1 + 1</span></b>" if mixed_pct > 0 else "")
         text_double.append("")  # No double for mixed
     
     # Add var2 data
     single_data.append(var2_single_pct)
     double_data.append(var2_double_pct)
-    text_single.append(f" {var2_single_pct}%  🂠  " if var2_single_pct > 0 else "")
-    text_double.append(f" {var2_double_pct}%  🂠 🂠 " if var2_double_pct > 0 else "")
+    text_single.append(f" {var2_single_pct}%  <b><span style='font-size: 22px;'>1</span></b>" if var2_single_pct > 0 else "")
+    text_double.append(f" {var2_double_pct}%  <b><span style='font-size: 22px;'>2</span></b>" if var2_double_pct > 0 else "")
     
     # Add var1 data
     single_data.append(var1_single_pct)
     double_data.append(var1_double_pct)
     # FIXED: These were incorrectly showing var2 values
-    text_single.append(f" {var1_single_pct}%  🂠  " if var1_single_pct > 0 else "")  # Fixed
-    text_double.append(f" {var1_double_pct}%  🂠 🂠 " if var1_double_pct > 0 else "")  # Fixed
+    text_single.append(f" {var1_single_pct}%  <b><span style='font-size: 22px;'>1</span></b>" if var1_single_pct > 0 else "")  # Fixed
+    text_double.append(f" {var1_double_pct}%  <b><span style='font-size: 22px;'>2</span></b>" if var1_double_pct > 0 else "")  # Fixed
     
     # Create figure
     fig = go.Figure()
