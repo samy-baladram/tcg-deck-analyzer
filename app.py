@@ -287,7 +287,7 @@ if 'analyze' in st.session_state and selected_option:
                             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                                 <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
                                 {
-                                    f'<img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
+                                    f'<img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:180px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
                                     if var1_set and formatted_num1 else
                                     '<div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                                 }
@@ -296,7 +296,7 @@ if 'analyze' in st.session_state and selected_option:
                             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                                 <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
                                 {
-                                    f'<img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
+                                    f'<img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:180px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
                                     if var2_set and formatted_num2 else
                                     '<div style="border:1px dashed #ddd; border-radius:5px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                                 }
