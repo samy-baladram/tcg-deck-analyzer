@@ -282,10 +282,10 @@ if 'analyze' in st.session_state and selected_option:
                     # Column 1: Both Variants side by side
                     with col1:
                         st.markdown(f"""
-                        <div style="height:150px; display:flex; justify-content:space-between; gap:10px;">
+                        <div style="height:200px; display:flex; justify-content:space-between; gap:10px;">
                             <!-- Variant 1 -->
                             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:3px;"><strong>{var1}</strong></div>
+                                <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
                                 {
                                     f'<img src="{IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
                                     if var1_set and formatted_num1 else
@@ -294,7 +294,7 @@ if 'analyze' in st.session_state and selected_option:
                             </div>
                             <!-- Variant 2 -->
                             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <div style="text-align:center; margin-bottom:3px;"><strong>{var2}</strong></div>
+                                <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
                                 {
                                     f'<img src="{IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:120px; max-width:100%; object-fit:contain; border:1px solid #ddd; border-radius:5px;">' 
                                     if var2_set and formatted_num2 else
