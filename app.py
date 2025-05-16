@@ -9,7 +9,7 @@ from config import MIN_META_SHARE, CACHE_TTL
 from scraper import get_deck_list
 from analyzer import analyze_deck, build_deck_template
 from formatters import format_deck_name, format_deck_option
-from image_processor import get_base64_image, create_deck_header_images
+from image_processor import get_base64_image, create_deck_header_images, get_card_thumbnail
 from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
 from utils import calculate_time_ago, format_card_display
 
@@ -251,19 +251,58 @@ if 'analyze' in st.session_state and selected_option:
         st.dataframe(final_display, use_container_width=True, hide_index=True)
     
     with tab3:
-        #st.subheader("Card Variants Analysis")
+    #st.subheader("Card Variants Analysis")
+    
+    if not variant_df.empty:
+        st.write("This shows how players use different versions of the same card:")
         
-        if not variant_df.empty:
-            st.write("This shows how players use different versions of the same card:")
-            
-            # Display variant analysis
-            for _, row in variant_df.iterrows():
-                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card"):
-                    # Create and display bar chart only
-                    fig = create_variant_bar_chart(row)
-                    display_chart(fig)
-        else:
-            st.info("No cards with variants found in this deck.")
+        # Import the get_card_thumbnail function
+        from image_processor import get_card_thumbnail
+        
+        # Display variant analysis
+        for _, row in variant_df.iterrows():
+            with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card"):
+                # Add card images at the top for verification
+                # Extract set codes and numbers
+                var1 = row['Var1']
+                var2 = row['Var2']
+                
+                var1_parts = var1.split('-')
+                var2_parts = var2.split('-')
+                
+                var1_set = var1_parts[0] if len(var1_parts) > 0 else ""
+                var1_num = var1_parts[1] if len(var1_parts) > 1 else ""
+                var2_set = var2_parts[0] if len(var2_parts) > 0 else ""
+                var2_num = var2_parts[1] if len(var2_parts) > 1 else ""
+                
+                # Fetch larger thumbnails for display
+                var1_img = get_card_thumbnail(var1_set, var1_num, size=100) if var1_set and var1_num else None
+                var2_img = get_card_thumbnail(var2_set, var2_num, size=100) if var2_set and var2_num else None
+                
+                # Display images side by side
+                col1, col2 = st.columns(2)
+                with col1:
+                    if var1_img:
+                        st.markdown(f"**Variant 1: {var1}**")
+                        st.markdown(f'<img src="data:image/png;base64,{var1_img}" style="border:1px solid #ddd; border-radius:5px;">', unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"**Variant 1: {var1}** (Image not available)")
+                
+                with col2:
+                    if var2_img:
+                        st.markdown(f"**Variant 2: {var2}**")
+                        st.markdown(f'<img src="data:image/png;base64,{var2_img}" style="border:1px solid #ddd; border-radius:5px;">', unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"**Variant 2: {var2}** (Image not available)")
+                
+                # Add some spacing
+                st.markdown("<hr style='margin: 15px 0;'>", unsafe_allow_html=True)
+                
+                # Create and display bar chart
+                fig = create_variant_bar_chart(row)
+                display_chart(fig)
+    else:
+        st.info("No cards with variants found in this deck.")
     
     with tab4:
         #st.subheader("Raw Analysis Data")
