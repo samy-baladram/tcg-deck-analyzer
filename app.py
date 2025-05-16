@@ -98,7 +98,7 @@ max_banner_width = 800  # Adjust this value as needed
 
 # Display the image with restricted width
 st.markdown(f"""
-<div style="display: flex; justify-content: center; width: 100%;">
+<div style="display: flex; justify-content: center; width: 100%; margin-top:-2rem;">
     <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_banner_width}px; height: auto;">
 </div>
 """, unsafe_allow_html=True)
