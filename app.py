@@ -5,7 +5,7 @@ import streamlit as st
 from datetime import datetime, timedelta
 
 # Import all modules
-from config import MIN_META_SHARE, CACHE_TTL
+from config import MIN_META_SHARE, CACHE_TTL, IMAGE_BASE_URL
 from scraper import get_deck_list
 from analyzer import analyze_deck, build_deck_template
 from formatters import format_deck_name, format_deck_option
