@@ -263,13 +263,13 @@ if 'analyze' in st.session_state and selected_option:
                     var1 = row['Var1']
                     var2 = row['Var2']
                     
-                    var1_parts = var1.split('-')
-                    var2_parts = var2.split('-')
+                    # var1_parts = var1.split('-')
+                    # var2_parts = var2.split('-')
                     
-                    var1_set = var1_parts[0] if len(var1_parts) > 0 else ""
-                    var1_num = var1_parts[1] if len(var1_parts) > 1 else ""
-                    var2_set = var2_parts[0] if len(var2_parts) > 0 else ""
-                    var2_num = var2_parts[1] if len(var2_parts) > 1 else ""
+                    var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
+                    var1_num = var1.split('-')[-1]         # Just the last part
+                    var2_set = '-'.join(var2.split('-')[:-1])
+                    var2_num = var1.split('-')[-1]
                     
                     # Format numbers for URL
                     formatted_num1 = format_card_number(var1_num) if var1_num else ""
