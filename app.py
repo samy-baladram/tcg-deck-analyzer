@@ -274,16 +274,9 @@ if 'analyze' in st.session_state and selected_option:
                 
                 # Display card image multiple times based on count
                 for i in range(card['count']):
-                    trainer_html += f"""
-                    <div style="width: 100px; margin-bottom: 8px;" title="{card['name']}">
-                        {
-                            f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 8px; border: 1px solid #eee;">' 
-                            if set_code and formatted_num else
-                            f'<div style="border: 1px dashed #ddd; border-radius: 8px; padding: 8px; height: 140px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["name"]}</div>'
-                        }
-                    </div>
-                    """
-            
+                    trainer_html += f"""<div style="width: 100px; margin-bottom: 8px;" title="{card['name']}">
+                        {f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 8px; border: 1px solid #eee;">'}
+                    </div>"""
             trainer_html += '</div>'
             st.markdown(trainer_html, unsafe_allow_html=True)
         
