@@ -118,11 +118,9 @@ class CardGrid:
     
     def render(self):
         """Render the card grid and return HTML"""
-        grid_html = f"""
-        <div style="display: flex; flex-wrap: wrap; gap: {self.gap}px;">
+        grid_html = f"""<div style="display: flex; flex-wrap: wrap; gap: {self.gap}px;">
             {''.join(self.cards_html)}
-        </div>
-        """
+        </div>"""
         return grid_html
     
     def display(self):
