@@ -75,6 +75,8 @@ def build_deck_template(analysis_df):
     
     # Initialize deck
     deck_list = {'Pokemon': [], 'Trainer': []}
+    # Store additional card info for image display
+    deck_info = {'Pokemon': [], 'Trainer': []}
     total_cards = 0
     
     # Add core cards to deck
@@ -85,6 +87,14 @@ def build_deck_template(analysis_df):
         # Format card display
         card_display = f"{count} {format_card_display(card['card_name'], card['set'], card['num'])}"
         deck_list[card['type']].append(card_display)
+        
+        # Store card info for image display
+        deck_info[card['type']].append({
+            'count': count,
+            'name': card['card_name'],
+            'set': card['set'],
+            'num': card['num']
+        })
     
     # Get options (standard + flexible core)
     options = pd.concat([
@@ -98,7 +108,7 @@ def build_deck_template(analysis_df):
     options = options.copy()
     options['display_usage'] = options.apply(calculate_display_usage, axis=1)
     
-    return deck_list, total_cards, options
+    return deck_list, deck_info, total_cards, options
 
 def analyze_variants(result_df, all_cards_df):
     """Analyze variant usage patterns"""
