@@ -308,7 +308,7 @@ if 'analyze' in st.session_state and selected_option:
                     with col2:
                         # Create variant bar chart with fixed height
                         fig = create_variant_bar_chart(row)
-                        fig.update_layout(height=250)
+                        fig.update_layout(height=220)
                         display_chart(fig)
         else:
             st.info("No cards with variants found in this deck.")
