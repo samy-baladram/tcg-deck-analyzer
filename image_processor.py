@@ -360,6 +360,14 @@ _thumbnail_cache = {}
 def get_card_thumbnail(set_code, number, size=40):
     """
     Fetch a small thumbnail of a card for chart labels with caching
+    
+    Parameters:
+    set_code: String (example: "A3")
+    number: String (example: "122")
+    size: Integer - height in pixels
+    
+    Returns:
+    Base64 encoded image string
     """
     cache_key = f"{set_code}-{number}-{size}"
     
