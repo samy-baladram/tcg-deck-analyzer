@@ -3,12 +3,15 @@
 
 import plotly.graph_objects as go
 import pandas as pd
+from io import BytesIO
+import base64
+from PIL import Image
 from config import (
     CHART_COLORS, CHART_MIN_HEIGHT, CHART_ROW_HEIGHT, 
-    CHART_FONT_SIZE, CHART_BAR_GAP, CHART_TEXT_THRESHOLD,
-    PLOTLY_CONFIG
+    CHART_FONT_SIZE, CHART_BAR_GAP, CHART_TEXT_THRESHOLD
 )
 from formatters import format_percentage, format_card_label
+from image_processor import fetch_and_crop_image, format_card_number
 
 def create_usage_bar_chart(type_cards, card_type):
     """Create horizontal stacked bar chart for card usage with card thumbnails"""
