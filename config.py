@@ -33,7 +33,8 @@ PLOTLY_CONFIG = {
     'displaylogo': False,
     'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'zoom2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d'],
     'doubleClick': False,
-    'showTips': False
+    'showTips': False,
+    'allowHTML': True  # Add this to allow HTML in labels
 }
 
 # Image processing settings
