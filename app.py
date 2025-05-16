@@ -29,38 +29,66 @@ st.markdown("""
     
     /* Apply Nunito font to all HTML elements */
     html, body, [class*="css"] {
-        font-family: 'Nunito', sans-serif;
+        font-family: 'Nunito', sans-serif !important;
     }
     
-    /* Set specific weights for different elements */
-    h1, h2, h3 {
-        font-family: 'Nunito', sans-serif;
-        font-weight: 700;
+    /* Target Streamlit elements more specifically */
+    .main .block-container {
+        font-family: 'Nunito', sans-serif !important;
     }
     
-    h4, h5, h6 {
-        font-family: 'Nunito', sans-serif;
-        font-weight: 600;
+    /* Target headers specifically */
+    .main .block-container h1,
+    .main .block-container h2,
+    .main .block-container h3,
+    .main .block-container h4,
+    .main .block-container h5,
+    .main .block-container h6 {
+        font-family: 'Nunito', sans-serif !important;
+        font-weight: 700 !important;
     }
     
-    p, div {
-        font-family: 'Nunito', sans-serif;
-        font-weight: 400;
+    /* Target st.header and st.subheader */
+    section[data-testid="stSidebar"] .block-container div[data-testid="stMarkdownContainer"] > h1,
+    section[data-testid="stSidebar"] .block-container div[data-testid="stMarkdownContainer"] > h2,
+    section[data-testid="stSidebar"] .block-container div[data-testid="stMarkdownContainer"] > h3,
+    .main .block-container div[data-testid="stMarkdownContainer"] > h1,
+    .main .block-container div[data-testid="stMarkdownContainer"] > h2,
+    .main .block-container div[data-testid="stMarkdownContainer"] > h3 {
+        font-family: 'Nunito', sans-serif !important;
+        font-weight: 700 !important;
     }
     
-    .stButton>button {
-        font-family: 'Nunito', sans-serif;
-        font-weight: 600;
+    /* Target specific Streamlit components */
+    .stButton > button {
+        font-family: 'Nunito', sans-serif !important;
+        font-weight: 600 !important;
+    }
+    
+    .stSelectbox > div > div,
+    .stMultiSelect > div > div {
+        font-family: 'Nunito', sans-serif !important;
     }
     
     .stDataFrame {
-        font-family: 'Nunito', sans-serif;
+        font-family: 'Nunito', sans-serif !important;
+    }
+    
+    /* Target tab labels */
+    button[role="tab"] {
+        font-family: 'Nunito', sans-serif !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Make sure the sidebar also uses Nunito */
+    section[data-testid="stSidebar"] .block-container {
+        font-family: 'Nunito', sans-serif !important;
     }
     
     /* Custom class for card percentages */
     .card-percentage {
-        font-family: 'Nunito', sans-serif;
-        font-weight: 600;
+        font-family: 'Nunito', sans-serif !important;
+        font-weight: 600 !important;
     }
 </style>
 """, unsafe_allow_html=True)
