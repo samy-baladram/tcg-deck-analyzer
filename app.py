@@ -272,7 +272,7 @@ if 'analyze' in st.session_state and selected_option:
             
             # Display variant analysis
             for _, row in variant_df.iterrows():
-                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card"):
+                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card", expanded=True):
                     # Extract set codes and numbers
                     var1 = row['Var1']
                     var2 = row['Var2']
