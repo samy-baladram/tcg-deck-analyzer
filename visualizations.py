@@ -119,7 +119,9 @@ def create_variant_bar_chart(variant_data):
     # Fetch thumbnails
     var1_img = get_card_thumbnail(var1_set, var1_num) if var1_set and var1_num else None
     var2_img = get_card_thumbnail(var2_set, var2_num) if var2_set and var2_num else None
-    
+    # Inside create_variant_bar_chart, add these debug lines:
+    print(f"Var1 set: {var1_set}, num: {var1_num}, image retrieved: {var1_img is not None}")
+    print(f"Var2 set: {var2_set}, num: {var2_num}, image retrieved: {var2_img is not None}")
     # Prepare labels for the chart - conditionally include Mixed
     labels = [var1, var2]
     if include_mixed:
