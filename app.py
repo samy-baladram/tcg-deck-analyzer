@@ -280,40 +280,71 @@ if 'analyze' in st.session_state and selected_option:
             trainer_html += '</div>'
             st.markdown(trainer_html, unsafe_allow_html=True)
         
-        # Display flexible slots with card images
+        # Display flexible slots section
         remaining = 20 - total_cards
         st.write(f"### Flexible Slots ({remaining} cards)")
         st.write("Common choices include:")
         
-        # Sort options by usage percentage (descending)
-        sorted_options = options.sort_values(by='display_usage', ascending=False)
+        # Sort options by usage percentage (descending) and split by type
+        pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
+        trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
-        # Create a grid layout for flexible slot cards
-        flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
+        # Create two columns for flexible slots
+        flex_col1, flex_col2 = st.columns(2)
         
-        # Include all options
-        for _, card in sorted_options.iterrows():
-            # Format number for URL
-            formatted_num = format_card_number(card['num']) if card['num'] else ""
-            set_code = card['set']
-            usage_pct = card['display_usage']
-            card_type = card['type']
+        # Left column: Pokémon options
+        with flex_col1:
+            st.write("#### Pokémon Options")
             
-            # Set text color based on card type
-            text_color = "#1565C0" if card_type == "Pokemon" else "#D84315"
+            # Create a grid layout for Pokémon options
+            pokemon_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
             
-            flex_html += f"""<div style="width: 90px; margin-bottom: 5px;" title="{card['card_name']}">
-                {
-                    f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 6px; border: 1px solid #eee;">' 
-                    if set_code and formatted_num else
-                    f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 125px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 10px;">{card["card_name"]}</div>'
-                }
-                <div style="text-align: center; margin-top: 2px; font-size: 11px; font-weight: 500; color: {text_color};">
-                    {usage_pct}%
-                </div>
-            </div>"""
-        flex_html += '</div>'
-        st.markdown(flex_html, unsafe_allow_html=True)
+            for _, card in pokemon_options.iterrows():
+                # Format number for URL
+                formatted_num = format_card_number(card['num']) if card['num'] else ""
+                set_code = card['set']
+                usage_pct = card['display_usage']
+                
+                pokemon_flex_html += f"""<div style="width: 95px; margin-bottom: 12px;" title="{card['card_name']}">
+                    {
+                        f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 6px; border: 1px solid #ddd;">' 
+                        if set_code and formatted_num else
+                        f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
+                    }
+                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
+                        {usage_pct}%
+                    </div>
+                </div>"""
+            
+            pokemon_flex_html += '</div>'
+            st.markdown(pokemon_flex_html, unsafe_allow_html=True)
+        
+        # Right column: Trainer options
+        with flex_col2:
+            st.write("#### Trainer Options")
+            
+            # Create a grid layout for Trainer options
+            trainer_flex_html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">'
+            
+            for _, card in trainer_options.iterrows():
+                # Format number for URL
+                formatted_num = format_card_number(card['num']) if card['num'] else ""
+                set_code = card['set']
+                usage_pct = card['display_usage']
+                
+                trainer_flex_html += f"""<div style="width: 95px; margin-bottom: 12px;" title="{card['card_name']}">
+                    {
+                        f'<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" style="width: 100%; border-radius: 6px; border: 1px solid #ddd;">' 
+                        if set_code and formatted_num else
+                        f'<div style="border: 1px dashed #ddd; border-radius: 6px; padding: 5px; height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px;">{card["card_name"]}</div>'
+                    }
+                    <div style="text-align: center; margin-top: 4px; font-size: 14px; font-weight: 500;">
+                        {usage_pct}%
+                    </div>
+                </div>"""
+            
+            trainer_flex_html += '</div>'
+            st.markdown(trainer_flex_html, unsafe_allow_html=True)
     
     with tab3:
         if not variant_df.empty:
