@@ -76,22 +76,33 @@ def extract_cards(url):
             for p in cards_container.find_all('p'):
                 card_text = p.get_text(strip=True)
                 if card_text:
+                    # Find the link inside the paragraph
+                    card_link = p.find('a', href=True)
+                    
+                    # Parse the card text for quantity and name
                     parts = card_text.split(' ', 1)
                     if len(parts) == 2:
                         amount = int(parts[0])
+                        name_with_set = parts[1]
                         
-                        # Parse card name and set info
-                        if '(' in parts[1] and ')' in parts[1]:
-                            name, set_info = parts[1].rsplit(' (', 1)
-                            set_info = set_info.rstrip(')')
-                            
-                            if '-' in set_info:
-                                set_code, num = set_info.split('-', 1)
-                            else:
-                                set_code, num = set_info, ""
+                        # Extract just the name (without set info)
+                        if '(' in name_with_set and ')' in name_with_set:
+                            name = name_with_set.rsplit(' (', 1)[0]
                         else:
-                            name = parts[1]
-                            set_code = num = ""
+                            name = name_with_set
+                        
+                        # Extract set and number from link if available
+                        set_code = ""
+                        num = ""
+                        if card_link and 'href' in card_link.attrs:
+                            href = card_link['href']
+                            if 'pocket.limitlesstcg.com/cards/' in href:
+                                # Extract set and number from URL like:
+                                # https://pocket.limitlesstcg.com/cards/A1/87
+                                parts = href.strip('/').split('/')
+                                if len(parts) >= 2:
+                                    set_code = parts[-2]  # Second to last part is set code
+                                    num = parts[-1]      # Last part is card number
                         
                         cards.append({
                             'type': section_type,
