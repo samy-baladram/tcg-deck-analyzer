@@ -76,19 +76,14 @@ class CardGrid:
     
     def _generate_card_html(self, card_name, set_code, formatted_num, usage_pct=None):
         """Generate HTML for a single card"""
-        card_html = f"""
-        <div style="width: {self.card_width}px; margin-bottom: {self.margin_bottom}px;" title="{card_name}">
-        """
+        card_html = f"""<div style="width: {self.card_width}px; margin-bottom: {self.margin_bottom}px;" title="{card_name}">"""
         
         # Card image or fallback
         if set_code and formatted_num:
-            card_html += f"""
-            <img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" 
-                 style="width: 100%; border-radius: {self.border_radius}px; border: 1px solid {self.border_color};">
-            """
+            card_html += f"""<img src="{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp" 
+                 style="width: 100%; border-radius: {self.border_radius}px; border: 1px solid {self.border_color};">"""
         else:
-            card_html += f"""
-            <div style="border: 1px dashed {self.border_color}; 
+            card_html += f"""<div style="border: 1px dashed {self.border_color}; 
                         border-radius: {self.border_radius}px; 
                         padding: 5px; 
                         height: {DEFAULT_FALLBACK_HEIGHT}px; 
@@ -98,20 +93,17 @@ class CardGrid:
                         text-align: center; 
                         font-size: 11px;">
                 {card_name}
-            </div>
-            """
+            </div>"""
         
         # Add percentage if requested
         if self.show_percentage and usage_pct is not None:
-            card_html += f"""
-            <div class="card-percentage" 
+            card_html += f"""<div class="card-percentage" 
                  style="text-align: center; 
                         margin-top: 4px; 
                         font-size: {self.percentage_font_size}px; 
                         font-weight: 500;">
                 {usage_pct}%
-            </div>
-            """
+            </div>"""
             
         card_html += "</div>"
         return card_html
@@ -145,7 +137,7 @@ def render_deck_section(cards, section_title, card_count=None):
 
 def render_option_section(cards_df, section_title):
     """Render options section with percentages"""
-    st.markdown(f"<h4 style='font-family: Nunito, sans-serif; font-weight: 600;'>{section_title}</h4>", unsafe_allow_html=True)
+    st.markdown(f"####{section_title}", unsafe_allow_html=True)
     
     grid = CardGrid(
         card_width=95,
@@ -162,8 +154,7 @@ def render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2):
     formatted_num1 = format_card_number(var1_num) if var1_num else ""
     formatted_num2 = format_card_number(var2_num) if var2_num else ""
     
-    variant_html = f"""
-    <div style="height:240px; display:flex; justify-content:space-between; margin-top:-20px;">
+    variant_html = f"""<div style="height:240px; display:flex; justify-content:space-between; margin-top:-20px;">
         <!-- Variant 1 -->
         <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
             <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
@@ -182,6 +173,5 @@ def render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2):
                 '<div style="border:1px dashed rgba(102, 102, 102, 0.5); border-radius:3px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
             }
         </div>
-    </div>
-    """
+    </div>"""
     return variant_html
