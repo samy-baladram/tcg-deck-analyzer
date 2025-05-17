@@ -236,21 +236,33 @@ if 'analyze' in st.session_state and selected_option:
                         var2_set = '-'.join(var2.split('-')[:-1])
                         var2_num = var2.split('-')[-1]
 
-                        variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                        st.markdown(variant_html, unsafe_allow_html=True)
-                        # # # Create the 2-column layout
-                        # var_col1, var_col2 = st.columns([2, 5])
+                        st.markdown("""
+                        <style>
+                        .variant-container {
+                            margin-bottom: -20px; 
+                            padding-bottom: 0;
+                        }
+                        </style>
+                        """, unsafe_allow_html=True)
                         
-                        # # Column 1: Both Variants side by side
-                        # with var_col1:
-                        #     variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                        #     st.markdown(variant_html, unsafe_allow_html=True)
+                        # Wrap content in a div with the custom class
+                        st.markdown('<div class="variant-container">', unsafe_allow_html=True)
                         
-                        # # Column 2: Bar Chart
-                        # with var_col2:
-                        #     # Create variant bar chart with fixed height
-                        #     fig_var = create_variant_bar_chart(row)
-                        #     display_chart(fig_var)
+                        # # Create the 2-column layout
+                        var_col1, var_col2 = st.columns([2, 5])
+                        
+                        # Column 1: Both Variants side by side
+                        with var_col1:
+                            variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                            st.markdown(variant_html, unsafe_allow_html=True)
+                        
+                        # Column 2: Bar Chart
+                        with var_col2:
+                            # Create variant bar chart with fixed height
+                            fig_var = create_variant_bar_chart(row)
+                            display_chart(fig_var)
+                            
+                        st.markdown('</div>', unsafe_allow_html=True)    
         
         with col2:
             st.write("##### Trainer")
