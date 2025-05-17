@@ -82,28 +82,21 @@ div[role="option"]:hover {
 }
 
 /* Expander styling - using direct class approach */
-
-/* Expander header styling */
-.stExpander > details > summary {
-    border-color: #00A0FF !important;
-}
-
 /* Expander hover effect */
 .stExpander > details > summary:hover {
     color: #00A0FF !important;
-    border-color: #00A0FF !important;
     background-color: rgba(0, 160, 255, 0.1) !important;
 }
 
-/* Expander open state */
-.stExpander > details[open] > summary {
-    border-left: 4px solid #00A0FF !important;
+/* Expander chevron color - only blue on hover */
+.stExpander > details > summary:hover svg {
     color: #00A0FF !important;
 }
 
-/* Expander arrow/icon color */
-.stExpander svg {
+/* Remove left border highlight */
+.stExpander > details[open] > summary {
     color: #00A0FF !important;
+    /* No border-left styling */
 }
 </style>
 """, unsafe_allow_html=True)
