@@ -188,7 +188,7 @@ class CardRenderer:
         formatted_num2 = format_card_number(var2_num) if var2_num else ""
         
         # Create HTML for variant comparison
-        variant_html = f"""<div style="height:180px; display:flex; justify-content:space-between; margin-top:-10px; margin-bottom:-10px">
+        variant_html = f"""<div style="height:170px; display:flex; justify-content:space-between; margin-top:-10px; margin-bottom:-10px">
             <!-- Variant 1 -->
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
