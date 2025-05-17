@@ -6,7 +6,7 @@ import pandas as pd
 from config import (
     CHART_COLORS, CHART_MIN_HEIGHT, CHART_ROW_HEIGHT, 
     CHART_FONT_SIZE, CHART_BAR_GAP, CHART_TEXT_THRESHOLD,
-    PLOTLY_CONFIG
+    PLOTLY_CONFIG, VAR_CHART_MIN_HEIGHT, VAR_CHART_ROW_HEIGHT
 )
 from formatters import format_percentage, format_card_label
 
