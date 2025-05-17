@@ -113,9 +113,21 @@ class CardGrid:
         return card_html
     
     def _generate_image_html(self, set_code, formatted_num):
-        """Generate HTML for card image"""
-        return (f"<img src=\"{CardConfig.IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp\" "
+        """Generate HTML for card image with hover effect"""
+        # Standard card image URL
+        standard_url = f"{CardConfig.IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp"
+        
+        # Same URL for full size (or you could use a different size if available)
+        full_size_url = standard_url
+        
+        # Create basic image HTML
+        img_html = (f"<img src=\"{standard_url}\" "
                 f"style=\"width: 100%; border-radius: {self.border_radius}px; border: 1px solid {self.border_color};\">")
+        
+        # Enhance with hover effect
+        enhanced_html = enhance_card_image_html(img_html, full_size_url)
+        
+        return enhanced_html
     
     def _generate_fallback_html(self, card_name):
         """Generate HTML for fallback when image is not available"""
@@ -266,3 +278,132 @@ def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
     """
     
     return html
+
+def add_card_hover_effect():
+    """
+    Add JavaScript and CSS for card hover effect.
+    Call this once at the start of your app to add the hover functionality.
+    """
+    hover_js = """
+    <script>
+    function setupCardHover() {
+        // Create a popup element to show the full-size card
+        const popup = document.createElement('div');
+        popup.id = 'card-popup';
+        popup.style.cssText = `
+            position: fixed;
+            display: none;
+            z-index: 1000;
+            padding: 0;
+            border-radius: 4.2%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: opacity 0.2s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        `;
+        document.body.appendChild(popup);
+        
+        // Add image element inside popup
+        const popupImg = document.createElement('img');
+        popupImg.style.cssText = `
+            width: 100%;
+            height: auto;
+            border-radius: 4.2%;
+            display: block;
+        `;
+        popup.appendChild(popupImg);
+        
+        // Find all card images
+        const cardImages = document.querySelectorAll('.card-image');
+        
+        // Add event listeners to card images
+        cardImages.forEach(img => {
+            img.addEventListener('mouseenter', function(e) {
+                const fullSizeUrl = this.dataset.fullsize || this.src;
+                popupImg.src = fullSizeUrl;
+                
+                // Calculate position based on viewport and scroll
+                const rect = img.getBoundingClientRect();
+                const scrollY = window.scrollY || window.pageYOffset;
+                const scrollX = window.scrollX || window.pageXOffset;
+                
+                // Set image size based on viewport
+                const maxWidth = Math.min(300, window.innerWidth * 0.4);
+                popup.style.width = maxWidth + 'px';
+                
+                // Position popup based on available space
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                
+                // Default positioning to the right of the card
+                let left = rect.right + 10 + scrollX;
+                let top = rect.top + scrollY;
+                
+                // If no room on right, show on left
+                if (rect.right + maxWidth + 20 > viewportWidth) {
+                    left = rect.left - maxWidth - 10 + scrollX;
+                }
+                
+                // If it would go off the bottom, adjust up
+                if (rect.top + popup.offsetHeight > viewportHeight) {
+                    top = Math.max(scrollY, rect.bottom + scrollY - popup.offsetHeight);
+                }
+                
+                popup.style.left = left + 'px';
+                popup.style.top = top + 'px';
+                
+                // Show the popup
+                popup.style.display = 'block';
+                setTimeout(() => {
+                    popup.style.opacity = '1';
+                }, 10);
+            });
+            
+            img.addEventListener('mouseleave', function() {
+                popup.style.opacity = '0';
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 200);
+            });
+        });
+    }
+    
+    // Run setup when DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', setupCardHover);
+    
+    // Also run setup when Streamlit has finished rendering content
+    const observer = new MutationObserver(mutations => {
+        // Look for new card images that might have been added
+        const cardImages = document.querySelectorAll('.card-image:not([data-hover-setup])');
+        if (cardImages.length > 0) {
+            cardImages.forEach(img => img.setAttribute('data-hover-setup', 'true'));
+            setupCardHover();
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    </script>
+    """
+    
+    # Add the JavaScript to the Streamlit app
+    import streamlit as st
+    st.markdown(hover_js, unsafe_allow_html=True)
+
+def enhance_card_image_html(img_html, full_size_url=None):
+    """
+    Enhance an image HTML string to work with the hover effect
+    
+    Parameters:
+    img_html: HTML string containing an img tag
+    full_size_url: Optional URL to a full-size version of the image
+    
+    Returns:
+    Enhanced HTML string with hover effect classes and data attributes
+    """
+    # Add card-image class
+    img_html = img_html.replace('<img ', '<img class="card-image" ')
+    
+    # Add full-size URL if provided
+    if full_size_url:
+        img_html = img_html.replace('<img ', f'<img data-fullsize="{full_size_url}" ')
+    
+    return img_html
