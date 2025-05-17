@@ -199,8 +199,14 @@ def get_all_recent_tournaments():
     tournament_id_set = set()
     tournament_ids = []
     
-    url = f"{BASE_URL}/tournaments"
+    # Get current year and month
+    from datetime import datetime
+    current_date = datetime.now()
+    current_year_month = current_date.strftime("%Y-%m")  # Format: YYYY-MM
     
+    # Build URL with current year and month
+    url = f"https://play.limitlesstcg.com/tournaments/completed?game=PTCG&format=all&platform=all&type=all&time={current_year_month}&show=80"
+    #url = f"{BASE_URL}/tournaments"
     try:
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
