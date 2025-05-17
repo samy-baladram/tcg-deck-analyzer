@@ -80,59 +80,47 @@ div[role="option"]:hover {
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
     border-bottom: none !important;
 }
-
-/* Even more specific selector targeting the text */
-div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
-    font-size: 18px !important;
-    padding: 8px 16px !important;
+/* More specific expander styles */
+.main .block-container div[data-testid="stExpander"] > div[role="button"] {
+    transition: all 0.3s ease !important;
 }
 
-/* Sidebar style for performance cards */
-.performance-card {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid rgba(0, 160, 255, 0.3);
-}
-
-.positive-index {
-    color: #00A02A;
-    font-weight: bold;
-}
-
-.negative-index {
-    color: #FF4500;
-    font-weight: bold;
-}
-
-/* Expander styles */
-div[data-testid="stExpander"] > div[role="button"]:hover {
+.main .block-container div[data-testid="stExpander"] > div[role="button"]:hover {
     background-color: rgba(0, 160, 255, 0.1) !important;
-    transition: background-color 0.3s ease;
-}
-
-/* Expander title hover effect */
-div[data-testid="stExpander"] > div[role="button"]:hover div {
     color: #00A0FF !important;
 }
 
-/* Selected/expanded expander style */
-div[data-testid="stExpander"] > div[role="button"][aria-expanded="true"] {
+/* Make the chevron icon blue on hover too */
+.main .block-container div[data-testid="stExpander"] > div[role="button"]:hover svg {
+    color: #00A0FF !important;
+}
+
+/* Style for expanded state */
+.main .block-container div[data-testid="stExpander"] > div[role="button"][aria-expanded="true"] {
     border-left: 4px solid #00A0FF !important;
     padding-left: calc(1rem - 4px) !important;
     background-color: rgba(0, 160, 255, 0.05) !important;
 }
 
-/* Improve expander appearance */
-div[data-testid="stExpander"] {
-    border: 1px solid rgba(0, 160, 255, 0.2);
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
+/* Apply the same styling to sidebar expanders */
+[data-testid="stSidebar"] div[data-testid="stExpander"] > div[role="button"]:hover {
+    background-color: rgba(0, 160, 255, 0.1) !important;
+    color: #00A0FF !important;
 }
 
-/* Expander content padding */
-div[data-testid="stExpander"] > div:last-child {
-    padding-top: 0.5rem;
+[data-testid="stSidebar"] div[data-testid="stExpander"] > div[role="button"]:hover svg {
+    color: #00A0FF !important;
+}
+
+[data-testid="stSidebar"] div[data-testid="stExpander"] > div[role="button"][aria-expanded="true"] {
+    border-left: 4px solid #00A0FF !important;
+    background-color: rgba(0, 160, 255, 0.05) !important;
+}
+
+/* Force CSS priority with !important */
+div[data-testid="stExpander"] div[role="button"]:hover {
+    background-color: rgba(0, 160, 255, 0.1) !important;
+    color: #00A0FF !important;
 }
 </style>
 """, unsafe_allow_html=True)
