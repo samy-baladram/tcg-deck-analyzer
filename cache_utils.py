@@ -149,3 +149,68 @@ def load_analyzed_deck(deck_name, set_name):
     
     # Return None if loading fails
     return None
+
+# Add these to cache_utils.py
+
+def get_card_usage_path():
+    """Get the file path for the aggregated card usage data"""
+    return os.path.join(CACHE_DIR, "card_usage.json")
+
+def get_card_usage_timestamp_path():
+    """Get the file path for the card usage timestamp"""
+    return os.path.join(CACHE_DIR, "card_usage_timestamp.txt")
+
+def save_card_usage_data(card_usage_df):
+    """Save aggregated card usage data to cache"""
+    try:
+        ensure_cache_dirs()
+        
+        # Save data to JSON file
+        with open(get_card_usage_path(), 'w') as f:
+            json.dump(card_usage_df.to_dict(orient='records'), f)
+        
+        # Save timestamp
+        with open(get_card_usage_timestamp_path(), 'w') as f:
+            f.write(datetime.now().isoformat())
+        
+        logger.info(f"Saved card usage data to {get_card_usage_path()}")
+        return True
+    
+    except Exception as e:
+        logger.error(f"Error saving card usage data: {e}")
+        return False
+
+def load_card_usage_data():
+    """Load aggregated card usage data from cache if available"""
+    try:
+        # Check if data file exists
+        if os.path.exists(get_card_usage_path()):
+            logger.info(f"Found card usage data at {get_card_usage_path()}")
+            
+            # Read the data from JSON file
+            with open(get_card_usage_path(), 'r') as f:
+                data = json.load(f)
+            
+            # Convert to DataFrame
+            card_usage_df = pd.DataFrame(data)
+            
+            # Read timestamp
+            if os.path.exists(get_card_usage_timestamp_path()):
+                with open(get_card_usage_timestamp_path(), 'r') as f:
+                    timestamp_str = f.read().strip()
+                    timestamp = datetime.fromisoformat(timestamp_str)
+                logger.info(f"Card usage data timestamp: {timestamp}")
+            else:
+                # Default to a day ago if no timestamp file
+                timestamp = datetime.now() - timedelta(days=1)
+                logger.info(f"No timestamp file, using default: {timestamp}")
+            
+            return card_usage_df, timestamp
+        else:
+            logger.info(f"No card usage data found at {get_card_usage_path()}")
+        
+    except Exception as e:
+        logger.error(f"Error loading card usage data: {e}")
+    
+    # Return empty dataframe and old timestamp if loading fails
+    return pd.DataFrame(), datetime.now() - timedelta(days=1)
