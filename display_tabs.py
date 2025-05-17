@@ -178,3 +178,39 @@ def display_metagame_tab():
     with col2:
         st.write("#### Top Trainers")
         st.dataframe(trainer_cards[['card_name', 'weighted_usage', 'deck_count']], use_container_width=True)
+
+# Add this to display_tabs.py - Add a new tab for energy debugging
+
+def display_energy_debug_tab(deck_info):
+    """Display detailed energy type information for debugging"""
+    from energy_utils import display_detailed_energy_table, debug_energy_combinations
+    
+    st.write("### Energy Type Debugging")
+    
+    deck_name = deck_info['deck_name']
+    
+    # Display detailed energy table
+    energy_table_html = display_detailed_energy_table(deck_name)
+    st.markdown(energy_table_html, unsafe_allow_html=True)
+    
+    # Provide expanders with raw data for debugging
+    with st.expander("Raw Energy Storage Data", expanded=False):
+        # Show archetype_energy_types
+        if 'archetype_energy_types' in st.session_state:
+            archetype = get_archetype_from_deck_name(deck_name)
+            st.write("### All Energy Types by Archetype:")
+            st.write({k: list(v) for k, v in st.session_state.archetype_energy_types.items() if k == archetype})
+        
+        # Show archetype_first_energy_combo
+        if 'archetype_first_energy_combo' in st.session_state:
+            archetype = get_archetype_from_deck_name(deck_name)
+            st.write("### First Energy Combo by Archetype:")
+            st.write({k: v for k, v in st.session_state.archetype_first_energy_combo.items() if k == archetype})
+        
+        # Show archetype_energy_combos
+        if 'archetype_energy_combos' in st.session_state:
+            archetype = get_archetype_from_deck_name(deck_name)
+            st.write("### Energy Combo Stats by Archetype:")
+            if archetype in st.session_state.archetype_energy_combos:
+                combo_data = {','.join(combo): count for combo, count in st.session_state.archetype_energy_combos[archetype].items()}
+                st.write(combo_data)
