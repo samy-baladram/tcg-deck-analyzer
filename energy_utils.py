@@ -204,15 +204,13 @@ def display_energy_stats(archetype):
     sorted_combos = sorted(combos.items(), key=lambda x: x[1], reverse=True)
     
     # Create HTML table
-    table_html = """
-    <div style="margin-top: 10px; margin-bottom: 15px;">
+    table_html = """<div style="margin-top: 10px; margin-bottom: 15px;">
         <p style="font-size: 0.85rem; margin-bottom: 5px;"><strong>Energy Combinations Found:</strong></p>
         <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
             <tr style="border-bottom: 1px solid #ddd;">
                 <th style="text-align: left; padding: 4px;">Energy</th>
                 <th style="text-align: right; padding: 4px;">Count</th>
-            </tr>
-    """
+            </tr>"""
     
     # Add rows for each combination
     for combo, count in sorted_combos:
@@ -227,13 +225,9 @@ def display_energy_stats(archetype):
             <tr style="border-bottom: 1px solid #eee;">
                 <td style="text-align: left; padding: 4px;">{energy_html}</td>
                 <td style="text-align: right; padding: 4px;">{count}</td>
-            </tr>
-        """
+            </tr>"""
     
-    table_html += """
-        </table>
-    </div>
-    """
+    table_html += """</table></div>"""
     
     return table_html
 
@@ -252,9 +246,7 @@ def render_energy_icons(energy_types, is_typical=False):
     # Add note if these are typical energy types
     archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(typical)</span>' if is_typical else ""
     
-    energy_display = f"""
-    <div style="margin-bottom: 10px;">
+    energy_display = f"""<div style="margin-bottom: 10px;">
         <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
-    </div>
-    """
+    </div>"""
     return energy_display
