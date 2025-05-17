@@ -92,13 +92,14 @@ def get_or_load_sample_deck(deck_name, set_name):
     if cache_key in st.session_state.sample_deck_cache:
         return st.session_state.sample_deck_cache[cache_key]
     
-    # Load sample deck
-    pokemon_cards, trainer_cards = get_sample_deck_for_archetype(deck_name, set_name)
+    # Load sample deck - UPDATED to handle energy types
+    pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, set_name)
     
-    # Store in cache
+    # Store in cache - UPDATED to include energy types
     st.session_state.sample_deck_cache[cache_key] = {
         'pokemon_cards': pokemon_cards,
-        'trainer_cards': trainer_cards
+        'trainer_cards': trainer_cards,
+        'energy_types': energy_types  # NEW: Store energy types
     }
     
     return st.session_state.sample_deck_cache[cache_key]
