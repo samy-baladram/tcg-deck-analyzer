@@ -506,33 +506,6 @@ def get_or_load_sample_deck(deck_name, set_name):
 # Add this with your other session state initializations
 if 'analyzed_deck_cache' not in st.session_state:
     st.session_state.analyzed_deck_cache = {}
-
-# Add this function to get or analyze a deck
-def get_or_analyze_full_deck(deck_name, set_name):
-    """Get full analyzed deck from cache or analyze if not cached"""
-    cache_key = f"full_deck_{deck_name}_{set_name}"
-    
-    # Check if deck is in cache
-    if cache_key in st.session_state.analyzed_deck_cache:
-        return st.session_state.analyzed_deck_cache[cache_key]
-    
-    # Analyze deck
-    with st.spinner(f"Analyzing {deck_name}..."):
-        results, total_decks, variant_df = analyze_deck(deck_name, set_name)
-        deck_list, deck_info, total_cards, options = build_deck_template(results)
-        
-        # Store in cache
-        st.session_state.analyzed_deck_cache[cache_key] = {
-            'results': results,
-            'total_decks': total_decks,
-            'variant_df': variant_df,
-            'deck_list': deck_list,
-            'deck_info': deck_info,
-            'total_cards': total_cards,
-            'options': options
-        }
-        
-        return st.session_state.analyzed_deck_cache[cache_key]
         
 # Sidebar content - Tournament Performance
 st.sidebar.title("Tournament Performance")
