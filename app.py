@@ -80,46 +80,29 @@ div[role="option"]:hover {
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
     border-bottom: none !important;
 }
-/* More specific expander styles */
-.main .block-container div[data-testid="stExpander"] > div[role="button"] {
-    transition: all 0.3s ease !important;
+
+/* Expander styling - using direct class approach */
+
+/* Expander header styling */
+.stExpander > details > summary {
+    border-color: #00A0FF !important;
 }
 
-.main .block-container div[data-testid="stExpander"] > div[role="button"]:hover {
+/* Expander hover effect */
+.stExpander > details > summary:hover {
+    color: #00A0FF !important;
+    border-color: #00A0FF !important;
     background-color: rgba(0, 160, 255, 0.1) !important;
-    color: #00A0FF !important;
 }
 
-/* Make the chevron icon blue on hover too */
-.main .block-container div[data-testid="stExpander"] > div[role="button"]:hover svg {
-    color: #00A0FF !important;
-}
-
-/* Style for expanded state */
-.main .block-container div[data-testid="stExpander"] > div[role="button"][aria-expanded="true"] {
+/* Expander open state */
+.stExpander > details[open] > summary {
     border-left: 4px solid #00A0FF !important;
-    padding-left: calc(1rem - 4px) !important;
-    background-color: rgba(0, 160, 255, 0.05) !important;
-}
-
-/* Apply the same styling to sidebar expanders */
-[data-testid="stSidebar"] div[data-testid="stExpander"] > div[role="button"]:hover {
-    background-color: rgba(0, 160, 255, 0.1) !important;
     color: #00A0FF !important;
 }
 
-[data-testid="stSidebar"] div[data-testid="stExpander"] > div[role="button"]:hover svg {
-    color: #00A0FF !important;
-}
-
-[data-testid="stSidebar"] div[data-testid="stExpander"] > div[role="button"][aria-expanded="true"] {
-    border-left: 4px solid #00A0FF !important;
-    background-color: rgba(0, 160, 255, 0.05) !important;
-}
-
-/* Force CSS priority with !important */
-div[data-testid="stExpander"] div[role="button"]:hover {
-    background-color: rgba(0, 160, 255, 0.1) !important;
+/* Expander arrow/icon color */
+.stExpander svg {
     color: #00A0FF !important;
 }
 </style>
