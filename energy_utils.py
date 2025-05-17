@@ -265,3 +265,28 @@ def render_energy_icons(energy_types, is_typical=False):
         <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
     </div>"""
     return energy_display
+
+# Add to energy_utils.py
+def track_per_deck_energy(deck_name, deck_num, energy_types):
+    """
+    Track energy types for each individual deck
+    
+    Parameters:
+        deck_name: Name of the deck archetype
+        deck_num: Unique identifier for this specific deck instance
+        energy_types: List of energy types found in this deck
+    """
+    # Initialize if needed
+    if 'per_deck_energy' not in st.session_state:
+        st.session_state.per_deck_energy = {}
+    
+    # Get archetype
+    archetype = get_archetype_from_deck_name(deck_name)
+    
+    # Initialize archetype entry if needed
+    if archetype not in st.session_state.per_deck_energy:
+        st.session_state.per_deck_energy[archetype] = {}
+    
+    # Store energy for this specific deck
+    deck_key = f"{deck_name}-{deck_num}"
+    st.session_state.per_deck_energy[archetype][deck_key] = list(energy_types)
