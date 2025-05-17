@@ -172,7 +172,7 @@ def aggregate_card_usage(force_update=False):
             
             if deck_data is None:
                 # Analyze the deck if not cached
-                results, _, _ = analyze_deck(deck_name, set_name)
+                results, _, _, _ = analyze_deck(deck_name, set_name)
                 
                 # Store relevant info for each card
                 for _, card in results.iterrows():
