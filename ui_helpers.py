@@ -181,15 +181,14 @@ def render_deck_in_sidebar(deck, expanded=False):
         raw_energy_types = sample_deck.get('energy_types', [])
         store_energy_types(deck_name, raw_energy_types)
         
-        # Get energy types for display (from deck or archetype)
-        energy_types, is_typical = get_energy_types_for_deck(deck_name, raw_energy_types)
+        # Get energy types for display - specifically use empty list to get most common
+        # This ensures we don't use raw_energy_types from just one deck
+        energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
         
         # Display energy types if available
         if energy_types:
             energy_html = render_energy_icons(energy_types, is_typical)
             st.markdown(energy_html, unsafe_allow_html=True)
-            
-            # Removed energy statistics table display
         
         # Render deck view
         from card_renderer import render_sidebar_deck
