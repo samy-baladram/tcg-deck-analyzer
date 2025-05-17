@@ -188,13 +188,13 @@ def render_deck_in_sidebar(deck, expanded=False):
             st.markdown(energy_html, unsafe_allow_html=True)
         
         # Display performance stats with colored power index inside
-        st.markdown(f"""
-        <div style="margin-bottom: 10px; font-size: 0.9rem;">
-            <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
-            <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-            <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+        # st.markdown(f"""
+        # <div style="margin-bottom: 10px; font-size: 0.9rem;">
+        #     <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
+        #     <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+        #     <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
+        # </div>
+        # """, unsafe_allow_html=True)
         
         # Render deck view
         from card_renderer import render_sidebar_deck
