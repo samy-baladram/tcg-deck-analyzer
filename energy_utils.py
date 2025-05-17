@@ -271,7 +271,8 @@ def render_energy_icons(energy_types, is_typical=False):
         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
     
     # Add note if these are typical energy types
-    archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
+    archetype_note = ''
+    #archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
     
     energy_display = f"""<div style="margin-bottom: 10px;">
         <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
