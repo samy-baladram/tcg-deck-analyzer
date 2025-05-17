@@ -8,7 +8,7 @@ from scraper import get_deck_urls, extract_cards
 from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD
 from utils import is_flexible_core, calculate_display_usage, format_card_display
 from energy_utils import store_energy_types
-import cache_utils
+from cache_utils import save_analyzed_deck_components
 
 def analyze_deck(deck_name, set_name="A3"):
     """Main analysis function for a deck archetype"""
@@ -92,11 +92,8 @@ def analyze_deck(deck_name, set_name="A3"):
         from energy_utils import store_energy_types
         store_energy_types(deck_name, energy_types_list)
     
-    # Save to disk (make sure save_analyzed_deck_components is properly imported or available)
-    import cache_utils
-    
     # Use only the parameters that the original function expects
-    cache_utils.save_analyzed_deck_components(
+    save_analyzed_deck_components(
         deck_name, 
         set_name, 
         grouped, 
