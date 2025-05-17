@@ -322,6 +322,7 @@ if 'deck_cache' not in st.session_state:
     st.session_state.deck_cache = {}
 
 # Sidebar content - Tournament Performance
+# Sidebar content - Tournament Performance
 st.sidebar.title("Tournament Performance")
 
 # Display performance data if it exists
@@ -329,58 +330,50 @@ if not st.session_state.performance_data.empty:
     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
     st.sidebar.write(f"Data updates hourly. Last updated: {performance_time_str}")
     
-    # Get the top performing deck
-    top_deck = st.session_state.performance_data.iloc[0]  # Already sorted by power_index
+    # Get the top 10 performing decks
+    top_decks = st.session_state.performance_data.head(10)
     
-    # Format power index to 2 decimal places
-    power_index = round(top_deck['power_index'], 2)
-    
-    # Determine the color class based on power index
-    power_class = "positive-index" if power_index > 0 else "negative-index"
-    
-    # Create a formatted deck name with power index
-    deck_title = f"{top_deck['displayed_name']} <span class='{power_class}'>({power_index})</span>"
-    
-    # Create an expander for the deck
-    with st.sidebar.expander(f"{top_deck['displayed_name']} ({power_index})", expanded=True):
-        # Then add the colored power index inside the expander
-        st.markdown(f"""
-        <div style="margin-bottom: 10px; font-size: 0.9rem;">
-            <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
-            <p style="margin-bottom: 5px;"><strong>Record:</strong> {top_deck['total_wins']}-{top_deck['total_losses']}-{top_deck['total_ties']}</p>
-            <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {top_deck['tournaments_played']}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        # Display performance stats
-        st.markdown(f"""
-        <div style="margin-bottom: 10px; font-size: 0.9rem;">
-            <p style="margin-bottom: 5px;"><strong>Record:</strong> {top_deck['total_wins']}-{top_deck['total_losses']}-{top_deck['total_ties']}</p>
-            <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {top_deck['tournaments_played']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+    # For each top deck
+    for idx, deck in top_decks.iterrows():
+        # Format power index to 2 decimal places
+        power_index = round(deck['power_index'], 2)
         
-        # Load and display the deck
-        with st.spinner("Loading deck..."):
-            # Get the deck data (from cache if possible)
-            deck_data = get_or_analyze_deck(top_deck['deck_name'], top_deck['set'])
+        # Create a plain text expander title with the power index
+        with st.sidebar.expander(f"{deck['displayed_name']} ({power_index})", expanded=False):
+            # Determine the color class based on power index
+            power_class = "positive-index" if power_index > 0 else "negative-index"
             
-            # Render condensed deck view using our new function
-            from card_renderer import render_sidebar_deck
-            deck_html = render_sidebar_deck(
-                deck_data['deck_info']['Pokemon'], 
-                deck_data['deck_info']['Trainer'],
-                card_width=45  # Smaller card width for sidebar
-            )
+            # Display performance stats with colored power index inside
+            st.markdown(f"""
+            <div style="margin-bottom: 10px; font-size: 0.9rem;">
+                <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
+                <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+                <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
+            </div>
+            """, unsafe_allow_html=True)
             
-            # Display the deck
-            st.markdown(deck_html, unsafe_allow_html=True)
-            
-            # Add a hidden div that makes the entire expander clickable to select this deck
-            if st.sidebar.checkbox("Click to analyze this deck", 
-                              key=f"select_{top_deck['deck_name']}", 
-                              label_visibility="hidden"):
-                st.session_state.deck_to_analyze = top_deck['deck_name']
-                st.rerun()
+            # Load and display the deck
+            with st.spinner("Loading deck..."):
+                # Get the deck data (from cache if possible)
+                deck_data = get_or_analyze_deck(deck['deck_name'], deck['set'])
+                
+                # Render condensed deck view using our new function
+                from card_renderer import render_sidebar_deck
+                deck_html = render_sidebar_deck(
+                    deck_data['deck_info']['Pokemon'], 
+                    deck_data['deck_info']['Trainer'],
+                    card_width=65  # Smaller card width for sidebar
+                )
+                
+                # Display the deck
+                st.markdown(deck_html, unsafe_allow_html=True)
+                
+                # Hidden checkbox to select this deck (optional)
+                if st.sidebar.checkbox("Click to analyze this deck", 
+                                  key=f"select_{deck['deck_name']}", 
+                                  label_visibility="hidden"):
+                    st.session_state.deck_to_analyze = deck['deck_name']
+                    st.rerun()
 else:
     st.sidebar.info("No tournament performance data available")
 
