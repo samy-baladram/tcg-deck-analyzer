@@ -173,26 +173,14 @@ def render_deck_in_sidebar(deck, expanded=False):
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
         
         # Get and store energy types
-        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons, get_archetype_from_deck_name
+        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons
         
         # Get raw energy types and store them
         raw_energy_types = sample_deck.get('energy_types', [])
-        archetype = get_archetype_from_deck_name(deck_name)
-        
-        # Show debug info directly in the UI
-        st.write(f"Deck: {deck_name}")
-        st.write(f"Raw energy: {raw_energy_types}")
-        
-        # Store energy types
         store_energy_types(deck_name, raw_energy_types)
         
-        # Show archetype energy types
-        if 'archetype_energy_types' in st.session_state and archetype in st.session_state.archetype_energy_types:
-            st.write(f"Archetype energy: {st.session_state.archetype_energy_types[archetype]}")
-        
-        # Get energy types for display
+        # Get energy types for display (from deck or archetype)
         energy_types, is_typical = get_energy_types_for_deck(deck_name, raw_energy_types)
-        st.write(f"Display energy: {energy_types}, typical: {is_typical}")
         
         # Display energy types if available
         if energy_types:
@@ -200,13 +188,13 @@ def render_deck_in_sidebar(deck, expanded=False):
             st.markdown(energy_html, unsafe_allow_html=True)
         
         # Display performance stats with colored power index inside
-        # st.markdown(f"""
-        # <div style="margin-bottom: 10px; font-size: 0.9rem;">
-        #     <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
-        #     <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-        #     <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
-        # </div>
-        # """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="margin-bottom: 10px; font-size: 0.9rem;">
+            <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
+            <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+            <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Render deck view
         from card_renderer import render_sidebar_deck
