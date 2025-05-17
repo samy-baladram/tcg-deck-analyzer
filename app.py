@@ -217,6 +217,39 @@ if 'analyze' in st.session_state and selected_option:
                 st.text(f"{total_decks} decks analyzed")
             else:
                 st.info("No Pokemon cards found")
+
+            if not variant_df.empty:
+            st.write("This shows how players use different versions of the same card:")
+            
+            # Import variant renderer
+            from card_renderer import render_variant_cards
+            
+            # Display variant analysis
+            for _, row in variant_df.iterrows():
+                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card", expanded=True):
+                    # Extract set codes and numbers
+                    var1 = row['Var1']
+                    var2 = row['Var2']
+                    
+                    var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
+                    var1_num = var1.split('-')[-1]         # Just the last part
+                    var2_set = '-'.join(var2.split('-')[:-1])
+                    var2_num = var2.split('-')[-1]
+                    
+                    # Create the 2-column layout
+                    col1, col2 = st.columns([1, 2])
+                    
+                    # Column 1: Both Variants side by side
+                    with col1:
+                        variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                        st.markdown(variant_html, unsafe_allow_html=True)
+                    
+                    # Column 2: Bar Chart
+                    with col2:
+                        # Create variant bar chart with fixed height
+                        fig = create_variant_bar_chart(row)
+                        fig.update_layout(height=220)
+                        display_chart(fig)
         
         with col2:
             st.write("#### Trainer")
