@@ -163,6 +163,10 @@ def render_sidebar():
     """Render the sidebar with tournament performance data"""
     st.sidebar.title("Tournament Performance")
     
+    # Create a dictionary to store energy types by archetype
+    if 'archetype_energy_types' not in st.session_state:
+        st.session_state.archetype_energy_types = {}
+    
     # Display performance data if it exists
     if not st.session_state.performance_data.empty:
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
@@ -171,7 +175,27 @@ def render_sidebar():
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
         
-        # For each top deck
+        # First pass: collect energy types from all decks for each archetype
+        for idx, deck in top_decks.iterrows():
+            # Get sample deck data
+            deck_name = deck['deck_name']
+            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
+            
+            # Store energy types by archetype (if available)
+            energy_types = sample_deck.get('energy_types', [])
+            if energy_types:
+                # Extract archetype from deck name (before first hyphen or whole name if no hyphen)
+                archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
+                
+                # Initialize the archetype entry if not exists
+                if archetype not in st.session_state.archetype_energy_types:
+                    st.session_state.archetype_energy_types[archetype] = set()
+                
+                # Add the energy types to the archetype set
+                for energy in energy_types:
+                    st.session_state.archetype_energy_types[archetype].add(energy)
+        
+        # Second pass: display decks with energy types (from specific deck or from archetype)
         for idx, deck in top_decks.iterrows():
             # Format power index to 2 decimal places
             power_index = round(deck['power_index'], 2)
@@ -182,10 +206,27 @@ def render_sidebar():
                 power_class = "positive-index" if power_index > 0 else "negative-index"
                 
                 # Get sample deck data
-                sample_deck = cache_manager.get_or_load_sample_deck(deck['deck_name'], deck['set'])
+                deck_name = deck['deck_name']
+                sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
+                
+                # Try to get energy types for this specific deck
+                energy_types = sample_deck.get('energy_types', [])
+                
+                # If no energy types found, try to get from archetype
+                if not energy_types:
+                    archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
+                    if archetype in st.session_state.archetype_energy_types:
+                        energy_types = list(st.session_state.archetype_energy_types[archetype])
+                        # Add a note indicating this is archetypical data
+                        archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(typical)</span>'
+                    else:
+                        energy_types = []
+                        archetype_note = ""
+                else:
+                    # This is specific deck data
+                    archetype_note = ""
                 
                 # Display energy types as images if available
-                energy_types = sample_deck.get('energy_types', [])
                 if energy_types:
                     energy_html = ""
                     # Create image tags for each energy type
@@ -196,7 +237,7 @@ def render_sidebar():
                     
                     energy_display = f"""
                     <div style="margin-bottom: 10px;">
-                        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html}</p>
+                        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
                     </div>
                     """
                     st.markdown(energy_display, unsafe_allow_html=True)
