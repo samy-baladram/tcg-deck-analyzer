@@ -16,7 +16,11 @@ def store_energy_types(deck_name, energy_types):
     """Store energy types for an archetype in the session state"""
     if not energy_types:
         return
-        
+    
+    # Initialize if doesn't exist
+    if 'archetype_energy_types' not in st.session_state:
+        st.session_state.archetype_energy_types = {}
+    
     archetype = get_archetype_from_deck_name(deck_name)
     if archetype not in st.session_state.archetype_energy_types:
         st.session_state.archetype_energy_types[archetype] = set()
@@ -34,6 +38,10 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
     # If deck has energy types, use them
     if deck_energy_types:
         return deck_energy_types, False
+    
+    # Check if session state has the energy types dictionary
+    if 'archetype_energy_types' not in st.session_state:
+        return [], False
     
     # Otherwise, try to get from archetype
     archetype = get_archetype_from_deck_name(deck_name)
