@@ -105,6 +105,49 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     font-weight: bold;
 }
 
+# Add these additional CSS styles to your existing styles section:
+
+/* Specific styles for sidebar cards */
+.sidebar-deck-card {
+    width: 70px; 
+    display: inline-block;
+    margin: 2px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 160, 255, 0.3);
+    overflow: hidden;
+}
+
+/* Style header for sidebar */
+.sidebar-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 160, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+/* Style for the performance stats box */
+.performance-stats {
+    background-color: rgba(240, 242, 246, 0.4);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-left: 3px solid #00A0FF;
+}
+
+/* Power index display */
+.power-index-display {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+/* Make sidebar cards more compact */
+.sidebar-section {
+    margin-bottom: 15px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -287,38 +330,89 @@ if selected_option:
     # Update analysis state
     st.session_state.analyze = current_selection
 
+# Function to get deck key for session state
+def get_deck_cache_key(deck_name, set_name):
+    """Generate a unique key for caching deck data in session state"""
+    return f"deck_cache_{deck_name}_{set_name}"
+
+# Function to get or analyze deck
+def get_or_analyze_deck(deck_name, set_name):
+    """Get deck from cache or analyze if not cached"""
+    cache_key = get_deck_cache_key(deck_name, set_name)
+    
+    # Check if deck is in cache
+    if cache_key in st.session_state.deck_cache:
+        return st.session_state.deck_cache[cache_key]
+    
+    # Analyze deck
+    results, total_decks, variant_df = analyze_deck(deck_name, set_name)
+    deck_list, deck_info, total_cards, options = build_deck_template(results)
+    
+    # Store in cache
+    st.session_state.deck_cache[cache_key] = {
+        'results': results,
+        'deck_info': deck_info,
+        'total_cards': total_cards,
+        'total_decks': total_decks
+    }
+    
+    return st.session_state.deck_cache[cache_key]
+
+# Add this to session state initialization section
+if 'deck_cache' not in st.session_state:
+    st.session_state.deck_cache = {}
+
 # Sidebar content - Tournament Performance
-st.sidebar.title("Tournament Performance")
+st.sidebar.title("Top Performing Deck")
 
 # Display performance data if it exists
 if not st.session_state.performance_data.empty:
     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
     st.sidebar.write(f"Data updates hourly. Last updated: {performance_time_str}")
     
-    # Display performance data in sidebar
-    for _, deck in st.session_state.performance_data.head(10).iterrows():
-        # Format power index to 2 decimal places
-        power_index = round(deck['power_index'], 2)
+    # Get the top performing deck (highest power index)
+    top_deck = st.session_state.performance_data.iloc[0]  # Already sorted by power_index
+    
+    # Format power index to 2 decimal places
+    power_index = round(top_deck['power_index'], 2)
+    
+    # Determine the color class based on power index
+    power_class = "positive-index" if power_index > 0 else "negative-index"
+    
+    # Display the deck name with power index
+    st.sidebar.markdown(f"""
+    <h3 style="margin-bottom: 10px;">{top_deck['displayed_name']} <span class='{power_class}'>({power_index})</span></h3>
+    """, unsafe_allow_html=True)
+    
+    # Display performance stats
+    st.sidebar.markdown(f"""
+    <div class="performance-card" style="margin-bottom: 15px;">
+        <p style="margin-bottom: 5px;">Record: {top_deck['total_wins']}-{top_deck['total_losses']}-{top_deck['total_ties']}</p>
+        <p style="margin-bottom: 0;">Tournaments: {top_deck['tournaments_played']}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Add a select button
+    if st.sidebar.button("Select for Analysis", key=f"select_{top_deck['deck_name']}"):
+        # Store the deck name to analyze
+        st.session_state.deck_to_analyze = top_deck['deck_name']
+        st.rerun()
+    
+    # Load and display the deck
+    with st.sidebar.spinner("Loading deck..."):
+        # Get the deck data (from cache if possible)
+        deck_data = get_or_analyze_deck(top_deck['deck_name'], top_deck['set'])
         
-        # Determine the color class based on power index
-        power_class = "positive-index" if power_index > 0 else "negative-index"
+        # Render condensed deck view using our new function
+        from card_renderer import render_sidebar_deck
+        deck_html = render_sidebar_deck(
+            deck_data['deck_info']['Pokemon'], 
+            deck_data['deck_info']['Trainer'],
+            card_width=70  # Smaller card width for sidebar
+        )
         
-        # Create an expander for each deck
-        with st.sidebar.expander(f"{deck['displayed_name']}"):
-            # Display power index with color
-            st.markdown(f"""
-            <div class="performance-card">
-                <p>Power Index: <span class="{power_class}">{power_index}</span></p>
-                <p>Record: {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-                <p>Tournaments: {deck['tournaments_played']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Add a deck selection option
-            if st.button("Select for Analysis", key=f"select_{deck['deck_name']}"):
-                # Store the deck name to analyze
-                st.session_state.deck_to_analyze = deck['deck_name']
-                st.rerun()
+        # Display the deck
+        st.sidebar.markdown(deck_html, unsafe_allow_html=True)
 else:
     st.sidebar.info("No tournament performance data available")
 
