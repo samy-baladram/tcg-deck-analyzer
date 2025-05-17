@@ -15,87 +15,21 @@ st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="
 # Apply custom styles
 st.markdown("""
 <style>
-/* Change primary color to blue */
-div[data-baseweb="select"] > div {
-    border-color: #00A0FF !important;
-}
-
-/* Selected option */
-div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #00A0FF !important;
-}
-
-/* Hover effect */
-div[role="option"]:hover {
-    background-color: #00A0FF !important;
-}
-
-/* Button primary color */
-.stButton > button {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
-
-.stButton > button:hover {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
-
-/* Progress bar */
-.stProgress > div > div > div > div {
-    background-color: #00A0FF;
-}
-
-/* TAB NAVIGATION STYLES */
-/* Active tab text color */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-    color: #00A0FF !important;
-}
-
-/* Tab hover with 50% transparency */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
-    color: rgba(72, 187, 255, 0.4) !important;
-    transition: color 0.3s;
-}
-
-/* SELECTED TAB UNDERLINE ONLY */
-/* This targets the moving underline indicator */
-.stTabs [data-baseweb="tab-highlight"] {
-    background-color: #00A0FF !important;
-}
-
-/* Remove any background color from tab list */
-.stTabs [data-baseweb="tab-list"] {
-    background-color: transparent !important;
-}
-
-/* Ensure only selected tab has the indicator */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
-    border-bottom: none !important;
-}
-
-/* Expander styling - using direct class approach */
-/* Expander hover effect */
-.stExpander > details > summary:hover {
-    color: #00A0FF !important;
-    background-color: rgba(0, 160, 255, 0.1) !important;
-}
-/* Remove left border highlight */
-.stExpander > details[open] > summary {
-    color: #00A0FF !important;
-    /* No border-left styling */
-}
+# Your existing styles here...
 </style>
 """, unsafe_allow_html=True)
 
-# Display banner
-ui_helpers.display_banner("title_banner.png")
-
-# Load initial data
-ui_helpers.load_initial_data()
+# Show loading spinner for entire app initialization
+with st.spinner("Loading app data..."):
+    # Display banner
+    ui_helpers.display_banner("title_banner.png")
+    
+    # Load initial data - this is where the heavy lifting happens
+    ui_helpers.load_initial_data()
 
 # Create sidebar
-ui_helpers.render_sidebar()
+with st.spinner("Loading sidebar data..."):
+    ui_helpers.render_sidebar()
 
 # Create deck selector
 selected_option = ui_helpers.create_deck_selector()
@@ -105,7 +39,8 @@ if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
     
     # Get analyzed deck from cache or analyze it
-    analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
+    with st.spinner("Analyzing deck..."):
+        analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
     
     # Unpack the results
     results = analyzed_deck['results']
