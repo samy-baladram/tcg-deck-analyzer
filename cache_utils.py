@@ -111,7 +111,23 @@ def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, 
         import traceback
         logger.error(traceback.format_exc())
         return False
-
+        
+def save_analyzed_deck(deck_name, set_name, analyzed_data):
+    """Save analyzed deck data (legacy wrapper for compatibility)"""
+    try:
+        # Extract components from the analyzed_data dictionary
+        results_df = analyzed_data.get('results', pd.DataFrame())
+        total_decks = analyzed_data.get('total_decks', 0)
+        variant_df = analyzed_data.get('variant_df', pd.DataFrame())
+        
+        # Call the component-based save function
+        return save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, variant_df)
+    except Exception as e:
+        logger.error(f"Error saving analyzed deck: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return False
+        
 def load_analyzed_deck_components(deck_name, set_name):
     """Load the three main deck analysis components from disk"""
     try:
