@@ -407,25 +407,57 @@ if 'analyze' in st.session_state and selected_option:
         st.header(format_deck_name(deck_info['deck_name']))
     
     # Display results in tabs
-    tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
+    tab1, tab2, tab3 = st.tabs(["Card Usage", "Deck Template", "Raw Data"])
     
     with tab1:
         # Create two columns for Pokemon and Trainer
+        st.write("#### Card Usage & Variants")
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            st.write("#### Pokemon")
+            st.write("##### Pokemon")
             type_cards = results[results['type'] == 'Pokemon']
             
             if not type_cards.empty:
                 fig = create_usage_bar_chart(type_cards, 'Pokemon')
                 display_chart(fig)
-                st.text(f"{total_decks} decks analyzed")
+                #st.text(f"{total_decks} decks analyzed")
             else:
                 st.info("No Pokemon cards found")
+
+            if not variant_df.empty:
+                
+                # Import variant renderer
+                from card_renderer import render_variant_cards
+                
+                # Display variant analysis
+                for _, row in variant_df.iterrows():
+                    with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
+                        # Extract set codes and numbers
+                        var1 = row['Var1']
+                        var2 = row['Var2']
+                        
+                        var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
+                        var1_num = var1.split('-')[-1]         # Just the last part
+                        var2_set = '-'.join(var2.split('-')[:-1])
+                        var2_num = var2.split('-')[-1]
+                        
+                        # # Create the 2-column layout
+                        var_col1, var_col2 = st.columns([2, 5])
+                        
+                        # Column 1: Both Variants side by side
+                        with var_col1:
+                            variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                            st.markdown(variant_html, unsafe_allow_html=True)
+                        
+                        # Column 2: Bar Chart
+                        with var_col2:
+                            # Create variant bar chart with fixed height
+                            fig_var = create_variant_bar_chart(row)
+                            display_chart(fig_var) 
         
         with col2:
-            st.write("#### Trainer")
+            st.write("##### Trainer")
             type_cards = results[results['type'] == 'Trainer']
             
             if not type_cards.empty:
@@ -441,8 +473,9 @@ if 'analyze' in st.session_state and selected_option:
         # Import card renderer
         from card_renderer import render_deck_section, render_option_section
         
-        col1, col2 = st.columns([1, 2])
-        
+        st.write(f"#### Core Cards", unsafe_allow_html=True)
+        col1, col2 = st.columns([2, 3])
+
         with col1:
             # Render Pokemon cards
             render_deck_section(deck_info['Pokemon'], "Pokemon")
@@ -453,15 +486,15 @@ if 'analyze' in st.session_state and selected_option:
         
         # Display flexible slots section
         remaining = 20 - total_cards
-        st.write(f"### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
-        st.write("Common choices include:", unsafe_allow_html=True)
+        st.write("<br>", unsafe_allow_html=True)
+        st.write(f"#### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
         trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
         # Create two columns for flexible slots
-        flex_col1, flex_col2 = st.columns([1, 2])
+        flex_col1, flex_col2 = st.columns([2, 3])
         
         with flex_col1:
             # Render Pokemon options
@@ -472,42 +505,6 @@ if 'analyze' in st.session_state and selected_option:
             render_option_section(trainer_options, "Trainer Options")
     
     with tab3:
-        if not variant_df.empty:
-            st.write("This shows how players use different versions of the same card:")
-            
-            # Import variant renderer
-            from card_renderer import render_variant_cards
-            
-            # Display variant analysis
-            for _, row in variant_df.iterrows():
-                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card", expanded=True):
-                    # Extract set codes and numbers
-                    var1 = row['Var1']
-                    var2 = row['Var2']
-                    
-                    var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
-                    var1_num = var1.split('-')[-1]         # Just the last part
-                    var2_set = '-'.join(var2.split('-')[:-1])
-                    var2_num = var2.split('-')[-1]
-                    
-                    # Create the 2-column layout
-                    col1, col2 = st.columns([1, 1])
-                    
-                    # Column 1: Both Variants side by side
-                    with col1:
-                        variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                        st.markdown(variant_html, unsafe_allow_html=True)
-                    
-                    # Column 2: Bar Chart
-                    with col2:
-                        # Create variant bar chart with fixed height
-                        fig = create_variant_bar_chart(row)
-                        fig.update_layout(height=220)
-                        display_chart(fig)
-        else:
-            st.info("No cards with variants found in this deck.")
-    
-    with tab4:
         # Main analysis data
         st.write("#### Card Usage Data")
         st.dataframe(results, use_container_width=True)
