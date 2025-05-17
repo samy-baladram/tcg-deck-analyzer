@@ -215,6 +215,36 @@ def render_sidebar():
     from energy_utils import initialize_energy_types
     initialize_energy_types()
     
+    # Debug section for energy types - ADD THIS
+    if st.sidebar.checkbox("Show Energy Debug Info", value=False):
+        st.sidebar.subheader("Energy Types Debug")
+        
+        # Show archetype first energy combos
+        if 'archetype_first_energy_combo' in st.session_state:
+            st.sidebar.write("First Energy Combos by Archetype:")
+            for archetype, energies in st.session_state.archetype_first_energy_combo.items():
+                energy_str = ", ".join(energies)
+                st.sidebar.write(f"- **{archetype}**: {energy_str}")
+        
+        # Show all energy types by archetype
+        if 'archetype_energy_types' in st.session_state:
+            st.sidebar.write("All Energy Types by Archetype:")
+            for archetype, energies in st.session_state.archetype_energy_types.items():
+                energy_str = ", ".join(energies)
+                st.sidebar.write(f"- **{archetype}**: {energy_str}")
+                
+        # Also show energy file status
+        import os
+        energy_cache_file = "cached_data/energy_types.json"
+        if os.path.exists(energy_cache_file):
+            file_size = os.path.getsize(energy_cache_file)
+            mod_time = os.path.getmtime(energy_cache_file)
+            from datetime import datetime
+            mod_time_str = datetime.fromtimestamp(mod_time).strftime("%Y-%m-%d %H:%M:%S")
+            st.sidebar.write(f"Energy cache file: {file_size} bytes, last modified: {mod_time_str}")
+        else:
+            st.sidebar.write("Energy cache file does not exist yet.")
+    
     # Display performance data if it exists
     if not st.session_state.performance_data.empty:
         # Add disclaimer with update time in one line
