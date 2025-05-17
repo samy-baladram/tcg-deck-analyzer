@@ -110,11 +110,40 @@ def get_deck_urls(deck_name, set_name="A3"):
     return urls
 
 def extract_cards(url):
-    """Extract cards from a single decklist"""
+    """Extract cards and energy types from a single decklist"""
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
     cards = []
+    energy_types = []
+    
+    # Extract energy types from image elements
+    img_elements = soup.find_all('img')
+    for img in img_elements:
+        src = img.get('src', '').lower()
+        
+        # Check for energy type patterns in image URLs
+        if 'grass.png' in src:
+            energy_types.append('grass')
+        elif 'fire.png' in src:
+            energy_types.append('fire')
+        elif 'water.png' in src:
+            energy_types.append('water')
+        elif 'lightning.png' in src:
+            energy_types.append('lightning')
+        elif 'psychic.png' in src:
+            energy_types.append('psychic')
+        elif 'fighting.png' in src:
+            energy_types.append('fighting')
+        elif 'darkness.png' in src:
+            energy_types.append('darkness')
+        elif 'metal.png' in src:
+            energy_types.append('metal')
+        elif 'colorless.png' in src:
+            energy_types.append('colorless')
+    
+    # Remove duplicates
+    energy_types = list(set(energy_types))
     
     # Find sections containing cards
     for div in soup.find_all('div', class_='heading'):
@@ -163,7 +192,7 @@ def extract_cards(url):
                     # Skip entries that can't be properly parsed
                     continue
     
-    return cards
+    return cards, energy_types
 
 def get_all_recent_tournaments():
     """Get IDs of all tournaments completed recently."""
@@ -323,13 +352,13 @@ def get_sample_deck_for_archetype(deck_name, set_name="A3"):
     
     # If there are no decks available, return empty lists
     if not urls:
-        return [], []
+        return [], [], []
     
     # Extract cards from the first decklist (most recent/representative)
-    cards = extract_cards(urls[0])
+    cards, energy_types = extract_cards(urls[0])
     
     # Separate Pokemon and Trainer cards
     pokemon_cards = [card for card in cards if card['type'] == 'Pokemon']
     trainer_cards = [card for card in cards if card['type'] == 'Trainer']
     
-    return pokemon_cards, trainer_cards
+    return pokemon_cards, trainer_cards, energy_types
