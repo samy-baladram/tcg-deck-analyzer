@@ -2,25 +2,17 @@
 """Main Streamlit application for TCG Deck Analyzer"""
 
 import streamlit as st
-from datetime import datetime, timedelta
-import os
-import json
-import pandas as pd
-import cache_utils
 
-# Import all modules
-from config import MIN_META_SHARE, CACHE_TTL, IMAGE_BASE_URL
-from scraper import get_deck_list, analyze_recent_performance, get_sample_deck_for_archetype
-from analyzer import analyze_deck, build_deck_template
-from formatters import format_deck_name, format_deck_option, parse_deck_option
-from image_processor import get_base64_image, create_deck_header_images, get_card_thumbnail
-from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
-from utils import calculate_time_ago, format_card_display
-from card_renderer import CardGrid, render_deck_section, render_option_section, render_variant_cards
+# Import helper modules
+import ui_helpers
+import cache_manager
+import display_tabs
+from config import MIN_META_SHARE
 
-# Add this right after st.set_page_config()
+# Set up page
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
+# Apply custom styles
 st.markdown("""
 <style>
 /* Change primary color to blue */
@@ -96,621 +88,51 @@ div[role="option"]:hover {
 </style>
 """, unsafe_allow_html=True)
 
-# Constants for cached data
-PERFORMANCE_DATA_PATH = "cached_data/tournament_performance.json"
-PERFORMANCE_DATA_TIMESTAMP_PATH = "cached_data/tournament_performance_timestamp.txt"
+# Display banner
+ui_helpers.display_banner("title_banner.png")
 
+# Load initial data
+ui_helpers.load_initial_data()
 
-def aggregate_card_usage(force_update=False):
-    """
-    Aggregate card usage across all top decks and cache results.
-    Only updates once per day unless forced.
-    """
-    # Try to load existing data first
-    card_usage_df, timestamp = cache_utils.load_card_usage_data()
-    
-    # Check if update is needed
-    if not force_update and not card_usage_df.empty and (datetime.now() - timestamp) < timedelta(days=1):
-        # Data is fresh (less than a day old)
-        return card_usage_df
-    
-    # Data needs to be updated
-    with st.spinner("Aggregating card usage data..."):
-        # Get top decks from performance data
-        if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-            # Load or update performance data if needed
-            performance_df, _ = cache_utils.load_tournament_performance_data()
-            if performance_df.empty:
-                performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-                cache_utils.save_tournament_performance_data(performance_df)
-        else:
-            performance_df = st.session_state.performance_data
-        
-        # Get top 20 decks to analyze
-        top_decks = performance_df.head(20)
-        
-        # Store all card data
-        all_cards = []
-        
-        # For each deck, get its cards
-        for _, deck in top_decks.iterrows():
-            deck_name = deck['deck_name']
-            set_name = deck['set']
-            
-            # Try to load analyzed deck data
-            deck_data = cache_utils.load_analyzed_deck(deck_name, set_name)
-            
-            if deck_data is None:
-                # Analyze the deck if not cached
-                results, _, _ = analyze_deck(deck_name, set_name)
-                
-                # Store relevant info for each card
-                for _, card in results.iterrows():
-                    all_cards.append({
-                        'deck_name': deck_name,
-                        'deck_share': deck['share'],
-                        'card_name': card['card_name'],
-                        'type': card['type'],
-                        'set': card['set'],
-                        'num': card['num'],
-                        'count_1': card['count_1'],
-                        'count_2': card['count_2'],
-                        'pct_1': card['pct_1'],
-                        'pct_2': card['pct_2'],
-                        'pct_total': card['pct_total'],
-                        'category': card['category'] if 'category' in card else 'Unknown'
-                    })
-                
-                # Save the analyzed deck for future use
-                deck_list, deck_info, total_cards, options = build_deck_template(results)
-                analyzed_data = {
-                    'results': results,
-                    'total_decks': 0,  # Not needed for this purpose
-                    'variant_df': pd.DataFrame(),  # Not needed
-                    'deck_list': deck_list,
-                    'deck_info': deck_info,
-                    'total_cards': total_cards,
-                    'options': options
-                }
-                cache_utils.save_analyzed_deck(deck_name, set_name, analyzed_data)
-            else:
-                # Use cached data
-                results = deck_data['results']
-                
-                # Store relevant info for each card
-                for _, card in results.iterrows():
-                    all_cards.append({
-                        'deck_name': deck_name,
-                        'deck_share': deck['share'],
-                        'card_name': card['card_name'],
-                        'type': card['type'],
-                        'set': card['set'],
-                        'num': card['num'],
-                        'count_1': card['count_1'],
-                        'count_2': card['count_2'],
-                        'pct_1': card['pct_1'],
-                        'pct_2': card['pct_2'],
-                        'pct_total': card['pct_total'],
-                        'category': card['category'] if 'category' in card else 'Unknown'
-                    })
-        
-        # Create DataFrame from all cards
-        card_usage_df = pd.DataFrame(all_cards)
-        
-        # Calculate total usage weighted by deck share
-        card_usage_summary = card_usage_df.groupby(['card_name', 'type', 'set', 'num']).apply(
-            lambda x: pd.Series({
-                'deck_count': len(x),
-                'total_count': sum(x['count_1'] + x['count_2']),
-                'weighted_usage': sum(x['pct_total'] * x['deck_share'] / 100),
-                'decks': ', '.join(x['deck_name']),
-            })
-        ).reset_index()
-        
-        # Sort by weighted usage
-        card_usage_summary = card_usage_summary.sort_values('weighted_usage', ascending=False)
-        
-        # Save to cache
-        cache_utils.save_card_usage_data(card_usage_summary)
-        
-        return card_usage_summary
-        
-# Function to load cached tournament performance data
-def load_tournament_performance_data():
-    """Load tournament performance data from cache if available"""
-    try:
-        # Check if data file exists
-        if os.path.exists(PERFORMANCE_DATA_PATH):
-            # Read the data from JSON file
-            with open(PERFORMANCE_DATA_PATH, 'r') as f:
-                data = json.load(f)
-            
-            # Convert to DataFrame
-            performance_df = pd.DataFrame(data)
-            
-            # Read timestamp
-            if os.path.exists(PERFORMANCE_DATA_TIMESTAMP_PATH):
-                with open(PERFORMANCE_DATA_TIMESTAMP_PATH, 'r') as f:
-                    timestamp_str = f.read().strip()
-                    timestamp = datetime.fromisoformat(timestamp_str)
-            else:
-                # Default to an hour ago if no timestamp file
-                timestamp = datetime.now() - timedelta(hours=1)
-            
-            return performance_df, timestamp
-        
-    except Exception as e:
-        st.error(f"Error loading cached data: {e}")
-    
-    # Return empty dataframe and old timestamp if loading fails
-    return pd.DataFrame(), datetime.now() - timedelta(hours=2)
+# Create sidebar
+ui_helpers.render_sidebar()
 
-# Function to save tournament performance data to cache
-def save_tournament_performance_data(performance_df):
-    """Save tournament performance data to cache"""
-    try:
-        # Create directory if it doesn't exist
-        os.makedirs(os.path.dirname(PERFORMANCE_DATA_PATH), exist_ok=True)
-        
-        # Save data to JSON file
-        with open(PERFORMANCE_DATA_PATH, 'w') as f:
-            json.dump(performance_df.to_dict(orient='records'), f)
-        
-        # Save timestamp
-        with open(PERFORMANCE_DATA_TIMESTAMP_PATH, 'w') as f:
-            f.write(datetime.now().isoformat())
-        
-        return True
-    
-    except Exception as e:
-        st.error(f"Error saving cached data: {e}")
-        return False
+# Create deck selector
+selected_option = ui_helpers.create_deck_selector()
 
-# Get the base64 string of your image
-img_path = "title_banner.png"
-img_base64 = get_base64_image(img_path)
-
-# Define the maximum width you want for the banner
-max_banner_width = 800  # Adjust this value as needed
-
-# Display the image with restricted width
-st.markdown(f"""
-<div style="display: flex; justify-content: center; width: 100%; margin-top:-2rem;">
-    <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_banner_width}px; height: auto;">
-</div>
-""", unsafe_allow_html=True)
-
-# Initialize session state and fetch deck list on first load
-if 'deck_list' not in st.session_state:
-    with st.spinner("Fetching deck list..."):
-        st.session_state.deck_list = get_deck_list()
-        st.session_state.fetch_time = datetime.now()
-
-# Try to load tournament data from cache first
-performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
-
-# Check if data needs to be updated (if it's older than 1 hour)
-if performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(hours=1):
-    with st.spinner("Updating tournament performance data..."):
-        # Analyze recent performance
-        performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-        
-        # Save to cache
-        cache_utils.save_tournament_performance_data(performance_df)
-        
-        # Update session state
-        performance_timestamp = datetime.now()
-
-# Store in session state
-st.session_state.performance_data = performance_df
-st.session_state.performance_fetch_time = performance_timestamp
-
-# Also ensure fetch_time exists
-if 'fetch_time' not in st.session_state:
-    st.session_state.fetch_time = datetime.now()
-
-# Initialize selected deck if not exists
-if 'selected_deck_index' not in st.session_state:
-    st.session_state.selected_deck_index = None
-
-# Add this with your other session state initializations
-if 'deck_to_analyze' not in st.session_state:
-    st.session_state.deck_to_analyze = None
-
-# Add this near the top of your app initialization (after tournament data is loaded)
-
-# Load or update card usage data once per day
-if 'card_usage_data' not in st.session_state:
-    st.session_state.card_usage_data = aggregate_card_usage()
-    
-# Top navigation bar - single row dropdown
-# Filter and display popular decks
-if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-    # Get top 30 decks from performance data
-    top_performing_decks = st.session_state.performance_data.head(30)
-    
-    # Create dropdown options with the same format as sidebar
-    deck_display_names = []
-    deck_name_mapping = {}  # Maps display name to original name
-    
-    for _, deck in top_performing_decks.iterrows():
-        power_index = round(deck['power_index'], 2)
-        # Format: "Deck Name (Power Index)"
-        display_name = f"{deck['displayed_name']} ({power_index})"
-        deck_display_names.append(display_name)
-        deck_name_mapping[display_name] = {
-            'deck_name': deck['deck_name'],
-            'set': deck['set']
-        }
-else:
-    # Fallback to original method if performance data isn't available
-    popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
-    
-    # Create deck options with formatted names and store mapping
-    deck_display_names = []
-    deck_name_mapping = {}  # Maps display name to original name
-    
-    for _, row in popular_decks.iterrows():
-        display_name = format_deck_option(row['deck_name'], row['share'])
-        deck_display_names.append(display_name)
-        deck_name_mapping[display_name] = {
-            'deck_name': row['deck_name'],
-            'set': row['set']
-        }
-
-# Store mapping in session state
-st.session_state.deck_name_mapping = deck_name_mapping
-
-# Calculate time ago
-time_str = calculate_time_ago(st.session_state.fetch_time)
-
-# Get current set from selected deck or default
-current_set = "-"  # Default
-if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
-    selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
-    deck_info = st.session_state.deck_name_mapping[selected_deck_display]
-    current_set = deck_info['set'].upper()
-
-label_text = f"Current Set: {current_set}"
-help_text = f"Showing top performing decks. Updated {time_str}."
-
-# Use on_change callback to handle selection
-def on_deck_change():
-    selection = st.session_state.deck_select
-    if selection:
-        st.session_state.selected_deck_index = deck_display_names.index(selection)
-        
-        # Set the deck to analyze
-        deck_info = st.session_state.deck_name_mapping[selection]
-        st.session_state.analyze = {
-            'deck_name': deck_info['deck_name'],
-            'set_name': deck_info['set'],
-        }
-    else:
-        st.session_state.selected_deck_index = None
-
-# Add this right before the selectbox declaration
-if st.session_state.get('deck_to_analyze'):
-    # Find the matching display name and index
-    for i, display_name in enumerate(deck_display_names):
-        deck_info = deck_name_mapping[display_name]
-        if deck_info['deck_name'] == st.session_state.deck_to_analyze:
-            st.session_state.selected_deck_index = i
-            
-            # Set the deck to analyze
-            st.session_state.analyze = {
-                'deck_name': deck_info['deck_name'],
-                'set_name': deck_info['set'],
-            }
-            
-            # Clear the deck_to_analyze for next time
-            st.session_state.deck_to_analyze = None
-            break
-            
-selected_option = st.selectbox(
-    label_text,
-    deck_display_names,
-    index=st.session_state.selected_deck_index,
-    placeholder="Select a deck to analyze...",
-    help=help_text,
-    key="deck_select",
-    on_change=on_deck_change
-)
-
-# Function to get deck key for session state
-def get_deck_cache_key(deck_name, set_name):
-    """Generate a unique key for caching deck data in session state"""
-    return f"deck_cache_{deck_name}_{set_name}"
-
-# Function to get or analyze deck
-def get_or_analyze_full_deck(deck_name, set_name):
-    """Get full analyzed deck from cache or analyze if not cached"""
-    # First check session cache
-    cache_key = f"full_deck_{deck_name}_{set_name}"
-    if cache_key in st.session_state.analyzed_deck_cache:
-        return st.session_state.analyzed_deck_cache[cache_key]
-    
-    # Then check disk cache
-    cached_results, cached_total_decks, cached_variant_df = cache_utils.load_analyzed_deck_components(deck_name, set_name)
-    
-    if cached_results is not None:
-        print(f"Using cached data for {deck_name}")
-        
-        # Generate the deck template from cached results
-        deck_list, deck_info, total_cards, options = build_deck_template(cached_results)
-        
-        # Create cache entry
-        analyzed_data = {
-            'results': cached_results,
-            'total_decks': cached_total_decks,
-            'variant_df': cached_variant_df,
-            'deck_list': deck_list,
-            'deck_info': deck_info,
-            'total_cards': total_cards,
-            'options': options
-        }
-        
-        # Store in session cache
-        st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
-        return analyzed_data
-    
-    # If not in any cache, analyze the deck
-    print(f"No cache found for {deck_name}, analyzing")
-    with st.spinner(f"Analyzing {deck_name}..."):
-        results, total_decks, variant_df = analyze_deck(deck_name, set_name)
-        deck_list, deck_info, total_cards, options = build_deck_template(results)
-        
-        # Create cache entry
-        analyzed_data = {
-            'results': results,
-            'total_decks': total_decks,
-            'variant_df': variant_df,
-            'deck_list': deck_list,
-            'deck_info': deck_info,
-            'total_cards': total_cards,
-            'options': options
-        }
-        
-        # Store in session cache
-        st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
-        
-        # Store in disk cache
-        cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df)
-        
-        return analyzed_data
-
-# Add to session state initialization
-if 'sample_deck_cache' not in st.session_state:
-    st.session_state.sample_deck_cache = {}
-
-# Function to get or load a sample deck
-def get_or_load_sample_deck(deck_name, set_name):
-    """Get sample deck from cache or load if not cached"""
-    cache_key = f"sample_deck_{deck_name}_{set_name}"
-    
-    # Check if sample deck is in cache
-    if cache_key in st.session_state.sample_deck_cache:
-        return st.session_state.sample_deck_cache[cache_key]
-    
-    # Load sample deck
-    pokemon_cards, trainer_cards = get_sample_deck_for_archetype(deck_name, set_name)
-    
-    # Store in cache
-    st.session_state.sample_deck_cache[cache_key] = {
-        'pokemon_cards': pokemon_cards,
-        'trainer_cards': trainer_cards
-    }
-    
-    return st.session_state.sample_deck_cache[cache_key]
-
-# Add this with your other session state initializations
-if 'analyzed_deck_cache' not in st.session_state:
-    st.session_state.analyzed_deck_cache = {}
-        
-# Sidebar content - Tournament Performance
-st.sidebar.title("Tournament Performance")
-
-# Display performance data if it exists
-if not st.session_state.performance_data.empty:
-    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-    st.sidebar.write(f"Data updates hourly. Last updated: {performance_time_str}")
-    
-    # Get the top 10 performing decks
-    top_decks = st.session_state.performance_data.head(10)
-    
-    # For each top deck
-    for idx, deck in top_decks.iterrows():
-        # Format power index to 2 decimal places
-        power_index = round(deck['power_index'], 2)
-        
-        # Create a plain text expander title with the power index
-        with st.sidebar.expander(f"{deck['displayed_name']} ({power_index})", expanded=False):
-            # Determine the color class based on power index
-            power_class = "positive-index" if power_index > 0 else "negative-index"
-            
-            # Display performance stats with colored power index inside
-            st.markdown(f"""
-            <div style="margin-bottom: 10px; font-size: 0.9rem;">
-                <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
-                <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-                <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Get sample deck data
-            sample_deck = get_or_load_sample_deck(deck['deck_name'], deck['set'])
-            
-            # Render deck view
-            from card_renderer import render_sidebar_deck
-            deck_html = render_sidebar_deck(
-                sample_deck['pokemon_cards'], 
-                sample_deck['trainer_cards'],
-                card_width=65
-            )
-            
-            # Display the deck
-            st.markdown(deck_html, unsafe_allow_html=True)
-else:
-    st.sidebar.info("No tournament performance data available")
-
-# Main content area - simplified with caching
+# Main content area
 if 'analyze' in st.session_state and selected_option:
-    original_deck_info = st.session_state.analyze  # Original deck info for header
+    original_deck_info = st.session_state.analyze
     
     # Get analyzed deck from cache or analyze it
-    analyzed_deck = get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
+    analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
     
     # Unpack the results
     results = analyzed_deck['results']
     total_decks = analyzed_deck['total_decks']
     variant_df = analyzed_deck['variant_df']
-    deck_list = analyzed_deck['deck_list']
-    deck_info = analyzed_deck['deck_info']  # Renamed to avoid confusion
-    total_cards = analyzed_deck['total_cards']
-    options = analyzed_deck['options']
     
-    # Create header with images - use original_deck_info
-    header_image = create_deck_header_images(original_deck_info, results)
+    # Display deck header
+    display_tabs.display_deck_header(original_deck_info, results)
     
-    if header_image:
-        st.markdown(f"""
-        <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0rem; margin-top:-1rem">
-            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(original_deck_info['deck_name'])}</h1>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.header(format_deck_name(original_deck_info['deck_name']))
-   
-    # Display results in tabs
+    # Display tabs
     tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Raw Data", "Metagame Overview"])
     
     with tab1:
-        # Create two columns for Pokemon and Trainer
-        st.write("#### Card Usage & Variants")
-        col1, col2 = st.columns([1, 1])
-        
-        with col1:
-            st.write("##### Pokemon")
-            type_cards = results[results['type'] == 'Pokemon']
-            
-            if not type_cards.empty:
-                fig = create_usage_bar_chart(type_cards, 'Pokemon')
-                display_chart(fig)
-                #st.text(f"{total_decks} decks analyzed")
-            else:
-                st.info("No Pokemon cards found")
-
-            if not variant_df.empty:
-                
-                # Import variant renderer
-                from card_renderer import render_variant_cards
-                
-                # Display variant analysis
-                for _, row in variant_df.iterrows():
-                    with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
-                        # Extract set codes and numbers
-                        var1 = row['Var1']
-                        var2 = row['Var2']
-                        
-                        var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
-                        var1_num = var1.split('-')[-1]         # Just the last part
-                        var2_set = '-'.join(var2.split('-')[:-1])
-                        var2_num = var2.split('-')[-1]
-                        
-                        # # Create the 2-column layout
-                        var_col1, var_col2 = st.columns([2, 5])
-                        
-                        # Column 1: Both Variants side by side
-                        with var_col1:
-                            variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                            st.markdown(variant_html, unsafe_allow_html=True)
-                        
-                        # Column 2: Bar Chart
-                        with var_col2:
-                            # Create variant bar chart with fixed height
-                            fig_var = create_variant_bar_chart(row)
-                            display_chart(fig_var) 
-        
-        with col2:
-            st.write("##### Trainer")
-            type_cards = results[results['type'] == 'Trainer']
-            
-            if not type_cards.empty:
-                fig = create_usage_bar_chart(type_cards, 'Trainer')
-                display_chart(fig)
-            else:
-                st.info("No Trainer cards found")
+        display_tabs.display_card_usage_tab(results, total_decks, variant_df)
     
     with tab2:
-        # Use the updated function that returns deck_info
-        deck_list, deck_info, total_cards, options = build_deck_template(results)
-        
-        # Import card renderer
-        from card_renderer import render_deck_section, render_option_section
-        
-        st.write(f"#### Core Cards", unsafe_allow_html=True)
-        col1, col2 = st.columns([2, 3])
-
-        with col1:
-            # Render Pokemon cards
-            render_deck_section(deck_info['Pokemon'], "Pokemon")
-        
-        with col2:
-            # Render Trainer cards
-            render_deck_section(deck_info['Trainer'], "Trainer")
-        
-        # Display flexible slots section
-        remaining = 20 - total_cards
-        st.write("<br>", unsafe_allow_html=True)
-        st.write(f"#### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
-        
-        # Sort options by usage percentage (descending) and split by type
-        pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
-        trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
-        
-        # Create two columns for flexible slots
-        flex_col1, flex_col2 = st.columns([2, 3])
-        
-        with flex_col1:
-            # Render Pokemon options
-            render_option_section(pokemon_options, "Pokémon Options")
-        
-        with flex_col2:
-            # Render Trainer options
-            render_option_section(trainer_options, "Trainer Options")
+        display_tabs.display_deck_template_tab(results)
     
     with tab3:
-        # Main analysis data
-        st.write("#### Card Usage Data")
-        st.dataframe(results, use_container_width=True)
-        
-        # Variant analysis data
-        if not variant_df.empty:
-            st.write("#### Variant Analysis Data")
-            st.dataframe(variant_df, use_container_width=True)
+        display_tabs.display_raw_data_tab(results, variant_df)
     
     with tab4:
-        st.subheader("Metagame Overview")
-        st.write("Most played cards across top decks:")
-        
-        # Filter and display top cards
-        pokemon_cards = st.session_state.card_usage_data[st.session_state.card_usage_data['type'] == 'Pokemon'].head(20)
-        trainer_cards = st.session_state.card_usage_data[st.session_state.card_usage_data['type'] == 'Trainer'].head(20)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("#### Top Pokémon")
-            st.dataframe(pokemon_cards[['card_name', 'weighted_usage', 'deck_count']], use_container_width=True)
-        
-        with col2:
-            st.write("#### Top Trainers")
-            st.dataframe(trainer_cards[['card_name', 'weighted_usage', 'deck_count']], use_container_width=True)
-
+        display_tabs.display_metagame_tab()
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
-# Add this at the very end of app.py, after the main content
+# Footer
 st.markdown("---")
 st.markdown("""<div style="text-align: center; font-size: 0.8em; color: #777; margin-top: 1rem; padding: 1rem;">
     <p><strong>Disclaimer:</strong></p><p>The literal and graphical information presented on this website about the Pokémon Trading Card Game Pocket, 
