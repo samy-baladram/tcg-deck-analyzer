@@ -2,109 +2,83 @@
 """Utility functions for handling energy types"""
 
 import streamlit as st
-from collections import Counter
+import random
+from collections import defaultdict
 
 def initialize_energy_types():
     """Initialize energy types dictionary in session state if not exists"""
     if 'archetype_energy_types' not in st.session_state:
         st.session_state.archetype_energy_types = {}
-    
-    # Initialize energy combinations counter if not exists
+        
     if 'archetype_energy_combinations' not in st.session_state:
-        st.session_state.archetype_energy_combinations = {}
+        st.session_state.archetype_energy_combinations = defaultdict(list)
 
 def get_archetype_from_deck_name(deck_name):
     """Extract archetype name from deck name"""
     return deck_name.split('-')[0] if '-' in deck_name else deck_name
 
 def store_energy_types(deck_name, energy_types):
-    """Store energy types for an archetype in the session state"""
+    """
+    Store energy types for a deck by archetype in the session state
+    This version stores complete energy combinations, not just individual types
+    """
     if not energy_types:
         return
-    
-    # Limit to top 3 energy types max (TCG Pocket decks can have at most 3)
-    energy_types = energy_types[:3]
-    
-    # Create a frozen set (immutable) of the energy types for this deck
-    energy_set = frozenset(energy_types)
-    
-    # Get the archetype
+        
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Initialize archetype entry if not exists
-    if archetype not in st.session_state.archetype_energy_combinations:
-        st.session_state.archetype_energy_combinations[archetype] = Counter()
-    
-    # Increment the count for this specific energy combination
-    st.session_state.archetype_energy_combinations[archetype][energy_set] += 1
-    
-    # Also store individual energies for backwards compatibility
+    # Store individual energy types (for backward compatibility)
     if archetype not in st.session_state.archetype_energy_types:
         st.session_state.archetype_energy_types[archetype] = set()
     
     for energy in energy_types:
         st.session_state.archetype_energy_types[archetype].add(energy)
+    
+    # Store the complete energy combination
+    # Sort the energy types to ensure consistent combinations
+    sorted_energy_types = sorted(energy_types)
+    energy_combo = tuple(sorted_energy_types)  # Use tuple for hashability
+    
+    # Only add if it's a new combination
+    if energy_combo not in st.session_state.archetype_energy_combinations[archetype]:
+        st.session_state.archetype_energy_combinations[archetype].append(energy_combo)
 
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, with multiple fallback options to ensure something is shown
+    Get energy types for a deck, falling back to archetype energy combinations if needed
     
     Returns:
         Tuple of (energy_types, is_typical)
     """
-    # If deck has energy types, use them directly
+    # If deck has energy types, use them
     if deck_energy_types:
         return deck_energy_types, False
     
-    # Get the archetype
+    # Otherwise, try to get a valid combination from the archetype
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Fallback 1: Try to get the most common energy combination
-    if archetype in st.session_state.archetype_energy_combinations:
-        combinations = st.session_state.archetype_energy_combinations[archetype]
-        
-        if combinations:
-            # Filter out empty combinations
-            valid_combinations = [(combo, count) for combo, count in combinations.items() if combo]
-            
-            if valid_combinations:
-                most_common_combo, _ = max(valid_combinations, key=lambda x: x[1])
-                return list(most_common_combo), True
+    # If we have stored combinations, pick a random valid one
+    if archetype in st.session_state.archetype_energy_combinations and st.session_state.archetype_energy_combinations[archetype]:
+        # Pick a random valid combination
+        energy_combo = random.choice(st.session_state.archetype_energy_combinations[archetype])
+        return list(energy_combo), True
     
-    # Fallback 2: Use any non-empty energy combination from the counter
-    if archetype in st.session_state.archetype_energy_combinations:
-        for combo, count in st.session_state.archetype_energy_combinations[archetype].items():
-            if combo:  # If not empty
-                return list(combo), True
+    # Fallback: if we have individual types but no combinations
+    if archetype in st.session_state.archetype_energy_types and st.session_state.archetype_energy_types[archetype]:
+        # Limit to 3 random energy types maximum (since that's the game limit)
+        energy_types = list(st.session_state.archetype_energy_types[archetype])
+        if len(energy_types) > 3:
+            energy_types = random.sample(energy_types, 3)
+        return energy_types, True
     
-    # Fallback 3: Use the individual energy types collection
-    if archetype in st.session_state.archetype_energy_types:
-        all_energies = list(st.session_state.archetype_energy_types[archetype])
-        if all_energies:
-            # Limit to 3 energies to be consistent with TCG Pocket rules
-            return all_energies[:3], True
-    
-    # Fallback 4: Check for similar archetypes (first word match)
-    archetype_first_word = archetype.split('-')[0] if '-' in archetype else archetype
-    
-    # Look for archetypes with the same first word
-    for other_archetype in st.session_state.archetype_energy_types:
-        other_first_word = other_archetype.split('-')[0] if '-' in other_archetype else other_archetype
-        
-        if archetype_first_word == other_first_word and archetype != other_archetype:
-            all_energies = list(st.session_state.archetype_energy_types[other_archetype])
-            if all_energies:
-                # Mark as typical with higher uncertainty
-                return all_energies[:3], True
-    
-    # No energy types found after all fallbacks
+    # No energy types found
     return [], False
 
 def render_energy_icons(energy_types, is_typical=False):
     """Generate HTML for energy icons"""
     if not energy_types:
         return ""
-    
+        
     energy_html = ""
     # Create image tags for each energy type
     for energy in energy_types:
