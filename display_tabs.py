@@ -238,7 +238,7 @@ def display_metagame_tab():
         'total_wins': 'Wins',
         'total_losses': 'Losses',
         'total_ties': 'Ties',
-        'tournaments_played': 'Tournaments',
+        'tournaments_played': 'Best Finish Entries',
         'share': 'Meta Share %',
         'power_index': 'Power Index'
     }
