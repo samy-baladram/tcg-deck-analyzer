@@ -406,7 +406,7 @@ if not st.session_state.performance_data.empty:
     
     # Load and display the deck
     # Get the deck data (from cache if possible)
-    with st.sidebar.spinner("Loading deck..."):
+    with st.spinner("Loading deck..."):
         deck_data = get_or_analyze_deck(top_deck['deck_name'], top_deck['set'])
         
         # Render condensed deck view using our new function
