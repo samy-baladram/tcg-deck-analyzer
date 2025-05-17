@@ -160,13 +160,61 @@ def create_deck_selector():
     
     return selected_option
 
+def render_deck_in_sidebar(deck, expanded=False):
+    """Render a single deck in the sidebar"""
+    # Format power index to 2 decimal places
+    power_index = round(deck['power_index'], 2)
+    
+    # Create a plain text expander title with the power index
+    with st.sidebar.expander(f"{deck['displayed_name']} ({power_index})", expanded=expanded):
+        # Determine the color class based on power index
+        power_class = "positive-index" if power_index > 0 else "negative-index"
+        
+        # Get sample deck data
+        deck_name = deck['deck_name']
+        sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
+        
+        # Get and store energy types
+        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons
+        
+        raw_energy_types = sample_deck.get('energy_types', [])
+        store_energy_types(deck_name, raw_energy_types)
+        
+        # Get energy types for display (from deck or archetype)
+        energy_types, is_typical = get_energy_types_for_deck(deck_name, raw_energy_types)
+        
+        # Display energy types if available
+        if energy_types:
+            energy_html = render_energy_icons(energy_types, is_typical)
+            st.markdown(energy_html, unsafe_allow_html=True)
+        
+        # Display performance stats with colored power index inside
+        st.markdown(f"""
+        <div style="margin-bottom: 10px; font-size: 0.9rem;">
+            <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
+            <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+            <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Render deck view
+        from card_renderer import render_sidebar_deck
+        deck_html = render_sidebar_deck(
+            sample_deck['pokemon_cards'], 
+            sample_deck['trainer_cards'],
+            card_width=61
+        )
+        
+        # Display the deck
+        st.markdown(deck_html, unsafe_allow_html=True)
+
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
     st.sidebar.title("Tournament Performance")
     
-    # Create a dictionary to store energy types by archetype
-    if 'archetype_energy_types' not in st.session_state:
-        st.session_state.archetype_energy_types = {}
+    # Initialize energy types
+    from energy_utils import initialize_energy_types
+    initialize_energy_types()
     
     # Display performance data if it exists
     if not st.session_state.performance_data.empty:
@@ -176,91 +224,8 @@ def render_sidebar():
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
         
-        # First pass: collect energy types from all decks for each archetype
+        # Render each deck one by one
         for idx, deck in top_decks.iterrows():
-            # Get sample deck data
-            deck_name = deck['deck_name']
-            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
-            
-            # Store energy types by archetype (if available)
-            energy_types = sample_deck.get('energy_types', [])
-            if energy_types:
-                # Extract archetype from deck name (before first hyphen or whole name if no hyphen)
-                archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
-                
-                # Initialize the archetype entry if not exists
-                if archetype not in st.session_state.archetype_energy_types:
-                    st.session_state.archetype_energy_types[archetype] = set()
-                
-                # Add the energy types to the archetype set
-                for energy in energy_types:
-                    st.session_state.archetype_energy_types[archetype].add(energy)
-        
-        # Second pass: display decks with energy types (from specific deck or from archetype)
-        for idx, deck in top_decks.iterrows():
-            # Format power index to 2 decimal places
-            power_index = round(deck['power_index'], 2)
-            
-            # Create a plain text expander title with the power index
-            with st.sidebar.expander(f"{deck['displayed_name']} ({power_index})", expanded=False):
-                # Determine the color class based on power index
-                power_class = "positive-index" if power_index > 0 else "negative-index"
-                
-                # Get sample deck data
-                deck_name = deck['deck_name']
-                sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
-                
-                # Try to get energy types for this specific deck
-                energy_types = sample_deck.get('energy_types', [])
-                
-                # If no energy types found, try to get from archetype
-                if not energy_types:
-                    archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
-                    if archetype in st.session_state.archetype_energy_types:
-                        energy_types = list(st.session_state.archetype_energy_types[archetype])
-                        # Add a note indicating this is archetypical data
-                        archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(typical)</span>'
-                    else:
-                        energy_types = []
-                        archetype_note = ""
-                else:
-                    # This is specific deck data
-                    archetype_note = ""
-                
-                # Display energy types as images if available
-                if energy_types:
-                    energy_html = ""
-                    # Create image tags for each energy type
-                    for energy in energy_types:
-                        # Direct URL to the energy icon
-                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
-                    
-                    energy_display = f"""
-                    <div style="margin-bottom: 10px;">
-                        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
-                    </div>
-                    """
-                    st.markdown(energy_display, unsafe_allow_html=True)
-                
-                # Display performance stats with colored power index inside
-                st.markdown(f"""
-                <div style="margin-bottom: 10px; font-size: 0.9rem;">
-                    <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
-                    <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-                    <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                # Render deck view
-                from card_renderer import render_sidebar_deck
-                deck_html = render_sidebar_deck(
-                    sample_deck['pokemon_cards'], 
-                    sample_deck['trainer_cards'],
-                    card_width=61
-                )
-                
-                # Display the deck
-                st.markdown(deck_html, unsafe_allow_html=True)
+            render_deck_in_sidebar(deck)
     else:
         st.sidebar.info("No tournament performance data available")
