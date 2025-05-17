@@ -239,7 +239,7 @@ if 'analyze' in st.session_state and selected_option:
                         st.markdown("""
                         <style>
                         .variant-container {
-                            margin-bottom: -20px; 
+                            margin-bottom: -50px; 
                             padding-bottom: 0;
                         }
                         </style>
