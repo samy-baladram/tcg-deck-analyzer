@@ -84,9 +84,37 @@ def display_deck_template_tab(results):
     # Use the updated function that returns deck_info
     deck_list, deck_info, total_cards, options = build_deck_template(results)
     
-    st.write(f"#### Core Cards", unsafe_allow_html=True)
+    # Initialize empty energy types list
+    energy_types = []
+    
+    # Look for energy_types in the session state for this deck
+    if 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+        archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
+        
+        # Try to get energy from session state archetype mapping
+        if hasattr(st.session_state, 'archetype_energy_types') and archetype in st.session_state.archetype_energy_types:
+            energy_types = list(st.session_state.archetype_energy_types[archetype])
+    
+    # Create energy type HTML if energy types found
+    energy_html = ""
+    if energy_types:
+        for energy in energy_types:
+            energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+            energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
+        
+        # Create header with energy types
+        core_cards_header = f"""#### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html})</span>"""
+    else:
+        # Just "Core Cards" if no energy found
+        core_cards_header = "#### Core Cards"
+    
+    # Display the header
+    st.write(core_cards_header, unsafe_allow_html=True)
+    
+    # Display cards in columns
     col1, col2 = st.columns([2, 3])
-
+    
     with col1:
         # Render Pokemon cards
         render_deck_section(deck_info['Pokemon'], "Pokemon")
