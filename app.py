@@ -93,6 +93,11 @@ div[role="option"]:hover {
     color: #00A0FF !important;
 }
 
+/* Remove default chevron color override */
+.stExpander svg {
+    /* No styling here to keep original color */
+}
+
 /* Remove left border highlight */
 .stExpander > details[open] > summary {
     color: #00A0FF !important;
