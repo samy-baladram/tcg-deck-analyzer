@@ -181,6 +181,24 @@ def render_sidebar():
                 # Determine the color class based on power index
                 power_class = "positive-index" if power_index > 0 else "negative-index"
                 
+                # Get sample deck data
+                sample_deck = cache_manager.get_or_load_sample_deck(deck['deck_name'], deck['set'])
+                
+                # Display energy types as images if available - UPDATED CODE
+                energy_types = sample_deck.get('energy_types', [])
+                if energy_types:
+                    energy_html = ""
+                    # Create image tags for each energy type
+                    for energy in energy_types:
+                        # Direct URL to the energy icon
+                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+                        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
+                    
+                    energy_display = f"""<div style="margin-bottom: 10px;">
+                        <p style="margin-bottom:4px; font-weight:500;">Energy: {energy_html}</p>
+                    </div>"""
+                    st.markdown(energy_display, unsafe_allow_html=True)
+                
                 # Display performance stats with colored power index inside
                 st.markdown(f"""
                 <div style="margin-bottom: 10px; font-size: 0.9rem;">
@@ -189,9 +207,6 @@ def render_sidebar():
                     <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
                 </div>
                 """, unsafe_allow_html=True)
-                
-                # Get sample deck data
-                sample_deck = cache_manager.get_or_load_sample_deck(deck['deck_name'], deck['set'])
                 
                 # Render deck view
                 from card_renderer import render_sidebar_deck
