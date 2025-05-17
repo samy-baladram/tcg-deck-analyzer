@@ -105,6 +105,35 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     font-weight: bold;
 }
 
+/* Expander styles */
+div[data-testid="stExpander"] > div[role="button"]:hover {
+    background-color: rgba(0, 160, 255, 0.1) !important;
+    transition: background-color 0.3s ease;
+}
+
+/* Expander title hover effect */
+div[data-testid="stExpander"] > div[role="button"]:hover div {
+    color: #00A0FF !important;
+}
+
+/* Selected/expanded expander style */
+div[data-testid="stExpander"] > div[role="button"][aria-expanded="true"] {
+    border-left: 4px solid #00A0FF !important;
+    padding-left: calc(1rem - 4px) !important;
+    background-color: rgba(0, 160, 255, 0.05) !important;
+}
+
+/* Improve expander appearance */
+div[data-testid="stExpander"] {
+    border: 1px solid rgba(0, 160, 255, 0.2);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+/* Expander content padding */
+div[data-testid="stExpander"] > div:last-child {
+    padding-top: 0.5rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
