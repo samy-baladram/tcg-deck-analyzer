@@ -455,3 +455,32 @@ def debug_energy_combinations(deck_name):
                 print(f"    Deck {deck_key}: {energies}")
         if deck_count > 5:
             print(f"    ... and {deck_count - 5} more decks")
+
+# In energy_utils.py
+def track_per_deck_energy(deck_name, deck_num, energy_types):
+    """
+    Track energy types for each individual deck
+    
+    Parameters:
+        deck_name: Name of the deck archetype
+        deck_num: Unique identifier for this specific deck instance
+        energy_types: List of energy types found in this deck
+    """
+    # Skip if no energy types
+    if not energy_types:
+        return
+        
+    # Initialize if needed
+    if 'per_deck_energy' not in st.session_state:
+        st.session_state.per_deck_energy = {}
+    
+    # Get archetype
+    archetype = get_archetype_from_deck_name(deck_name)
+    
+    # Initialize archetype entry if needed
+    if archetype not in st.session_state.per_deck_energy:
+        st.session_state.per_deck_energy[archetype] = {}
+    
+    # Store energy for this specific deck
+    deck_key = f"{deck_name}-{deck_num}"
+    st.session_state.per_deck_energy[archetype][deck_key] = list(energy_types)
