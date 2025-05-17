@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import os
 import json
 import pandas as pd
+import cache_utils
 
 # Import all modules
 from config import MIN_META_SHARE, CACHE_TTL, IMAGE_BASE_URL
@@ -171,7 +172,7 @@ if 'deck_list' not in st.session_state:
         st.session_state.fetch_time = datetime.now()
 
 # Try to load tournament data from cache first
-performance_df, performance_timestamp = load_tournament_performance_data()
+performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
 
 # Check if data needs to be updated (if it's older than 1 hour)
 if performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(hours=1):
@@ -180,7 +181,7 @@ if performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(
         performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
         
         # Save to cache
-        save_tournament_performance_data(performance_df)
+        cache_utils.save_tournament_performance_data(performance_df)
         
         # Update session state
         performance_timestamp = datetime.now()
@@ -301,27 +302,43 @@ def get_deck_cache_key(deck_name, set_name):
     return f"deck_cache_{deck_name}_{set_name}"
 
 # Function to get or analyze deck
-def get_or_analyze_deck(deck_name, set_name):
-    """Get deck from cache or analyze if not cached"""
-    cache_key = get_deck_cache_key(deck_name, set_name)
+def get_or_analyze_full_deck(deck_name, set_name):
+    """Get full analyzed deck from cache or analyze if not cached"""
+    # First check session cache
+    cache_key = f"full_deck_{deck_name}_{set_name}"
+    if cache_key in st.session_state.analyzed_deck_cache:
+        return st.session_state.analyzed_deck_cache[cache_key]
     
-    # Check if deck is in cache
-    if cache_key in st.session_state.deck_cache:
-        return st.session_state.deck_cache[cache_key]
+    # Then check disk cache
+    disk_cached = cache_utils.load_analyzed_deck(deck_name, set_name)
+    if disk_cached is not None:
+        # Store in session cache for faster access
+        st.session_state.analyzed_deck_cache[cache_key] = disk_cached
+        return disk_cached
     
-    # Analyze deck
-    results, total_decks, variant_df = analyze_deck(deck_name, set_name)
-    deck_list, deck_info, total_cards, options = build_deck_template(results)
-    
-    # Store in cache
-    st.session_state.deck_cache[cache_key] = {
-        'results': results,
-        'deck_info': deck_info,
-        'total_cards': total_cards,
-        'total_decks': total_decks
-    }
-    
-    return st.session_state.deck_cache[cache_key]
+    # If not in any cache, analyze the deck
+    with st.spinner(f"Analyzing {deck_name}..."):
+        results, total_decks, variant_df = analyze_deck(deck_name, set_name)
+        deck_list, deck_info, total_cards, options = build_deck_template(results)
+        
+        # Create cache entry
+        analyzed_data = {
+            'results': results,
+            'total_decks': total_decks,
+            'variant_df': variant_df,
+            'deck_list': deck_list,
+            'deck_info': deck_info,
+            'total_cards': total_cards,
+            'options': options
+        }
+        
+        # Store in session cache
+        st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
+        
+        # Store in disk cache
+        cache_utils.save_analyzed_deck(deck_name, set_name, analyzed_data)
+        
+        return analyzed_data
 
 # Add to session state initialization
 if 'sample_deck_cache' not in st.session_state:
