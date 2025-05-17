@@ -215,7 +215,7 @@ st.sidebar.title("Tournament Performance")
 
 # Add a button to analyze tournament data
 if st.sidebar.button("Analyze Recent Tournament Results", use_container_width=True):
-    with st.sidebar.spinner("Analyzing recent tournament performance..."):
+    with st.spinner("Analyzing recent tournament performance..."):
         st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
         st.session_state.performance_fetch_time = datetime.now()
 
