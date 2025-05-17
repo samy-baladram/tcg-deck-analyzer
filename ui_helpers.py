@@ -23,33 +23,34 @@ def display_banner(img_path, max_width=800):
 
 def load_initial_data():
     """Load initial data required for the app"""
-    # Initialize caches
-    cache_manager.init_caches()
-    
-    # Initialize deck list if not already loaded
-    if 'deck_list' not in st.session_state:
-        with st.spinner("Fetching deck list..."):
+    # Show loading spinner
+    with st.spinner("Loading app data..."):
+        # Initialize caches
+        cache_manager.init_caches()
+        
+        # Initialize deck list if not already loaded
+        if 'deck_list' not in st.session_state:
             st.session_state.deck_list = get_deck_list()
             st.session_state.fetch_time = datetime.now()
-    
-    # Load or update tournament data
-    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
-    
-    # Store in session state
-    st.session_state.performance_data = performance_df
-    st.session_state.performance_fetch_time = performance_timestamp
-    
-    # Initialize card usage data if not already loaded
-    if 'card_usage_data' not in st.session_state:
-        st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
-    
-    # Initialize selected deck if not exists
-    if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = None
         
-    # Initialize deck_to_analyze if not exists
-    if 'deck_to_analyze' not in st.session_state:
-        st.session_state.deck_to_analyze = None
+        # Load or update tournament data
+        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
+        
+        # Store in session state
+        st.session_state.performance_data = performance_df
+        st.session_state.performance_fetch_time = performance_timestamp
+        
+        # Initialize card usage data if not already loaded
+        if 'card_usage_data' not in st.session_state:
+            st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
+        
+        # Initialize selected deck if not exists
+        if 'selected_deck_index' not in st.session_state:
+            st.session_state.selected_deck_index = None
+            
+        # Initialize deck_to_analyze if not exists
+        if 'deck_to_analyze' not in st.session_state:
+            st.session_state.deck_to_analyze = None
 
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
