@@ -48,37 +48,45 @@ def get_archetype_from_deck_name(deck_name):
 # In energy_utils.py - Modify get_energy_types_for_deck function
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, with improved fallback logic 
-    to use the most common energy combination for an archetype
+    Get energy types for a deck, prioritizing the most common combination
     
     Returns:
         Tuple of (energy_types, is_typical)
     """
-    # If deck has energy types, use them (this is the most accurate)
+    # If deck has specific energy types, use them (most accurate)
     if deck_energy_types:
         return deck_energy_types, False
-    
-    # Initialize if needed
-    if 'archetype_energy_combos' not in st.session_state:
-        st.session_state.archetype_energy_combos = {}
     
     # Get archetype name
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Check for energy combinations first (most accurate representation)
-    if archetype in st.session_state.archetype_energy_combos and st.session_state.archetype_energy_combos[archetype]:
-        # Find most common combination for this archetype
+    # Check for energy combinations from per-deck data (most reliable)
+    if 'per_deck_energy' in st.session_state and archetype in st.session_state.per_deck_energy:
+        # Count occurrences of each combination
+        combo_counts = {}
+        for deck_energies in st.session_state.per_deck_energy[archetype].values():
+            combo_key = tuple(sorted(deck_energies))
+            combo_counts[combo_key] = combo_counts.get(combo_key, 0) + 1
+        
+        # Find the most common combination
+        if combo_counts:
+            most_common = max(combo_counts.items(), key=lambda x: x[1])[0]
+            return list(most_common), True
+    
+    # Fall back to stored combos if available
+    if 'archetype_energy_combos' in st.session_state and archetype in st.session_state.archetype_energy_combos:
         combos = st.session_state.archetype_energy_combos[archetype]
         if combos:
+            # Find the most common combination
             most_common_combo = max(combos.items(), key=lambda x: x[1])[0]
             return list(most_common_combo), True
     
-    # Fall back to first combo if available
-    if archetype in st.session_state.archetype_first_energy_combo:
+    # Fall back to first energy combo if no combination stats yet
+    if 'archetype_first_energy_combo' in st.session_state and archetype in st.session_state.archetype_first_energy_combo:
         return st.session_state.archetype_first_energy_combo[archetype], True
     
     # Last resort - use all energy types found
-    if archetype in st.session_state.archetype_energy_types:
+    if 'archetype_energy_types' in st.session_state and archetype in st.session_state.archetype_energy_types:
         return list(st.session_state.archetype_energy_types[archetype]), True
     
     # No energy types found
