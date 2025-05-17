@@ -8,6 +8,7 @@ from scraper import get_deck_urls, extract_cards
 from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD
 from utils import is_flexible_core, calculate_display_usage, format_card_display
 from energy_utils import store_energy_types
+import cache_utils
 
 def analyze_deck(deck_name, set_name="A3"):
     """Main analysis function for a deck archetype"""
