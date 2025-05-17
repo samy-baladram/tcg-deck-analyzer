@@ -102,6 +102,7 @@ def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, 
         
         # Save energy_types if provided
         if energy_types:
+            import json
             with open(f"{base_path}_energy.json", 'w') as f:
                 json.dump(energy_types, f)
         
@@ -124,9 +125,10 @@ def save_analyzed_deck(deck_name, set_name, analyzed_data):
         results_df = analyzed_data.get('results', pd.DataFrame())
         total_decks = analyzed_data.get('total_decks', 0)
         variant_df = analyzed_data.get('variant_df', pd.DataFrame())
+        energy_types = analyzed_data.get('energy_types', [])
         
         # Call the component-based save function
-        return save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, variant_df)
+        return save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, variant_df, energy_types)
     except Exception as e:
         logger.error(f"Error saving analyzed deck: {e}")
         import traceback
@@ -173,6 +175,7 @@ def load_analyzed_deck_components(deck_name, set_name):
         energy_path = f"{base_path}_energy.json"
         if os.path.exists(energy_path):
             try:
+                import json
                 with open(energy_path, 'r') as f:
                     energy_types = json.load(f)
                 logger.info(f"Loaded energy types for {deck_name}")
