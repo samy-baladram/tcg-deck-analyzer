@@ -105,11 +105,11 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 # Add the hover effect setup after your page_config and style settings
 add_card_hover_effect()
 
+# Display banner
+ui_helpers.display_banner("title_banner.png")
+
 # Show loading spinner for entire app initialization
 with st.spinner("Loading app data..."):
-    # Display banner
-    ui_helpers.display_banner("title_banner.png")
-    
     # Load initial data - this is where the heavy lifting happens
     ui_helpers.load_initial_data()
 
