@@ -8,7 +8,7 @@ class CardConfig:
     WIDTH = 100
     GAP = 8
     MARGIN = 8
-    BORDER_RADIUS = 3
+    BORDER_RADIUS = 4
     BORDER_COLOR = "rgba(102, 102, 102, 0.5)"
     FALLBACK_HEIGHT = 140
     PERCENTAGE_FONT_SIZE = 14
