@@ -210,7 +210,7 @@ def render_deck_in_sidebar(deck, expanded=False):
 
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
-    st.sidebar.title("Top 10 Meta Deck Performance")
+    st.sidebar.title("Top 10 Meta Decks")
     
     # Initialize energy types
     from energy_utils import initialize_energy_types
@@ -222,7 +222,7 @@ def render_sidebar():
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.sidebar.markdown(f"""
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem;">
-            <div>Top win rates, past 7 days</div>
+            <div>Top performers by archetype, past 7 days</div>
             <div>Updated {performance_time_str}</div>
         </div>
         """, unsafe_allow_html=True)
