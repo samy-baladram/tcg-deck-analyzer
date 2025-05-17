@@ -159,6 +159,10 @@ if 'deck_select' not in st.session_state:
 
 if 'analyze' not in st.session_state:
     st.session_state.analyze = None
+
+# Add this with your other session state initializations
+if 'deck_to_analyze' not in st.session_state:
+    st.session_state.deck_to_analyze = None
     
 # Top navigation bar - single row dropdown
 # Filter and display popular decks
@@ -209,6 +213,16 @@ def on_deck_change():
         else:
             st.session_state.selected_deck_index = None
 
+# Add this right before the selectbox declaration
+if st.session_state.get('deck_to_analyze'):
+    # Find the matching display name and index
+    for i, (display_name, name) in enumerate([(d, deck_name_mapping[d]) for d in deck_display_names]):
+        if name == st.session_state.deck_to_analyze:
+            st.session_state.selected_deck_index = i
+            # Clear the deck_to_analyze for next time
+            st.session_state.deck_to_analyze = None
+            break
+            
 selected_option = st.selectbox(
     label_text,
     deck_display_names,
@@ -262,31 +276,8 @@ if 'performance_data' in st.session_state and not st.session_state.performance_d
             # Add a button to analyze this deck
             # Modify this part in your code where the sidebar button is clicked
             if st.button(f"Analyze {deck['displayed_name']}", key=f"analyze_{deck['deck_name']}"):
-                # Get the display name for this deck
-                display_name = None
-                for disp_name, name in st.session_state.deck_name_mapping.items():
-                    if name == deck['deck_name']:
-                        display_name = disp_name
-                        break
-                
-                # Set all necessary session state variables directly
-                if display_name:
-                    # Set the index for the dropdown
-                    st.session_state.selected_deck_index = deck_display_names.index(display_name)
-                    
-                    # Set the value for the dropdown
-                    st.session_state.deck_select = display_name
-                    
-                    # Set up the analysis configuration
-                    current_selection = {
-                        'deck_name': deck['deck_name'],
-                        'set_name': deck['set'],
-                    }
-                    
-                    # Update analysis state
-                    st.session_state.analyze = current_selection
-                
-                # Force re-run to update the main content
+                # Store the deck name to analyze
+                st.session_state.deck_to_analyze = deck['deck_name']
                 st.rerun()
 else:
     st.sidebar.info("No tournament performance data available")
