@@ -199,14 +199,18 @@ class CardRenderer:
         formatted_num1 = format_card_number(var1_num) if var1_num else ""
         formatted_num2 = format_card_number(var2_num) if var2_num else ""
         
+        # Create image URLs
+        var1_url = f"{CardConfig.IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" if var1_set and formatted_num1 else ""
+        var2_url = f"{CardConfig.IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" if var2_set and formatted_num2 else ""
+        
         # Create HTML for variant comparison
         variant_html = f"""<div style="height:170px; display:flex; justify-content:space-between; margin-top:-10px; margin-bottom:-20px">
             <!-- Variant 1 -->
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
                 {
-                    f'<img src="{CardConfig.IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
-                    if var1_set and formatted_num1 else
+                    f'<img class="card-image" src="{var1_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    if var1_url else
                     f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                 }
             </div>
@@ -214,8 +218,8 @@ class CardRenderer:
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
                 {
-                    f'<img src="{CardConfig.IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
-                    if var2_set and formatted_num2 else
+                    f'<img class="card-image" src="{var2_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    if var2_url else
                     f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                 }
             </div>
@@ -286,41 +290,54 @@ def add_card_hover_effect():
     """
     hover_js = """
     <script>
+    // Function to set up card hover effects
     function setupCardHover() {
-        // Create a popup element to show the full-size card
-        const popup = document.createElement('div');
-        popup.id = 'card-popup';
-        popup.style.cssText = `
-            position: fixed;
-            display: none;
-            z-index: 1000;
-            padding: 0;
-            border-radius: 4.2%;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: opacity 0.2s ease-in-out;
-            opacity: 0;
-            pointer-events: none;
-        `;
-        document.body.appendChild(popup);
+        console.log("Setting up card hover effects");
         
-        // Add image element inside popup
-        const popupImg = document.createElement('img');
-        popupImg.style.cssText = `
-            width: 100%;
-            height: auto;
-            border-radius: 4.2%;
-            display: block;
-        `;
-        popup.appendChild(popupImg);
+        // Check if popup already exists
+        let popup = document.getElementById('card-popup');
         
-        // Find all card images
-        const cardImages = document.querySelectorAll('.card-image');
+        // Create popup if it doesn't exist
+        if (!popup) {
+            popup = document.createElement('div');
+            popup.id = 'card-popup';
+            popup.style.cssText = `
+                position: fixed;
+                display: none;
+                z-index: 1000;
+                padding: 0;
+                border-radius: 4.2%;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                transition: opacity 0.2s ease-in-out;
+                opacity: 0;
+                pointer-events: none;
+            `;
+            document.body.appendChild(popup);
+            
+            // Add image element inside popup
+            const popupImg = document.createElement('img');
+            popupImg.style.cssText = `
+                width: 100%;
+                height: auto;
+                border-radius: 4.2%;
+                display: block;
+            `;
+            popup.appendChild(popupImg);
+        }
+        
+        // Find all card images that don't have the hover effect yet
+        const cardImages = document.querySelectorAll('img.card-image:not([data-hover-setup="true"])');
+        console.log(`Found ${cardImages.length} new card images to set up`);
         
         // Add event listeners to card images
         cardImages.forEach(img => {
+            // Mark as setup
+            img.setAttribute('data-hover-setup', 'true');
+            
             img.addEventListener('mouseenter', function(e) {
                 const fullSizeUrl = this.dataset.fullsize || this.src;
-                popupImg.src = fullSizeUrl;
+                const popupImg = document.querySelector('#card-popup img');
+                if (popupImg) popupImg.src = fullSizeUrl;
                 
                 // Calculate position based on viewport and scroll
                 const rect = img.getBoundingClientRect();
@@ -345,8 +362,9 @@ def add_card_hover_effect():
                 }
                 
                 // If it would go off the bottom, adjust up
-                if (rect.top + popup.offsetHeight > viewportHeight) {
-                    top = Math.max(scrollY, rect.bottom + scrollY - popup.offsetHeight);
+                const popupHeight = 400; // Estimate height
+                if (rect.top + popupHeight > viewportHeight) {
+                    top = Math.max(scrollY, rect.bottom + scrollY - popupHeight);
                 }
                 
                 popup.style.left = left + 'px';
@@ -368,19 +386,19 @@ def add_card_hover_effect():
         });
     }
     
-    // Run setup when DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', setupCardHover);
+    // Function to check for new content periodically
+    function checkForNewCards() {
+        setupCardHover();
+        // Continue checking every 2 seconds
+        setTimeout(checkForNewCards, 2000);
+    }
     
-    // Also run setup when Streamlit has finished rendering content
-    const observer = new MutationObserver(mutations => {
-        // Look for new card images that might have been added
-        const cardImages = document.querySelectorAll('.card-image:not([data-hover-setup])');
-        if (cardImages.length > 0) {
-            cardImages.forEach(img => img.setAttribute('data-hover-setup', 'true'));
-            setupCardHover();
-        }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+    // Start the process
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkForNewCards);
+    } else {
+        checkForNewCards();
+    }
     </script>
     """
     
