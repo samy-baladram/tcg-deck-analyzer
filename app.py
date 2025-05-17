@@ -369,7 +369,7 @@ if not st.session_state.performance_data.empty:
             deck_html = render_sidebar_deck(
                 deck_data['deck_info']['Pokemon'], 
                 deck_data['deck_info']['Trainer'],
-                card_width=65  # Smaller card width for sidebar
+                card_width=45  # Smaller card width for sidebar
             )
             
             # Display the deck
