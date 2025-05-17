@@ -243,14 +243,11 @@ def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=75):
     trainer_count = sum(card.get('count', 1) for card in trainer_cards) if trainer_cards else 0
     
     # Generate HTML for the entire deck
-    html = f"""
-    <div style="margin-bottom: 10px;">
+    html = f"""<div style="margin-bottom: 10px;">
         <div style="font-weight: bold; margin-bottom: 6px;">Pokémon ({pokemon_count})</div>
         {pokemon_grid.render()}
-        
         <div style="font-weight: bold; margin-bottom: 6px; margin-top: 12px;">Trainer ({trainer_count})</div>
         {trainer_grid.render()}
-    </div>
-    """
+    </div>"""
     
     return html
