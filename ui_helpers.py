@@ -210,7 +210,7 @@ def render_deck_in_sidebar(deck, expanded=False):
 
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
-    st.sidebar.title("Tournament Performance")
+    st.sidebar.title("Top 10 Tournament Performance")
     
     # Initialize energy types
     from energy_utils import initialize_energy_types
