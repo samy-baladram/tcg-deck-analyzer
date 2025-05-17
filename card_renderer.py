@@ -216,38 +216,53 @@ render_deck_section = CardRenderer.render_deck_section
 render_option_section = CardRenderer.render_option_section
 render_variant_cards = CardRenderer.render_variant_cards
 
-# Add this function to card_renderer.py
+# Final solution: Add this function to card_renderer.py
 
-def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=75):
+def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
     """
     Render a condensed version of a deck for the sidebar.
+    Cards are displayed all together with duplicates shown.
     
     Args:
         pokemon_cards: List of Pokemon card dictionaries
         trainer_cards: List of Trainer card dictionaries
-        card_width: Width of each card in pixels (default: 75px for sidebar)
+        card_width: Width of each card in pixels
         
     Returns:
         HTML string for rendering the deck
     """
-    # Create grid instances
-    pokemon_grid = CardGrid(card_width=card_width, gap=4, margin_bottom=6)
-    trainer_grid = CardGrid(card_width=card_width, gap=4, margin_bottom=6)
+    # Create a single grid for all cards
+    grid = CardGrid(card_width=card_width, gap=3, margin_bottom=4)
     
-    # Add cards to grids
-    pokemon_grid.add_cards_from_dict(pokemon_cards, repeat_by_count=False)
-    trainer_grid.add_cards_from_dict(trainer_cards, repeat_by_count=False)
-    
-    # Count totals
-    pokemon_count = sum(card.get('count', 1) for card in pokemon_cards) if pokemon_cards else 0
-    trainer_count = sum(card.get('count', 1) for card in trainer_cards) if trainer_cards else 0
+    # Process pokemon cards first
+    for card in pokemon_cards:
+        # Get count of cards
+        count = card.get('count', 1)
+        # Add the card to the grid 'count' times
+        for _ in range(count):
+            grid.add_card(
+                card_name=card.get('name', card.get('card_name', '')),
+                set_code=card.get('set', ''),
+                num=card.get('num', ''),
+                count=1  # Add one at a time
+            )
+            
+    # Then process trainer cards
+    for card in trainer_cards:
+        # Get count of cards
+        count = card.get('count', 1)
+        # Add the card to the grid 'count' times
+        for _ in range(count):
+            grid.add_card(
+                card_name=card.get('name', card.get('card_name', '')),
+                set_code=card.get('set', ''),
+                num=card.get('num', ''),
+                count=1  # Add one at a time
+            )
     
     # Generate HTML for the entire deck
-    html = f"""<div style="margin-bottom: 10px;">
-        <div style="font-weight: bold; margin-bottom: 6px;">Pokémon ({pokemon_count})</div>
-        {pokemon_grid.render()}
-        <div style="font-weight: bold; margin-bottom: 6px; margin-top: 12px;">Trainer ({trainer_count})</div>
-        {trainer_grid.render()}
+    html = f"""<div style="margin-bottom: 8px;">
+        {grid.render()}
     </div>"""
     
     return html
