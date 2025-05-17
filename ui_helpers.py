@@ -8,6 +8,7 @@ from utils import calculate_time_ago
 from scraper import get_deck_list
 import cache_manager
 from config import MIN_META_SHARE
+import pandas as pd
 
 def display_banner(img_path, max_width=800):
     """Display the app banner image"""
