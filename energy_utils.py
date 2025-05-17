@@ -93,6 +93,8 @@ def track_energy_combination(deck_name, energy_types):
     save_energy_types_to_disk()
 
 # Update store_energy_types to also track combinations
+
+# In energy_utils.py - Update store_energy_types function
 def store_energy_types(deck_name, energy_types):
     """
     Store energy types for an archetype in the session state,
@@ -115,13 +117,14 @@ def store_energy_types(deck_name, energy_types):
     if archetype not in st.session_state.archetype_energy_types:
         st.session_state.archetype_energy_types[archetype] = set()
     
+    # Add energy types to the set
     for energy in energy_types:
         st.session_state.archetype_energy_types[archetype].add(energy)
     
     # Store as first energy combination if not already present
     if archetype not in st.session_state.archetype_first_energy_combo and energy_types:
-        # Store a copy of the list to prevent modification
-        st.session_state.archetype_first_energy_combo[archetype] = list(energy_types)
+        # Sort the energy types for consistency
+        st.session_state.archetype_first_energy_combo[archetype] = sorted(list(energy_types))
     
     # Track this combination for statistics
     track_energy_combination(deck_name, energy_types)
@@ -404,3 +407,32 @@ def display_detailed_energy_table(deck_name):
     """
     
     return table_html
+    
+# Add to energy_utils.py
+def debug_energy_combinations(deck_name):
+    """
+    Debug function to print all energy combinations for a given deck
+    """
+    archetype = get_archetype_from_deck_name(deck_name)
+    
+    print(f"DEBUG - Energy for {deck_name} (archetype: {archetype}):")
+    
+    if 'archetype_energy_types' in st.session_state and archetype in st.session_state.archetype_energy_types:
+        print(f"  All Energy Types: {st.session_state.archetype_energy_types[archetype]}")
+    
+    if 'archetype_first_energy_combo' in st.session_state and archetype in st.session_state.archetype_first_energy_combo:
+        print(f"  First Energy Combo: {st.session_state.archetype_first_energy_combo[archetype]}")
+    
+    if 'archetype_energy_combos' in st.session_state and archetype in st.session_state.archetype_energy_combos:
+        print(f"  Energy Combinations:")
+        for combo, count in st.session_state.archetype_energy_combos[archetype].items():
+            print(f"    {combo}: {count}")
+            
+    if 'per_deck_energy' in st.session_state and archetype in st.session_state.per_deck_energy:
+        deck_count = len(st.session_state.per_deck_energy[archetype])
+        print(f"  Per-Deck Energy Data ({deck_count} decks):")
+        for i, (deck_key, energies) in enumerate(st.session_state.per_deck_energy[archetype].items()):
+            if i < 5:  # Show just the first 5 decks to avoid clutter
+                print(f"    Deck {deck_key}: {energies}")
+        if deck_count > 5:
+            print(f"    ... and {deck_count - 5} more decks")
