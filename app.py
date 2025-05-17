@@ -331,7 +331,7 @@ def get_or_load_sample_deck(deck_name, set_name):
         return st.session_state.sample_deck_cache[cache_key]
     
     # Load sample deck
-    pokemon_cards, trainer_cards = scraper.get_sample_deck_for_archetype(deck_name, set_name)
+    pokemon_cards, trainer_cards = get_sample_deck_for_archetype(deck_name, set_name)
     
     # Store in cache
     st.session_state.sample_deck_cache[cache_key] = {
