@@ -198,7 +198,7 @@ def display_raw_data_tab(results, variant_df):
 
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
-    st.subheader("Metagame Overview")
+    st.subheader("Tournament Performance Data")
     
     # Get performance data
     performance_df = st.session_state.performance_data
@@ -246,16 +246,17 @@ def display_metagame_tab():
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
     # Display the table
-    st.write("### Tournament Performance Data")
+    #st.write("### Tournament Performance Data")
     st.dataframe(
         final_df,
         use_container_width=True,
+        height=800,  # Set the height in pixels - adjust as needed
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
             "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
         },
-        hide_index=True
+        hide_index=False
     )
     
     # Show note about current deck if one is selected
