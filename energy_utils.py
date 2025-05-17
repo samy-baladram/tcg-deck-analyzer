@@ -239,8 +239,7 @@ def display_energy_stats(archetype):
         row_style = 'background-color: rgba(0, 160, 255, 0.1);' if is_most_common else ''
         
         # Add row to table
-        table_html += f"""
-            <tr style="border-bottom: 1px solid #eee; {row_style}">
+        table_html += f"""<tr style="border-bottom: 1px solid #eee; {row_style}">
                 <td style="text-align: left; padding: 4px;">{energy_html}{' (most common)' if is_most_common else ''}</td>
                 <td style="text-align: right; padding: 4px;">{count}</td>
             </tr>"""
@@ -340,10 +339,8 @@ def display_detailed_energy_table(deck_name):
         # Extract deck number from key
         deck_num = deck_key.split('-')[-1]
         
-        table_html += f"""
-            <tr style="border-bottom: 1px solid #eee;">
-                <td style="text-align: left; padding: 4px;">{deck_num}</td>
-        """
+        table_html += f"""<tr style="border-bottom: 1px solid #eee;">
+                <td style="text-align: left; padding: 4px;">{deck_num}</td>"""
         
         # For each possible energy type, check if this deck has it
         for energy in all_energies:
@@ -379,8 +376,7 @@ def display_detailed_energy_table(deck_name):
                 <th style="text-align: left; padding: 4px;">Energy Combination</th>
                 <th style="text-align: right; padding: 4px; width: 80px;">Count</th>
                 <th style="text-align: right; padding: 4px; width: 80px;">Percentage</th>
-            </tr>
-    """
+            </tr>"""
     
     total_decks = len(st.session_state.per_deck_energy[archetype])
     
@@ -393,18 +389,13 @@ def display_detailed_energy_table(deck_name):
         
         percentage = (count / total_decks * 100) if total_decks > 0 else 0
         
-        table_html += f"""
-            <tr style="border-bottom: 1px solid #eee;">
+        table_html += f"""<tr style="border-bottom: 1px solid #eee;">
                 <td style="text-align: left; padding: 4px;">{energy_html}</td>
                 <td style="text-align: right; padding: 4px;">{count}</td>
                 <td style="text-align: right; padding: 4px;">{percentage:.1f}%</td>
-            </tr>
-        """
+            </tr>"""
     
-    table_html += """
-        </table>
-    </div>
-    """
+    table_html += """</table></div>"""
     
     return table_html
     
