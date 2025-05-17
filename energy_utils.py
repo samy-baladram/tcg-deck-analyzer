@@ -16,8 +16,30 @@ def initialize_energy_types():
     if 'archetype_first_energy_combo' not in st.session_state:
         st.session_state.archetype_first_energy_combo = {}
         
+    if 'archetype_energy_combos' not in st.session_state:
+        st.session_state.archetype_energy_combos = {}
+        
     # Load energy types from disk if available
     load_energy_types_from_disk()
+    
+    # Ensure most_common combinations are set correctly
+    update_most_common_combinations()
+
+def update_most_common_combinations():
+    """Update most common energy combinations for all archetypes"""
+    if 'archetype_energy_combos' not in st.session_state:
+        return
+        
+    # For each archetype with combo data
+    for archetype, combos in st.session_state.archetype_energy_combos.items():
+        if not combos:
+            continue
+            
+        # Find the most common combo
+        most_common = max(combos.items(), key=lambda x: x[1])[0]
+        
+        # Update first_energy_combo to use the most common one
+        st.session_state.archetype_first_energy_combo[archetype] = list(most_common)
 
 def get_archetype_from_deck_name(deck_name):
     """Extract archetype name from deck name"""
