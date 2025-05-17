@@ -250,8 +250,7 @@ def display_energy_stats(archetype):
         row_style = 'background-color: rgba(0, 160, 255, 0.1);' if is_most_common else ''
         
         # Add row to table
-        table_html += f"""
-            <tr style="border-bottom: 1px solid #eee; {row_style}">
+        table_html += f"""<tr style="border-bottom: 1px solid #eee; {row_style}">
                 <td style="text-align: left; padding: 4px;">{energy_html}{' (most common)' if is_most_common else ''}</td>
                 <td style="text-align: right; padding: 4px;">{count}</td>
             </tr>"""
@@ -379,16 +378,14 @@ def display_detailed_energy_table(deck_name):
     sorted_combos = sorted(combo_stats.items(), key=lambda x: x[1], reverse=True)
     
     # Add combo statistics
-    table_html += """
-    <div style="margin-top: 15px;">
+    table_html += """<div style="margin-top: 15px;">
         <h5 style="margin-bottom: 10px;">Energy Combinations</h5>
         <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
             <tr style="border-bottom: 1px solid #ddd;">
                 <th style="text-align: left; padding: 4px;">Energy Combination</th>
                 <th style="text-align: right; padding: 4px; width: 80px;">Count</th>
                 <th style="text-align: right; padding: 4px; width: 80px;">Percentage</th>
-            </tr>
-    """
+            </tr>"""
     
     total_decks = len(st.session_state.per_deck_energy[archetype])
     
