@@ -188,10 +188,10 @@ def load_analyzed_deck_components(deck_name, set_name):
 
 def load_analyzed_deck(deck_name, set_name):
     """Legacy function to maintain compatibility"""
-    results, total_decks, variant_df = load_analyzed_deck_components(deck_name, set_name)
+    results, total_decks, variant_df, energy_types = load_analyzed_deck_components(deck_name, set_name)
     if results is None:
         return None
-    return {'results': results}
+    return {'results': results, 'energy_types': energy_types}
 
 def save_card_usage_data(card_usage_df):
     """Save card usage data to cache"""
