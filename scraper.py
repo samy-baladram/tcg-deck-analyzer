@@ -317,7 +317,7 @@ def analyze_recent_performance(share_threshold=0.6):
         total_wins = recent_performance['wins'].sum()
         total_losses = recent_performance['losses'].sum()
         total_ties = recent_performance['ties'].sum()
-        tournaments_played = len(recent_performance['tournament_id'].unique())
+        tournaments_played = len(recent_performance['tournament_id'])
         
         # Calculate total games
         total_games = total_wins + total_losses + total_ties
