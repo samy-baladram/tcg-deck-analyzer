@@ -61,28 +61,29 @@ def get_or_analyze_full_deck(deck_name, set_name):
     
     # If not in any cache, analyze the deck
     print(f"No cache found for {deck_name}, analyzing")
-    with st.spinner(f"Analyzing {deck_name}..."):
-        results, total_decks, variant_df = analyze_deck(deck_name, set_name)
-        deck_list, deck_info, total_cards, options = build_deck_template(results)
-        
-        # Create cache entry
-        analyzed_data = {
-            'results': results,
-            'total_decks': total_decks,
-            'variant_df': variant_df,
-            'deck_list': deck_list,
-            'deck_info': deck_info,
-            'total_cards': total_cards,
-            'options': options
-        }
-        
-        # Store in session cache
-        st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
-        
-        # Store in disk cache
-        cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df)
-        
-        return analyzed_data
+    
+    # Removed the spinner here
+    results, total_decks, variant_df = analyze_deck(deck_name, set_name)
+    deck_list, deck_info, total_cards, options = build_deck_template(results)
+    
+    # Create cache entry
+    analyzed_data = {
+        'results': results,
+        'total_decks': total_decks,
+        'variant_df': variant_df,
+        'deck_list': deck_list,
+        'deck_info': deck_info,
+        'total_cards': total_cards,
+        'options': options
+    }
+    
+    # Store in session cache
+    st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
+    
+    # Store in disk cache
+    cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df)
+    
+    return analyzed_data
 
 def get_or_load_sample_deck(deck_name, set_name):
     """Get sample deck from cache or load if not cached"""
