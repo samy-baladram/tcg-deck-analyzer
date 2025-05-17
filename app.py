@@ -88,9 +88,7 @@ div[role="option"]:hover {
     background-color: rgba(0, 160, 255, 0.1) !important;
 }
 
-/* Target the chevron specifically on hover */
-.stExpander > details > summary:hover span[data-testid="stExpanderToggleIcon"] svg path {
-    fill: #00A0FF !important;
+.stExpander > details > summary:hover svg path {
     stroke: #00A0FF !important;
 }
 
