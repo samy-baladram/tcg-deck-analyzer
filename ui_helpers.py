@@ -198,7 +198,7 @@ def render_sidebar():
                 deck_html = render_sidebar_deck(
                     sample_deck['pokemon_cards'], 
                     sample_deck['trainer_cards'],
-                    card_width=60
+                    card_width=61
                 )
                 
                 # Display the deck
