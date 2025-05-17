@@ -20,14 +20,7 @@ def analyze_deck(deck_name, set_name="A3"):
     # Extract cards from all decks
     all_cards = []
     all_energy_types = set()  # We'll collect energy types here
-
-    if all_energy_types:
-        archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
-        
-        # Make sure energy_utils is imported
-        from energy_utils import store_energy_types
-        store_energy_types(deck_name, list(all_energy_types))
-        
+    
     for i, url in enumerate(urls):
         progress_bar.progress((i + 1) / len(urls))
         status_text.text(f"Processing deck {i+1}/{len(urls)}...")
@@ -91,14 +84,20 @@ def analyze_deck(deck_name, set_name="A3"):
     
     # Store energy types in session state for the archetype
     if all_energy_types:
-        archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
-        if 'archetype_energy_types' not in st.session_state:
-            st.session_state.archetype_energy_types = {}
-        if archetype not in st.session_state.archetype_energy_types:
-            st.session_state.archetype_energy_types[archetype] = set()
-        st.session_state.archetype_energy_types[archetype].update(all_energy_types)
+        from energy_utils import store_energy_types
+        store_energy_types(deck_name, list(all_energy_types))
     
-    return grouped, total_decks, variant_df
+    # Save energy types to disk along with other components
+    cache_utils.save_analyzed_deck_components(
+        deck_name, 
+        set_name, 
+        grouped, 
+        total_decks, 
+        variant_df, 
+        list(all_energy_types) if all_energy_types else None
+    )
+    
+    return grouped, total_decks, variant_df, list(all_energy_types) if all_energy_types else []
 
 def build_deck_template(analysis_df):
     """Build a deck template from analysis results"""
