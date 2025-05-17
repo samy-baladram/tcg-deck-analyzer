@@ -174,7 +174,7 @@ def render_deck_in_sidebar(deck, expanded=False):
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
         
         # Get and store energy types
-        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons
+        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons, display_energy_stats, get_archetype_from_deck_name
         
         # Get raw energy types and store them
         raw_energy_types = sample_deck.get('energy_types', [])
@@ -187,6 +187,12 @@ def render_deck_in_sidebar(deck, expanded=False):
         if energy_types:
             energy_html = render_energy_icons(energy_types, is_typical)
             st.markdown(energy_html, unsafe_allow_html=True)
+            
+            # Display energy statistics for this archetype
+            archetype = get_archetype_from_deck_name(deck_name)
+            energy_stats_html = display_energy_stats(archetype)
+            if energy_stats_html:
+                st.markdown(energy_stats_html, unsafe_allow_html=True)
         
         # Display performance stats with colored power index inside
         # st.markdown(f"""
