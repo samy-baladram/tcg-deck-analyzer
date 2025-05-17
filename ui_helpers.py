@@ -1,0 +1,207 @@
+# ui_helpers.py
+"""UI helper functions for TCG Deck Analyzer"""
+
+import streamlit as st
+from datetime import datetime
+from formatters import format_deck_name, format_deck_option
+from utils import calculate_time_ago
+from scraper import get_deck_list
+import cache_manager
+from config import MIN_META_SHARE
+
+def display_banner(img_path, max_width=800):
+    """Display the app banner image"""
+    from image_processor import get_base64_image
+    
+    img_base64 = get_base64_image(img_path)
+    
+    st.markdown(f"""
+    <div style="display: flex; justify-content: center; width: 100%; margin-top:-2rem;">
+        <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px; height: auto;">
+    </div>
+    """, unsafe_allow_html=True)
+
+def load_initial_data():
+    """Load initial data required for the app"""
+    # Initialize caches
+    cache_manager.init_caches()
+    
+    # Initialize deck list if not already loaded
+    if 'deck_list' not in st.session_state:
+        with st.spinner("Fetching deck list..."):
+            st.session_state.deck_list = get_deck_list()
+            st.session_state.fetch_time = datetime.now()
+    
+    # Load or update tournament data
+    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
+    
+    # Store in session state
+    st.session_state.performance_data = performance_df
+    st.session_state.performance_fetch_time = performance_timestamp
+    
+    # Initialize card usage data if not already loaded
+    if 'card_usage_data' not in st.session_state:
+        st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
+    
+    # Initialize selected deck if not exists
+    if 'selected_deck_index' not in st.session_state:
+        st.session_state.selected_deck_index = None
+        
+    # Initialize deck_to_analyze if not exists
+    if 'deck_to_analyze' not in st.session_state:
+        st.session_state.deck_to_analyze = None
+
+def create_deck_options():
+    """Create deck options for dropdown from performance data or fallback to deck list"""
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Get top 30 decks from performance data
+        top_performing_decks = st.session_state.performance_data.head(30)
+        
+        # Create dropdown options with the same format as sidebar
+        deck_display_names = []
+        deck_name_mapping = {}  # Maps display name to original name
+        
+        for _, deck in top_performing_decks.iterrows():
+            power_index = round(deck['power_index'], 2)
+            # Format: "Deck Name (Power Index)"
+            display_name = f"{deck['displayed_name']} ({power_index})"
+            deck_display_names.append(display_name)
+            deck_name_mapping[display_name] = {
+                'deck_name': deck['deck_name'],
+                'set': deck['set']
+            }
+    else:
+        # Fallback to original method if performance data isn't available
+        popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
+        
+        # Create deck options with formatted names and store mapping
+        deck_display_names = []
+        deck_name_mapping = {}  # Maps display name to original name
+        
+        for _, row in popular_decks.iterrows():
+            display_name = format_deck_option(row['deck_name'], row['share'])
+            deck_display_names.append(display_name)
+            deck_name_mapping[display_name] = {
+                'deck_name': row['deck_name'],
+                'set': row['set']
+            }
+    
+    # Store mapping in session state
+    st.session_state.deck_name_mapping = deck_name_mapping
+    
+    return deck_display_names, deck_name_mapping
+
+def on_deck_change():
+    """Handle deck dropdown selection change"""
+    selection = st.session_state.deck_select
+    if selection:
+        st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
+        
+        # Set the deck to analyze
+        deck_info = st.session_state.deck_name_mapping[selection]
+        st.session_state.analyze = {
+            'deck_name': deck_info['deck_name'],
+            'set_name': deck_info['set'],
+        }
+    else:
+        st.session_state.selected_deck_index = None
+
+def create_deck_selector():
+    """Create and display the deck selector dropdown"""
+    # Get deck options
+    deck_display_names, deck_name_mapping = create_deck_options()
+    
+    # Store for use in callback
+    st.session_state.deck_display_names = deck_display_names
+    
+    # Calculate time ago
+    time_str = calculate_time_ago(st.session_state.fetch_time)
+    
+    # Get current set from selected deck or default
+    current_set = "-"  # Default
+    if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
+        selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
+        deck_info = st.session_state.deck_name_mapping[selected_deck_display]
+        current_set = deck_info['set'].upper()
+    
+    # Handle deck_to_analyze if set (e.g., from sidebar selection)
+    if st.session_state.get('deck_to_analyze'):
+        # Find the matching display name and index
+        for i, display_name in enumerate(deck_display_names):
+            deck_info = deck_name_mapping[display_name]
+            if deck_info['deck_name'] == st.session_state.deck_to_analyze:
+                st.session_state.selected_deck_index = i
+                
+                # Set the deck to analyze
+                st.session_state.analyze = {
+                    'deck_name': deck_info['deck_name'],
+                    'set_name': deck_info['set'],
+                }
+                
+                # Clear the deck_to_analyze for next time
+                st.session_state.deck_to_analyze = None
+                break
+    
+    # Create label and help text
+    label_text = f"Current Set: {current_set}"
+    help_text = f"Showing top performing decks. Updated {time_str}."
+    
+    # Display the selectbox
+    selected_option = st.selectbox(
+        label_text,
+        deck_display_names,
+        index=st.session_state.selected_deck_index,
+        placeholder="Select a deck to analyze...",
+        help=help_text,
+        key="deck_select",
+        on_change=on_deck_change
+    )
+    
+    return selected_option
+
+def render_sidebar():
+    """Render the sidebar with tournament performance data"""
+    st.sidebar.title("Tournament Performance")
+    
+    # Display performance data if it exists
+    if not st.session_state.performance_data.empty:
+        performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+        st.sidebar.write(f"Data updates hourly. Last updated: {performance_time_str}")
+        
+        # Get the top 10 performing decks
+        top_decks = st.session_state.performance_data.head(10)
+        
+        # For each top deck
+        for idx, deck in top_decks.iterrows():
+            # Format power index to 2 decimal places
+            power_index = round(deck['power_index'], 2)
+            
+            # Create a plain text expander title with the power index
+            with st.sidebar.expander(f"{deck['displayed_name']} ({power_index})", expanded=False):
+                # Determine the color class based on power index
+                power_class = "positive-index" if power_index > 0 else "negative-index"
+                
+                # Display performance stats with colored power index inside
+                st.markdown(f"""
+                <div style="margin-bottom: 10px; font-size: 0.9rem;">
+                    <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
+                    <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+                    <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Get sample deck data
+                sample_deck = cache_manager.get_or_load_sample_deck(deck['deck_name'], deck['set'])
+                
+                # Render deck view
+                from card_renderer import render_sidebar_deck
+                deck_html = render_sidebar_deck(
+                    sample_deck['pokemon_cards'], 
+                    sample_deck['trainer_cards'],
+                    card_width=65
+                )
+                
+                # Display the deck
+                st.markdown(deck_html, unsafe_allow_html=True)
+    else:
+        st.sidebar.info("No tournament performance data available")
