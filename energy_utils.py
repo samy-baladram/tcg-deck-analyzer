@@ -249,6 +249,7 @@ def display_energy_stats(archetype):
     return table_html
 
 # In energy_utils.py - Updated render_energy_icons function
+# In energy_utils.py
 def render_energy_icons(energy_types, is_typical=False):
     """Generate HTML for energy icons"""
     if not energy_types:
