@@ -88,7 +88,8 @@ div[role="option"]:hover {
     background-color: rgba(0, 160, 255, 0.1) !important;
 }
 
-.stExpander > details > summary:hover svg path {
+.stExpander:hover [data-testid="stExpanderToggleIcon"] svg {
+    color: #00A0FF !important;
     fill: #00A0FF !important;
 }
 
