@@ -315,3 +315,21 @@ def analyze_recent_performance(share_threshold=0.6):
         results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
 
     return results_df
+
+def get_sample_deck_for_archetype(deck_name, set_name="A3"):
+    """Get a sample deck list for a specific archetype from the first available tournament result."""
+    # Get the URLs for this deck archetype
+    urls = get_deck_urls(deck_name, set_name)
+    
+    # If there are no decks available, return empty lists
+    if not urls:
+        return [], []
+    
+    # Extract cards from the first decklist (most recent/representative)
+    cards = extract_cards(urls[0])
+    
+    # Separate Pokemon and Trainer cards
+    pokemon_cards = [card for card in cards if card['type'] == 'Pokemon']
+    trainer_cards = [card for card in cards if card['type'] == 'Trainer']
+    
+    return pokemon_cards, trainer_cards
