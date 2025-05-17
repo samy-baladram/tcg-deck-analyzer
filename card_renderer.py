@@ -169,7 +169,7 @@ class CardRenderer:
     @staticmethod
     def render_option_section(cards_df, section_title):
         """Render options section with percentages"""
-        st.markdown(f"#### {section_title}", unsafe_allow_html=True)
+        st.markdown(f"##### {section_title}", unsafe_allow_html=True)
         
         # Create and display card grid with percentages
         grid = CardGrid(
