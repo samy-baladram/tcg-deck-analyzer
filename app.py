@@ -149,6 +149,10 @@ if 'performance_fetch_time' not in st.session_state:
 if 'selected_deck_index' not in st.session_state:
     st.session_state.selected_deck_index = None
 
+# Add this right after your other session state initializations
+if 'selected_deck_from_sidebar' not in st.session_state:
+    st.session_state.selected_deck_from_sidebar = None
+    
 # Top navigation bar - single row dropdown
 # Filter and display popular decks
 popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
@@ -181,11 +185,22 @@ help_text = f"Showing decks with ≥{MIN_META_SHARE}% meta share from Limitless 
 
 # Use on_change callback to handle selection
 def on_deck_change():
-    selection = st.session_state.deck_select
-    if selection:
-        st.session_state.selected_deck_index = deck_display_names.index(selection)
+    # Check if a selection was made from the sidebar
+    if st.session_state.get('selected_deck_from_sidebar'):
+        deck_name = st.session_state.selected_deck_from_sidebar
+        # Find the matching display name
+        for display_name, name in deck_name_mapping.items():
+            if name == deck_name:
+                st.session_state.selected_deck_index = deck_display_names.index(display_name)
+                st.session_state.selected_deck_from_sidebar = None  # Reset for next time
+                break
     else:
-        st.session_state.selected_deck_index = None
+        # Handle normal dropdown selection
+        selection = st.session_state.deck_select
+        if selection:
+            st.session_state.selected_deck_index = deck_display_names.index(selection)
+        else:
+            st.session_state.selected_deck_index = None
 
 selected_option = st.selectbox(
     label_text,
@@ -239,13 +254,10 @@ if 'performance_data' in st.session_state and not st.session_state.performance_d
             
             # Add a button to analyze this deck
             if st.button(f"Analyze {deck['displayed_name']}", key=f"analyze_{deck['deck_name']}"):
-                # Set the selected deck in the session state
-                # Create a formatted display name for the deck select dropdown
-                format_display = format_deck_option(deck['deck_name'], deck['share'])
-                if format_display in deck_display_names:
-                    st.session_state.deck_select = format_display
-                    # Force re-run to update the main content
-                    st.rerun()
+                # Set the selected deck name in the session state
+                st.session_state.selected_deck_from_sidebar = deck['deck_name']
+                # Force re-run to update the main content
+                st.rerun()
 else:
     st.sidebar.info("No tournament performance data available")
 
