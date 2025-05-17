@@ -197,24 +197,91 @@ def display_raw_data_tab(results, variant_df):
         st.dataframe(variant_df, use_container_width=True)
 
 def display_metagame_tab():
-    """Display the Metagame Overview tab"""
+    """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Metagame Overview")
-    st.write("Most played cards across top decks:")
     
-    # Filter and display top cards
-    pokemon_cards = st.session_state.card_usage_data[st.session_state.card_usage_data['type'] == 'Pokemon'].head(20)
-    trainer_cards = st.session_state.card_usage_data[st.session_state.card_usage_data['type'] == 'Trainer'].head(20)
+    # Get performance data
+    performance_df = st.session_state.performance_data
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write("#### Top Pokémon")
-        st.dataframe(pokemon_cards[['card_name', 'weighted_usage', 'deck_count']], use_container_width=True)
-    
-    with col2:
-        st.write("#### Top Trainers")
-        st.dataframe(trainer_cards[['card_name', 'weighted_usage', 'deck_count']], use_container_width=True)
+    if performance_df.empty:
+        st.warning("No tournament performance data available.")
+        return
 
+    # Get the currently selected deck
+    current_deck_name = None
+    if 'analyze' in st.session_state:
+        current_deck_name = st.session_state.analyze.get('deck_name', None)
+        
+    # Create a cleaned, displayable version of the data
+    display_df = performance_df.copy()
+    
+    # Add a column to show if this is the current deck (for highlighting)
+    display_df['is_current'] = display_df['deck_name'] == current_deck_name
+    
+    # Calculate win rate for easier understanding
+    display_df['win_rate'] = round((display_df['total_wins'] / (display_df['total_wins'] + display_df['total_losses'] + display_df['total_ties'])) * 100, 1)
+    
+    # Format columns for display
+    display_df['share'] = display_df['share'].round(2)
+    display_df['power_index'] = display_df['power_index'].round(2)
+    
+    # Add an indicator emoji for the current deck
+    display_df['deck_display'] = display_df.apply(
+        lambda row: f"➡️ {row['displayed_name']}" if row['is_current'] else row['displayed_name'], 
+        axis=1
+    )
+    
+    # Select and rename columns for display
+    display_cols = {
+        'deck_display': 'Deck',
+        'win_rate': 'Win %',
+        'total_wins': 'Wins',
+        'total_losses': 'Losses',
+        'total_ties': 'Ties',
+        'tournaments_played': 'Tournaments',
+        'share': 'Meta Share %',
+        'power_index': 'Power Index'
+    }
+    
+    final_df = display_df[display_cols.keys()].rename(columns=display_cols)
+    
+    # Display the table
+    st.write("### Tournament Performance Data")
+    st.dataframe(
+        final_df,
+        use_container_width=True,
+        column_config={
+            "Power Index": st.column_config.NumberColumn(format="%.2f"),
+            "Win %": st.column_config.NumberColumn(format="%.1f%%"),
+            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
+        },
+        hide_index=True
+    )
+    
+    # Show note about current deck if one is selected
+    if current_deck_name:
+        selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0] if len(display_df[display_df['deck_name'] == current_deck_name]) > 0 else "Unknown"
+        st.info(f"➡️ Currently analyzing: {selected_deck_name}")
+    
+    # Add explanation below the table
+    st.markdown("""
+    ### Understanding the Metrics
+    
+    **Win %**: Percentage of matches won out of total matches played.
+    
+    **Wins, Losses, Ties**: Total wins, losses, and ties from all recorded matches.
+    
+    **Tournaments**: Number of tournaments where this deck was played.
+    
+    **Meta Share %**: Percentage representation of this deck in the competitive metagame.
+    
+    **Power Index**: Our key performance metric calculated as (Wins + 0.75×Ties - Losses) ÷ √(Total Games). Higher values indicate stronger performance.
+    
+    ---
+    
+    *Data is based on tournament results from the past 7 days on Limitless TCG.*
+    """)
+    
 # Add this to display_tabs.py - Add a new tab for energy debugging
 
 # In display_tabs.py (add this new function)
