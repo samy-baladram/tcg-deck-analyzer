@@ -19,13 +19,29 @@ def analyze_deck(deck_name, set_name="A3"):
     
     # Extract cards from all decks
     all_cards = []
+    all_energy_types = set()  # We'll collect energy types here
+    
     for i, url in enumerate(urls):
         progress_bar.progress((i + 1) / len(urls))
         status_text.text(f"Processing deck {i+1}/{len(urls)}...")
         
-        cards = extract_cards(url)
+        # Get cards and energy types
+        cards_result = extract_cards(url)
+        
+        # Handle both the old format (just cards) and new format (cards, energy_types)
+        if isinstance(cards_result, tuple) and len(cards_result) == 2:
+            cards, energy_types = cards_result
+            # Add energy types to the set
+            if energy_types:
+                all_energy_types.update(energy_types)
+        else:
+            # Old format or no energy types
+            cards = cards_result
+        
+        # Add deck_num to each card
         for card in cards:
             card['deck_num'] = i
+        
         all_cards.extend(cards)
         
         time.sleep(0.3)  # Be nice to the server
@@ -65,6 +81,15 @@ def analyze_deck(deck_name, set_name="A3"):
     
     # Analyze variants
     variant_df = analyze_variants(grouped, df)
+    
+    # Store energy types in session state for the archetype
+    if all_energy_types:
+        archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
+        if 'archetype_energy_types' not in st.session_state:
+            st.session_state.archetype_energy_types = {}
+        if archetype not in st.session_state.archetype_energy_types:
+            st.session_state.archetype_energy_types[archetype] = set()
+        st.session_state.archetype_energy_types[archetype].update(all_energy_types)
     
     return grouped, total_decks, variant_df
 
