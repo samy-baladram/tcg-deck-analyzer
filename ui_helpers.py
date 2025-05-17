@@ -221,45 +221,45 @@ def render_sidebar():
         </div>
         """, unsafe_allow_html=True)
         
-        # Add debugging for energy types
-        with st.sidebar.expander("Energy Types Debug", expanded=False):
-            st.write("### All Energy Types by Archetype:")
+        # # Add debugging for energy types
+        # with st.sidebar.expander("Energy Types Debug", expanded=False):
+        #     st.write("### All Energy Types by Archetype:")
             
-            # Show first energy combinations
-            if 'archetype_first_energy_combo' in st.session_state:
-                energy_data = []
-                for archetype, energy_list in st.session_state.archetype_first_energy_combo.items():
-                    energy_data.append({
-                        'Archetype': archetype, 
-                        'First Energy Combo': energy_list
-                    })
+        #     # Show first energy combinations
+        #     if 'archetype_first_energy_combo' in st.session_state:
+        #         energy_data = []
+        #         for archetype, energy_list in st.session_state.archetype_first_energy_combo.items():
+        #             energy_data.append({
+        #                 'Archetype': archetype, 
+        #                 'First Energy Combo': energy_list
+        #             })
                 
-                if energy_data:
-                    # Convert to DataFrame for nicer display
-                    energy_df = pd.DataFrame(energy_data)
-                    st.write(energy_df)
-                else:
-                    st.write("No first energy combinations found yet.")
-            else:
-                st.write("No archetype_first_energy_combo in session state.")
+        #         if energy_data:
+        #             # Convert to DataFrame for nicer display
+        #             energy_df = pd.DataFrame(energy_data)
+        #             st.write(energy_df)
+        #         else:
+        #             st.write("No first energy combinations found yet.")
+        #     else:
+        #         st.write("No archetype_first_energy_combo in session state.")
             
-            # Show all energy types
-            if 'archetype_energy_types' in st.session_state:
-                all_energy_data = []
-                for archetype, energy_set in st.session_state.archetype_energy_types.items():
-                    all_energy_data.append({
-                        'Archetype': archetype, 
-                        'All Energy Types': list(energy_set)
-                    })
+        #     # Show all energy types
+        #     if 'archetype_energy_types' in st.session_state:
+        #         all_energy_data = []
+        #         for archetype, energy_set in st.session_state.archetype_energy_types.items():
+        #             all_energy_data.append({
+        #                 'Archetype': archetype, 
+        #                 'All Energy Types': list(energy_set)
+        #             })
                 
-                if all_energy_data:
-                    # Convert to DataFrame for nicer display
-                    all_energy_df = pd.DataFrame(all_energy_data)
-                    st.write(all_energy_df)
-                else:
-                    st.write("No energy types found yet.")
-            else:
-                st.write("No archetype_energy_types in session state.")
+        #         if all_energy_data:
+        #             # Convert to DataFrame for nicer display
+        #             all_energy_df = pd.DataFrame(all_energy_data)
+        #             st.write(all_energy_df)
+        #         else:
+        #             st.write("No energy types found yet.")
+        #     else:
+        #         st.write("No archetype_energy_types in session state.")
         
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
