@@ -43,7 +43,7 @@ def update_most_common_combinations():
 
 def get_archetype_from_deck_name(deck_name):
     """Extract archetype name from deck name"""
-    return deck_name.split('-')[0] if '-' in deck_name else deck_name
+    return deck_name#.split('-')[0] if '-' in deck_name else deck_name
     
 # In energy_utils.py - Modify get_energy_types_for_deck function
 def get_energy_types_for_deck(deck_name, deck_energy_types):
