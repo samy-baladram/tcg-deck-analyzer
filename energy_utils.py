@@ -47,18 +47,19 @@ def store_energy_types(deck_name, energy_types):
 
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, with fallback options to ensure something is displayed
+    Get energy types for a deck, with multiple fallback options to ensure something is shown
     
     Returns:
         Tuple of (energy_types, is_typical)
     """
-    # If deck has energy types, use them directly (most reliable)
+    # If deck has energy types, use them directly
     if deck_energy_types:
         return deck_energy_types, False
     
+    # Get the archetype
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Try approach 1: Most common specific combination for this archetype
+    # Fallback 1: Try to get the most common energy combination
     if archetype in st.session_state.archetype_energy_combinations:
         combinations = st.session_state.archetype_energy_combinations[archetype]
         
@@ -70,41 +71,33 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
                 most_common_combo, _ = max(valid_combinations, key=lambda x: x[1])
                 return list(most_common_combo), True
     
-    # Try approach 2: All energy types for this archetype (up to 3)
+    # Fallback 2: Use any non-empty energy combination from the counter
+    if archetype in st.session_state.archetype_energy_combinations:
+        for combo, count in st.session_state.archetype_energy_combinations[archetype].items():
+            if combo:  # If not empty
+                return list(combo), True
+    
+    # Fallback 3: Use the individual energy types collection
     if archetype in st.session_state.archetype_energy_types:
         all_energies = list(st.session_state.archetype_energy_types[archetype])
         if all_energies:
+            # Limit to 3 energies to be consistent with TCG Pocket rules
             return all_energies[:3], True
     
-    # Try approach 3: Find related archetypes by name prefix (first 3-5 chars)
-    prefix = archetype[:min(5, len(archetype))]
-    related_archetypes = [a for a in st.session_state.archetype_energy_types.keys() 
-                          if a.startswith(prefix) and a != archetype]
+    # Fallback 4: Check for similar archetypes (first word match)
+    archetype_first_word = archetype.split('-')[0] if '-' in archetype else archetype
     
-    # Collect all energy types from related archetypes
-    all_related_energies = set()
-    for related in related_archetypes:
-        if related in st.session_state.archetype_energy_types:
-            all_related_energies.update(st.session_state.archetype_energy_types[related])
-    
-    if all_related_energies:
-        return list(all_related_energies)[:3], True
-    
-    # Try approach 4: If all else fails, return the 3 most common energy types overall
-    if st.session_state.archetype_energy_types:
-        # Count occurrences of each energy type across all archetypes
-        energy_counter = Counter()
-        for archetype_energies in st.session_state.archetype_energy_types.values():
-            for energy in archetype_energies:
-                energy_counter[energy] += 1
+    # Look for archetypes with the same first word
+    for other_archetype in st.session_state.archetype_energy_types:
+        other_first_word = other_archetype.split('-')[0] if '-' in other_archetype else other_archetype
         
-        # Get the 3 most common energy types
-        if energy_counter:
-            common_energies = [energy for energy, _ in energy_counter.most_common(3)]
-            if common_energies:
-                return common_energies, True
+        if archetype_first_word == other_first_word and archetype != other_archetype:
+            all_energies = list(st.session_state.archetype_energy_types[other_archetype])
+            if all_energies:
+                # Mark as typical with higher uncertainty
+                return all_energies[:3], True
     
-    # Absolute last resort: No energy data anywhere, return empty list
+    # No energy types found after all fallbacks
     return [], False
 
 def render_energy_icons(energy_types, is_typical=False):
