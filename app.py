@@ -253,9 +253,30 @@ if 'performance_data' in st.session_state and not st.session_state.performance_d
             """, unsafe_allow_html=True)
             
             # Add a button to analyze this deck
+            # Modify this part in your code where the sidebar button is clicked
             if st.button(f"Analyze {deck['displayed_name']}", key=f"analyze_{deck['deck_name']}"):
                 # Set the selected deck name in the session state
                 st.session_state.selected_deck_from_sidebar = deck['deck_name']
+                
+                # Find the matching display name
+                for display_name, name in st.session_state.deck_name_mapping.items():
+                    if name == deck['deck_name']:
+                        # Set the index directly
+                        st.session_state.selected_deck_index = deck_display_names.index(display_name)
+                        break
+                
+                # Set up the analysis directly
+                deck_name = deck['deck_name']
+                set_name = deck['set']
+                
+                current_selection = {
+                    'deck_name': deck_name,
+                    'set_name': set_name,
+                }
+                
+                # Update analysis state
+                st.session_state.analyze = current_selection
+                
                 # Force re-run to update the main content
                 st.rerun()
 else:
