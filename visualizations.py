@@ -183,7 +183,7 @@ def create_variant_bar_chart(variant_data):
         barmode='stack',
         height=max(VAR_CHART_MIN_HEIGHT, len(labels) * VAR_CHART_ROW_HEIGHT),
         #height=220,  # Fixed height to match images
-        margin=dict(l=0, r=0, t=10, b=10),
+        margin=dict(l=0, r=0, t=10, b=0),
         xaxis_title="",
         xaxis=dict(
             range=[0, 105],  # Extend range beyond 100 to add padding
