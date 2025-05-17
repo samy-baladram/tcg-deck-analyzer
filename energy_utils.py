@@ -363,10 +363,7 @@ def display_detailed_energy_table(deck_name):
         table_html += "</tr>"
     
     # Close the table
-    table_html += """
-        </table>
-    </div>
-    """
+    table_html += """</table></div>"""
     
     # Calculate and show energy combination statistics
     combo_stats = {}
