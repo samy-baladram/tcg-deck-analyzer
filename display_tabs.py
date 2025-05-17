@@ -196,6 +196,8 @@ def display_raw_data_tab(results, variant_df):
         st.write("#### Variant Analysis Data")
         st.dataframe(variant_df, use_container_width=True)
 
+def highlight_selected_deck(df, current_deck_name):
+    return ['background-color: rgba(0, 160, 255, 0.2)'] * len(df.columns) if df['deck_name'] == current_deck_name else [''] * len(df.columns)
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
@@ -247,8 +249,16 @@ def display_metagame_tab():
     
     # Display the table
     #st.write("### Tournament Performance Data")
+    # Example of highlighting the row with currently selected deck
+    
+    # Get styled dataframe
+    styled_df = final_df.style.apply(
+        lambda df: highlight_selected_deck(df, current_deck_name), 
+        axis=1
+    )
+    
     st.dataframe(
-        final_df,
+        styled_df,
         use_container_width=True,
         height=1000,  # Set the height in pixels - adjust as needed
         column_config={
