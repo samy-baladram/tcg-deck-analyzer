@@ -123,7 +123,7 @@ st.markdown(f"""
 def init_performance_data():
     """Initialize performance data if not in session state"""
     if 'performance_data' not in st.session_state or st.session_state.get('refresh_performance', False):
-        with st.sidebar.spinner("Analyzing recent tournament performance..."):
+        with st.spinner("Analyzing recent tournament performance..."):
             st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
             st.session_state.performance_fetch_time = datetime.now()
             st.session_state.refresh_performance = False
