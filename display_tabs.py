@@ -196,8 +196,8 @@ def display_raw_data_tab(results, variant_df):
         st.write("#### Variant Analysis Data")
         st.dataframe(variant_df, use_container_width=True)
 
-def highlight_selected_deck(df, current_deck_name):
-    return ['background-color: rgba(0, 160, 255, 0.2)'] * len(df.columns) if df['deck_name'] == current_deck_name else [''] * len(df.columns)
+# def highlight_selected_deck(df, current_deck_name):
+#     return ['background-color: rgba(0, 160, 255, 0.2)'] * len(df.columns) if df['deck_name'] == current_deck_name else [''] * len(df.columns)
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
@@ -208,7 +208,7 @@ def display_metagame_tab():
     if performance_df.empty:
         st.warning("No tournament performance data available.")
         return
-
+        
     # Get the currently selected deck
     current_deck_name = None
     if 'analyze' in st.session_state:
@@ -242,31 +242,36 @@ def display_metagame_tab():
         'total_ties': 'Ties',
         'tournaments_played': 'Best Finish Entries',
         'share': 'Meta Share %',
-        'power_index': 'Power Index'
+        'power_index': 'Power Index',
+        'is_current': 'is_current'  # Keep this for highlighting
     }
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
+    # Create a styling function
+    def highlight_current(row):
+        if row['is_current']:
+            return ['background-color: rgba(0, 160, 255, 0.2)'] * (len(row) - 1)  # -1 to exclude is_current column
+        else:
+            return [''] * (len(row) - 1)  # -1 to exclude is_current column
+    
+    # Apply styling
+    styled_df = final_df.style.apply(highlight_current, axis=1)
+    
+    # Hide the is_current column
+    styled_df = styled_df.hide_columns(['is_current'])
+    
     # Display the table
-    #st.write("### Tournament Performance Data")
-    # Example of highlighting the row with currently selected deck
-    
-    # Get styled dataframe
-    styled_df = final_df.style.apply(
-        lambda df: highlight_selected_deck(df, current_deck_name), 
-        axis=1
-    )
-    
     st.dataframe(
         styled_df,
         use_container_width=True,
-        height=1000,  # Set the height in pixels - adjust as needed
+        height=1000,  # Set the height in pixels
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
             "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
         },
-        hide_index=False
+        hide_index=True
     )
     
     # Show note about current deck if one is selected
