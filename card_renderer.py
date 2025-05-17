@@ -215,3 +215,42 @@ class CardRenderer:
 render_deck_section = CardRenderer.render_deck_section
 render_option_section = CardRenderer.render_option_section
 render_variant_cards = CardRenderer.render_variant_cards
+
+# Add this function to card_renderer.py
+
+def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=75):
+    """
+    Render a condensed version of a deck for the sidebar.
+    
+    Args:
+        pokemon_cards: List of Pokemon card dictionaries
+        trainer_cards: List of Trainer card dictionaries
+        card_width: Width of each card in pixels (default: 75px for sidebar)
+        
+    Returns:
+        HTML string for rendering the deck
+    """
+    # Create grid instances
+    pokemon_grid = CardGrid(card_width=card_width, gap=4, margin_bottom=6)
+    trainer_grid = CardGrid(card_width=card_width, gap=4, margin_bottom=6)
+    
+    # Add cards to grids
+    pokemon_grid.add_cards_from_dict(pokemon_cards, repeat_by_count=False)
+    trainer_grid.add_cards_from_dict(trainer_cards, repeat_by_count=False)
+    
+    # Count totals
+    pokemon_count = sum(card.get('count', 1) for card in pokemon_cards) if pokemon_cards else 0
+    trainer_count = sum(card.get('count', 1) for card in trainer_cards) if trainer_cards else 0
+    
+    # Generate HTML for the entire deck
+    html = f"""
+    <div style="margin-bottom: 10px;">
+        <div style="font-weight: bold; margin-bottom: 6px;">Pokémon ({pokemon_count})</div>
+        {pokemon_grid.render()}
+        
+        <div style="font-weight: bold; margin-bottom: 6px; margin-top: 12px;">Trainer ({trainer_count})</div>
+        {trainer_grid.render()}
+    </div>
+    """
+    
+    return html
