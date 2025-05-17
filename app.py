@@ -8,6 +8,7 @@ import ui_helpers
 import cache_manager
 import display_tabs
 from config import MIN_META_SHARE
+from card_renderer import add_card_hover_effect
 
 # Set up page
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
@@ -18,6 +19,9 @@ st.markdown("""
 # Your existing styles here...
 </style>
 """, unsafe_allow_html=True)
+
+# Add the hover effect setup after your page_config and style settings
+add_card_hover_effect()
 
 # Show loading spinner for entire app initialization
 with st.spinner("Loading app data..."):
