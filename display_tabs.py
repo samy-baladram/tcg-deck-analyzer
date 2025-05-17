@@ -1,0 +1,146 @@
+# display_tabs.py
+"""Functions for rendering the tabs in the main content area"""
+
+import streamlit as st
+from formatters import format_deck_name
+from image_processor import create_deck_header_images
+from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
+from analyzer import build_deck_template
+
+def display_deck_header(deck_info, results):
+    """Display the deck header with image"""
+    header_image = create_deck_header_images(deck_info, results)
+    
+    if header_image:
+        st.markdown(f"""
+        <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0rem; margin-top:-1rem">
+            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(deck_info['deck_name'])}</h1>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.header(format_deck_name(deck_info['deck_name']))
+
+def display_card_usage_tab(results, total_decks, variant_df):
+    """Display the Card Usage tab"""
+    # Create two columns for Pokemon and Trainer
+    st.write("#### Card Usage & Variants")
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.write("##### Pokemon")
+        type_cards = results[results['type'] == 'Pokemon']
+        
+        if not type_cards.empty:
+            fig = create_usage_bar_chart(type_cards, 'Pokemon')
+            display_chart(fig)
+        else:
+            st.info("No Pokemon cards found")
+
+        if not variant_df.empty:
+            # Import variant renderer
+            from card_renderer import render_variant_cards
+            
+            # Display variant analysis
+            for _, row in variant_df.iterrows():
+                with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
+                    # Extract set codes and numbers
+                    var1 = row['Var1']
+                    var2 = row['Var2']
+                    
+                    var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
+                    var1_num = var1.split('-')[-1]         # Just the last part
+                    var2_set = '-'.join(var2.split('-')[:-1])
+                    var2_num = var2.split('-')[-1]
+                    
+                    # # Create the 2-column layout
+                    var_col1, var_col2 = st.columns([2, 5])
+                    
+                    # Column 1: Both Variants side by side
+                    with var_col1:
+                        variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                        st.markdown(variant_html, unsafe_allow_html=True)
+                    
+                    # Column 2: Bar Chart
+                    with var_col2:
+                        # Create variant bar chart with fixed height
+                        fig_var = create_variant_bar_chart(row)
+                        display_chart(fig_var) 
+    
+    with col2:
+        st.write("##### Trainer")
+        type_cards = results[results['type'] == 'Trainer']
+        
+        if not type_cards.empty:
+            fig = create_usage_bar_chart(type_cards, 'Trainer')
+            display_chart(fig)
+        else:
+            st.info("No Trainer cards found")
+
+def display_deck_template_tab(results):
+    """Display the Deck Template tab"""
+    # Import card renderer
+    from card_renderer import render_deck_section, render_option_section
+    
+    # Use the updated function that returns deck_info
+    deck_list, deck_info, total_cards, options = build_deck_template(results)
+    
+    st.write(f"#### Core Cards", unsafe_allow_html=True)
+    col1, col2 = st.columns([2, 3])
+
+    with col1:
+        # Render Pokemon cards
+        render_deck_section(deck_info['Pokemon'], "Pokemon")
+    
+    with col2:
+        # Render Trainer cards
+        render_deck_section(deck_info['Trainer'], "Trainer")
+    
+    # Display flexible slots section
+    remaining = 20 - total_cards
+    st.write("<br>", unsafe_allow_html=True)
+    st.write(f"#### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+    
+    # Sort options by usage percentage (descending) and split by type
+    pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
+    trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
+    
+    # Create two columns for flexible slots
+    flex_col1, flex_col2 = st.columns([2, 3])
+    
+    with flex_col1:
+        # Render Pokemon options
+        render_option_section(pokemon_options, "Pokémon Options")
+    
+    with flex_col2:
+        # Render Trainer options
+        render_option_section(trainer_options, "Trainer Options")
+
+def display_raw_data_tab(results, variant_df):
+    """Display the Raw Data tab"""
+    # Main analysis data
+    st.write("#### Card Usage Data")
+    st.dataframe(results, use_container_width=True)
+    
+    # Variant analysis data
+    if not variant_df.empty:
+        st.write("#### Variant Analysis Data")
+        st.dataframe(variant_df, use_container_width=True)
+
+def display_metagame_tab():
+    """Display the Metagame Overview tab"""
+    st.subheader("Metagame Overview")
+    st.write("Most played cards across top decks:")
+    
+    # Filter and display top cards
+    pokemon_cards = st.session_state.card_usage_data[st.session_state.card_usage_data['type'] == 'Pokemon'].head(20)
+    trainer_cards = st.session_state.card_usage_data[st.session_state.card_usage_data['type'] == 'Trainer'].head(20)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("#### Top Pokémon")
+        st.dataframe(pokemon_cards[['card_name', 'weighted_usage', 'deck_count']], use_container_width=True)
+    
+    with col2:
+        st.write("#### Top Trainers")
+        st.dataframe(trainer_cards[['card_name', 'weighted_usage', 'deck_count']], use_container_width=True)
