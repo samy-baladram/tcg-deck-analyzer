@@ -428,19 +428,39 @@ def get_or_analyze_full_deck(deck_name, set_name):
     # First check session cache
     cache_key = f"full_deck_{deck_name}_{set_name}"
     if cache_key in st.session_state.analyzed_deck_cache:
-        print(f"Found {deck_name} in session cache")
         return st.session_state.analyzed_deck_cache[cache_key]
     
-    # Then check disk cache
-    disk_cached = cache_utils.load_analyzed_deck(deck_name, set_name)
-    if disk_cached is not None:
-        print(f"Found {deck_name} in disk cache")
-        # Store in session cache for faster access
-        st.session_state.analyzed_deck_cache[cache_key] = disk_cached
-        return disk_cached
+    # Then check disk cache (simple version)
+    cached_results = cache_utils.load_analyzed_deck_simple(deck_name, set_name)
+    if cached_results is not None:
+        # We have cached results, now generate the rest
+        deck_list, deck_info, total_cards, options = build_deck_template(cached_results)
+        
+        # Try to get deck count from data
+        total_decks = len(cached_results['deck_num'].unique()) if 'deck_num' in cached_results.columns else 0
+        
+        # Create variant analysis or empty DataFrame if not available
+        try:
+            variant_df = analyze_variants(cached_results, cached_results)
+        except:
+            variant_df = pd.DataFrame()
+        
+        # Create cache entry
+        analyzed_data = {
+            'results': cached_results,
+            'total_decks': total_decks,
+            'variant_df': variant_df,
+            'deck_list': deck_list,
+            'deck_info': deck_info,
+            'total_cards': total_cards,
+            'options': options
+        }
+        
+        # Store in session cache
+        st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
+        return analyzed_data
     
     # If not in any cache, analyze the deck
-    print(f"Analyzing {deck_name} (not found in cache)")
     with st.spinner(f"Analyzing {deck_name}..."):
         results, total_decks, variant_df = analyze_deck(deck_name, set_name)
         deck_list, deck_info, total_cards, options = build_deck_template(results)
@@ -459,9 +479,8 @@ def get_or_analyze_full_deck(deck_name, set_name):
         # Store in session cache
         st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
         
-        # Store in disk cache - add explicit debug output
-        saved = cache_utils.save_analyzed_deck(deck_name, set_name, analyzed_data)
-        print(f"Saved {deck_name} to disk cache: {saved}")
+        # Store in disk cache (simple version)
+        cache_utils.save_analyzed_deck_simple(deck_name, set_name, results)
         
         return analyzed_data
 
