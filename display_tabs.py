@@ -80,6 +80,8 @@ def display_card_usage_tab(results, total_decks, variant_df):
 
 def display_deck_template_tab(results):
     """Display the Deck Template tab"""
+    # Import needed functions
+    from energy_utils import get_energy_types_for_deck, get_archetype_from_deck_name
     
     # Use the updated function that returns deck_info
     deck_list, deck_info, total_cards, options = build_deck_template(results)
@@ -91,12 +93,9 @@ def display_deck_template_tab(results):
     # Look for energy_types in the session state for this deck
     if 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
-        archetype = get_archetype_from_deck_name(deck_name)
         
-        # Try to get energy from session state archetype mapping
-        if hasattr(st.session_state, 'archetype_energy_types') and archetype in st.session_state.archetype_energy_types:
-            energy_types = list(st.session_state.archetype_energy_types[archetype])
-            is_typical = True
+        # Get the most common energy combination using the same function used in sidebar
+        energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
     
     # Create header
     if energy_types:
@@ -107,7 +106,7 @@ def display_deck_template_tab(results):
             energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
         
         # Create header with energy types
-        archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(typical)</span>' if is_typical else ""
+        archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
         core_cards_header = f"""#### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html}{archetype_note})</span>"""
     else:
         # Just "Core Cards" if no energy found
