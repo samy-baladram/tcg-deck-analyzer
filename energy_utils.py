@@ -2,50 +2,31 @@
 """Utility functions for handling energy types"""
 
 import streamlit as st
-import random
-from collections import defaultdict
 
 def initialize_energy_types():
     """Initialize energy types dictionary in session state if not exists"""
     if 'archetype_energy_types' not in st.session_state:
         st.session_state.archetype_energy_types = {}
-        
-    if 'archetype_energy_combinations' not in st.session_state:
-        st.session_state.archetype_energy_combinations = defaultdict(list)
 
 def get_archetype_from_deck_name(deck_name):
     """Extract archetype name from deck name"""
     return deck_name.split('-')[0] if '-' in deck_name else deck_name
 
 def store_energy_types(deck_name, energy_types):
-    """
-    Store energy types for a deck by archetype in the session state
-    This version stores complete energy combinations, not just individual types
-    """
+    """Store energy types for an archetype in the session state"""
     if not energy_types:
         return
         
     archetype = get_archetype_from_deck_name(deck_name)
-    
-    # Store individual energy types (for backward compatibility)
     if archetype not in st.session_state.archetype_energy_types:
         st.session_state.archetype_energy_types[archetype] = set()
     
     for energy in energy_types:
         st.session_state.archetype_energy_types[archetype].add(energy)
-    
-    # Store the complete energy combination
-    # Sort the energy types to ensure consistent combinations
-    sorted_energy_types = sorted(energy_types)
-    energy_combo = tuple(sorted_energy_types)  # Use tuple for hashability
-    
-    # Only add if it's a new combination
-    if energy_combo not in st.session_state.archetype_energy_combinations[archetype]:
-        st.session_state.archetype_energy_combinations[archetype].append(energy_combo)
 
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, falling back to archetype energy combinations if needed
+    Get energy types for a deck, falling back to archetype energy types if needed
     
     Returns:
         Tuple of (energy_types, is_typical)
@@ -54,22 +35,10 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
     if deck_energy_types:
         return deck_energy_types, False
     
-    # Otherwise, try to get a valid combination from the archetype
+    # Otherwise, try to get from archetype
     archetype = get_archetype_from_deck_name(deck_name)
-    
-    # If we have stored combinations, pick a random valid one
-    if archetype in st.session_state.archetype_energy_combinations and st.session_state.archetype_energy_combinations[archetype]:
-        # Pick a random valid combination
-        energy_combo = random.choice(st.session_state.archetype_energy_combinations[archetype])
-        return list(energy_combo), True
-    
-    # Fallback: if we have individual types but no combinations
-    if archetype in st.session_state.archetype_energy_types and st.session_state.archetype_energy_types[archetype]:
-        # Limit to 3 random energy types maximum (since that's the game limit)
-        energy_types = list(st.session_state.archetype_energy_types[archetype])
-        if len(energy_types) > 3:
-            energy_types = random.sample(energy_types, 3)
-        return energy_types, True
+    if archetype in st.session_state.archetype_energy_types:
+        return list(st.session_state.archetype_energy_types[archetype]), True
     
     # No energy types found
     return [], False
