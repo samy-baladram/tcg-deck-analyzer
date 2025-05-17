@@ -3,6 +3,9 @@
 
 import streamlit as st
 from datetime import datetime, timedelta
+import os
+import json
+import pandas as pd
 
 # Import all modules
 from config import MIN_META_SHARE, CACHE_TTL, IMAGE_BASE_URL
@@ -105,6 +108,61 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 </style>
 """, unsafe_allow_html=True)
 
+# Constants for cached data
+PERFORMANCE_DATA_PATH = "cached_data/tournament_performance.json"
+PERFORMANCE_DATA_TIMESTAMP_PATH = "cached_data/tournament_performance_timestamp.txt"
+
+# Function to load cached tournament performance data
+def load_tournament_performance_data():
+    """Load tournament performance data from cache if available"""
+    try:
+        # Check if data file exists
+        if os.path.exists(PERFORMANCE_DATA_PATH):
+            # Read the data from JSON file
+            with open(PERFORMANCE_DATA_PATH, 'r') as f:
+                data = json.load(f)
+            
+            # Convert to DataFrame
+            performance_df = pd.DataFrame(data)
+            
+            # Read timestamp
+            if os.path.exists(PERFORMANCE_DATA_TIMESTAMP_PATH):
+                with open(PERFORMANCE_DATA_TIMESTAMP_PATH, 'r') as f:
+                    timestamp_str = f.read().strip()
+                    timestamp = datetime.fromisoformat(timestamp_str)
+            else:
+                # Default to an hour ago if no timestamp file
+                timestamp = datetime.now() - timedelta(hours=1)
+            
+            return performance_df, timestamp
+        
+    except Exception as e:
+        st.error(f"Error loading cached data: {e}")
+    
+    # Return empty dataframe and old timestamp if loading fails
+    return pd.DataFrame(), datetime.now() - timedelta(hours=2)
+
+# Function to save tournament performance data to cache
+def save_tournament_performance_data(performance_df):
+    """Save tournament performance data to cache"""
+    try:
+        # Create directory if it doesn't exist
+        os.makedirs(os.path.dirname(PERFORMANCE_DATA_PATH), exist_ok=True)
+        
+        # Save data to JSON file
+        with open(PERFORMANCE_DATA_PATH, 'w') as f:
+            json.dump(performance_df.to_dict(orient='records'), f)
+        
+        # Save timestamp
+        with open(PERFORMANCE_DATA_TIMESTAMP_PATH, 'w') as f:
+            f.write(datetime.now().isoformat())
+        
+        return True
+    
+    except Exception as e:
+        st.error(f"Error saving cached data: {e}")
+        return False
+
 # Get the base64 string of your image
 img_path = "title_banner.png"
 img_base64 = get_base64_image(img_path)
@@ -125,15 +183,24 @@ if 'deck_list' not in st.session_state:
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
 
-# Check if tournament data needs to be updated (hourly refresh)
-if ('performance_data' not in st.session_state or 
-    'performance_fetch_time' not in st.session_state or 
-    (datetime.now() - st.session_state.performance_fetch_time) > timedelta(hours=1)):
-    
-    # Cache for the analysis operation
+# Try to load tournament data from cache first
+performance_df, performance_timestamp = load_tournament_performance_data()
+
+# Check if data needs to be updated (if it's older than 1 hour)
+if performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(hours=1):
     with st.spinner("Updating tournament performance data..."):
-        st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-        st.session_state.performance_fetch_time = datetime.now()
+        # Analyze recent performance
+        performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+        
+        # Save to cache
+        save_tournament_performance_data(performance_df)
+        
+        # Update session state
+        performance_timestamp = datetime.now()
+
+# Store in session state
+st.session_state.performance_data = performance_df
+st.session_state.performance_fetch_time = performance_timestamp
 
 # Also ensure fetch_time exists
 if 'fetch_time' not in st.session_state:
@@ -224,39 +291,36 @@ if selected_option:
 st.sidebar.title("Tournament Performance")
 
 # Display performance data if it exists
-if 'performance_data' in st.session_state and 'performance_fetch_time' in st.session_state:
+if not st.session_state.performance_data.empty:
     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
     st.sidebar.write(f"Data updates hourly. Last updated: {performance_time_str}")
     
-    if not st.session_state.performance_data.empty:
-        # Display performance data in sidebar
-        for _, deck in st.session_state.performance_data.head(10).iterrows():
-            # Format power index to 2 decimal places
-            power_index = round(deck['power_index'], 2)
+    # Display performance data in sidebar
+    for _, deck in st.session_state.performance_data.head(10).iterrows():
+        # Format power index to 2 decimal places
+        power_index = round(deck['power_index'], 2)
+        
+        # Determine the color class based on power index
+        power_class = "positive-index" if power_index > 0 else "negative-index"
+        
+        # Create an expander for each deck
+        with st.sidebar.expander(f"{deck['displayed_name']}"):
+            # Display power index with color
+            st.markdown(f"""
+            <div class="performance-card">
+                <p>Power Index: <span class="{power_class}">{power_index}</span></p>
+                <p>Record: {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+                <p>Tournaments: {deck['tournaments_played']}</p>
+            </div>
+            """, unsafe_allow_html=True)
             
-            # Determine the color class based on power index
-            power_class = "positive-index" if power_index > 0 else "negative-index"
-            
-            # Create an expander for each deck
-            with st.sidebar.expander(f"{deck['displayed_name']}"):
-                # Display power index with color
-                st.markdown(f"""
-                <div class="performance-card">
-                    <p>Power Index: <span class="{power_class}">{power_index}</span></p>
-                    <p>Record: {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-                    <p>Tournaments: {deck['tournaments_played']}</p>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                # Add a deck selection option
-                if st.button("Select for Analysis", key=f"select_{deck['deck_name']}"):
-                    # Store the deck name to analyze
-                    st.session_state.deck_to_analyze = deck['deck_name']
-                    st.rerun()
-    else:
-        st.sidebar.info("No tournament performance data available")
+            # Add a deck selection option
+            if st.button("Select for Analysis", key=f"select_{deck['deck_name']}"):
+                # Store the deck name to analyze
+                st.session_state.deck_to_analyze = deck['deck_name']
+                st.rerun()
 else:
-    st.sidebar.info("Tournament data is being updated...")
+    st.sidebar.info("No tournament performance data available")
 
 # Main content area - simplified
 if 'analyze' in st.session_state and selected_option:
