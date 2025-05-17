@@ -9,7 +9,7 @@ import pandas as pd
 
 # Import all modules
 from config import MIN_META_SHARE, CACHE_TTL, IMAGE_BASE_URL
-from scraper import get_deck_list, analyze_recent_performance
+from scraper import get_deck_list, analyze_recent_performance, get_sample_deck_for_archetype
 from analyzer import analyze_deck, build_deck_template
 from formatters import format_deck_name, format_deck_option, parse_deck_option
 from image_processor import get_base64_image, create_deck_header_images, get_card_thumbnail
