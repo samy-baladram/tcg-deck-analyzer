@@ -155,7 +155,7 @@ class CardRenderer:
             card_count = sum(card.get('count', 1) for card in cards)
         
         # Display section title
-        st.markdown(f"#### {section_title} ({card_count})", unsafe_allow_html=True)
+        st.markdown(f"##### {section_title} ({card_count})", unsafe_allow_html=True)
         
         # Create and display card grid
         grid = CardGrid()
