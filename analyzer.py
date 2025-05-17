@@ -102,8 +102,8 @@ def analyze_deck(deck_name, set_name="A3"):
     )
     
     # Return the traditional tuple format for backward compatibility
-    return grouped, total_decks, variant_df
-    #return grouped, total_decks, variant_df, list(all_energy_types) if all_energy_types else []
+    #return grouped, total_decks, variant_df
+    return grouped, total_decks, variant_df, list(all_energy_types) if all_energy_types else []
 
 def build_deck_template(analysis_df):
     """Build a deck template from analysis results"""
