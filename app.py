@@ -295,24 +295,6 @@ selected_option = st.selectbox(
     on_change=on_deck_change
 )
 
-
-# Auto-analyze when selection is made
-if selected_option:
-    # Get original deck name from mapping
-    deck_name = st.session_state.deck_name_mapping[selected_option]
-    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-    set_name = selected_row['set']
-    
-    current_selection = {
-        'deck_name': deck_name,
-        'set_name': set_name,
-    }
-    
-    # Update analysis state
-    st.session_state.analyze = current_selection
-
-# Final solution: Add these functions to app.py
-
 # Function to get deck key for session state
 def get_deck_cache_key(deck_name, set_name):
     """Generate a unique key for caching deck data in session state"""
