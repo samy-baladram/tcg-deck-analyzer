@@ -237,19 +237,19 @@ if 'analyze' in st.session_state and selected_option:
                         var2_num = var2.split('-')[-1]
                         
                         # Create the 2-column layout
-                        col1, col2 = st.columns([1, 2])
+                        var_col1, var_col2 = st.columns([1, 2])
                         
                         # Column 1: Both Variants side by side
-                        with col1:
+                        with var_col1:
                             variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
                             st.markdown(variant_html, unsafe_allow_html=True)
                         
                         # Column 2: Bar Chart
-                        with col2:
+                        with var_col2:
                             # Create variant bar chart with fixed height
                             fig = create_variant_bar_chart(row)
                             fig.update_layout(height=220)
-                            display_chart(fig)
+                            display_chart(fig)      
         
         with col2:
             st.write("#### Trainer")
