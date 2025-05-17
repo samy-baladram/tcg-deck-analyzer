@@ -189,7 +189,7 @@ def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
     # Main analysis data
     st.write("#### Card Usage Data")
-    st.dataframe(results, use_container_width=True)
+    st.dataframe(results, height=1000, use_container_width=True)
     
     # Variant analysis data
     if not variant_df.empty:
