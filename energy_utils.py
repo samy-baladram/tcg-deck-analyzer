@@ -58,6 +58,7 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
     # No energy types found
     return [], False
 
+# In energy_utils.py - Enhanced track_energy_combination function
 def track_energy_combination(deck_name, energy_types):
     """
     Track unique energy combinations and their counts for each archetype
@@ -87,6 +88,9 @@ def track_energy_combination(deck_name, energy_types):
     
     # Save the updated combinations to disk
     save_energy_types_to_disk()
+    
+    # Log for debugging (optional)
+    # print(f"Tracked energy combo for {archetype}: {combo_key} (count: {st.session_state.archetype_energy_combos[archetype][combo_key]})")
 
 # Update store_energy_types to also track combinations
 
