@@ -426,32 +426,32 @@ else:
 
 # Main content area - simplified with caching
 if 'analyze' in st.session_state and selected_option:
-    deck_info = st.session_state.analyze
+    original_deck_info = st.session_state.analyze  # Original deck info for header
     
     # Get analyzed deck from cache or analyze it
-    analyzed_deck = get_or_analyze_full_deck(deck_info['deck_name'], deck_info['set_name'])
+    analyzed_deck = get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
     
     # Unpack the results
     results = analyzed_deck['results']
     total_decks = analyzed_deck['total_decks']
     variant_df = analyzed_deck['variant_df']
     deck_list = analyzed_deck['deck_list']
-    deck_info = analyzed_deck['deck_info']
+    deck_info = analyzed_deck['deck_info']  # Renamed to avoid confusion
     total_cards = analyzed_deck['total_cards']
     options = analyzed_deck['options']
     
-    # Create header with images
-    header_image = create_deck_header_images(st.session_state.analyze, results)
+    # Create header with images - use original_deck_info
+    header_image = create_deck_header_images(original_deck_info, results)
     
     if header_image:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0rem; margin-top:-1rem">
-            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(deck_info['deck_name'])}</h1>
+            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(original_deck_info['deck_name'])}</h1>
         </div>
         """, unsafe_allow_html=True)
     else:
-        st.header(format_deck_name(deck_info['deck_name']))
-    
+        st.header(format_deck_name(original_deck_info['deck_name']))
+   
     # Display results in tabs
     tab1, tab2, tab3 = st.tabs(["Card Usage", "Deck Template", "Raw Data"])
     
