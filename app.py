@@ -125,6 +125,16 @@ if 'deck_list' not in st.session_state:
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
 
+# Check if tournament data needs to be updated (hourly refresh)
+if ('performance_data' not in st.session_state or 
+    'performance_fetch_time' not in st.session_state or 
+    (datetime.now() - st.session_state.performance_fetch_time) > timedelta(hours=1)):
+    
+    # Cache for the analysis operation
+    with st.spinner("Updating tournament performance data..."):
+        st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+        st.session_state.performance_fetch_time = datetime.now()
+
 # Also ensure fetch_time exists
 if 'fetch_time' not in st.session_state:
     st.session_state.fetch_time = datetime.now()
@@ -213,16 +223,10 @@ if selected_option:
 # Sidebar content - Tournament Performance
 st.sidebar.title("Tournament Performance")
 
-# Add a button to analyze tournament data
-if st.sidebar.button("Analyze Recent Tournament Results", use_container_width=True):
-    with st.spinner("Analyzing recent tournament performance..."):
-        st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-        st.session_state.performance_fetch_time = datetime.now()
-
 # Display performance data if it exists
 if 'performance_data' in st.session_state and 'performance_fetch_time' in st.session_state:
     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-    st.sidebar.write(f"Last updated: {performance_time_str}")
+    st.sidebar.write(f"Data updates hourly. Last updated: {performance_time_str}")
     
     if not st.session_state.performance_data.empty:
         # Display performance data in sidebar
@@ -252,7 +256,7 @@ if 'performance_data' in st.session_state and 'performance_fetch_time' in st.ses
     else:
         st.sidebar.info("No tournament performance data available")
 else:
-    st.sidebar.info("Click the button above to analyze recent tournament results")
+    st.sidebar.info("Tournament data is being updated...")
 
 # Main content area - simplified
 if 'analyze' in st.session_state and selected_option:
