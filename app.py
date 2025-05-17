@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 
 # Import all modules
 from config import MIN_META_SHARE, CACHE_TTL, IMAGE_BASE_URL
-from scraper import get_deck_list
+from scraper import get_deck_list, analyze_recent_performance
 from analyzer import analyze_deck, build_deck_template
-from formatters import format_deck_name, format_deck_option
+from formatters import format_deck_name, format_deck_option, parse_deck_option
 from image_processor import get_base64_image, create_deck_header_images, get_card_thumbnail
 from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
 from utils import calculate_time_ago, format_card_display
@@ -84,11 +84,26 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     padding: 8px 16px !important;
 }
 
+/* Sidebar style for performance cards */
+.performance-card {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 160, 255, 0.3);
+}
+
+.positive-index {
+    color: #00A02A;
+    font-weight: bold;
+}
+
+.negative-index {
+    color: #FF4500;
+    font-weight: bold;
+}
+
 </style>
 """, unsafe_allow_html=True)
-
-# Main title
-#st.image("title_banner.png", use_container_width=True)
 
 # Get the base64 string of your image
 img_path = "title_banner.png"
@@ -104,15 +119,31 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# Function to initialize performance data in session state
+def init_performance_data():
+    """Initialize performance data if not in session state"""
+    if 'performance_data' not in st.session_state or st.session_state.get('refresh_performance', False):
+        with st.sidebar.spinner("Analyzing recent tournament performance..."):
+            st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+            st.session_state.performance_fetch_time = datetime.now()
+            st.session_state.refresh_performance = False
+
 # Initialize session state and fetch deck list on first load
 if 'deck_list' not in st.session_state:
     with st.spinner("Fetching deck list..."):
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
 
+# Initialize performance data
+init_performance_data()
+
 # Also ensure fetch_time exists
 if 'fetch_time' not in st.session_state:
     st.session_state.fetch_time = datetime.now()
+
+# Also ensure performance_fetch_time exists
+if 'performance_fetch_time' not in st.session_state:
+    st.session_state.performance_fetch_time = datetime.now()
 
 # Initialize selected deck if not exists
 if 'selected_deck_index' not in st.session_state:
@@ -181,6 +212,48 @@ if selected_option:
     # Update analysis state
     st.session_state.analyze = current_selection
 
+# Sidebar content - Tournament Performance
+st.sidebar.title("Tournament Performance")
+performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+st.sidebar.write(f"Recent tournament results (updated {performance_time_str})")
+
+if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+    # Display performance data in sidebar
+    for _, deck in st.session_state.performance_data.head(10).iterrows():
+        # Format power index to 2 decimal places
+        power_index = round(deck['power_index'], 2)
+        
+        # Determine the color class based on power index
+        power_class = "positive-index" if power_index > 0 else "negative-index"
+        
+        # Create an expander for each deck
+        with st.sidebar.expander(f"{deck['displayed_name']}"):
+            # Display power index with color
+            st.markdown(f"""
+            <div class="performance-card">
+                <p>Power Index: <span class="{power_class}">{power_index}</span></p>
+                <p>Record: {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+                <p>Tournaments: {deck['tournaments_played']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Add a button to analyze this deck
+            if st.button(f"Analyze {deck['displayed_name']}", key=f"analyze_{deck['deck_name']}"):
+                # Set the selected deck in the session state
+                # Create a formatted display name for the deck select dropdown
+                format_display = format_deck_option(deck['deck_name'], deck['share'])
+                if format_display in deck_display_names:
+                    st.session_state.deck_select = format_display
+                    # Force re-run to update the main content
+                    st.rerun()
+else:
+    st.sidebar.info("No tournament performance data available")
+
+# Add refresh button for performance data
+if st.sidebar.button("Refresh Performance Data"):
+    st.session_state.refresh_performance = True
+    st.rerun()
+
 # Main content area - simplified
 if 'analyze' in st.session_state and selected_option:
     deck_info = st.session_state.analyze
@@ -201,57 +274,25 @@ if 'analyze' in st.session_state and selected_option:
         st.header(format_deck_name(deck_info['deck_name']))
     
     # Display results in tabs
-    tab1, tab2, tab4 = st.tabs(["Card Usage", "Deck Template", "Raw Data"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Card Usage", "Deck Template", "Variants", "Raw Data"])
     
     with tab1:
         # Create two columns for Pokemon and Trainer
-        st.write("#### Card Usage & Variants")
         col1, col2 = st.columns([1, 1])
         
         with col1:
-            st.write("##### Pokemon")
+            st.write("#### Pokemon")
             type_cards = results[results['type'] == 'Pokemon']
             
             if not type_cards.empty:
                 fig = create_usage_bar_chart(type_cards, 'Pokemon')
                 display_chart(fig)
-                #st.text(f"{total_decks} decks analyzed")
+                st.text(f"{total_decks} decks analyzed")
             else:
                 st.info("No Pokemon cards found")
-
-            if not variant_df.empty:
-                
-                # Import variant renderer
-                from card_renderer import render_variant_cards
-                
-                # Display variant analysis
-                for _, row in variant_df.iterrows():
-                    with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
-                        # Extract set codes and numbers
-                        var1 = row['Var1']
-                        var2 = row['Var2']
-                        
-                        var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
-                        var1_num = var1.split('-')[-1]         # Just the last part
-                        var2_set = '-'.join(var2.split('-')[:-1])
-                        var2_num = var2.split('-')[-1]
-                        
-                        # # Create the 2-column layout
-                        var_col1, var_col2 = st.columns([2, 5])
-                        
-                        # Column 1: Both Variants side by side
-                        with var_col1:
-                            variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                            st.markdown(variant_html, unsafe_allow_html=True)
-                        
-                        # Column 2: Bar Chart
-                        with var_col2:
-                            # Create variant bar chart with fixed height
-                            fig_var = create_variant_bar_chart(row)
-                            display_chart(fig_var) 
         
         with col2:
-            st.write("##### Trainer")
+            st.write("#### Trainer")
             type_cards = results[results['type'] == 'Trainer']
             
             if not type_cards.empty:
@@ -267,9 +308,8 @@ if 'analyze' in st.session_state and selected_option:
         # Import card renderer
         from card_renderer import render_deck_section, render_option_section
         
-        st.write(f"#### Core Cards", unsafe_allow_html=True)
-        col1, col2 = st.columns([2, 3])
-
+        col1, col2 = st.columns([1, 2])
+        
         with col1:
             # Render Pokemon cards
             render_deck_section(deck_info['Pokemon'], "Pokemon")
@@ -280,15 +320,15 @@ if 'analyze' in st.session_state and selected_option:
         
         # Display flexible slots section
         remaining = 20 - total_cards
-        st.write("<br>", unsafe_allow_html=True)
-        st.write(f"#### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+        st.write(f"### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+        st.write("Common choices include:", unsafe_allow_html=True)
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
         trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
         # Create two columns for flexible slots
-        flex_col1, flex_col2 = st.columns([2, 3])
+        flex_col1, flex_col2 = st.columns([1, 2])
         
         with flex_col1:
             # Render Pokemon options
@@ -298,41 +338,41 @@ if 'analyze' in st.session_state and selected_option:
             # Render Trainer options
             render_option_section(trainer_options, "Trainer Options")
     
-    # with tab3:
-    #     if not variant_df.empty:
-    #         st.write("This shows how players use different versions of the same card:")
+    with tab3:
+        if not variant_df.empty:
+            st.write("This shows how players use different versions of the same card:")
             
-    #         # Import variant renderer
-    #         from card_renderer import render_variant_cards
+            # Import variant renderer
+            from card_renderer import render_variant_cards
             
-    #         # Display variant analysis
-    #         for _, row in variant_df.iterrows():
-    #             with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card", expanded=True):
-    #                 # Extract set codes and numbers
-    #                 var1 = row['Var1']
-    #                 var2 = row['Var2']
+            # Display variant analysis
+            for _, row in variant_df.iterrows():
+                with st.expander(f"{row['Card Name']} - {row['Total Decks']} decks use this card", expanded=True):
+                    # Extract set codes and numbers
+                    var1 = row['Var1']
+                    var2 = row['Var2']
                     
-    #                 var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
-    #                 var1_num = var1.split('-')[-1]         # Just the last part
-    #                 var2_set = '-'.join(var2.split('-')[:-1])
-    #                 var2_num = var2.split('-')[-1]
+                    var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
+                    var1_num = var1.split('-')[-1]         # Just the last part
+                    var2_set = '-'.join(var2.split('-')[:-1])
+                    var2_num = var2.split('-')[-1]
                     
-    #                 # Create the 2-column layout
-    #                 col1, col2 = st.columns([1, 1])
+                    # Create the 2-column layout
+                    col1, col2 = st.columns([1, 1])
                     
-    #                 # Column 1: Both Variants side by side
-    #                 with col1:
-    #                     variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-    #                     st.markdown(variant_html, unsafe_allow_html=True)
+                    # Column 1: Both Variants side by side
+                    with col1:
+                        variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                        st.markdown(variant_html, unsafe_allow_html=True)
                     
-    #                 # Column 2: Bar Chart
-    #                 with col2:
-    #                     # Create variant bar chart with fixed height
-    #                     fig = create_variant_bar_chart(row)
-    #                     fig.update_layout(height=220)
-    #                     display_chart(fig)
-    #     else:
-    #         st.info("No cards with variants found in this deck.")
+                    # Column 2: Bar Chart
+                    with col2:
+                        # Create variant bar chart with fixed height
+                        fig = create_variant_bar_chart(row)
+                        fig.update_layout(height=220)
+                        display_chart(fig)
+        else:
+            st.info("No cards with variants found in this deck.")
     
     with tab4:
         # Main analysis data
