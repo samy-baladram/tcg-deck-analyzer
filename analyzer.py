@@ -83,20 +83,27 @@ def analyze_deck(deck_name, set_name="A3"):
     # Analyze variants
     variant_df = analyze_variants(grouped, df)
     
-    # Store energy types in session state for the archetype
-    if all_energy_types:
-        from energy_utils import store_energy_types
-        store_energy_types(deck_name, list(all_energy_types))
+    # Convert energy types to a list if not empty
+    energy_types_list = list(all_energy_types) if all_energy_types else []
     
-    # Save energy types to disk along with other components
+    # Store energy types in session state for the archetype
+    if energy_types_list:
+        from energy_utils import store_energy_types
+        store_energy_types(deck_name, energy_types_list)
+    
+    # Save to disk (make sure save_analyzed_deck_components is properly imported or available)
+    import cache_utils
+    
+    # Use only the parameters that the original function expects
     cache_utils.save_analyzed_deck_components(
         deck_name, 
         set_name, 
         grouped, 
         total_decks, 
-        variant_df, 
-        list(all_energy_types) if all_energy_types else None
+        variant_df
     )
+    
+    # Return the traditional tuple format for backward compatibility
     return grouped, total_decks, variant_df
     #return grouped, total_decks, variant_df, list(all_energy_types) if all_energy_types else []
 
