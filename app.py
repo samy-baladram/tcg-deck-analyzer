@@ -235,23 +235,22 @@ if 'analyze' in st.session_state and selected_option:
                         var1_num = var1.split('-')[-1]         # Just the last part
                         var2_set = '-'.join(var2.split('-')[:-1])
                         var2_num = var2.split('-')[-1]
+
+                        variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                        st.markdown(variant_html, unsafe_allow_html=True)
+                        # # # Create the 2-column layout
+                        # var_col1, var_col2 = st.columns([2, 5])
                         
-                        # # Create the 2-column layout
-                        var_col1, var_col2 = st.columns([2, 5])
+                        # # Column 1: Both Variants side by side
+                        # with var_col1:
+                        #     variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                        #     st.markdown(variant_html, unsafe_allow_html=True)
                         
-                        # Column 1: Both Variants side by side
-                        with var_col1:
-                            variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                            st.markdown(variant_html, unsafe_allow_html=True)
-                        
-                        # Column 2: Bar Chart
-                        with var_col2:
-                            # Create variant bar chart with fixed height
-                            fig_var = create_variant_bar_chart(row)
-                            display_chart(fig_var)
-        
-            with st.expander(f"Test", expanded=False):
-                st.write("Test")
+                        # # Column 2: Bar Chart
+                        # with var_col2:
+                        #     # Create variant bar chart with fixed height
+                        #     fig_var = create_variant_bar_chart(row)
+                        #     display_chart(fig_var)
         
         with col2:
             st.write("##### Trainer")
