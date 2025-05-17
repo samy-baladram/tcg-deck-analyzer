@@ -209,57 +209,24 @@ def render_sidebar():
     from energy_utils import initialize_energy_types
     initialize_energy_types()
     
+    # Get current month and year for display
+    from datetime import datetime
+    current_month_year = datetime.now().strftime("%B %Y")  # Format: May 2025
+    
     # Display performance data if it exists
     if not st.session_state.performance_data.empty:
         # Add disclaimer with update time in one line
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.sidebar.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem;">
-            <div>Best variants by win %, past 7 days</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.85rem;">
+            <div>Top performers from {current_month_year}</div>
             <div>Updated {performance_time_str}</div>
         </div>
+        <div style="font-size: 0.75rem; margin-bottom: 12px; color: #777;">
+            Based on tournament results from the current month
+        </div>
         """, unsafe_allow_html=True)
-        
-        # # Add debugging for energy types
-        # with st.sidebar.expander("Energy Types Debug", expanded=False):
-        #     st.write("### All Energy Types by Archetype:")
-            
-        #     # Show first energy combinations
-        #     if 'archetype_first_energy_combo' in st.session_state:
-        #         energy_data = []
-        #         for archetype, energy_list in st.session_state.archetype_first_energy_combo.items():
-        #             energy_data.append({
-        #                 'Archetype': archetype, 
-        #                 'First Energy Combo': energy_list
-        #             })
-                
-        #         if energy_data:
-        #             # Convert to DataFrame for nicer display
-        #             energy_df = pd.DataFrame(energy_data)
-        #             st.write(energy_df)
-        #         else:
-        #             st.write("No first energy combinations found yet.")
-        #     else:
-        #         st.write("No archetype_first_energy_combo in session state.")
-            
-        #     # Show all energy types
-        #     if 'archetype_energy_types' in st.session_state:
-        #         all_energy_data = []
-        #         for archetype, energy_set in st.session_state.archetype_energy_types.items():
-        #             all_energy_data.append({
-        #                 'Archetype': archetype, 
-        #                 'All Energy Types': list(energy_set)
-        #             })
-                
-        #         if all_energy_data:
-        #             # Convert to DataFrame for nicer display
-        #             all_energy_df = pd.DataFrame(all_energy_data)
-        #             st.write(all_energy_df)
-        #         else:
-        #             st.write("No energy types found yet.")
-        #     else:
-        #         st.write("No archetype_energy_types in session state.")
-        
+    
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
         
@@ -272,11 +239,11 @@ def render_sidebar():
         
         # Add expandable methodology section
         with st.sidebar.expander("🔍 About the Power Index"):
-            st.markdown("""
+            st.markdown(f"""
             #### Power Index: How We Rank the Best Decks
             
             **Where the Data Comes From**  
-            Our Power Index uses real tournament results from "Best Finishes" data of the past 7 days on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). This means we're looking at how decks actually perform in competitive play, not just how popular they are.
+            Our Power Index uses tournament results from {current_month_year} on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in competitive play, not just how popular they are.
             
             **What the Power Index Measures**  
             The Power Index is calculated as:
@@ -303,4 +270,6 @@ def render_sidebar():
             The Power Index gives you a clear picture of which decks are actually winning tournaments, not just which ones everyone is playing.
             """)
     else:
-        st.sidebar.info("No tournament performance data available")
+        from datetime import datetime
+        current_month_year = datetime.now().strftime("%B %Y")
+        st.sidebar.info(f"No tournament performance data available for {current_month_year}")
