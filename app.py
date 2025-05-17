@@ -16,7 +16,89 @@ st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="
 # Apply custom styles
 st.markdown("""
 <style>
-# Your existing styles here...
+/* Change primary color to blue */
+div[data-baseweb="select"] > div {
+    border-color: #00A0FF !important;
+}
+
+/* Selected option */
+div[data-baseweb="select"] [aria-selected="true"] {
+    background-color: #00A0FF !important;
+}
+
+/* Hover effect */
+div[role="option"]:hover {
+    background-color: #00A0FF !important;
+}
+
+/* Button primary color */
+.stButton > button {
+    border-color: #00A0FF;
+    color: #00A0FF;
+}
+
+.stButton > button:hover {
+    border-color: #00A0FF;
+    color: #00A0FF;
+}
+
+/* Progress bar */
+.stProgress > div > div > div > div {
+    background-color: #00A0FF;
+}
+
+/* TAB NAVIGATION STYLES */
+/* Active tab text color */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+    color: #00A0FF !important;
+}
+
+/* Tab hover with 50% transparency */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
+    color: rgba(72, 187, 255, 0.4) !important;
+    transition: color 0.3s;
+}
+
+/* SELECTED TAB UNDERLINE ONLY */
+/* This targets the moving underline indicator */
+.stTabs [data-baseweb="tab-highlight"] {
+    background-color: #00A0FF !important;
+}
+
+/* Remove any background color from tab list */
+.stTabs [data-baseweb="tab-list"] {
+    background-color: transparent !important;
+}
+
+/* Ensure only selected tab has the indicator */
+.stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
+    border-bottom: none !important;
+}
+
+/* Even more specific selector targeting the text */
+div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
+    font-size: 18px !important;
+    padding: 8px 16px !important;
+}
+
+/* Sidebar style for performance cards */
+.performance-card {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 160, 255, 0.3);
+}
+
+.positive-index {
+    color: #00A02A;
+    font-weight: bold;
+}
+
+.negative-index {
+    color: #FF4500;
+    font-weight: bold;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
