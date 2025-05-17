@@ -36,7 +36,7 @@ def get_or_analyze_full_deck(deck_name, set_name):
         return st.session_state.analyzed_deck_cache[cache_key]
     
     # Then check disk cache
-    cached_results, cached_total_decks, cached_variant_df = cache_utils.load_analyzed_deck_components(deck_name, set_name)
+    cached_results, cached_total_decks, cached_variant_df, cached_energy_types = cache_utils.load_analyzed_deck_components(deck_name, set_name)
     
     if cached_results is not None:
         print(f"Using cached data for {deck_name}")
@@ -52,8 +52,13 @@ def get_or_analyze_full_deck(deck_name, set_name):
             'deck_list': deck_list,
             'deck_info': deck_info,
             'total_cards': total_cards,
-            'options': options
+            'options': options,
+            'energy_types': cached_energy_types  # Add energy types
         }
+        
+        # Store energy types for this archetype
+        from energy_utils import store_energy_types
+        store_energy_types(deck_name, cached_energy_types)
         
         # Store in session cache
         st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
@@ -62,8 +67,8 @@ def get_or_analyze_full_deck(deck_name, set_name):
     # If not in any cache, analyze the deck
     print(f"No cache found for {deck_name}, analyzing")
     
-    # Removed the spinner here
-    results, total_decks, variant_df = analyze_deck(deck_name, set_name)
+    # Analyze the deck (now returns energy types too)
+    results, total_decks, variant_df, energy_types = analyze_deck(deck_name, set_name)
     deck_list, deck_info, total_cards, options = build_deck_template(results)
     
     # Create cache entry
@@ -74,14 +79,15 @@ def get_or_analyze_full_deck(deck_name, set_name):
         'deck_list': deck_list,
         'deck_info': deck_info,
         'total_cards': total_cards,
-        'options': options
+        'options': options,
+        'energy_types': energy_types  # Add energy types
     }
     
     # Store in session cache
     st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
     
     # Store in disk cache
-    cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df)
+    cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df, energy_types)
     
     return analyzed_data
 
@@ -93,14 +99,34 @@ def get_or_load_sample_deck(deck_name, set_name):
     if cache_key in st.session_state.sample_deck_cache:
         return st.session_state.sample_deck_cache[cache_key]
     
-    # Load sample deck - UPDATED to handle energy types
-    pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, set_name)
+    # Try to load energy types from analyzed deck cache first
+    energy_types = []
+    analyzed_key = f"full_deck_{deck_name}_{set_name}"
+    if analyzed_key in st.session_state.analyzed_deck_cache:
+        energy_types = st.session_state.analyzed_deck_cache[analyzed_key].get('energy_types', [])
     
-    # Store in cache - UPDATED to include energy types
+    # If no energy types in analyzed cache, try to load from disk
+    if not energy_types:
+        # Check if we have analyzed deck components on disk
+        _, _, _, disk_energy_types = cache_utils.load_analyzed_deck_components(deck_name, set_name)
+        energy_types = disk_energy_types
+    
+    # If still no energy types, load sample deck (which might have energy types)
+    pokemon_cards, trainer_cards, deck_energy_types = get_sample_deck_for_archetype(deck_name, set_name)
+    
+    # Use energy types from deck if available, otherwise use what we found earlier
+    if deck_energy_types:
+        energy_types = deck_energy_types
+    
+    # Store energy types in archetype mapping
+    from energy_utils import store_energy_types
+    store_energy_types(deck_name, energy_types)
+    
+    # Store in cache
     st.session_state.sample_deck_cache[cache_key] = {
         'pokemon_cards': pokemon_cards,
         'trainer_cards': trainer_cards,
-        'energy_types': energy_types  # NEW: Store energy types
+        'energy_types': energy_types
     }
     
     return st.session_state.sample_deck_cache[cache_key]
