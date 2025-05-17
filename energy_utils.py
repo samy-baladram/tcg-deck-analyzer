@@ -23,30 +23,39 @@ def get_archetype_from_deck_name(deck_name):
     """Extract archetype name from deck name"""
     return deck_name.split('-')[0] if '-' in deck_name else deck_name
     
+# In energy_utils.py - Modify get_energy_types_for_deck function
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, falling back to the first energy combo
-    found for the archetype or all energy types if needed
+    Get energy types for a deck, with improved fallback logic 
+    to use the most common energy combination for an archetype
     
     Returns:
         Tuple of (energy_types, is_typical)
     """
-    # If deck has energy types, use them
+    # If deck has energy types, use them (this is the most accurate)
     if deck_energy_types:
         return deck_energy_types, False
     
-    # Check if session state has the required dictionaries
-    if 'archetype_first_energy_combo' not in st.session_state or 'archetype_energy_types' not in st.session_state:
-        initialize_energy_types()
+    # Initialize if needed
+    if 'archetype_energy_combos' not in st.session_state:
+        st.session_state.archetype_energy_combos = {}
     
     # Get archetype name
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Try to get the first energy combo for this archetype
+    # Check for energy combinations first (most accurate representation)
+    if archetype in st.session_state.archetype_energy_combos and st.session_state.archetype_energy_combos[archetype]:
+        # Find most common combination for this archetype
+        combos = st.session_state.archetype_energy_combos[archetype]
+        if combos:
+            most_common_combo = max(combos.items(), key=lambda x: x[1])[0]
+            return list(most_common_combo), True
+    
+    # Fall back to first combo if available
     if archetype in st.session_state.archetype_first_energy_combo:
         return st.session_state.archetype_first_energy_combo[archetype], True
     
-    # Fall back to all energy types if no first combo available
+    # Last resort - use all energy types found
     if archetype in st.session_state.archetype_energy_types:
         return list(st.session_state.archetype_energy_types[archetype]), True
     
@@ -184,6 +193,7 @@ def load_energy_types_from_disk():
 def display_energy_stats(archetype):
     """
     Display energy combination statistics for an archetype
+    with improved visual indication of the most common combination
     
     Returns:
         HTML string with a table of energy combinations and counts
@@ -202,6 +212,7 @@ def display_energy_stats(archetype):
     
     # Sort combinations by count (descending)
     sorted_combos = sorted(combos.items(), key=lambda x: x[1], reverse=True)
+    most_common_count = sorted_combos[0][1] if sorted_combos else 0
     
     # Create HTML table
     table_html = """<div style="margin-top: 10px; margin-bottom: 15px;">
@@ -220,10 +231,14 @@ def display_energy_stats(archetype):
             energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
             energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:3px; vertical-align:middle;">'
         
+        # Highlight most common combination
+        is_most_common = (count == most_common_count)
+        row_style = 'background-color: rgba(0, 160, 255, 0.1);' if is_most_common else ''
+        
         # Add row to table
         table_html += f"""
-            <tr style="border-bottom: 1px solid #eee;">
-                <td style="text-align: left; padding: 4px;">{energy_html}</td>
+            <tr style="border-bottom: 1px solid #eee; {row_style}">
+                <td style="text-align: left; padding: 4px;">{energy_html}{' (most common)' if is_most_common else ''}</td>
                 <td style="text-align: right; padding: 4px;">{count}</td>
             </tr>"""
     
