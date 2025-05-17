@@ -2,11 +2,16 @@
 """Utility functions for handling energy types"""
 
 import streamlit as st
+from collections import Counter
 
 def initialize_energy_types():
     """Initialize energy types dictionary in session state if not exists"""
     if 'archetype_energy_types' not in st.session_state:
         st.session_state.archetype_energy_types = {}
+    
+    # Initialize energy combinations counter if not exists
+    if 'archetype_energy_combinations' not in st.session_state:
+        st.session_state.archetype_energy_combinations = {}
 
 def get_archetype_from_deck_name(deck_name):
     """Extract archetype name from deck name"""
@@ -16,8 +21,24 @@ def store_energy_types(deck_name, energy_types):
     """Store energy types for an archetype in the session state"""
     if not energy_types:
         return
-        
+    
+    # Limit to top 3 energy types max (TCG Pocket decks can have at most 3)
+    energy_types = energy_types[:3]
+    
+    # Create a frozen set (immutable) of the energy types for this deck
+    energy_set = frozenset(energy_types)
+    
+    # Get the archetype
     archetype = get_archetype_from_deck_name(deck_name)
+    
+    # Initialize archetype entry if not exists
+    if archetype not in st.session_state.archetype_energy_combinations:
+        st.session_state.archetype_energy_combinations[archetype] = Counter()
+    
+    # Increment the count for this specific energy combination
+    st.session_state.archetype_energy_combinations[archetype][energy_set] += 1
+    
+    # Also store individual energies for backwards compatibility
     if archetype not in st.session_state.archetype_energy_types:
         st.session_state.archetype_energy_types[archetype] = set()
     
@@ -26,7 +47,7 @@ def store_energy_types(deck_name, energy_types):
 
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, falling back to archetype energy types if needed
+    Get energy types for a deck, falling back to most common energy combination if needed
     
     Returns:
         Tuple of (energy_types, is_typical)
@@ -35,10 +56,24 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
     if deck_energy_types:
         return deck_energy_types, False
     
-    # Otherwise, try to get from archetype
+    # Otherwise, try to get the most common combination for this archetype
     archetype = get_archetype_from_deck_name(deck_name)
+    
+    # Check if we have energy combinations for this archetype
+    if archetype in st.session_state.archetype_energy_combinations:
+        combinations = st.session_state.archetype_energy_combinations[archetype]
+        
+        # If we have combinations, get the most common one
+        if combinations:
+            # Get the most common combination
+            most_common_combo, _ = combinations.most_common(1)[0]
+            return list(most_common_combo), True
+    
+    # If no combinations are found, fall back to the old method for compatibility
     if archetype in st.session_state.archetype_energy_types:
-        return list(st.session_state.archetype_energy_types[archetype]), True
+        all_energies = list(st.session_state.archetype_energy_types[archetype])
+        # Only return up to 3 energies (TCG Pocket limit)
+        return all_energies[:3], True
     
     # No energy types found
     return [], False
@@ -47,7 +82,7 @@ def render_energy_icons(energy_types, is_typical=False):
     """Generate HTML for energy icons"""
     if not energy_types:
         return ""
-        
+    
     energy_html = ""
     # Create image tags for each energy type
     for energy in energy_types:
