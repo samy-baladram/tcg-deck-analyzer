@@ -130,6 +130,7 @@ def store_energy_types(deck_name, energy_types):
     save_energy_types_to_disk()
 
 # Update save_energy_types_to_disk to include the combinations
+# In energy_utils.py - Update save_energy_types_to_disk function
 def save_energy_types_to_disk():
     """Save energy types to disk for persistence between sessions"""
     try:
@@ -144,6 +145,14 @@ def save_energy_types_to_disk():
                 k: {','.join(sorted(combo)): count for combo, count in v.items()} 
                 for k, v in st.session_state.get('archetype_energy_combos', {}).items()
             },
+            # Add per-deck energy data
+            'per_deck_energy': {
+                archetype: {
+                    deck_key: energy_list 
+                    for deck_key, energy_list in deck_data.items()
+                }
+                for archetype, deck_data in st.session_state.get('per_deck_energy', {}).items()
+            },
             'timestamp': datetime.now().isoformat()
         }
         
@@ -154,7 +163,7 @@ def save_energy_types_to_disk():
     except Exception as e:
         print(f"Error saving energy types to disk: {e}")
 
-# Update load_energy_types_from_disk to load combinations
+# In energy_utils.py - Update load_energy_types_from_disk function
 def load_energy_types_from_disk():
     """Load energy types from disk"""
     try:
@@ -180,6 +189,10 @@ def load_energy_types_from_disk():
                     for combo, count in combos.items()
                 }
             
+            # Load per-deck energy data
+            per_deck_data = data.get('per_deck_energy', {})
+            st.session_state.per_deck_energy = per_deck_data
+            
             print(f"Loaded energy types from disk: {len(st.session_state.archetype_first_energy_combo)} archetypes")
             
     except Exception as e:
@@ -188,6 +201,7 @@ def load_energy_types_from_disk():
         st.session_state.archetype_energy_types = {}
         st.session_state.archetype_first_energy_combo = {}
         st.session_state.archetype_energy_combos = {}
+        st.session_state.per_deck_energy = {}
 
 # Add this new function to display energy combo statistics
 def display_energy_stats(archetype):
