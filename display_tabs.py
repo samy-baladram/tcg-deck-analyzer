@@ -266,7 +266,7 @@ def display_metagame_tab():
     
     # Add explanation below the table
     st.markdown("""
-    ### Understanding the Metrics
+    ##### Understanding the Metrics
     
     **Win %**: Percentage of matches won out of total matches played.
     
