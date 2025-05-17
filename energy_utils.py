@@ -48,32 +48,19 @@ def get_archetype_from_deck_name(deck_name):
 # In energy_utils.py - Modify get_energy_types_for_deck function
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, prioritizing the most common combination
+    Get energy types for a deck, always using the most common combination
     
     Returns:
         Tuple of (energy_types, is_typical)
     """
-    # If deck has specific energy types, use them (most accurate)
+    # If deck has specific energy types, use them
     if deck_energy_types:
         return deck_energy_types, False
     
     # Get archetype name
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Check for energy combinations from per-deck data (most reliable)
-    if 'per_deck_energy' in st.session_state and archetype in st.session_state.per_deck_energy:
-        # Count occurrences of each combination
-        combo_counts = {}
-        for deck_energies in st.session_state.per_deck_energy[archetype].values():
-            combo_key = tuple(sorted(deck_energies))
-            combo_counts[combo_key] = combo_counts.get(combo_key, 0) + 1
-        
-        # Find the most common combination
-        if combo_counts:
-            most_common = max(combo_counts.items(), key=lambda x: x[1])[0]
-            return list(most_common), True
-    
-    # Fall back to stored combos if available
+    # Always use the most common energy combination from the stats
     if 'archetype_energy_combos' in st.session_state and archetype in st.session_state.archetype_energy_combos:
         combos = st.session_state.archetype_energy_combos[archetype]
         if combos:
@@ -81,11 +68,7 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
             most_common_combo = max(combos.items(), key=lambda x: x[1])[0]
             return list(most_common_combo), True
     
-    # Fall back to first energy combo if no combination stats yet
-    if 'archetype_first_energy_combo' in st.session_state and archetype in st.session_state.archetype_first_energy_combo:
-        return st.session_state.archetype_first_energy_combo[archetype], True
-    
-    # Last resort - use all energy types found
+    # If no combo stats, use all energy types as fallback
     if 'archetype_energy_types' in st.session_state and archetype in st.session_state.archetype_energy_types:
         return list(st.session_state.archetype_energy_types[archetype]), True
     
@@ -125,8 +108,7 @@ def track_energy_combination(deck_name, energy_types):
 # Update store_energy_types to also track combinations
 def store_energy_types(deck_name, energy_types):
     """
-    Store energy types for an archetype in the session state,
-    preserving the first energy combination found
+    Store energy types for an archetype in the session state
     """
     if not energy_types:
         return
@@ -134,9 +116,6 @@ def store_energy_types(deck_name, energy_types):
     # Initialize if doesn't exist
     if 'archetype_energy_types' not in st.session_state:
         st.session_state.archetype_energy_types = {}
-    
-    if 'archetype_first_energy_combo' not in st.session_state:
-        st.session_state.archetype_first_energy_combo = {}
     
     # Get archetype name
     archetype = get_archetype_from_deck_name(deck_name)
@@ -148,13 +127,12 @@ def store_energy_types(deck_name, energy_types):
     for energy in energy_types:
         st.session_state.archetype_energy_types[archetype].add(energy)
     
-    # Store as first energy combination if not already present
-    if archetype not in st.session_state.archetype_first_energy_combo and energy_types:
-        # Store a copy of the list to prevent modification
-        st.session_state.archetype_first_energy_combo[archetype] = list(energy_types)
-    
     # Track this combination for statistics
     track_energy_combination(deck_name, energy_types)
+    
+    # Track per-deck energy
+    if 'deck_num' in st.session_state:
+        track_per_deck_energy(deck_name, st.session_state.deck_num, energy_types)
     
     # Save to disk
     save_energy_types_to_disk()
@@ -170,12 +148,10 @@ def save_energy_types_to_disk():
         # Create a serializable representation of the data
         data_to_save = {
             'archetype_energy_types': {k: list(v) for k, v in st.session_state.archetype_energy_types.items()},
-            'archetype_first_energy_combo': st.session_state.archetype_first_energy_combo,
             'archetype_energy_combos': {
                 k: {','.join(sorted(combo)): count for combo, count in v.items()} 
                 for k, v in st.session_state.get('archetype_energy_combos', {}).items()
             },
-            # Add per-deck energy data
             'per_deck_energy': {
                 archetype: {
                     deck_key: energy_list 
@@ -206,9 +182,6 @@ def load_energy_types_from_disk():
                 k: set(v) for k, v in data.get('archetype_energy_types', {}).items()
             }
             
-            # Load first energy combinations
-            st.session_state.archetype_first_energy_combo = data.get('archetype_first_energy_combo', {})
-            
             # Load energy combinations statistics
             combo_data = data.get('archetype_energy_combos', {})
             st.session_state.archetype_energy_combos = {}
@@ -223,13 +196,12 @@ def load_energy_types_from_disk():
             per_deck_data = data.get('per_deck_energy', {})
             st.session_state.per_deck_energy = per_deck_data
             
-            print(f"Loaded energy types from disk: {len(st.session_state.archetype_first_energy_combo)} archetypes")
+            print(f"Loaded energy types from disk: {len(st.session_state.archetype_energy_types)} archetypes")
             
     except Exception as e:
         print(f"Error loading energy types from disk: {e}")
         # Initialize empty if loading fails
         st.session_state.archetype_energy_types = {}
-        st.session_state.archetype_first_energy_combo = {}
         st.session_state.archetype_energy_combos = {}
         st.session_state.per_deck_energy = {}
 
@@ -301,7 +273,7 @@ def render_energy_icons(energy_types, is_typical=False):
         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
     
     # Add note if these are typical energy types
-    archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(typical)</span>' if is_typical else ""
+    archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
     
     energy_display = f"""<div style="margin-bottom: 10px;">
         <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
