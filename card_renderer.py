@@ -218,7 +218,7 @@ render_variant_cards = CardRenderer.render_variant_cards
 
 # Final solution: Add this function to card_renderer.py
 
-def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
+def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=45):
     """
     Render a condensed version of a deck for the sidebar.
     Cards are displayed all together with duplicates shown.
