@@ -10,6 +10,7 @@ from utils import is_flexible_core, calculate_display_usage, format_card_display
 from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
 
+# In analyzer.py - Modify analyze_deck function
 def analyze_deck(deck_name, set_name="A3"):
     """Main analysis function for a deck archetype"""
     # Get all decklist URLs
@@ -22,6 +23,7 @@ def analyze_deck(deck_name, set_name="A3"):
     # Extract cards from all decks
     all_cards = []
     all_energy_types = set()  # We'll collect energy types here
+    deck_energy_data = []     # Track energy types per deck
     
     for i, url in enumerate(urls):
         progress_bar.progress((i + 1) / len(urls))
@@ -36,6 +38,16 @@ def analyze_deck(deck_name, set_name="A3"):
             # Add energy types to the set
             if energy_types:
                 all_energy_types.update(energy_types)
+                
+                # Track this specific deck's energy types
+                from energy_utils import track_per_deck_energy
+                track_per_deck_energy(deck_name, i, energy_types)
+                
+                # Also save for display
+                deck_energy_data.append({
+                    'deck_num': i,
+                    'energy_types': sorted(energy_types)
+                })
         else:
             # Old format or no energy types
             cards = cards_result
@@ -101,9 +113,16 @@ def analyze_deck(deck_name, set_name="A3"):
         variant_df
     )
     
+    # Store the deck energy data in session state for debugging
+    if deck_energy_data:
+        if 'deck_energy_data' not in st.session_state:
+            st.session_state.deck_energy_data = {}
+        st.session_state.deck_energy_data[deck_name] = deck_energy_data
+    
     # Return the traditional tuple format for backward compatibility
     #return grouped, total_decks, variant_df
     return grouped, total_decks, variant_df, list(all_energy_types) if all_energy_types else []
+    
 
 def build_deck_template(analysis_df):
     """Build a deck template from analysis results"""
