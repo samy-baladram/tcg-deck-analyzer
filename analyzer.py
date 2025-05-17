@@ -37,8 +37,9 @@ def analyze_deck(deck_name, set_name="A3"):
             cards, energy_types = cards_result
             # Add energy types to the set
             if energy_types:
-                all_energy_types.update(energy_types)
-                
+                #all_energy_types.update(energy_types)
+                st.session_state.deck_num = i  # Add this line
+        
                 # Track this specific deck's energy types
                 from energy_utils import track_per_deck_energy
                 track_per_deck_energy(deck_name, i, energy_types)
