@@ -384,11 +384,6 @@ if not st.session_state.performance_data.empty:
             
             # Display the deck
             st.markdown(deck_html, unsafe_allow_html=True)
-            
-            # Button to analyze this deck in the main view
-            if st.button("Analyze Deck Archetype", key=f"analyze_{deck['deck_name']}"):
-                st.session_state.deck_to_analyze = deck['deck_name']
-                st.rerun()
 else:
     st.sidebar.info("No tournament performance data available")
 
