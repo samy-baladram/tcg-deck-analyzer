@@ -369,7 +369,7 @@ if not st.session_state.performance_data.empty:
     """, unsafe_allow_html=True)
     
     # Load and display the selected deck
-    with st.sidebar.spinner("Loading deck..."):
+    with st.spinner("Loading deck..."):
         # Get the deck data (from cache if possible)
         deck_data = get_or_analyze_deck(selected_deck['deck_name'], selected_deck['set'])
         
