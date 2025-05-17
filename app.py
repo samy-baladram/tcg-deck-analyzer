@@ -237,7 +237,7 @@ if 'analyze' in st.session_state and selected_option:
                         var2_num = var2.split('-')[-1]
                         
                         # Create the 2-column layout
-                        var_col1, var_col2 = st.columns([1, 2])
+                        var_col1, var_col2 = st.columns([2, 5])
                         
                         # Column 1: Both Variants side by side
                         with var_col1:
