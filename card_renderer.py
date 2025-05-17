@@ -193,7 +193,7 @@ class CardRenderer:
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
                 {
-                    f'<img src="{CardConfig.IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:180px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    f'<img src="{CardConfig.IMAGE_BASE_URL}/{var1_set}/{var1_set}_{formatted_num1}_EN.webp" style="max-height:170px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
                     if var1_set and formatted_num1 else
                     f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                 }
@@ -202,7 +202,7 @@ class CardRenderer:
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
                 {
-                    f'<img src="{CardConfig.IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:180px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    f'<img src="{CardConfig.IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" style="max-height:170px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
                     if var2_set and formatted_num2 else
                     f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                 }
