@@ -296,6 +296,7 @@ def track_per_deck_energy(deck_name, deck_num, energy_types):
     st.session_state.per_deck_energy[archetype][deck_key] = list(energy_types)
 
 # Add to energy_utils.py
+# In energy_utils.py
 def display_detailed_energy_table(deck_name):
     """
     Display a detailed table of energy types found in each deck for an archetype
@@ -308,63 +309,78 @@ def display_detailed_energy_table(deck_name):
     """
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Check if we have per-deck energy data
-    if 'per_deck_energy' not in st.session_state or archetype not in st.session_state.per_deck_energy:
-        return "<p>No detailed energy data available for this archetype.</p>"
+    # Check if we have energy data first
+    if 'archetype_energy_combos' not in st.session_state or archetype not in st.session_state.archetype_energy_combos:
+        return "<p>No detailed energy data available for this archetype. Try analyzing the deck to collect energy data.</p>"
     
-    # Get all unique energy types for this archetype
-    all_energies = set()
-    for energies in st.session_state.per_deck_energy[archetype].values():
-        all_energies.update(energies)
+    # Check for per-deck energy data
+    has_per_deck_data = ('per_deck_energy' in st.session_state and 
+                         archetype in st.session_state.per_deck_energy and 
+                         st.session_state.per_deck_energy[archetype])
     
-    # Sort energy types alphabetically for consistent display
-    all_energies = sorted(all_energies)
-    
-    # Create the table header
-    table_html = """
-    <div style="margin-top: 15px;">
-        <h5 style="margin-bottom: 10px;">Detailed Energy Analysis</h5>
-        <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
-            <tr style="border-bottom: 1px solid #ddd;">
-                <th style="text-align: left; padding: 4px;">Deck #</th>
-    """
-    
-    # Add energy type headers
-    for energy in all_energies:
-        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-        table_html += f'<th style="text-align: center; padding: 4px;"><img src="{energy_url}" alt="{energy}" style="height:16px;"></th>'
-    
-    table_html += "</tr>"
-    
-    # Add a row for each deck
-    for deck_key, energies in sorted(st.session_state.per_deck_energy[archetype].items()):
-        # Extract deck number from key
-        deck_num = deck_key.split('-')[-1]
+    # If we have detailed deck data, show the deck-by-deck table
+    if has_per_deck_data:
+        # Get all unique energy types for this archetype
+        all_energies = set()
+        for energies in st.session_state.per_deck_energy[archetype].values():
+            all_energies.update(energies)
         
-        table_html += f"""<tr style="border-bottom: 1px solid #eee;">
-                <td style="text-align: left; padding: 4px;">{deck_num}</td>"""
+        # Sort energy types alphabetically for consistent display
+        all_energies = sorted(all_energies)
         
-        # For each possible energy type, check if this deck has it
+        # Create the table header
+        table_html = """
+        <div style="margin-top: 15px;">
+            <h5 style="margin-bottom: 10px;">Detailed Energy Analysis by Deck</h5>
+            <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <th style="text-align: left; padding: 4px;">Deck #</th>
+        """
+        
+        # Add energy type headers
         for energy in all_energies:
-            has_energy = energy in energies
-            check_mark = "✓" if has_energy else ""
-            bg_color = "rgba(0, 160, 255, 0.1)" if has_energy else "transparent"
-            
-            table_html += f'<td style="text-align: center; padding: 4px; background-color: {bg_color};">{check_mark}</td>'
+            energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+            table_html += f'<th style="text-align: center; padding: 4px;"><img src="{energy_url}" alt="{energy}" style="height:16px;"></th>'
         
         table_html += "</tr>"
-    
-    # Close the table
-    table_html += """
-        </table>
-    </div>
-    """
+        
+        # Add a row for each deck
+        for deck_key, energies in sorted(st.session_state.per_deck_energy[archetype].items()):
+            # Extract deck number from key
+            deck_num = deck_key.split('-')[-1]
+            
+            table_html += f"""
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="text-align: left; padding: 4px;">{deck_num}</td>
+            """
+            
+            # For each possible energy type, check if this deck has it
+            for energy in all_energies:
+                has_energy = energy in energies
+                check_mark = "✓" if has_energy else ""
+                bg_color = "rgba(0, 160, 255, 0.1)" if has_energy else "transparent"
+                
+                table_html += f'<td style="text-align: center; padding: 4px; background-color: {bg_color};">{check_mark}</td>'
+            
+            table_html += "</tr>"
+        
+        # Close the table
+        table_html += """
+            </table>
+        </div>
+        """
+    else:
+        # If no per-deck data, show a message
+        table_html = """
+        <div style="margin-top: 15px;">
+            <p>No per-deck energy data available. Only energy combination statistics are shown.</p>
+        </div>
+        """
     
     # Calculate and show energy combination statistics
     combo_stats = {}
-    for energies in st.session_state.per_deck_energy[archetype].values():
-        combo = tuple(sorted(energies))
-        combo_stats[combo] = combo_stats.get(combo, 0) + 1
+    if archetype in st.session_state.archetype_energy_combos:
+        combo_stats = st.session_state.archetype_energy_combos[archetype]
     
     # Sort combinations by frequency
     sorted_combos = sorted(combo_stats.items(), key=lambda x: x[1], reverse=True)
@@ -378,9 +394,10 @@ def display_detailed_energy_table(deck_name):
                 <th style="text-align: left; padding: 4px;">Energy Combination</th>
                 <th style="text-align: right; padding: 4px; width: 80px;">Count</th>
                 <th style="text-align: right; padding: 4px; width: 80px;">Percentage</th>
-            </tr>"""
+            </tr>
+    """
     
-    total_decks = len(st.session_state.per_deck_energy[archetype])
+    total_decks = sum(combo_stats.values()) if combo_stats else 0
     
     for combo, count in sorted_combos:
         # Generate energy icons
@@ -391,13 +408,22 @@ def display_detailed_energy_table(deck_name):
         
         percentage = (count / total_decks * 100) if total_decks > 0 else 0
         
-        table_html += f"""<tr style="border-bottom: 1px solid #eee;">
-                <td style="text-align: left; padding: 4px;">{energy_html}</td>
+        # Highlight the most common combination
+        is_most_common = combo == sorted_combos[0][0] if sorted_combos else False
+        row_style = 'background-color: rgba(0, 160, 255, 0.1);' if is_most_common else ''
+        
+        table_html += f"""
+            <tr style="border-bottom: 1px solid #eee; {row_style}">
+                <td style="text-align: left; padding: 4px;">{energy_html}{' <strong>(most common)</strong>' if is_most_common else ''}</td>
                 <td style="text-align: right; padding: 4px;">{count}</td>
                 <td style="text-align: right; padding: 4px;">{percentage:.1f}%</td>
-            </tr>"""
+            </tr>
+        """
     
-    table_html += """</table></div>"""
+    table_html += """
+        </table>
+    </div>
+    """
     
     return table_html
     
