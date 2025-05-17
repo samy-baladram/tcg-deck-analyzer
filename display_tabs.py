@@ -6,6 +6,8 @@ from formatters import format_deck_name
 from image_processor import create_deck_header_images
 from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
 from analyzer import build_deck_template
+from card_renderer import render_deck_section, render_option_section
+from energy_utils import get_archetype_from_deck_name, render_energy_icons
 
 def display_deck_header(deck_info, results):
     """Display the deck header with image"""
@@ -78,9 +80,6 @@ def display_card_usage_tab(results, total_decks, variant_df):
 
 def display_deck_template_tab(results):
     """Display the Deck Template tab"""
-    # Import card renderer
-    from card_renderer import render_deck_section, render_option_section
-    from energy_utils import get_archetype_from_deck_name, render_energy_icons
     
     # Use the updated function that returns deck_info
     deck_list, deck_info, total_cards, options = build_deck_template(results)
