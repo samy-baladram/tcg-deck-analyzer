@@ -47,40 +47,64 @@ def store_energy_types(deck_name, energy_types):
 
 def get_energy_types_for_deck(deck_name, deck_energy_types):
     """
-    Get energy types for a deck, falling back to most common energy combination if needed
+    Get energy types for a deck, with fallback options to ensure something is displayed
     
     Returns:
         Tuple of (energy_types, is_typical)
     """
-    # If deck has energy types, use them
+    # If deck has energy types, use them directly (most reliable)
     if deck_energy_types:
         return deck_energy_types, False
     
-    # Otherwise, try to get the most common combination for this archetype
     archetype = get_archetype_from_deck_name(deck_name)
     
-    # Check if we have energy combinations for this archetype
+    # Try approach 1: Most common specific combination for this archetype
     if archetype in st.session_state.archetype_energy_combinations:
         combinations = st.session_state.archetype_energy_combinations[archetype]
         
-        # If we have combinations, get the most common one
         if combinations:
             # Filter out empty combinations
             valid_combinations = [(combo, count) for combo, count in combinations.items() if combo]
             
-            # If we have valid combinations, get the most common one
             if valid_combinations:
                 most_common_combo, _ = max(valid_combinations, key=lambda x: x[1])
                 return list(most_common_combo), True
     
-    # If no combinations are found, fall back to the old method for compatibility
+    # Try approach 2: All energy types for this archetype (up to 3)
     if archetype in st.session_state.archetype_energy_types:
         all_energies = list(st.session_state.archetype_energy_types[archetype])
-        # Only return up to 3 energies (TCG Pocket limit)
         if all_energies:
             return all_energies[:3], True
     
-    # No energy types found
+    # Try approach 3: Find related archetypes by name prefix (first 3-5 chars)
+    prefix = archetype[:min(5, len(archetype))]
+    related_archetypes = [a for a in st.session_state.archetype_energy_types.keys() 
+                          if a.startswith(prefix) and a != archetype]
+    
+    # Collect all energy types from related archetypes
+    all_related_energies = set()
+    for related in related_archetypes:
+        if related in st.session_state.archetype_energy_types:
+            all_related_energies.update(st.session_state.archetype_energy_types[related])
+    
+    if all_related_energies:
+        return list(all_related_energies)[:3], True
+    
+    # Try approach 4: If all else fails, return the 3 most common energy types overall
+    if st.session_state.archetype_energy_types:
+        # Count occurrences of each energy type across all archetypes
+        energy_counter = Counter()
+        for archetype_energies in st.session_state.archetype_energy_types.values():
+            for energy in archetype_energies:
+                energy_counter[energy] += 1
+        
+        # Get the 3 most common energy types
+        if energy_counter:
+            common_energies = [energy for energy, _ in energy_counter.most_common(3)]
+            if common_energies:
+                return common_energies, True
+    
+    # Absolute last resort: No energy data anywhere, return empty list
     return [], False
 
 def render_energy_icons(energy_types, is_typical=False):
