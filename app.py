@@ -164,3 +164,15 @@ st.markdown("""<div style="text-align: center; font-size: 0.8em; color: #777; ma
     Limitless TCG's image repository. This tool is intended for educational and analytical purposes only.</p>
     <p>This is an independent, fan-made project and is not affiliated with Limitless TCG, The Pokémon Company, 
     or any other official entities.</p></div>""", unsafe_allow_html=True)
+
+# At the very end of app.py, after footer
+st.markdown("""
+<script>
+// Trigger card hover setup after everything is loaded
+setTimeout(function() {
+    if (typeof setupCardHover === 'function') {
+        setupCardHover();
+    }
+}, 2000);
+</script>
+""", unsafe_allow_html=True)
