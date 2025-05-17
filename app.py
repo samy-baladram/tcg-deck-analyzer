@@ -88,9 +88,15 @@ div[role="option"]:hover {
     background-color: rgba(0, 160, 255, 0.1) !important;
 }
 
-/* Expander chevron color - only blue on hover */
-.stExpander > details > summary:hover svg {
+/* Target the chevron specifically - most specific selector possible */
+.stExpander > details > summary:hover span[data-testid="stExpanderChevron"] svg {
     color: #00A0FF !important;
+    fill: #00A0FF !important;
+}
+
+/* Target both the path and the svg element */
+.stExpander > details > summary:hover span[data-testid="stExpanderChevron"] svg path {
+    stroke: #00A0FF !important;
 }
 
 /* Remove default chevron color override */
