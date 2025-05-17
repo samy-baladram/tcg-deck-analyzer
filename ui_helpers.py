@@ -218,8 +218,14 @@ def render_sidebar():
     
     # Display performance data if it exists
     if not st.session_state.performance_data.empty:
+        # Add disclaimer with update time in one line
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-        st.sidebar.write(f"Data updates hourly. Last updated: {performance_time_str}")
+        st.sidebar.markdown(f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; color: #666;">
+            <div>Top win rates, past 7 days</div>
+            <div>Updated {performance_time_str}</div>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
@@ -227,5 +233,41 @@ def render_sidebar():
         # Render each deck one by one
         for idx, deck in top_decks.iterrows():
             render_deck_in_sidebar(deck)
+        
+        # Add a divider
+        st.sidebar.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid #eee;'>", unsafe_allow_html=True)
+        
+        # Add expandable methodology section
+        with st.sidebar.expander("🔍 About the Power Index"):
+            st.markdown("""
+            #### Power Index: How We Rank the Best Decks
+            
+            **Where the Data Comes From**  
+            Our Power Index uses real tournament results from "Best Finishes" data of the past 7 days on Limitless TCG. This means we're looking at how decks actually perform in competitive play, not just how popular they are.
+            
+            **What the Power Index Measures**  
+            The Power Index is calculated as:
+            """)
+            
+            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) ÷ √(Total Games)", language="")
+            
+            st.markdown("""
+            This formula captures three key things:
+            * How many more wins than losses a deck achieves
+            * The value of ties (counted as 75% of a win)
+            * Statistical confidence (more games = more reliable data)
+            
+            **Why It's Better Than Other Methods**
+            * **Better than Win Rate**: Accounts for both winning and avoiding losses
+            * **Better than Popularity**: Measures actual performance, not just what people choose to play
+            * **Better than Record Alone**: Balances impressive results against sample size
+            
+            **Reading the Numbers**
+            * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
+            * **Positive vs Negative**: Positive numbers mean winning more than losing
+            * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
+            
+            The Power Index gives you a clear picture of which decks are actually winning tournaments, not just which ones everyone is playing.
+            """)
     else:
         st.sidebar.info("No tournament performance data available")
