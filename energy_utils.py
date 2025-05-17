@@ -68,9 +68,9 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
             most_common_combo = max(combos.items(), key=lambda x: x[1])[0]
             return list(most_common_combo), True
     
-    # If no combo stats, use all energy types as fallback
-    if 'archetype_energy_types' in st.session_state and archetype in st.session_state.archetype_energy_types:
-        return list(st.session_state.archetype_energy_types[archetype]), True
+    # # If no combo stats, use all energy types as fallback
+    # if 'archetype_energy_types' in st.session_state and archetype in st.session_state.archetype_energy_types:
+    #     return list(st.session_state.archetype_energy_types[archetype]), True
     
     # No energy types found
     return [], False
