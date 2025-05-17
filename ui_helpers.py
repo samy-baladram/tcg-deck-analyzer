@@ -189,13 +189,13 @@ def render_deck_in_sidebar(deck, expanded=False):
             st.markdown(energy_html, unsafe_allow_html=True)
         
         # Display performance stats with colored power index inside
-        st.markdown(f"""
-        <div style="margin-bottom: 10px; font-size: 0.9rem;">
-            <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
-            <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-            <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+        # st.markdown(f"""
+        # <div style="margin-bottom: 10px; font-size: 0.9rem;">
+        #     <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
+        #     <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+        #     <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
+        # </div>
+        # """, unsafe_allow_html=True)
         
         # Render deck view
         from card_renderer import render_sidebar_deck
@@ -221,7 +221,7 @@ def render_sidebar():
         # Add disclaimer with update time in one line
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.sidebar.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; color: #666;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem;">
             <div>Top win rates, past 7 days</div>
             <div>Updated {performance_time_str}</div>
         </div>
@@ -235,7 +235,7 @@ def render_sidebar():
             render_deck_in_sidebar(deck)
         
         # Add a divider
-        st.sidebar.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid #eee;'>", unsafe_allow_html=True)
+        st.sidebar.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
         
         # Add expandable methodology section
         with st.sidebar.expander("🔍 About the Power Index"):
@@ -243,7 +243,7 @@ def render_sidebar():
             #### Power Index: How We Rank the Best Decks
             
             **Where the Data Comes From**  
-            Our Power Index uses real tournament results from "Best Finishes" data of the past 7 days on Limitless TCG. This means we're looking at how decks actually perform in competitive play, not just how popular they are.
+            Our Power Index uses real tournament results from "Best Finishes" data of the past 7 days on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET). This means we're looking at how decks actually perform in competitive play, not just how popular they are.
             
             **What the Power Index Measures**  
             The Power Index is calculated as:
