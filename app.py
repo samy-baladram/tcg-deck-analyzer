@@ -248,7 +248,10 @@ if 'analyze' in st.session_state and selected_option:
                         with var_col2:
                             # Create variant bar chart with fixed height
                             fig_var = create_variant_bar_chart(row)
-                            display_chart(fig_var)      
+                            display_chart(fig_var)
+        
+            with st.expander(f"Test", expanded=False):
+                st.write("Test")
         
         with col2:
             st.write("##### Trainer")
