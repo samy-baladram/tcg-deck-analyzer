@@ -307,16 +307,19 @@ def get_or_analyze_full_deck(deck_name, set_name):
     # First check session cache
     cache_key = f"full_deck_{deck_name}_{set_name}"
     if cache_key in st.session_state.analyzed_deck_cache:
+        print(f"Found {deck_name} in session cache")
         return st.session_state.analyzed_deck_cache[cache_key]
     
     # Then check disk cache
     disk_cached = cache_utils.load_analyzed_deck(deck_name, set_name)
     if disk_cached is not None:
+        print(f"Found {deck_name} in disk cache")
         # Store in session cache for faster access
         st.session_state.analyzed_deck_cache[cache_key] = disk_cached
         return disk_cached
     
     # If not in any cache, analyze the deck
+    print(f"Analyzing {deck_name} (not found in cache)")
     with st.spinner(f"Analyzing {deck_name}..."):
         results, total_decks, variant_df = analyze_deck(deck_name, set_name)
         deck_list, deck_info, total_cards, options = build_deck_template(results)
@@ -335,8 +338,9 @@ def get_or_analyze_full_deck(deck_name, set_name):
         # Store in session cache
         st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
         
-        # Store in disk cache
-        cache_utils.save_analyzed_deck(deck_name, set_name, analyzed_data)
+        # Store in disk cache - add explicit debug output
+        saved = cache_utils.save_analyzed_deck(deck_name, set_name, analyzed_data)
+        print(f"Saved {deck_name} to disk cache: {saved}")
         
         return analyzed_data
 
