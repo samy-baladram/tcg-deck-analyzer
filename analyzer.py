@@ -20,7 +20,14 @@ def analyze_deck(deck_name, set_name="A3"):
     # Extract cards from all decks
     all_cards = []
     all_energy_types = set()  # We'll collect energy types here
-    
+
+    if all_energy_types:
+        archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
+        
+        # Make sure energy_utils is imported
+        from energy_utils import store_energy_types
+        store_energy_types(deck_name, list(all_energy_types))
+        
     for i, url in enumerate(urls):
         progress_bar.progress((i + 1) / len(urls))
         status_text.text(f"Processing deck {i+1}/{len(urls)}...")
