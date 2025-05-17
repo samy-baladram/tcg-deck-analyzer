@@ -76,9 +76,7 @@ def get_energy_types_for_deck(deck_name, deck_energy_types):
     return [], False
 
 def track_energy_combination(deck_name, energy_types):
-    """
-    Track unique energy combinations and their counts for each archetype
-    """
+    """Track unique energy combinations and their counts for each deck"""
     if not energy_types:
         return
     
@@ -86,14 +84,14 @@ def track_energy_combination(deck_name, energy_types):
     if 'archetype_energy_combos' not in st.session_state:
         st.session_state.archetype_energy_combos = {}
     
-    # Get archetype name
-    archetype = get_archetype_from_deck_name(deck_name)
+    # Get archetype (full deck name as per your design)
+    archetype = deck_name
     
     # Initialize archetype entry if needed
     if archetype not in st.session_state.archetype_energy_combos:
         st.session_state.archetype_energy_combos[archetype] = {}
     
-    # Sort the energy types to ensure consistent combo keys
+    # Create a tuple from the energy types for use as a key
     combo_key = tuple(sorted(energy_types))
     
     # Increment count for this combo
@@ -102,7 +100,7 @@ def track_energy_combination(deck_name, energy_types):
     else:
         st.session_state.archetype_energy_combos[archetype][combo_key] = 1
     
-    # Save the updated combinations to disk
+    # Save to disk
     save_energy_types_to_disk()
 
 # Update store_energy_types to also track combinations
@@ -282,28 +280,27 @@ def render_energy_icons(energy_types, is_typical=False):
 
 # Add to energy_utils.py
 def track_per_deck_energy(deck_name, deck_num, energy_types):
-    """
-    Track energy types for each individual deck
-    
-    Parameters:
-        deck_name: Name of the deck archetype
-        deck_num: Unique identifier for this specific deck instance
-        energy_types: List of energy types found in this deck
-    """
+    """Track energy types for each individual deck"""
     # Initialize if needed
     if 'per_deck_energy' not in st.session_state:
         st.session_state.per_deck_energy = {}
     
-    # Get archetype
-    archetype = get_archetype_from_deck_name(deck_name)
+    # Get archetype (full deck name as per your design)
+    archetype = deck_name
     
     # Initialize archetype entry if needed
     if archetype not in st.session_state.per_deck_energy:
         st.session_state.per_deck_energy[archetype] = {}
     
+    # Ensure energy_types is sorted for consistency
+    sorted_energy = sorted(energy_types)
+    
     # Store energy for this specific deck
     deck_key = f"{deck_name}-{deck_num}"
-    st.session_state.per_deck_energy[archetype][deck_key] = list(energy_types)
+    st.session_state.per_deck_energy[archetype][deck_key] = sorted_energy
+    
+    # Also update energy combos table directly
+    track_energy_combination(deck_name, sorted_energy)
 
 # Add to energy_utils.py
 def display_detailed_energy_table(deck_name):
