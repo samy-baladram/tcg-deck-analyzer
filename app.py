@@ -342,7 +342,15 @@ if not st.session_state.performance_data.empty:
     deck_title = f"{top_deck['displayed_name']} <span class='{power_class}'>({power_index})</span>"
     
     # Create an expander for the deck
-    with st.sidebar.expander(deck_title, expanded=True):
+    with st.sidebar.expander(f"{top_deck['displayed_name']} ({power_index})", expanded=True):
+        # Then add the colored power index inside the expander
+        st.markdown(f"""
+        <div style="margin-bottom: 10px; font-size: 0.9rem;">
+            <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
+            <p style="margin-bottom: 5px;"><strong>Record:</strong> {top_deck['total_wins']}-{top_deck['total_losses']}-{top_deck['total_ties']}</p>
+            <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {top_deck['tournaments_played']}</p>
+        </div>
+        """, unsafe_allow_html=True)
         # Display performance stats
         st.markdown(f"""
         <div style="margin-bottom: 10px; font-size: 0.9rem;">
