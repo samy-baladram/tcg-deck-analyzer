@@ -180,36 +180,67 @@ def display_metagame_tab():
 
 # Add this to display_tabs.py - Add a new tab for energy debugging
 
+# In display_tabs.py (add this new function)
 def display_energy_debug_tab(deck_info):
-    """Display detailed energy type information for debugging"""
-    from energy_utils import display_detailed_energy_table, debug_energy_combinations
+    """Display the Energy Debug tab with detailed analysis"""
+    from energy_utils import get_archetype_from_deck_name, display_detailed_energy_table
     
-    st.write("### Energy Type Debugging")
+    st.write("### Energy Type Analysis")
     
     deck_name = deck_info['deck_name']
+    archetype = get_archetype_from_deck_name(deck_name)
     
-    # Display detailed energy table
-    energy_table_html = display_detailed_energy_table(deck_name)
-    st.markdown(energy_table_html, unsafe_allow_html=True)
+    # Add explanatory text
+    st.write(f"""
+    This tab provides detailed analysis of energy types found in the "{archetype}" archetype decks.
+    It shows which energy types are present in each sample deck and summarizes the most common combinations.
+    """)
     
-    # Provide expanders with raw data for debugging
+    # Add energy visualization table (using the function we created earlier)
+    st.markdown(display_detailed_energy_table(deck_name), unsafe_allow_html=True)
+    
+    # Raw data expander
     with st.expander("Raw Energy Storage Data", expanded=False):
-        # Show archetype_energy_types
-        if 'archetype_energy_types' in st.session_state:
-            archetype = get_archetype_from_deck_name(deck_name)
-            st.write("### All Energy Types by Archetype:")
-            st.write({k: list(v) for k, v in st.session_state.archetype_energy_types.items() if k == archetype})
+        # Show all stored energy data for this archetype
+        col1, col2 = st.columns(2)
         
-        # Show archetype_first_energy_combo
-        if 'archetype_first_energy_combo' in st.session_state:
-            archetype = get_archetype_from_deck_name(deck_name)
-            st.write("### First Energy Combo by Archetype:")
-            st.write({k: v for k, v in st.session_state.archetype_first_energy_combo.items() if k == archetype})
+        with col1:
+            st.write("##### All Energy Types")
+            if 'archetype_energy_types' in st.session_state and archetype in st.session_state.archetype_energy_types:
+                st.write(f"Archetype: {archetype}")
+                st.write(f"Energy Types: {sorted(list(st.session_state.archetype_energy_types[archetype]))}")
+            else:
+                st.write("No stored energy types data")
+                
+            st.write("##### First Energy Combo")
+            if 'archetype_first_energy_combo' in st.session_state and archetype in st.session_state.archetype_first_energy_combo:
+                st.write(f"Archetype: {archetype}")
+                st.write(f"First Combo: {st.session_state.archetype_first_energy_combo[archetype]}")
+            else:
+                st.write("No first energy combo data")
         
-        # Show archetype_energy_combos
-        if 'archetype_energy_combos' in st.session_state:
-            archetype = get_archetype_from_deck_name(deck_name)
-            st.write("### Energy Combo Stats by Archetype:")
-            if archetype in st.session_state.archetype_energy_combos:
-                combo_data = {','.join(combo): count for combo, count in st.session_state.archetype_energy_combos[archetype].items()}
-                st.write(combo_data)
+        with col2:
+            st.write("##### Energy Combinations")
+            if 'archetype_energy_combos' in st.session_state and archetype in st.session_state.archetype_energy_combos:
+                combos = st.session_state.archetype_energy_combos[archetype]
+                if combos:
+                    # Convert to more readable format
+                    combo_data = [{"Combination": ", ".join(combo), "Count": count} 
+                                  for combo, count in sorted(combos.items(), key=lambda x: x[1], reverse=True)]
+                    st.dataframe(combo_data)
+                else:
+                    st.write("No energy combination data")
+            else:
+                st.write("No energy combination data")
+                
+    # Add a utility section to help with debugging
+    with st.expander("Energy Debugging Utilities", expanded=False):
+        st.write("##### Force Refresh Energy Data")
+        if st.button("Reload Energy Data"):
+            # This will force re-analysis of the deck's energy types
+            if 'analyzed_deck_cache' in st.session_state:
+                # Remove cached analysis for this deck
+                cache_key = f"full_deck_{deck_info['deck_name']}_{deck_info['set_name']}"
+                if cache_key in st.session_state.analyzed_deck_cache:
+                    del st.session_state.analyzed_deck_cache[cache_key]
+                    st.success(f"Removed cached analysis for {deck_info['deck_name']}. Refresh the page to reanalyze.")
