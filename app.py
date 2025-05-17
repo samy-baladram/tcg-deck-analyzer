@@ -203,16 +203,38 @@ if 'deck_to_analyze' not in st.session_state:
     
 # Top navigation bar - single row dropdown
 # Filter and display popular decks
-popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
-
-# Create deck options with formatted names and store mapping
-deck_display_names = []
-deck_name_mapping = {}  # Maps display name to original name
-
-for _, row in popular_decks.iterrows():
-    display_name = format_deck_option(row['deck_name'], row['share'])
-    deck_display_names.append(display_name)
-    deck_name_mapping[display_name] = row['deck_name']
+if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+    # Get top 30 decks from performance data
+    top_performing_decks = st.session_state.performance_data.head(30)
+    
+    # Create dropdown options with the same format as sidebar
+    deck_display_names = []
+    deck_name_mapping = {}  # Maps display name to original name
+    
+    for _, deck in top_performing_decks.iterrows():
+        power_index = round(deck['power_index'], 2)
+        # Format: "Deck Name (Power Index)"
+        display_name = f"{deck['displayed_name']} ({power_index})"
+        deck_display_names.append(display_name)
+        deck_name_mapping[display_name] = {
+            'deck_name': deck['deck_name'],
+            'set': deck['set']
+        }
+else:
+    # Fallback to original method if performance data isn't available
+    popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
+    
+    # Create deck options with formatted names and store mapping
+    deck_display_names = []
+    deck_name_mapping = {}  # Maps display name to original name
+    
+    for _, row in popular_decks.iterrows():
+        display_name = format_deck_option(row['deck_name'], row['share'])
+        deck_display_names.append(display_name)
+        deck_name_mapping[display_name] = {
+            'deck_name': row['deck_name'],
+            'set': row['set']
+        }
 
 # Store mapping in session state
 st.session_state.deck_name_mapping = deck_name_mapping
@@ -224,27 +246,41 @@ time_str = calculate_time_ago(st.session_state.fetch_time)
 current_set = "-"  # Default
 if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
     selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
-    deck_name = st.session_state.deck_name_mapping[selected_deck_display]
-    selected_row = popular_decks[popular_decks['deck_name'] == deck_name].iloc[0]
-    current_set = selected_row['set'].upper()
+    deck_info = st.session_state.deck_name_mapping[selected_deck_display]
+    current_set = deck_info['set'].upper()
 
 label_text = f"Current Set: {current_set}"
-help_text = f"Showing decks with ≥{MIN_META_SHARE}% meta share from Limitless TCG. Updated {time_str}."
+help_text = f"Showing top performing decks. Updated {time_str}."
 
 # Use on_change callback to handle selection
 def on_deck_change():
     selection = st.session_state.deck_select
     if selection:
         st.session_state.selected_deck_index = deck_display_names.index(selection)
+        
+        # Set the deck to analyze
+        deck_info = st.session_state.deck_name_mapping[selection]
+        st.session_state.analyze = {
+            'deck_name': deck_info['deck_name'],
+            'set_name': deck_info['set'],
+        }
     else:
         st.session_state.selected_deck_index = None
 
 # Add this right before the selectbox declaration
 if st.session_state.get('deck_to_analyze'):
     # Find the matching display name and index
-    for i, (display_name, name) in enumerate([(d, deck_name_mapping[d]) for d in deck_display_names]):
-        if name == st.session_state.deck_to_analyze:
+    for i, display_name in enumerate(deck_display_names):
+        deck_info = deck_name_mapping[display_name]
+        if deck_info['deck_name'] == st.session_state.deck_to_analyze:
             st.session_state.selected_deck_index = i
+            
+            # Set the deck to analyze
+            st.session_state.analyze = {
+                'deck_name': deck_info['deck_name'],
+                'set_name': deck_info['set'],
+            }
+            
             # Clear the deck_to_analyze for next time
             st.session_state.deck_to_analyze = None
             break
@@ -258,6 +294,7 @@ selected_option = st.selectbox(
     key="deck_select",
     on_change=on_deck_change
 )
+
 
 # Auto-analyze when selection is made
 if selected_option:
