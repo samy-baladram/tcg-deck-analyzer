@@ -157,7 +157,7 @@ def aggregate_card_usage(force_update=False):
             performance_df = st.session_state.performance_data
         
         # Get top 5 decks to analyze
-        top_decks = performance_df.head(5)
+        top_decks = performance_df.head(1)
         
         # Store all card data
         all_cards = []
