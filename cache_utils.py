@@ -79,7 +79,7 @@ def load_tournament_performance_data():
     # Return empty dataframe and old timestamp if loading fails
     return pd.DataFrame(), datetime.now() - timedelta(hours=2)
 
-def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, variant_df):
+def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, variant_df, energy_types=None):
     """Save the three main deck analysis components to disk"""
     try:
         # Ensure directory exists
@@ -99,6 +99,11 @@ def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, 
         # Save variant_df if it's not empty
         if not variant_df.empty:
             variant_df.to_csv(f"{base_path}_variants.csv", index=False)
+        
+        # Save energy_types if provided
+        if energy_types:
+            with open(f"{base_path}_energy.json", 'w') as f:
+                json.dump(energy_types, f)
         
         # Save a marker file with timestamp
         with open(f"{base_path}_timestamp.txt", 'w') as f:
@@ -139,7 +144,7 @@ def load_analyzed_deck_components(deck_name, set_name):
         results_path = f"{base_path}_results.csv"
         if not os.path.exists(results_path):
             logger.info(f"No results file found at {results_path}")
-            return None, 0, pd.DataFrame()
+            return None, 0, pd.DataFrame(), []
         
         # Load results
         results_df = pd.read_csv(results_path)
@@ -163,12 +168,23 @@ def load_analyzed_deck_components(deck_name, set_name):
             variant_df = pd.read_csv(variant_path)
             logger.info(f"Loaded variants from {variant_path}")
         
-        return results_df, total_decks, variant_df
+        # Load energy_types if it exists
+        energy_types = []
+        energy_path = f"{base_path}_energy.json"
+        if os.path.exists(energy_path):
+            try:
+                with open(energy_path, 'r') as f:
+                    energy_types = json.load(f)
+                logger.info(f"Loaded energy types for {deck_name}")
+            except:
+                logger.warning(f"Error loading energy types from {energy_path}")
+        
+        return results_df, total_decks, variant_df, energy_types
     except Exception as e:
         logger.error(f"Error loading deck components: {e}")
         import traceback
         logger.error(traceback.format_exc())
-        return None, 0, pd.DataFrame()
+        return None, 0, pd.DataFrame(), []
 
 def load_analyzed_deck(deck_name, set_name):
     """Legacy function to maintain compatibility"""
