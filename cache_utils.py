@@ -250,3 +250,69 @@ def load_analyzed_deck_simple(deck_name, set_name):
     except Exception as e:
         print(f"Error loading results: {e}")
         return None
+
+def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, variant_df):
+    """Save the three main deck analysis components to disk"""
+    try:
+        # Ensure directory exists
+        os.makedirs(ANALYZED_DECKS_DIR, exist_ok=True)
+        
+        # Create a safe filename base
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}")
+        
+        # Save each component
+        results_df.to_csv(f"{base_path}_results.csv", index=False)
+        
+        # Save total_decks to a text file
+        with open(f"{base_path}_total_decks.txt", 'w') as f:
+            f.write(str(total_decks))
+        
+        # Save variant_df if it's not empty
+        if not variant_df.empty:
+            variant_df.to_csv(f"{base_path}_variants.csv", index=False)
+        
+        # Save a marker file with timestamp
+        with open(f"{base_path}_timestamp.txt", 'w') as f:
+            f.write(datetime.now().isoformat())
+        
+        return True
+    except Exception as e:
+        print(f"Error saving deck components: {e}")
+        return False
+
+def load_analyzed_deck_components(deck_name, set_name):
+    """Load the three main deck analysis components from disk"""
+    try:
+        # Create a safe filename base
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}")
+        
+        # Check if results file exists
+        results_path = f"{base_path}_results.csv"
+        if not os.path.exists(results_path):
+            return None, 0, pd.DataFrame()
+        
+        # Load results
+        results_df = pd.read_csv(results_path)
+        
+        # Load total_decks
+        total_decks = 0
+        try:
+            with open(f"{base_path}_total_decks.txt", 'r') as f:
+                total_decks = int(f.read().strip())
+        except:
+            # If can't load, try to get from results
+            if 'deck_num' in results_df.columns:
+                total_decks = len(results_df['deck_num'].unique())
+        
+        # Load variant_df if it exists
+        variant_df = pd.DataFrame()
+        variant_path = f"{base_path}_variants.csv"
+        if os.path.exists(variant_path):
+            variant_df = pd.read_csv(variant_path)
+        
+        return results_df, total_decks, variant_df
+    except Exception as e:
+        print(f"Error loading deck components: {e}")
+        return None, 0, pd.DataFrame()
