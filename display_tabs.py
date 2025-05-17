@@ -250,7 +250,7 @@ def display_metagame_tab():
     st.dataframe(
         final_df,
         use_container_width=True,
-        height=800,  # Set the height in pixels - adjust as needed
+        height=1000,  # Set the height in pixels - adjust as needed
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
