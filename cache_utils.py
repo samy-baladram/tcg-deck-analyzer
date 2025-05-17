@@ -214,3 +214,39 @@ def load_card_usage_data():
     
     # Return empty dataframe and old timestamp if loading fails
     return pd.DataFrame(), datetime.now() - timedelta(days=1)
+
+def save_analyzed_deck_simple(deck_name, set_name, results_df):
+    """Save just the results DataFrame to disk"""
+    try:
+        # Ensure directory exists
+        os.makedirs(ANALYZED_DECKS_DIR, exist_ok=True)
+        
+        # Create a safe filename
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        cache_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}_results.csv")
+        
+        # Save as CSV (simpler than JSON for DataFrames)
+        results_df.to_csv(cache_path, index=False)
+        
+        return True
+    except Exception as e:
+        print(f"Error saving results: {e}")
+        return False
+
+def load_analyzed_deck_simple(deck_name, set_name):
+    """Load just the results DataFrame from disk"""
+    try:
+        # Create a safe filename
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        cache_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}_results.csv")
+        
+        # Check if file exists
+        if os.path.exists(cache_path):
+            # Load CSV
+            results_df = pd.read_csv(cache_path)
+            return results_df
+        else:
+            return None
+    except Exception as e:
+        print(f"Error loading results: {e}")
+        return None
