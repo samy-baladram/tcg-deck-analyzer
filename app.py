@@ -88,14 +88,17 @@ div[role="option"]:hover {
     background-color: rgba(0, 160, 255, 0.1) !important;
 }
 
-.stExpander:hover [data-testid="stExpanderToggleIcon"] svg {
-    color: #00A0FF !important;
+/* Target just the chevron fill on hover without affecting stroke/outline */
+.stExpander > details > summary:hover svg path {
     fill: #00A0FF !important;
+    stroke-width: 0 !important; /* Remove any stroke outline */
 }
 
-/* Remove default chevron color override */
-.stExpander svg {
-    /* No styling here to keep original color */
+/* Backup method targeting the entire SVG */
+.stExpander > details > summary:hover [data-testid="stExpanderToggleIcon"] svg {
+    color: #00A0FF !important;
+    fill: #00A0FF !important;
+    stroke: none !important; /* Explicitly remove stroke */
 }
 
 /* Remove left border highlight */
