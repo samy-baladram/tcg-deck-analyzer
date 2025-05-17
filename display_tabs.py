@@ -217,9 +217,6 @@ def display_metagame_tab():
     # Create a cleaned, displayable version of the data
     display_df = performance_df.copy()
     
-    # Add a column to show if this is the current deck (for highlighting)
-    display_df['is_current'] = display_df['deck_name'] == current_deck_name
-    
     # Calculate win rate for easier understanding
     display_df['win_rate'] = round((display_df['total_wins'] / (display_df['total_wins'] + display_df['total_losses'] + display_df['total_ties'])) * 100, 1)
     
@@ -228,48 +225,38 @@ def display_metagame_tab():
     display_df['power_index'] = display_df['power_index'].round(2)
     
     # Add an indicator emoji for the current deck
-    display_df['deck_display'] = display_df.apply(
-        lambda row: f"➡️ {row['displayed_name']}" if row['is_current'] else row['displayed_name'], 
+    display_df['displayed_name'] = display_df.apply(
+        lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
         axis=1
     )
     
     # Select and rename columns for display
     display_cols = {
-        'deck_display': 'Deck',
+        'displayed_name': 'Deck',
         'win_rate': 'Win %',
         'total_wins': 'Wins',
         'total_losses': 'Losses',
         'total_ties': 'Ties',
         'tournaments_played': 'Best Finish Entries',
         'share': 'Meta Share %',
-        'power_index': 'Power Index',
-        'is_current': 'is_current'  # Keep this for highlighting
+        'power_index': 'Power Index'
     }
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
-    # Create a styling function
-    def highlight_current(row):
-        if row['is_current']:
-            return ['background-color: rgba(0, 160, 255, 0.2)'] * (len(row) - 1)  # -1 to exclude is_current column
-        else:
-            return [''] * (len(row) - 1)  # -1 to exclude is_current column
-    
-    # Apply styling
-    styled_df = final_df.style.apply(highlight_current, axis=1)
-    
-    # Hide the is_current column
-    styled_df = styled_df.hide_columns(['is_current'])
-    
     # Display the table
     st.dataframe(
-        styled_df,
+        final_df,
         use_container_width=True,
         height=1000,  # Set the height in pixels
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
-            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
+            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
+            "Deck": st.column_config.TextColumn(
+                "Deck",
+                help="Deck archetype - arrow (➡️) indicates currently selected deck"
+            )
         },
         hide_index=True
     )
@@ -277,7 +264,11 @@ def display_metagame_tab():
     # Show note about current deck if one is selected
     if current_deck_name:
         selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0] if len(display_df[display_df['deck_name'] == current_deck_name]) > 0 else "Unknown"
-        st.info(f"➡️ Currently analyzing: {selected_deck_name}")
+        
+        # Create a visual highlight with a colored box and emoji
+        st.markdown(f"""<div style="background-color: rgba(0, 160, 255, 0.1); padding: 10px; border-radius: 5px; border-left: 4px solid #00A0FF; margin-top: 10px; margin-bottom: 20px;">
+            <span style="font-weight: bold;">➡️ Currently analyzing:</span> {selected_deck_name.replace('➡️ ', '')}
+        </div>""", unsafe_allow_html=True)
     
     # Add explanation below the table
     st.markdown("""
