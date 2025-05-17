@@ -214,7 +214,7 @@ if 'analyze' in st.session_state and selected_option:
             if not type_cards.empty:
                 fig = create_usage_bar_chart(type_cards, 'Pokemon')
                 display_chart(fig)
-                st.text(f"{total_decks} decks analyzed")
+                #st.text(f"{total_decks} decks analyzed")
             else:
                 st.info("No Pokemon cards found")
 
@@ -247,9 +247,9 @@ if 'analyze' in st.session_state and selected_option:
                         # Column 2: Bar Chart
                         with var_col2:
                             # Create variant bar chart with fixed height
-                            fig = create_variant_bar_chart(row)
-                            fig.update_layout(height=220)
-                            display_chart(fig)      
+                            fig_var = create_variant_bar_chart(row)
+                            fig_var.update_layout(height=120)
+                            display_chart(fig_var)      
         
         with col2:
             st.write("#### Trainer")
