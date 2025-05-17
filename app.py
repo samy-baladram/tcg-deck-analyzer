@@ -119,46 +119,19 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Function to initialize performance data in session state
-def init_performance_data():
-    """Initialize performance data if not in session state"""
-    if 'performance_data' not in st.session_state or st.session_state.get('refresh_performance', False):
-        with st.spinner("Analyzing recent tournament performance..."):
-            st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-            st.session_state.performance_fetch_time = datetime.now()
-            st.session_state.refresh_performance = False
-
 # Initialize session state and fetch deck list on first load
 if 'deck_list' not in st.session_state:
     with st.spinner("Fetching deck list..."):
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
 
-# Initialize performance data
-init_performance_data()
-
 # Also ensure fetch_time exists
 if 'fetch_time' not in st.session_state:
     st.session_state.fetch_time = datetime.now()
 
-# Also ensure performance_fetch_time exists
-if 'performance_fetch_time' not in st.session_state:
-    st.session_state.performance_fetch_time = datetime.now()
-
 # Initialize selected deck if not exists
 if 'selected_deck_index' not in st.session_state:
     st.session_state.selected_deck_index = None
-
-# Add this right after your other session state initializations
-if 'selected_deck_from_sidebar' not in st.session_state:
-    st.session_state.selected_deck_from_sidebar = None
-
-# Add these initializations after other session state initializations
-if 'deck_select' not in st.session_state:
-    st.session_state.deck_select = None
-
-if 'analyze' not in st.session_state:
-    st.session_state.analyze = None
 
 # Add this with your other session state initializations
 if 'deck_to_analyze' not in st.session_state:
@@ -196,22 +169,11 @@ help_text = f"Showing decks with ≥{MIN_META_SHARE}% meta share from Limitless 
 
 # Use on_change callback to handle selection
 def on_deck_change():
-    # Check if a selection was made from the sidebar
-    if st.session_state.get('selected_deck_from_sidebar'):
-        deck_name = st.session_state.selected_deck_from_sidebar
-        # Find the matching display name
-        for display_name, name in deck_name_mapping.items():
-            if name == deck_name:
-                st.session_state.selected_deck_index = deck_display_names.index(display_name)
-                st.session_state.selected_deck_from_sidebar = None  # Reset for next time
-                break
+    selection = st.session_state.deck_select
+    if selection:
+        st.session_state.selected_deck_index = deck_display_names.index(selection)
     else:
-        # Handle normal dropdown selection
-        selection = st.session_state.deck_select
-        if selection:
-            st.session_state.selected_deck_index = deck_display_names.index(selection)
-        else:
-            st.session_state.selected_deck_index = None
+        st.session_state.selected_deck_index = None
 
 # Add this right before the selectbox declaration
 if st.session_state.get('deck_to_analyze'):
@@ -250,42 +212,47 @@ if selected_option:
 
 # Sidebar content - Tournament Performance
 st.sidebar.title("Tournament Performance")
-performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-st.sidebar.write(f"Recent tournament results (updated {performance_time_str})")
 
-if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-    # Display performance data in sidebar
-    for _, deck in st.session_state.performance_data.head(10).iterrows():
-        # Format power index to 2 decimal places
-        power_index = round(deck['power_index'], 2)
-        
-        # Determine the color class based on power index
-        power_class = "positive-index" if power_index > 0 else "negative-index"
-        
-        # Create an expander for each deck
-        with st.sidebar.expander(f"{deck['displayed_name']}"):
-            # Display power index with color
-            st.markdown(f"""
-            <div class="performance-card">
-                <p>Power Index: <span class="{power_class}">{power_index}</span></p>
-                <p>Record: {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-                <p>Tournaments: {deck['tournaments_played']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+# Add a button to analyze tournament data
+if st.sidebar.button("Analyze Recent Tournament Results", use_container_width=True):
+    with st.sidebar.spinner("Analyzing recent tournament performance..."):
+        st.session_state.performance_data = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+        st.session_state.performance_fetch_time = datetime.now()
+
+# Display performance data if it exists
+if 'performance_data' in st.session_state and 'performance_fetch_time' in st.session_state:
+    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+    st.sidebar.write(f"Last updated: {performance_time_str}")
+    
+    if not st.session_state.performance_data.empty:
+        # Display performance data in sidebar
+        for _, deck in st.session_state.performance_data.head(10).iterrows():
+            # Format power index to 2 decimal places
+            power_index = round(deck['power_index'], 2)
             
-            # Add a button to analyze this deck
-            # Modify this part in your code where the sidebar button is clicked
-            if st.button(f"Analyze {deck['displayed_name']}", key=f"analyze_{deck['deck_name']}"):
-                # Store the deck name to analyze
-                st.session_state.deck_to_analyze = deck['deck_name']
-                st.rerun()
+            # Determine the color class based on power index
+            power_class = "positive-index" if power_index > 0 else "negative-index"
+            
+            # Create an expander for each deck
+            with st.sidebar.expander(f"{deck['displayed_name']}"):
+                # Display power index with color
+                st.markdown(f"""
+                <div class="performance-card">
+                    <p>Power Index: <span class="{power_class}">{power_index}</span></p>
+                    <p>Record: {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
+                    <p>Tournaments: {deck['tournaments_played']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Add a deck selection option
+                if st.button("Select for Analysis", key=f"select_{deck['deck_name']}"):
+                    # Store the deck name to analyze
+                    st.session_state.deck_to_analyze = deck['deck_name']
+                    st.rerun()
+    else:
+        st.sidebar.info("No tournament performance data available")
 else:
-    st.sidebar.info("No tournament performance data available")
-
-# Add refresh button for performance data
-if st.sidebar.button("Refresh Performance Data"):
-    st.session_state.refresh_performance = True
-    st.rerun()
+    st.sidebar.info("Click the button above to analyze recent tournament results")
 
 # Main content area - simplified
 if 'analyze' in st.session_state and selected_option:
