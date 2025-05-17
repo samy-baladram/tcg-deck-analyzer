@@ -89,7 +89,7 @@ div[role="option"]:hover {
 }
 
 .stExpander > details > summary:hover svg path {
-    color: #00A0FF !important;
+    fill: #00A0FF !important;
 }
 
 /* Remove default chevron color override */
