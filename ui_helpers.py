@@ -159,6 +159,7 @@ def create_deck_selector():
     
     return selected_option
 
+# In ui_helpers.py - Updated render_deck_in_sidebar function
 def render_deck_in_sidebar(deck, expanded=False):
     """Render a single deck in the sidebar"""
     # Format power index to 2 decimal places
@@ -174,7 +175,7 @@ def render_deck_in_sidebar(deck, expanded=False):
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
         
         # Get and store energy types
-        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons, display_energy_stats, get_archetype_from_deck_name
+        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons
         
         # Get raw energy types and store them
         raw_energy_types = sample_deck.get('energy_types', [])
@@ -188,20 +189,7 @@ def render_deck_in_sidebar(deck, expanded=False):
             energy_html = render_energy_icons(energy_types, is_typical)
             st.markdown(energy_html, unsafe_allow_html=True)
             
-            # Display energy statistics for this archetype
-            archetype = get_archetype_from_deck_name(deck_name)
-            energy_stats_html = display_energy_stats(archetype)
-            if energy_stats_html:
-                st.markdown(energy_stats_html, unsafe_allow_html=True)
-        
-        # Display performance stats with colored power index inside
-        # st.markdown(f"""
-        # <div style="margin-bottom: 10px; font-size: 0.9rem;">
-        #     <p style="margin-bottom: 5px;">Power Index: <span class="{power_class}">{power_index}</span></p>
-        #     <p style="margin-bottom: 5px;"><strong>Record:</strong> {deck['total_wins']}-{deck['total_losses']}-{deck['total_ties']}</p>
-        #     <p style="margin-bottom: 5px;"><strong>Tournaments:</strong> {deck['tournaments_played']}</p>
-        # </div>
-        # """, unsafe_allow_html=True)
+            # Removed energy statistics table display
         
         # Render deck view
         from card_renderer import render_sidebar_deck
