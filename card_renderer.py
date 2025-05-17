@@ -8,8 +8,8 @@ class CardConfig:
     WIDTH = 100
     GAP = 8
     MARGIN = 8
-    BORDER_RADIUS = 4.5
-    BORDER_COLOR = "rgba(102, 102, 102, 0.5)"
+    BORDER_RADIUS = 5
+    BORDER_COLOR = "rgba(102, 102, 102, 0.4)"
     FALLBACK_HEIGHT = 140
     PERCENTAGE_FONT_SIZE = 14
     IMAGE_BASE_URL = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"
