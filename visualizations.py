@@ -181,7 +181,8 @@ def create_variant_bar_chart(variant_data):
     # Update layout with fixed height and larger y-axis labels
     fig.update_layout(
         barmode='stack',
-        height=220,  # Fixed height to match images
+        height=max(VAR_CHART_MIN_HEIGHT, len(labels) * VAR_CHART_ROW_HEIGHT),
+        #height=220,  # Fixed height to match images
         margin=dict(l=0, r=0, t=10, b=10),
         xaxis_title="",
         xaxis=dict(
