@@ -222,7 +222,7 @@ def render_sidebar():
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.sidebar.markdown(f"""
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem;">
-            <div>Top performers by archetype, past 7 days</div>
+            <div>Best variants by win %, past 7 days</div>
             <div>Updated {performance_time_str}</div>
         </div>
         """, unsafe_allow_html=True)
