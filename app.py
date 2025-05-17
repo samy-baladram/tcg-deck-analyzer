@@ -235,18 +235,6 @@ if 'analyze' in st.session_state and selected_option:
                         var1_num = var1.split('-')[-1]         # Just the last part
                         var2_set = '-'.join(var2.split('-')[:-1])
                         var2_num = var2.split('-')[-1]
-
-                        st.markdown("""
-                        <style>
-                        .variant-container {
-                            margin-bottom: -50px; 
-                            padding-bottom: 0;
-                        }
-                        </style>
-                        """, unsafe_allow_html=True)
-                        
-                        # Wrap content in a div with the custom class
-                        st.markdown('<div class="variant-container">', unsafe_allow_html=True)
                         
                         # # Create the 2-column layout
                         var_col1, var_col2 = st.columns([2, 5])
@@ -260,9 +248,7 @@ if 'analyze' in st.session_state and selected_option:
                         with var_col2:
                             # Create variant bar chart with fixed height
                             fig_var = create_variant_bar_chart(row)
-                            display_chart(fig_var)
-                            
-                        st.markdown('</div>', unsafe_allow_html=True)    
+                            display_chart(fig_var) 
         
         with col2:
             st.write("##### Trainer")
