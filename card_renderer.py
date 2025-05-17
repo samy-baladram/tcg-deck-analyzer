@@ -217,8 +217,7 @@ render_option_section = CardRenderer.render_option_section
 render_variant_cards = CardRenderer.render_variant_cards
 
 # Final solution: Add this function to card_renderer.py
-
-def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=45):
+def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
     """
     Render a condensed version of a deck for the sidebar.
     Cards are displayed all together with duplicates shown.
@@ -232,37 +231,38 @@ def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=45):
         HTML string for rendering the deck
     """
     # Create a single grid for all cards
-    grid = CardGrid(card_width=card_width, gap=3, margin_bottom=4)
+    all_cards = []
     
-    # Process pokemon cards first
+    # Add all cards to a single list with duplicates based on the amount
     for card in pokemon_cards:
-        # Get count of cards
-        count = card.get('count', 1)
-        # Add the card to the grid 'count' times
+        count = card.get('amount', 1)
         for _ in range(count):
-            grid.add_card(
-                card_name=card.get('name', card.get('card_name', '')),
-                set_code=card.get('set', ''),
-                num=card.get('num', ''),
-                count=1  # Add one at a time
-            )
+            all_cards.append({
+                'card_name': card.get('card_name', ''),
+                'set': card.get('set', ''),
+                'num': card.get('num', ''),
+                'count': 1  # Each card is counted individually now
+            })
             
-    # Then process trainer cards
     for card in trainer_cards:
-        # Get count of cards
-        count = card.get('count', 1)
-        # Add the card to the grid 'count' times
+        count = card.get('amount', 1)
         for _ in range(count):
-            grid.add_card(
-                card_name=card.get('name', card.get('card_name', '')),
-                set_code=card.get('set', ''),
-                num=card.get('num', ''),
-                count=1  # Add one at a time
-            )
+            all_cards.append({
+                'card_name': card.get('card_name', ''),
+                'set': card.get('set', ''),
+                'num': card.get('num', ''),
+                'count': 1  # Each card is counted individually now
+            })
+    
+    # Create the grid with all cards
+    grid = CardGrid(card_width=card_width, gap=3, margin_bottom=4)
+    grid.add_cards_from_dict(all_cards, repeat_by_count=False)  # No need to repeat now
     
     # Generate HTML for the entire deck
-    html = f"""<div style="margin-bottom: 8px;">
+    html = f"""
+    <div style="margin-bottom: 8px;">
         {grid.render()}
-    </div>"""
+    </div>
+    """
     
     return html
