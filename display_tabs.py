@@ -80,31 +80,36 @@ def display_deck_template_tab(results):
     """Display the Deck Template tab"""
     # Import card renderer
     from card_renderer import render_deck_section, render_option_section
+    from energy_utils import get_archetype_from_deck_name, render_energy_icons
     
     # Use the updated function that returns deck_info
     deck_list, deck_info, total_cards, options = build_deck_template(results)
     
     # Initialize empty energy types list
     energy_types = []
+    is_typical = False
     
     # Look for energy_types in the session state for this deck
     if 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
-        archetype = deck_name.split('-')[0] if '-' in deck_name else deck_name
+        archetype = get_archetype_from_deck_name(deck_name)
         
         # Try to get energy from session state archetype mapping
         if hasattr(st.session_state, 'archetype_energy_types') and archetype in st.session_state.archetype_energy_types:
             energy_types = list(st.session_state.archetype_energy_types[archetype])
+            is_typical = True
     
-    # Create energy type HTML if energy types found
-    energy_html = ""
+    # Create header
     if energy_types:
+        # Render energy icons for header
+        energy_html = ""
         for energy in energy_types:
             energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
             energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
         
         # Create header with energy types
-        core_cards_header = f"""#### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html})</span>"""
+        archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(typical)</span>' if is_typical else ""
+        core_cards_header = f"""#### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html}{archetype_note})</span>"""
     else:
         # Just "Core Cards" if no energy found
         core_cards_header = "#### Core Cards"
@@ -112,6 +117,7 @@ def display_deck_template_tab(results):
     # Display the header
     st.write(core_cards_header, unsafe_allow_html=True)
     
+    # Rest of the function...
     # Display cards in columns
     col1, col2 = st.columns([2, 3])
     
