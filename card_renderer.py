@@ -285,190 +285,92 @@ def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
 
 def add_card_hover_effect():
     """
-    Add JavaScript and CSS for card hover effect with debug logging.
-    Call this once at the start of your app to add the hover functionality.
+    Add a simple JavaScript for card hover effect.
+    This is a minimal implementation to get basic functionality working.
     """
     hover_js = """
     <script>
-    // Log when script loads
-    console.log("Card hover script loaded");
-    
-    // Function to set up card hover effects
-    function setupCardHover() {
-        console.log("Setting up card hover effects");
+    // Simple version - just creates a popup and attaches directly to images
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Simple card hover script loaded');
         
-        // Add visible notification (will show in top-right corner)
-        const debugNotice = document.createElement('div');
-        debugNotice.style.cssText = `
+        // Create the popup element
+        const popup = document.createElement('div');
+        popup.id = 'simple-card-popup';
+        popup.style.cssText = `
+            position: fixed;
+            display: none; 
+            z-index: 9999;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 10px;
+            width: 250px;
+            height: 350px;
+            pointer-events: none;
+        `;
+        document.body.appendChild(popup);
+        
+        // Function to handle card hover
+        function handleCardHover() {
+            // Apply to all images
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.addEventListener('mouseenter', function() {
+                    // Show enlarged version of this image
+                    popup.innerHTML = '';
+                    const enlargedImg = document.createElement('img');
+                    enlargedImg.src = this.src;
+                    enlargedImg.style.cssText = `
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        border-radius: 10px;
+                    `;
+                    popup.appendChild(enlargedImg);
+                    
+                    // Position popup near the mouse
+                    const rect = this.getBoundingClientRect();
+                    popup.style.left = (rect.right + 10) + 'px';
+                    popup.style.top = rect.top + 'px';
+                    
+                    // Check if popup would go off right edge
+                    if (rect.right + 260 > window.innerWidth) {
+                        popup.style.left = (rect.left - 260) + 'px';
+                    }
+                    
+                    // Show popup
+                    popup.style.display = 'block';
+                });
+                
+                img.addEventListener('mouseleave', function() {
+                    // Hide popup
+                    popup.style.display = 'none';
+                });
+            });
+        }
+        
+        // Initial setup
+        handleCardHover();
+        
+        // Check periodically for new images
+        setInterval(handleCardHover, 2000);
+        
+        // Display debug message on the page
+        const debug = document.createElement('div');
+        debug.style.cssText = `
             position: fixed;
             top: 10px;
             right: 10px;
             background: rgba(0,0,0,0.7);
             color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            z-index: 9999;
+            padding: 5px;
+            z-index: 10000;
             font-size: 12px;
         `;
-        debugNotice.innerHTML = "Card hover debug: script loaded";
-        document.body.appendChild(debugNotice);
-        
-        // Remove notification after 5 seconds
-        setTimeout(() => {
-            debugNotice.style.opacity = '0';
-            setTimeout(() => debugNotice.remove(), 1000);
-        }, 5000);
-        debugNotice.style.transition = 'opacity 1s';
-        
-        // Check if popup already exists
-        let popup = document.getElementById('card-popup');
-        
-        // Create popup if it doesn't exist
-        if (!popup) {
-            popup = document.createElement('div');
-            popup.id = 'card-popup';
-            popup.style.cssText = `
-                position: fixed;
-                display: none;
-                z-index: 1000;
-                padding: 0;
-                border-radius: 4.2%;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-                transition: all 0.2s ease;
-                opacity: 0;
-                pointer-events: none;
-                transform: translateY(10px);
-            `;
-            document.body.appendChild(popup);
-            
-            // Add image element inside popup
-            const popupImg = document.createElement('img');
-            popupImg.style.cssText = `
-                width: 100%;
-                height: auto;
-                border-radius: 4.2%;
-                display: block;
-            `;
-            popup.appendChild(popupImg);
-            console.log("Created popup element");
-        }
-        
-        // Find all card images that don't have the hover effect yet
-        const cardImages = document.querySelectorAll('img.card-image:not([data-hover-setup="true"])');
-        console.log(`Found ${cardImages.length} new card images to set up:`, cardImages);
-        
-        // Add visual markers to show which images have the card-image class
-        cardImages.forEach(img => {
-            const marker = document.createElement('div');
-            marker.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 8px;
-                height: 8px;
-                background: green;
-                border-radius: 50%;
-                z-index: 999;
-            `;
-            img.parentNode.style.position = 'relative';
-            img.parentNode.appendChild(marker);
-            setTimeout(() => marker.remove(), 5000);
-        });
-        
-        // Add event listeners to card images
-        cardImages.forEach(img => {
-            // Mark as setup
-            img.setAttribute('data-hover-setup', 'true');
-            console.log("Set up hover for:", img);
-            
-            // Add a border to show images that have been set up
-            const originalBorder = img.style.border;
-            img.style.border = '2px solid yellow';
-            setTimeout(() => {
-                img.style.border = originalBorder;
-            }, 5000);
-            
-            img.addEventListener('mouseenter', function(e) {
-                console.log("Mouse entered card:", this);
-                const fullSizeUrl = this.dataset.fullsize || this.src;
-                const popupImg = document.querySelector('#card-popup img');
-                if (popupImg) popupImg.src = fullSizeUrl;
-                
-                // Calculate position based on viewport and scroll
-                const rect = img.getBoundingClientRect();
-                const scrollY = window.scrollY || window.pageYOffset;
-                const scrollX = window.scrollX || window.pageXOffset;
-                
-                // Set popup size - aim for 90% of original card size
-                const viewportHeight = window.innerHeight;
-                const viewportWidth = window.innerWidth;
-                
-                // Card ratio calculation (height/width = 88/63 = ~1.4)
-                const cardRatio = 1.4;
-                
-                // Target width is 30% of viewport width, but max 300px
-                const targetWidth = Math.min(viewportWidth * 0.3, 300);
-                // Calculate height based on card aspect ratio
-                const targetHeight = targetWidth * cardRatio;
-                
-                popup.style.width = targetWidth + 'px';
-                
-                // Default positioning to the right of the card
-                let left = rect.right + 10 + scrollX;
-                let top = rect.top + scrollY;
-                
-                // If no room on right, show on left
-                if (rect.right + targetWidth + 20 > viewportWidth) {
-                    left = rect.left - targetWidth - 10 + scrollX;
-                }
-                
-                // If it would go off the bottom, adjust up
-                if (rect.top + targetHeight > viewportHeight) {
-                    top = Math.max(scrollY, rect.bottom + scrollY - targetHeight);
-                }
-                
-                popup.style.left = left + 'px';
-                popup.style.top = top + 'px';
-                
-                // Show the popup
-                console.log("Showing popup at", left, top);
-                popup.style.display = 'block';
-                setTimeout(() => {
-                    popup.style.opacity = '1';
-                    popup.style.transform = 'translateY(0)';
-                }, 10);
-            });
-            
-            img.addEventListener('mouseleave', function() {
-                console.log("Mouse left card:", this);
-                popup.style.opacity = '0';
-                popup.style.transform = 'translateY(10px)';
-                setTimeout(() => {
-                    popup.style.display = 'none';
-                }, 200);
-            });
-        });
-    }
-    
-    // Function to check for new content periodically
-    function checkForNewCards() {
-        console.log("Checking for new cards...");
-        setupCardHover();
-        // Continue checking every 3 seconds
-        setTimeout(checkForNewCards, 3000);
-    }
-    
-    // Start the process
-    console.log("Starting card hover setup");
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM loaded, setting up card hover");
-            checkForNewCards();
-        });
-    } else {
-        console.log("DOM already loaded, setting up card hover immediately");
-        checkForNewCards();
-    }
+        debug.textContent = 'Card hover active';
+        document.body.appendChild(debug);
+        setTimeout(() => debug.remove(), 5000);
+    });
     </script>
     """
     
