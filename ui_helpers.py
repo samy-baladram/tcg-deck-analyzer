@@ -229,7 +229,7 @@ def render_sidebar():
         with open(banner_path, "rb") as f:
             banner_base64 = base64.b64encode(f.read()).decode()
         st.sidebar.markdown(f"""
-        <div style="width:100%; text-align:left; margin:-20px 0 5px 0;">
+        <div style="width:100%; text-align:left; margin:-20px 10px 5px 0;">
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
         </div>
         """, unsafe_allow_html=True)
@@ -248,6 +248,15 @@ def render_sidebar():
     if not st.session_state.performance_data.empty:
         # Add disclaimer with update time in one line
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+         
+        # Get the top 10 performing decks
+        top_decks = st.session_state.performance_data.head(10)
+        
+        # Render each deck one by one, passing the rank (index + 1)
+        for idx, deck in top_decks.iterrows():
+            rank = idx + 1  # Calculate rank (1-based)
+            render_deck_in_sidebar(deck, rank=rank)
+
         st.sidebar.markdown(f"""
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.85rem;">
             <div>Top performers from {current_month_year}</div>
@@ -257,15 +266,7 @@ def render_sidebar():
             Based on up to {TOURNAMENT_COUNT} tournament results
         </div>
         """, unsafe_allow_html=True)
-    
-        # Get the top 10 performing decks
-        top_decks = st.session_state.performance_data.head(10)
-        
-        # Render each deck one by one, passing the rank (index + 1)
-        for idx, deck in top_decks.iterrows():
-            rank = idx + 1  # Calculate rank (1-based)
-            render_deck_in_sidebar(deck, rank=rank)
-        
+   
         # Add a divider
         st.sidebar.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
         
