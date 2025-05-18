@@ -334,8 +334,10 @@ def display_energy_debug_tab(deck_info):
 
 # Modify the display_related_decks_tab function in display_tabs.py:
 
-def display_related_decks_tab(deck_info):
-    """Display the Related Decks tab"""
+# Updated display_related_decks_tab function for display_tabs.py
+
+def display_related_decks_tab(deck_info, results):
+    """Display the Related Decks tab with header images"""
     st.subheader("Related Decks")
     
     # Get the current deck name
@@ -359,24 +361,43 @@ def display_related_decks_tab(deck_info):
                 col_idx = i % 3
                 
                 with cols[col_idx]:
-                    # Create a card-like container
+                    # Format deck name
+                    formatted_name = format_deck_name(deck['deck_name'])
+                    
+                    # Create related deck info for image generation
+                    related_deck_info = {
+                        'deck_name': deck['deck_name'],
+                        'set': deck['set']
+                    }
+                    
+                    # Generate header image
+                    header_image = create_deck_header_images(related_deck_info, results)
+                    
+                    # Create a card-like container with image and button integrated
                     with st.container():
-                        # Display formatted deck name
-                        formatted_name = format_deck_name(deck['deck_name'])
+                        if header_image:
+                            image_html = f'<img src="data:image/png;base64,{header_image}" style="width: 100%; height: 70px; object-fit: cover; border-radius: 4px 4px 0 0;">'
+                        else:
+                            image_html = f'<div style="width: 100%; height: 70px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center; color: #888;">No image</div>'
                         
-                        # Show meta share
+                        # Create card with image at top, then info, then button at bottom
                         st.markdown(f"""
-                        <div style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
-                            <h4 style="margin: 0 0 5px 0;">{formatted_name}</h4>
-                            <p style="margin: 0 0 10px 0; color: #666;">Meta share: {deck['share']:.2f}%</p>
+                        <div style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            {image_html}
+                            <div style="padding: 10px;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
+                                <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Meta share: {deck['share']:.2f}%</p>
+                            </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Add a button to analyze this deck
-                        if st.button(f"Analyze {formatted_name}", key=f"btn_{deck['deck_name']}"):
-                            # Set this deck to be analyzed
-                            st.session_state.deck_to_analyze = deck['deck_name']
-                            # Force rerun to trigger the analysis
-                            st.rerun()
+                        # Add a button that fits the card design
+                        button_col1, button_col2, button_col3 = st.columns([1, 2, 1])
+                        with button_col2:
+                            if st.button(f"Analyze", key=f"btn_{deck['deck_name']}"):
+                                # Set this deck to be analyzed
+                                st.session_state.deck_to_analyze = deck['deck_name']
+                                # Force rerun to trigger the analysis
+                                st.rerun()
     else:
         st.info("Deck list not available. Unable to find related decks.")
