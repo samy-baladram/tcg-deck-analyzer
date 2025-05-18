@@ -205,7 +205,7 @@ def get_all_recent_tournaments():
     current_year_month = current_date.strftime("%Y-%m")  # Format: YYYY-MM
     
     # Build URL with current year and month
-    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show=80"
+    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show=50"
     #url = f"{BASE_URL}/tournaments"
     try:
         response = requests.get(url)
