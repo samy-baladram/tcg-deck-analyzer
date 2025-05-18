@@ -111,14 +111,15 @@ def apply_vertical_gradient(image):
 
 def apply_diagonal_cut(image, cut_type):
     """
-    Apply a diagonal cut to an image with a gradient along the cut edge
+    Apply a horizontal gradient on the edges of an image
+    (Note: Function name kept the same for compatibility)
     
     Parameters:
     image: PIL Image
-    cut_type: String - "left" for left image, "right" for right image
+    cut_type: String - "left" for gradient on right edge, "right" for gradient on left edge
     
     Returns:
-    PIL Image with diagonal cut and gradient edge
+    PIL Image with edge gradient applied
     """
     if cut_type not in ["left", "right"]:
         return image
@@ -127,95 +128,48 @@ def apply_diagonal_cut(image, cut_type):
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
     
-    # Create a mask for the diagonal cut
+    # Get image dimensions
     width, height = image.size
-    cut_mask = Image.new('L', image.size, 255)  # Start with full opacity
-    draw = ImageDraw.Draw(cut_mask)
     
-    # Define the cutoff percentage
-    cutoff_percentage = 0.7
+    # Create a mask with full opacity
+    mask = Image.new('L', image.size, 255)  # 255 = fully opaque
+    draw = ImageDraw.Draw(mask)
     
-    # Define gradient width as 30% of the relevant edge
+    # Calculate gradient width (30% of the image width)
     gradient_width = int(width * 0.3)
     
     if cut_type == "left":
-        # For left image, we keep left side and fade out the right edge
+        # Apply gradient to right edge
+        gradient_start = width - gradient_width
         
-        # First, create the full cut (just like original function)
-        points = [
-            (width, 0),                             # Top right
-            (width, height),                        # Bottom right
-            (width * cutoff_percentage, height),    # Bottom cut point
-            (width, 0),                             # Back to top right
-        ]
-        draw.polygon(points, fill=0)  # This part will be fully transparent
-        
-        # Now add the gradient along the diagonal edge
-        # Calculate the slope of the diagonal line
-        slope = height / (width * (1 - cutoff_percentage))
-        
-        # Add gradient from the diagonal edge inward
-        for offset in range(gradient_width):
-            # Calculate the position of this gradient line 
-            # (moving inward from the diagonal edge)
-            x_offset = offset / gradient_width * width * (1 - cutoff_percentage)
+        # Draw gradient from right to left
+        for x in range(gradient_width):
+            # Calculate position and opacity
+            x_pos = gradient_start + x
+            opacity = int(255 * (1 - x / gradient_width))  # Fade from opaque to transparent
             
-            # Calculate opacity for this line (255=opaque, 0=transparent)
-            # We want to fade from opaque to transparent as we approach the cut edge
-            opacity = int(255 * (1 - offset / gradient_width))
+            # Draw vertical line with calculated opacity
+            draw.line([(x_pos, 0), (x_pos, height)], fill=opacity)
             
-            # Draw this gradient line
-            x_start = width * cutoff_percentage - x_offset
-            if x_start >= 0:  # Make sure we're still within the image
-                points = [
-                    (x_start, height),              # Bottom point
-                    (x_start + width / slope, 0),   # Top point (following diagonal angle)
-                ]
-                draw.line(points, fill=opacity, width=1)
-        
     else:  # cut_type == "right"
-        # For right image, we keep right side and fade out the left edge
+        # Apply gradient to left edge
+        gradient_end = gradient_width
         
-        # First, create the full cut (just like original function)
-        points = [
-            (0, 0),                                      # Top left
-            (width * (1 - cutoff_percentage), 0),        # Top cut point
-            (0, height),                                 # Bottom left
-            (0, 0),                                      # Back to top left
-        ]
-        draw.polygon(points, fill=0)  # This part will be fully transparent
-        
-        # Now add the gradient along the diagonal edge
-        # Calculate the slope of the diagonal line
-        slope = height / (width * (1 - cutoff_percentage))
-        
-        # Add gradient from the diagonal edge inward
-        for offset in range(gradient_width):
-            # Calculate the position of this gradient line
-            x_offset = offset / gradient_width * width * (1 - cutoff_percentage)
+        # Draw gradient from left to right
+        for x in range(gradient_width):
+            # Calculate position and opacity
+            opacity = int(255 * (x / gradient_width))  # Fade from transparent to opaque
             
-            # Calculate opacity for this line
-            opacity = int(255 * (1 - offset / gradient_width))
-            
-            # Draw this gradient line
-            x_start = width * (1 - cutoff_percentage) + x_offset
-            if x_start < width:  # Make sure we're still within the image
-                points = [
-                    (x_start, 0),                    # Top point
-                    (x_start - height * slope, height)  # Bottom point (following diagonal angle)
-                ]
-                draw.line(points, fill=opacity, width=1)
+            # Draw vertical line with calculated opacity
+            draw.line([(x, 0), (x, height)], fill=opacity)
     
-    # Apply the cut mask to the alpha channel
+    # Apply mask to alpha channel
     result = image.copy()
-    # Combine with the existing alpha channel
-    alpha = result.split()[-1]
-    alpha = Image.composite(alpha, Image.new('L', alpha.size, 0), cut_mask)
-    result.putalpha(alpha)
+    result.putalpha(mask)
     
     return result
 
-def merge_header_images(img1, img2, gap=20, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap=-30, cutoff_percentage=0.7):
     """
     Merge two diagonally cut images side by side
     
