@@ -27,7 +27,7 @@ def analyze_deck(deck_name, set_name="A3"):
     
     for i, url in enumerate(urls):
         progress_bar.progress((i + 1) / len(urls))
-        status_text.text(f"Processing deck {i+1}/{len(urls)}...")
+        #status_text.text(f"Processing deck {i+1}/{len(urls)}...")
         
         # Get cards and energy types
         cards_result = extract_cards(url)
@@ -61,7 +61,8 @@ def analyze_deck(deck_name, set_name="A3"):
         
         time.sleep(0.3)  # Be nice to the server
     
-    status_text.text("")
+    progress_bar.empty()
+    status_text.empty()
     
     # Create dataframe and analyze
     df = pd.DataFrame(all_cards)
