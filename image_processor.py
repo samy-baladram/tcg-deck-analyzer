@@ -3,7 +3,7 @@
 import functools
 import base64
 import requests
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 from io import BytesIO
 import re
 from config import IMAGE_BASE_URL, IMAGE_CROP_BOX, IMAGE_GRADIENT
@@ -134,7 +134,6 @@ def apply_diagonal_cut(image, cut_type):
     # For right image, flip vertically before processing
     if cut_type == "right":
         # Import ImageOps for flipping
-        from PIL import ImageOps
         # Flip the image vertically (mirror)
         image = ImageOps.mirror(image)
         
@@ -460,7 +459,9 @@ def create_deck_header_images(deck_info, analysis_results=None):
     if len(pil_images) == 1:
         # For single Pokémon, don't cut or merge - just apply gradient and return
         single_image = pil_images[0]
-        pil_images.append(single_image)
+        # Flip the image vertically (mirror)
+        image = ImageOps.mirror(single_image)
+        pil_images.append(image)
         # # Apply gradient to the single image
         # with_gradient = apply_vertical_gradient(single_image)
         
