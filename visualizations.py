@@ -13,7 +13,10 @@ from formatters import format_percentage, format_card_label
 # Add this at the top of visualizations.py with other imports
 import streamlit as st
 
-# Energy color mapping - primary and secondary variant for each type
+# Add this at the top of visualizations.py with other imports
+import streamlit as st
+
+# Energy color mapping - primary and secondary colors for each type
 ENERGY_COLORS = {
     'fire': {
         'primary': '#FF5722',       # Bright orange-red
@@ -35,7 +38,7 @@ ENERGY_COLORS = {
         'primary': '#795548',       # Brown
         'secondary': '#BCAAA4'      # Light brown
     },
-    'darkness': {  # Using "darkness" since you mentioned "dark" in your comment
+    'darkness': {
         'primary': '#424242',       # Dark gray
         'secondary': '#BDBDBD'      # Light gray
     },
@@ -50,61 +53,33 @@ ENERGY_COLORS = {
     'colorless': {
         'primary': '#EEEEEE',       # Light gray
         'secondary': '#F5F5F5'      # Very light gray
-    },
-    # Default fallback colors
-    'default': {
-        'primary': '#81D4FA',       # Default from your current config
-        'secondary': '#0288D1'      # Default from your current config
     }
 }
 
-def get_energy_type_colors(energy_types=None):
+# Add this after the ENERGY_COLORS definition
+def get_energy_colors(energy_type=None):
     """
-    Get primary and secondary colors based on deck's energy types.
+    Get color scheme for a specific energy type.
     
     Args:
-        energy_types: List of energy types found in the deck
+        energy_type: String representing the energy type
         
     Returns:
-        Dictionary with 'primary' and 'secondary' color values
+        Dictionary with primary and secondary colors
     """
-    if not energy_types:
-        return ENERGY_COLORS['default']
+    if energy_type and energy_type.lower() in ENERGY_COLORS:
+        return ENERGY_COLORS[energy_type.lower()]
     
-    # For mono-type decks, use that energy's colors
-    if len(energy_types) == 1:
-        energy = energy_types[0].lower()
-        return ENERGY_COLORS.get(energy, ENERGY_COLORS['default'])
-    
-    # For dual-type decks, use a blended approach based on the first two types
-    elif len(energy_types) >= 2:
-        energy1 = energy_types[0].lower()
-        energy2 = energy_types[1].lower()
-        
-        # Get colors for each energy type
-        colors1 = ENERGY_COLORS.get(energy1, ENERGY_COLORS['default'])
-        colors2 = ENERGY_COLORS.get(energy2, ENERGY_COLORS['default'])
-        
-        # Return the first energy type's primary color and second energy type's secondary color
-        return {
-            'primary': colors1['primary'],
-            'secondary': colors2['primary']
-        }
-    
-    return ENERGY_COLORS['default']
-    
-def create_usage_bar_chart(type_cards, card_type, energy_types=None):
+    # Default colors if no energy type or not found
+    return {
+        'primary': CHART_COLORS['pokemon_2'],
+        'secondary': CHART_COLORS['pokemon_1']
+    }
+
+def create_usage_bar_chart(type_cards, card_type, energy_type=None):
     """Create horizontal stacked bar chart for card usage with energy-based colors"""
     if type_cards.empty:
         return None
-    
-    # Get colors based on energy types if this is a Pokémon chart
-    colors = CHART_COLORS.copy()  # Use default colors
-    
-    if card_type == 'Pokemon' and energy_types:
-        energy_colors = get_energy_type_colors(energy_types)
-        colors['pokemon_1'] = energy_colors['secondary']  # Use secondary for 1 copy
-        colors['pokemon_2'] = energy_colors['primary']    # Use primary for 2 copies
     
     # Create stacked bar chart data
     fig_data = []
@@ -126,6 +101,13 @@ def create_usage_bar_chart(type_cards, card_type, energy_types=None):
     # Create DataFrame for plotting
     plot_df = pd.DataFrame(fig_data)
     
+    # Get colors based on energy type for Pokemon charts only
+    bar_colors = CHART_COLORS.copy()
+    if card_type == 'Pokemon' and energy_type:
+        energy_colors = get_energy_colors(energy_type)
+        bar_colors['pokemon_1'] = energy_colors['secondary']
+        bar_colors['pokemon_2'] = energy_colors['primary']
+    
     # Create figure
     fig = go.Figure()
     
@@ -135,7 +117,7 @@ def create_usage_bar_chart(type_cards, card_type, energy_types=None):
         y=plot_df['Card'],
         x=plot_df['1 Copy'],
         orientation='h',
-        marker_color=colors[f'{card_type.lower()}_1'],
+        marker_color=bar_colors[f'{card_type.lower()}_1'],
         text=plot_df['1 Copy'].apply(
             lambda x: f" {format_percentage(x)}   <b><span style='font-size: 22px; '>🂠</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
@@ -149,7 +131,7 @@ def create_usage_bar_chart(type_cards, card_type, energy_types=None):
         y=plot_df['Card'],
         x=plot_df['2 Copies'],
         orientation='h',
-        marker_color=colors[f'{card_type.lower()}_2'],
+        marker_color=bar_colors[f'{card_type.lower()}_2'],
         text=plot_df['2 Copies'].apply(
             lambda x: f" {format_percentage(x)}   <b><span style='font-size: 22px;'>🂠🂠</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
@@ -158,7 +140,6 @@ def create_usage_bar_chart(type_cards, card_type, energy_types=None):
         insidetextanchor='start'
     ))
     
-    # Rest of the function remains the same...
     # Update layout
     fig.update_layout(
         barmode='stack',
@@ -188,18 +169,8 @@ def create_usage_bar_chart(type_cards, card_type, energy_types=None):
     
     return fig
 
-def create_variant_bar_chart(variant_data, energy_types=None):
+def create_variant_bar_chart(variant_data, energy_type=None):
     """Create horizontal stacked bar chart for variant usage patterns with energy-based colors"""
-    
-    # Get colors based on energy types
-    colors = CHART_COLORS.copy()  # Use default colors
-    
-    if energy_types:
-        energy_colors = get_energy_type_colors(energy_types)
-        colors['pokemon_1'] = energy_colors['secondary']  # Use secondary for 1 copy
-        colors['pokemon_2'] = energy_colors['primary']    # Use primary for 2 copies
-    
-    # Rest of the function remains the same...
     # Extract data from the updated variant data structure
     var1 = variant_data['Var1']
     var2 = variant_data['Var2']
@@ -249,6 +220,13 @@ def create_variant_bar_chart(variant_data, energy_types=None):
     text_single.append(f" {var1_single_pct}%  <b><span style='font-size: 22px;'>🂠</span></b>" if var1_single_pct > 0 else "")
     text_double.append(f" {var1_double_pct}%  <b><span style='font-size: 22px;'>🂠🂠</span></b>" if var1_double_pct > 0 else "")
     
+    # Get colors based on energy type
+    bar_colors = CHART_COLORS.copy()
+    if energy_type:
+        energy_colors = get_energy_colors(energy_type)
+        bar_colors['pokemon_1'] = energy_colors['secondary']
+        bar_colors['pokemon_2'] = energy_colors['primary']
+    
     # Create figure
     fig = go.Figure()
     
@@ -258,7 +236,7 @@ def create_variant_bar_chart(variant_data, energy_types=None):
         y=labels,
         x=single_data,
         orientation='h',
-        marker_color=colors['pokemon_1'],
+        marker_color=bar_colors['pokemon_1'],
         text=text_single,
         textposition='auto',
         insidetextanchor='start',
@@ -271,7 +249,7 @@ def create_variant_bar_chart(variant_data, energy_types=None):
         y=labels,
         x=double_data,
         orientation='h',
-        marker_color=colors['pokemon_2'],
+        marker_color=bar_colors['pokemon_2'],
         text=text_double,
         textposition='auto',
         insidetextanchor='start',
