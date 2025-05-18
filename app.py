@@ -73,37 +73,37 @@ div[role="option"]:hover {
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
     border-bottom: none !important;
 }
+/* Sidebar font size adjustments */
+.sidebar .stExpander {
+    font-size: 18px !important; 
+}
 
-/* Increase font size in sidebar */
 .sidebar .stExpander summary {
-    font-size: 16px !important;  /* Main expander font size */
-}
-
-/* Sidebar text content */
-.sidebar .stMarkdown, 
-.sidebar .stMarkdown p {
-    font-size: 15px !important;  /* Regular markdown content */
-}
-
-/* Make sidebar labels clearer */
-.sidebar label {
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 500 !important;
 }
 
-/* Adjust sidebar expander icon size */
-.sidebar .stExpander details summary::marker {
-    font-size: 18px;
+/* Make circled numbers more visible */
+.sidebar .stExpander summary span:first-child {
+    font-size: 20px !important;
+    margin-right: 4px !important;
 }
 
-/* Ensure expander spacing is consistent */
+/* Improve sidebar content typography */
+.sidebar .stMarkdown, 
+.sidebar .stMarkdown p {
+    font-size: 16px !important;
+}
+
+/* Make energy icons more visible */
+.sidebar img[src*="energy"] {
+    height: 22px !important;
+    margin-right: 6px !important;
+}
+
+/* Ensure sidebar expander spacing is consistent */
 .sidebar .stExpander details {
-    margin-bottom: 8px !important;
-}
-
-/* Make performance card text bigger */
-.sidebar .performance-card {
-    font-size: 15px !important;
+    margin-bottom: 10px !important;
 }
 </style>
 """, unsafe_allow_html=True)
