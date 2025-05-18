@@ -160,13 +160,29 @@ def create_deck_selector():
     return selected_option
 
 # In ui_helpers.py - Updated render_deck_in_sidebar function
-def render_deck_in_sidebar(deck, expanded=False):
-    """Render a single deck in the sidebar"""
+def render_deck_in_sidebar(deck, expanded=False, rank=None):
+    """
+    Render a single deck in the sidebar
+    
+    Args:
+        deck: Deck data dictionary
+        expanded: Whether the expander is expanded by default
+        rank: Rank number to display (1-10)
+    """
     # Format power index to 2 decimal places
     power_index = round(deck['power_index'], 2)
     
-    # Create a plain text expander title with the power index
-    with st.sidebar.expander(f"{deck['displayed_name']} ({power_index})", expanded=expanded):
+    # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
+    circled_numbers = ["⓪", "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
+    
+    # Get the appropriate circled number based on rank
+    if rank is not None and 0 <= rank <= 10:
+        rank_symbol = circled_numbers[rank]
+    else:
+        rank_symbol = ""
+    
+    # Create a plain text expander title with the rank and power index
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ({power_index})", expanded=expanded):
         # Determine the color class based on power index
         power_class = "positive-index" if power_index > 0 else "negative-index"
         
@@ -230,9 +246,10 @@ def render_sidebar():
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
         
-        # Render each deck one by one
+        # Render each deck one by one, passing the rank (index + 1)
         for idx, deck in top_decks.iterrows():
-            render_deck_in_sidebar(deck)
+            rank = idx + 1  # Calculate rank (1-based)
+            render_deck_in_sidebar(deck, rank=rank)
         
         # Add a divider
         st.sidebar.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
