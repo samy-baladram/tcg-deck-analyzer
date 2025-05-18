@@ -146,8 +146,6 @@ if 'analyze' in st.session_state and selected_option:
         display_tabs.display_deck_template_tab(results)
     
     with tab2:
-        # Pass energy types to the display function
-        energy_types = analyzed_deck.get('energy_types', [])
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
         
     with tab3:
