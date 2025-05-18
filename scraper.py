@@ -206,7 +206,7 @@ def get_all_recent_tournaments():
     
     # Build URL with current year and month
     url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show={TOURNAMENT_COUNT}"
-    #url = f"{BASE_URL}/tournaments"
+    
     try:
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -215,16 +215,57 @@ def get_all_recent_tournaments():
         for link in soup.find_all('a', href=True):
             href = link['href']
             if '/tournament/' in href:
-                match = re.search(r'/tournament/([a-zA-Z0-9]+)', href)
+                match = re.search(r'/tournament/([a-zA-Z0-9-_]+)', href)
                 if match and match.group(1) not in tournament_id_set:
-                    tournament_id = match.group(1)
-                    tournament_id_set.add(tournament_id)
-                    tournament_ids.append(tournament_id)
+                    tournament_slug = match.group(1)
+                    
+                    # Check if it's a standard tournament ID format (24 character hexadecimal)
+                    is_standard_id = bool(re.match(r'^[0-9a-f]{24}$', tournament_slug))
+                    
+                    if is_standard_id:
+                        # If it's already in standard format, use it directly
+                        tournament_id = tournament_slug
+                    else:
+                        # If not standard format, scrape the tournament page to find the actual ID
+                        tournament_id = get_tournament_id_from_page(tournament_slug)
+                    
+                    if tournament_id and tournament_id not in tournament_id_set:
+                        tournament_id_set.add(tournament_id)
+                        tournament_ids.append(tournament_id)
         
     except Exception as e:
         print(f"Error fetching tournaments: {e}")
     
     return tournament_ids
+
+def get_tournament_id_from_page(tournament_slug):
+    """Extract actual tournament ID from the tournament page JavaScript."""
+    try:
+        # Build the URL for the tournament standings page
+        url = f"https://play.limitlesstcg.com/tournament/{tournament_slug}/standings"
+        
+        # Fetch the page
+        response = requests.get(url)
+        
+        # Extract tournament ID from JavaScript variable
+        # Look for pattern: var tournamentId = 'XXXX'
+        id_match = re.search(r"var\s+tournamentId\s*=\s*['\"]([0-9a-f]{24})['\"]", response.text)
+        
+        if id_match:
+            return id_match.group(1)
+        
+        # Alternative approach: Look for tournament ID in other potential locations
+        # For example, in JSON data or other script tags
+        alt_match = re.search(r'"tournamentId":\s*"([0-9a-f]{24})"', response.text)
+        if alt_match:
+            return alt_match.group(1)
+            
+        # If ID not found, return None
+        return None
+        
+    except Exception as e:
+        print(f"Error fetching tournament page for {tournament_slug}: {e}")
+        return None
 
 def get_deck_performance(deck_name, set_code="A3"):
     """Get performance data for a specific deck."""
