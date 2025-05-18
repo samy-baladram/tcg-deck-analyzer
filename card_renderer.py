@@ -285,14 +285,40 @@ def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
 
 def add_card_hover_effect():
     """
-    Add JavaScript and CSS for an improved card hover effect.
-    This shows an enlarged card (about 90% of original size) on hover.
+    Add JavaScript and CSS for card hover effect with debug logging.
+    Call this once at the start of your app to add the hover functionality.
     """
     hover_js = """
     <script>
+    // Log when script loads
+    console.log("Card hover script loaded");
+    
     // Function to set up card hover effects
     function setupCardHover() {
         console.log("Setting up card hover effects");
+        
+        // Add visible notification (will show in top-right corner)
+        const debugNotice = document.createElement('div');
+        debugNotice.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 9999;
+            font-size: 12px;
+        `;
+        debugNotice.innerHTML = "Card hover debug: script loaded";
+        document.body.appendChild(debugNotice);
+        
+        // Remove notification after 5 seconds
+        setTimeout(() => {
+            debugNotice.style.opacity = '0';
+            setTimeout(() => debugNotice.remove(), 1000);
+        }, 5000);
+        debugNotice.style.transition = 'opacity 1s';
         
         // Check if popup already exists
         let popup = document.getElementById('card-popup');
@@ -324,18 +350,46 @@ def add_card_hover_effect():
                 display: block;
             `;
             popup.appendChild(popupImg);
+            console.log("Created popup element");
         }
         
         // Find all card images that don't have the hover effect yet
         const cardImages = document.querySelectorAll('img.card-image:not([data-hover-setup="true"])');
-        console.log(`Found ${cardImages.length} new card images to set up`);
+        console.log(`Found ${cardImages.length} new card images to set up:`, cardImages);
+        
+        // Add visual markers to show which images have the card-image class
+        cardImages.forEach(img => {
+            const marker = document.createElement('div');
+            marker.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 8px;
+                height: 8px;
+                background: green;
+                border-radius: 50%;
+                z-index: 999;
+            `;
+            img.parentNode.style.position = 'relative';
+            img.parentNode.appendChild(marker);
+            setTimeout(() => marker.remove(), 5000);
+        });
         
         // Add event listeners to card images
         cardImages.forEach(img => {
             // Mark as setup
             img.setAttribute('data-hover-setup', 'true');
+            console.log("Set up hover for:", img);
+            
+            // Add a border to show images that have been set up
+            const originalBorder = img.style.border;
+            img.style.border = '2px solid yellow';
+            setTimeout(() => {
+                img.style.border = originalBorder;
+            }, 5000);
             
             img.addEventListener('mouseenter', function(e) {
+                console.log("Mouse entered card:", this);
                 const fullSizeUrl = this.dataset.fullsize || this.src;
                 const popupImg = document.querySelector('#card-popup img');
                 if (popupImg) popupImg.src = fullSizeUrl;
@@ -345,47 +399,39 @@ def add_card_hover_effect():
                 const scrollY = window.scrollY || window.pageYOffset;
                 const scrollX = window.scrollX || window.pageXOffset;
                 
-                // Get original card dimensions - TCG cards are typically 63mm × 88mm (ratio 0.72)
-                const cardRatio = 0.72; 
-                
-                // Set popup size - aim for 90% of original card size relative to viewport
-                // Calculate height based on viewport height
+                // Set popup size - aim for 90% of original card size
                 const viewportHeight = window.innerHeight;
                 const viewportWidth = window.innerWidth;
                 
-                // Target height is 90% of viewport height, but max 500px
-                const targetHeight = Math.min(viewportHeight * 0.9, 500);
-                // Calculate width based on card aspect ratio
-                const targetWidth = targetHeight * cardRatio;
+                // Card ratio calculation (height/width = 88/63 = ~1.4)
+                const cardRatio = 1.4;
                 
-                // Ensure width doesn't exceed reasonable limits
-                const finalWidth = Math.min(targetWidth, viewportWidth * 0.4);
-                popup.style.width = finalWidth + 'px';
+                // Target width is 30% of viewport width, but max 300px
+                const targetWidth = Math.min(viewportWidth * 0.3, 300);
+                // Calculate height based on card aspect ratio
+                const targetHeight = targetWidth * cardRatio;
                 
-                // Position popup based on available space
-                // Default positioning near the cursor but slightly offset
-                let left = e.clientX + 20 + scrollX;
-                let top = e.clientY - 50 + scrollY;
+                popup.style.width = targetWidth + 'px';
                 
-                // Check if popup would go off right edge
-                if (e.clientX + finalWidth + 30 > viewportWidth) {
-                    left = e.clientX - finalWidth - 20 + scrollX;
+                // Default positioning to the right of the card
+                let left = rect.right + 10 + scrollX;
+                let top = rect.top + scrollY;
+                
+                // If no room on right, show on left
+                if (rect.right + targetWidth + 20 > viewportWidth) {
+                    left = rect.left - targetWidth - 10 + scrollX;
                 }
                 
-                // Check if popup would go off bottom edge
-                if (e.clientY + targetHeight - 50 > viewportHeight) {
-                    top = Math.max(scrollY, (viewportHeight - targetHeight) + scrollY);
-                }
-                
-                // Check if popup would go off top edge
-                if (top < scrollY) {
-                    top = scrollY + 10;
+                // If it would go off the bottom, adjust up
+                if (rect.top + targetHeight > viewportHeight) {
+                    top = Math.max(scrollY, rect.bottom + scrollY - targetHeight);
                 }
                 
                 popup.style.left = left + 'px';
                 popup.style.top = top + 'px';
                 
-                // Show the popup with animation
+                // Show the popup
+                console.log("Showing popup at", left, top);
                 popup.style.display = 'block';
                 setTimeout(() => {
                     popup.style.opacity = '1';
@@ -394,47 +440,33 @@ def add_card_hover_effect():
             });
             
             img.addEventListener('mouseleave', function() {
+                console.log("Mouse left card:", this);
                 popup.style.opacity = '0';
                 popup.style.transform = 'translateY(10px)';
                 setTimeout(() => {
                     popup.style.display = 'none';
                 }, 200);
             });
-            
-            // Add touch functionality for mobile devices
-            img.addEventListener('touchstart', function(e) {
-                e.preventDefault(); // Prevent scrolling on touch
-                const touch = e.touches[0];
-                
-                // Simulate mouseenter with touch position
-                const mouseEvent = new MouseEvent('mouseenter', {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
-                });
-                this.dispatchEvent(mouseEvent);
-            });
-            
-            // Close popup when touching elsewhere
-            document.addEventListener('touchstart', function(e) {
-                if (e.target !== img && popup.style.display === 'block') {
-                    const mouseEvent = new MouseEvent('mouseleave');
-                    img.dispatchEvent(mouseEvent);
-                }
-            });
         });
     }
     
     // Function to check for new content periodically
     function checkForNewCards() {
+        console.log("Checking for new cards...");
         setupCardHover();
-        // Continue checking every 2 seconds
-        setTimeout(checkForNewCards, 2000);
+        // Continue checking every 3 seconds
+        setTimeout(checkForNewCards, 3000);
     }
     
     // Start the process
+    console.log("Starting card hover setup");
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', checkForNewCards);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM loaded, setting up card hover");
+            checkForNewCards();
+        });
     } else {
+        console.log("DOM already loaded, setting up card hover immediately");
         checkForNewCards();
     }
     </script>
@@ -455,11 +487,24 @@ def enhance_card_image_html(img_html, full_size_url=None):
     Returns:
     Enhanced HTML string with hover effect classes and data attributes
     """
-    # Add card-image class
-    img_html = img_html.replace('<img ', '<img class="card-image" ')
+    # Log the original HTML for debugging
+    print(f"Enhancing image HTML: {img_html[:50]}...")
     
-    # Add full-size URL if provided
-    if full_size_url:
-        img_html = img_html.replace('<img ', f'<img data-fullsize="{full_size_url}" ')
+    # Check if it already has card-image class
+    if 'class="card-image"' in img_html or "class='card-image'" in img_html:
+        # Already has the class, just add full-size URL if provided
+        if full_size_url:
+            img_html = img_html.replace('<img ', f'<img data-fullsize="{full_size_url}" ')
+    else:
+        # Add card-image class
+        img_html = img_html.replace('<img ', '<img class="card-image" ')
+        
+        # Add full-size URL if provided
+        if full_size_url:
+            img_html = img_html.replace('<img ', f'<img data-fullsize="{full_size_url}" ')
     
+    # Add a data attribute to make debugging easier
+    img_html = img_html.replace('<img ', '<img data-card-enhanced="true" ')
+    
+    print(f"Enhanced to: {img_html[:50]}...")
     return img_html
