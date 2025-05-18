@@ -414,29 +414,34 @@ def create_deck_header_images(deck_info, analysis_results=None):
     if not pil_images:
         return None
     elif len(pil_images) == 1:
-        # Duplicate the image for the right side with right cut
-        img = pil_images[0].copy()
-        img = apply_diagonal_cut(img, "right")
-        pil_images.append(img)
-    
-    # Merge the two images
-    cutoff_percentage = 0.7
-    merged_image = merge_header_images(
-        pil_images[0], 
-        pil_images[1], 
-        gap=5,
-        cutoff_percentage=cutoff_percentage
-    )
-    
-    # Apply gradient to the merged image
-    merged_with_gradient = apply_vertical_gradient(merged_image)
-    
-    # Convert to base64
-    buffered = BytesIO()
-    merged_with_gradient.save(buffered, format="PNG")
-    img_base64 = base64.b64encode(buffered.getvalue()).decode()
-    
-    return img_base64
+        # For single Pokémon case, we need to get the original info and refetch
+        original_set = None
+        original_num = None
+        
+        # Try to get original info from session state
+        if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
+            pokemon_info = st.session_state.deck_pokemon_info[deck_name]
+            if pokemon_info and len(pokemon_info) > 0:
+                original_set = pokemon_info[0].get('set')
+                original_num = pokemon_info[0].get('num')
+        
+        # If we have the original info, refetch the image
+        if original_set and original_num:
+            formatted_num = format_card_number(original_num)
+            
+            # Get a fresh uncut image
+            img = fetch_and_crop_image(original_set, formatted_num)
+            
+            if img:
+                # Apply right cut
+                img = apply_diagonal_cut(img, "right")
+                pil_images.append(img)
+        else:
+            # Fallback: duplicate and mirror the first image
+            from PIL import ImageOps
+            img = ImageOps.mirror(pil_images[0].copy())
+            img = apply_diagonal_cut(img, "right")
+            pil_images.append(img)
 
 # Add a simple in-memory cache for thumbnails
 _thumbnail_cache = {}
