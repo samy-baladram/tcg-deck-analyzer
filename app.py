@@ -20,7 +20,7 @@ background.add_app_background()
 st.markdown("""
 <style>
 div[data-testid="stExpander"] details summary p{
-    font-size: 2rem;
+    font-size: 1rem;
 }
 
 /* Change primary color to blue */
