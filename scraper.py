@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 import math
-from config import BASE_URL
+from config import BASE_URL, TOURNAMENT_COUNT
 
 def get_deck_list():
     """Get all available decks with their share percentages"""
@@ -205,7 +205,7 @@ def get_all_recent_tournaments():
     current_year_month = current_date.strftime("%Y-%m")  # Format: YYYY-MM
     
     # Build URL with current year and month
-    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show=40"
+    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show={TOURNAMENT_COUNT}"
     #url = f"{BASE_URL}/tournaments"
     try:
         response = requests.get(url)
