@@ -230,7 +230,7 @@ def render_sidebar():
             banner_base64 = base64.b64encode(f.read()).decode()
         st.sidebar.markdown(f"""
         <div style="width:100%; text-align:left; margin:-20px 0 5px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:95%; max-width:350px;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
         </div>
         """, unsafe_allow_html=True)
     else:
