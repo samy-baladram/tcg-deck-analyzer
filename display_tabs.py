@@ -200,6 +200,7 @@ def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
     st.write(st.__version__)
+    st.write("Results:")
     # Get performance data
     performance_df = st.session_state.performance_data
     
