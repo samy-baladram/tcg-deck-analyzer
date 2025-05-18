@@ -23,7 +23,6 @@ div[data-testid="stExpander"] details summary p{
     font-size: 1rem;
 }
 
-
 /* Expander header styling */
 .stExpander > details > summary {
     border-color: #00A0FF !important;
@@ -48,10 +47,10 @@ div[data-testid="stExpander"] details summary p{
 }*/
 
 
-/* Change primary color to blue */
-div[data-baseweb="select"] > div {
-    border-color: #00A0FF !important;
-}
+# /* Change primary color to blue */
+# div[data-baseweb="select"] > div {
+#     border-color: #00A0FF !important;
+# }
 
 /* Selected option */
 div[data-baseweb="select"] [aria-selected="true"] {
