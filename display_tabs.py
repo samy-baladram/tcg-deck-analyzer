@@ -346,8 +346,6 @@ def display_metagame_tab():
     
     **Wins, Losses, Ties**: Total wins, losses, and ties from all recorded "Best Finishes" matches.
     
-    ---
-    
     *Data is based on tournament results from up to 40 most recent community tournaments in {current_month_year} on Limitless TCG.*
     """)
     
