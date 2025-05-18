@@ -30,13 +30,16 @@ def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
     st.write("#### Card Usage & Variants")
     col1, col2 = st.columns([1, 1])
     
+    # Get the primary energy type (first in the list if available)
+    primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
+    
     with col1:
         st.write("##### Pokemon")
         type_cards = results[results['type'] == 'Pokemon']
         
         if not type_cards.empty:
-            # Pass energy types for coloring
-            fig = create_usage_bar_chart(type_cards, 'Pokemon', energy_types)
+            # Pass only the primary energy type
+            fig = create_usage_bar_chart(type_cards, 'Pokemon', primary_energy)
             display_chart(fig)
         else:
             st.info("No Pokemon cards found")
@@ -67,8 +70,8 @@ def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
                     
                     # Column 2: Bar Chart
                     with var_col2:
-                        # Create variant bar chart with fixed height, passing energy types
-                        fig_var = create_variant_bar_chart(row, energy_types)
+                        # Create variant bar chart with the primary energy type
+                        fig_var = create_variant_bar_chart(row, primary_energy)
                         display_chart(fig_var) 
     
     with col2:
@@ -76,7 +79,7 @@ def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
         type_cards = results[results['type'] == 'Trainer']
         
         if not type_cards.empty:
-            # For trainers, don't pass energy types to keep default colors
+            # Keep default colors for trainers
             fig = create_usage_bar_chart(type_cards, 'Trainer')
             display_chart(fig)
         else:
