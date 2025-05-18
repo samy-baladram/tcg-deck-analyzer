@@ -396,72 +396,61 @@ def display_related_decks_tab(deck_info, results):
                     # Generate header image using pre-loaded Pokémon info
                     header_image = create_deck_header_images(related_deck_info)
                     
-                    # Create a hidden button as the actual click handler
-                    # The key's random suffix helps prevent collisions when deck names are similar
-                    import random
-                    unique_key = f"btn_{deck['deck_name']}_{random.randint(1000, 9999)}"
-                    
-                    if st.button("", key=unique_key, help=f"Analyze {formatted_name}", label_visibility="collapsed"):
-                        # Set this deck to be analyzed
-                        st.session_state.deck_to_analyze = deck['deck_name']
-                        # Force rerun to trigger the analysis
-                        st.rerun()
-                    
-                    # Create card with integrated image and CSS hover effect for clickable appearance
-                    image_html = ""
-                    if header_image:
-                        image_html = f"""
-                        <div style="width: 100%; height: 120px; overflow: hidden; border-radius: 4px 4px 0 0;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
+                    # Create card container
+                    with st.container():
+                        # Create the card with image and info
+                        image_html = ""
+                        if header_image:
+                            image_html = f"""
+                            <div style="width: 100%; height: 120px; overflow: hidden; border-radius: 4px 4px 0 0;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
+                            </div>
+                            """
+                        else:
+                            image_html = f"""
+                            <div style="width: 100%; height: 120px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #888;">No image</span>
+                            </div>
+                            """
+                        
+                        st.markdown(f"""
+                        <div style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); background-color: white;">
+                            {image_html}
+                            <div style="padding: 12px;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
+                                <p style="margin: 0; color: #666; font-size: 14px;">Meta share: {deck.get('share', 0):.2f}%</p>
+                            </div>
                         </div>
-                        """
-                    else:
-                        image_html = f"""
-                        <div style="width: 100%; height: 120px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #888;">No image</span>
-                        </div>
-                        """
-                    
-                    # Use CSS to position the card above the button to create a clickable effect
-                    st.markdown(f"""
-                    <style>
-                    /* Target the specific button div */
-                    [data-testid="baseButton-secondary"]:has(#{unique_key}) {{
-                        position: relative;
-                        padding: 0 !important;
-                        width: 100%;
-                        height: 0;
-                        overflow: visible;
-                    }}
-                    
-                    /* Hide the button text */
-                    [data-testid="baseButton-secondary"]:has(#{unique_key}) p {{
-                        display: none;
-                    }}
-                    
-                    /* Position the card on top of the button */
-                    #card_{i} {{
-                        position: relative;
-                        z-index: 1;
-                        margin-top: -2rem;
-                        cursor: pointer;
-                        transition: transform 0.2s, box-shadow 0.2s;
-                    }}
-                    
-                    /* Hover effect for card */
-                    #card_{i}:hover {{
-                        transform: translateY(-2px);
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                    }}
-                    </style>
-                    
-                    <div id="card_{i}" class="clickable-card" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; background-color: white;">
-                        {image_html}
-                        <div style="padding: 12px;">
-                            <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
-                            <p style="margin: 0; color: #666; font-size: 14px;">Meta share: {deck.get('share', 0):.2f}%</p>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                        """, unsafe_allow_html=True)
+                        
+                        # Add a button that matches the card's width and has minimal padding
+                        # Use HTML/CSS to style the button to look more integrated with the card
+                        st.markdown("""
+                        <style>
+                        /* Style the button to appear more integrated */
+                        div.stButton > button:first-child {
+                            width: 100%;
+                            background-color: #00A0FF;
+                            color: white;
+                            padding: 0.25rem;
+                            font-size: 14px;
+                            border: none;
+                            border-radius: 4px;
+                            margin-top: -8px;
+                            transition: background-color 0.3s;
+                        }
+                        div.stButton > button:hover {
+                            background-color: #0078C8;
+                            color: white;
+                        }
+                        </style>
+                        """, unsafe_allow_html=True)
+                        
+                        # Use a small, styled button
+                        if st.button(f"View {formatted_name}", key=f"btn_{deck['deck_name']}_{i}"):
+                            # Set this deck to be analyzed
+                            st.session_state.deck_to_analyze = deck['deck_name']
+                            # Force rerun to trigger the analysis
+                            st.rerun()
     else:
         st.info("Deck list not available. Unable to find related decks.")
