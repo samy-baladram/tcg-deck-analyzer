@@ -77,8 +77,8 @@ div[role="option"]:hover {
 
 /* Even more specific selector targeting the text */
 div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
-    font-size: 18px !important;
-    padding: 8px 16px !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
 }
 
 /* Sidebar style for performance cards */
