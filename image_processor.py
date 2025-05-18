@@ -370,9 +370,6 @@ def create_deck_header_images(deck_info, analysis_results=None):
         
         if pokemon_names:
             # Get images for each Pokemon
-            if len(pokemon_names)==1:
-                duplicate = pokemon_names[0]
-                pokemon_names.append(duplicate)
             for i, pokemon_name in enumerate(pokemon_names[:2]):
                 card_info = get_pokemon_card_info(pokemon_name, analysis_results)
                 
