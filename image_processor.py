@@ -293,183 +293,94 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
 def create_deck_header_images(deck_info, analysis_results=None):
     """
     Create header images for a deck based on Pokemon in the deck name
-    Uses pre-loaded Pokemon info if available, falls back to extracting from analysis_results
-    
     Returns a single base64 encoded merged image
     """
     # Get deck name
     deck_name = deck_info['deck_name']
     
-    # Initialize list for images
-    pil_images = []
-    
-    # Try the three approaches in order of preference:
-    # 1. First try to use pre-loaded info from session state
+    # First try to use pre-loaded info from session state
     if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
         pokemon_info = st.session_state.deck_pokemon_info[deck_name]
         
-        if pokemon_info:
-            # Get images for each Pokemon (up to 2)
-            for i, pokemon in enumerate(pokemon_info[:2]):
-                if pokemon.get('set') and pokemon.get('num'):
-                    formatted_num = format_card_number(pokemon['num'])
-                    
-                    # Fetch and crop the image
-                    img = fetch_and_crop_image(pokemon['set'], formatted_num)
-                    
-                    if img:
-                        # Apply diagonal cut based on position
-                        cut_type = "left" if i == 0 else "right"
-                        img = apply_diagonal_cut(img, cut_type)
-                        pil_images.append(img)
-    
-    # 2. If no images yet, check if we're currently analyzing this deck
-    if not pil_images and analysis_results is not None and not analysis_results.empty:
-        # Extract Pokemon from deck name
-        pokemon_names = extract_pokemon_from_deck_name(deck_name)
+        if not pokemon_info:
+            return None
         
-        if pokemon_names:
-            # Get images for each Pokemon
-            for i, pokemon_name in enumerate(pokemon_names[:2]):
-                card_info = get_pokemon_card_info(pokemon_name, analysis_results)
+        pil_images = []
+        
+        # Get images for each Pokemon (up to 2)
+        for i, pokemon in enumerate(pokemon_info[:2]):
+            if pokemon['set'] and pokemon['num']:
+                formatted_num = format_card_number(pokemon['num'])
                 
-                if card_info:
-                    formatted_num = format_card_number(card_info['num'])
-                    
-                    # Fetch and crop the image
-                    img = fetch_and_crop_image(card_info['set'], formatted_num)
-                    
-                    if img:
-                        # Apply diagonal cut based on position
-                        cut_type = "left" if i == 0 else "right"
-                        img = apply_diagonal_cut(img, cut_type)
-                        pil_images.append(img)
-                        
-                        # Also store this info in session state for future use
-                        if 'deck_pokemon_info' not in st.session_state:
-                            st.session_state.deck_pokemon_info = {}
-                        if deck_name not in st.session_state.deck_pokemon_info:
-                            st.session_state.deck_pokemon_info[deck_name] = []
-                            
-                        # Add this pokemon to the cached info
-                        st.session_state.deck_pokemon_info[deck_name].append({
-                            'name': pokemon_name,
-                            'card_name': card_info['name'],
-                            'set': card_info['set'],
-                            'num': card_info['num']
-                        })
-    
-    # 3. Last resort: Try to load sample deck data to get pokemon info
-    if not pil_images and 'analyze' in st.session_state:
-        import cache_manager
-        
-        # Try to get set name from deck_info or session state
-        set_name = deck_info.get('set', st.session_state.analyze.get('set_name', 'A3'))
-        
-        # Get sample deck
-        sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
-        
-        # Extract Pokemon from deck name
-        pokemon_names = extract_pokemon_from_deck_name(deck_name)
-        
-        if pokemon_names and 'pokemon_cards' in sample_deck:
-            # Look for matching Pokemon in sample deck
-            for i, pokemon_name in enumerate(pokemon_names[:2]):
-                # Clean up the name for matching
-                clean_name = pokemon_name.replace('-', ' ').title()
-                if 'Ex' in clean_name:
-                    clean_name = clean_name.replace('Ex', 'ex')
-                
-                # Find matching card
-                for card in sample_deck['pokemon_cards']:
-                    if card['card_name'].lower() == clean_name.lower() and card.get('set') and card.get('num'):
-                        formatted_num = format_card_number(card['num'])
-                        
-                        # Fetch and crop the image
-                        img = fetch_and_crop_image(card['set'], formatted_num)
-                        
-                        if img:
-                            # Apply diagonal cut based on position
-                            cut_type = "left" if i == 0 else "right"
-                            img = apply_diagonal_cut(img, cut_type)
-                            pil_images.append(img)
-                            
-                            # Store this info for future use
-                            if 'deck_pokemon_info' not in st.session_state:
-                                st.session_state.deck_pokemon_info = {}
-                            if deck_name not in st.session_state.deck_pokemon_info:
-                                st.session_state.deck_pokemon_info[deck_name] = []
-                            
-                            # Add to cached info
-                            st.session_state.deck_pokemon_info[deck_name].append({
-                                'name': pokemon_name,
-                                'card_name': card['card_name'],
-                                'set': card['set'],
-                                'num': card['num']
-                            })
-                            
-                            break
-    
-    # Handle cases with less than 2 images
-    if not pil_images:
-        return None
-    elif len(pil_images) == 1:
-        # For the case with one Pokémon, we need to handle this differently
-        # Instead of duplicating the cut image, we need to fetch the original image again
-        
-        if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
-            # If we have Pokemon info in the cache
-            pokemon_info = st.session_state.deck_pokemon_info[deck_name]
-            if pokemon_info and len(pokemon_info) > 0:
-                pokemon = pokemon_info[0]  # Get the first (and only) Pokemon
-                
-                if pokemon.get('set') and pokemon.get('num'):
-                    formatted_num = format_card_number(pokemon['num'])
-                    
-                    # Fetch and crop the image AGAIN, but don't apply left cut
-                    img = fetch_and_crop_image(pokemon['set'], formatted_num)
-                    
-                    if img:
-                        # Apply RIGHT cut for the second image
-                        img = apply_diagonal_cut(img, "right") 
-                        pil_images.append(img)
-        
-        # If we couldn't add a second image using cached info, duplicate the first one
-        if len(pil_images) == 1:
-            # Find where we applied the left cut to get the original uncut image
-            original_set = None
-            original_num = None
-            
-            # Try to find the original set and number from the session state
-            if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
-                pokemon_info = st.session_state.deck_pokemon_info[deck_name]
-                if pokemon_info and len(pokemon_info) > 0:
-                    original_set = pokemon_info[0].get('set')
-                    original_num = pokemon_info[0].get('num')
-            
-            # If we found the original info, fetch it again
-            if original_set and original_num:
-                formatted_num = format_card_number(original_num)
-                
-                # Fetch and crop the image again
-                img = fetch_and_crop_image(original_set, formatted_num)
+                # Fetch and crop the image (without gradient)
+                img = fetch_and_crop_image(pokemon['set'], formatted_num)
                 
                 if img:
-                    # Apply RIGHT cut this time
-                    img = apply_diagonal_cut(img, "right")
+                    # Apply diagonal cut based on position
+                    cut_type = "left" if i == 0 else "right"
+                    img = apply_diagonal_cut(img, cut_type)
                     pil_images.append(img)
-            else:
-                # Fallback: duplicate the first image with opposite cut
-                # This is not ideal but better than nothing
-                img = pil_images[0].copy()
+    
+    # If no pre-loaded info or images, fall back to old method
+    else:
+        # Extract Pokemon from deck name
+        pokemon_names = extract_pokemon_from_deck_name(deck_name)
+        
+        if not pokemon_names:
+            return None
+        
+        pil_images = []
+        
+        # Get images for each Pokemon
+        for i, pokemon_name in enumerate(pokemon_names[:2]):
+            # Skip if analysis_results is None
+            if analysis_results is None:
+                continue
                 
-                # We can't "uncut" it, but we can flip it horizontally to make it less obvious
-                from PIL import ImageOps
-                img = ImageOps.mirror(img)
+            card_info = get_pokemon_card_info(pokemon_name, analysis_results)
+            
+            if card_info:
+                formatted_num = format_card_number(card_info['num'])
                 
-                # Apply right cut pattern
-                img = apply_diagonal_cut(img, "right")
-                pil_images.append(img)
+                # Fetch and crop the image (without gradient)
+                img = fetch_and_crop_image(card_info['set'], formatted_num)
+                
+                if img:
+                    # Apply diagonal cut based on position
+                    cut_type = "left" if i == 0 else "right"
+                    img = apply_diagonal_cut(img, cut_type)
+                    pil_images.append(img)
+    
+    # Handle cases with less than 2 images
+    if len(pil_images) == 0:
+        return None
+    elif len(pil_images) == 1:
+        # Duplicate the image for the right side with right cut
+        img = pil_images[0].copy()
+        img = apply_diagonal_cut(img, "right")
+        pil_images.append(img)
+    
+    if len(pil_images) < 2:
+        return None
+    
+    # Merge the two images (without gradient)
+    cutoff_percentage = 0.7
+    merged_image = merge_header_images(
+        pil_images[0], 
+        pil_images[1], 
+        gap=5,
+        cutoff_percentage=cutoff_percentage
+    )
+    
+    # Apply gradient to the merged image
+    merged_with_gradient = apply_vertical_gradient(merged_image)
+    
+    # Convert to base64
+    buffered = BytesIO()
+    merged_with_gradient.save(buffered, format="PNG")
+    img_base64 = base64.b64encode(buffered.getvalue()).decode()
+    
+    return img_base64
 
 # Add a simple in-memory cache for thumbnails
 _thumbnail_cache = {}
