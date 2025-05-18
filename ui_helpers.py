@@ -277,7 +277,7 @@ def render_sidebar():
             #### Power Index: How We Rank the Best Decks
             
             **Where the Data Comes From**  
-            Our Power Index uses tournament results from {current_month_year} on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in competitive play, not just how popular they are.
+            Our Power Index uses the most recent 40 community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in competitive play, not just how popular they are.
             
             **What the Power Index Measures**  
             The Power Index is calculated as:
