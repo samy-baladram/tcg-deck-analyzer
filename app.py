@@ -99,8 +99,9 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 
 /* Expander open state */
 .stExpander > details[open] > summary {
-    border-top: 4px solid #00A0FF !important;
+    border-top: 2px solid #00A0FF !important;
     color: #00A0FF !important;
+    font-size: 20px;
 
 }
 
