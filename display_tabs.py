@@ -64,7 +64,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
             # Import variant renderer
             from card_renderer import render_variant_cards
             
-            st.markdown("<div style='margin-top: -40px;'></div>", unsafe_allow_html=True)
+            # st.markdown("<div style='margin-top: -40px;'></div>", unsafe_allow_html=True)
             # Display variant analysis
             for _, row in variant_df.iterrows():
                 with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
