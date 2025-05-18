@@ -184,15 +184,15 @@ def apply_diagonal_cut(image, cut_type):
     
     return result
 
-def merge_header_images(img1, img2, gap=-0.4, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap=-20, cutoff_percentage=0.7):
     """
-    Merge two diagonally cut images side by side
+    Merge two images with edge gradients and cutoffs by overlapping them
     
     Parameters:
-    img1: PIL Image - left image with right side cut
-    img2: PIL Image - right image with left side cut
-    gap: int - gap in pixels between the visible parts
-    cutoff_percentage: float - the percentage used in the diagonal cut
+    img1: PIL Image - left image with cutoff and gradient on right edge
+    img2: PIL Image - right image with cutoff and gradient on left edge
+    gap: int - additional gap between images (negative for more overlap)
+    cutoff_percentage: float - not used but kept for compatibility
     
     Returns:
     PIL Image - merged image
@@ -207,20 +207,28 @@ def merge_header_images(img1, img2, gap=-0.4, cutoff_percentage=0.7):
     width1, height1 = img1.size
     width2, height2 = img2.size
     
-    # Calculate positions
-    img2_x_position = int(width1 * cutoff_percentage) + width1*gap
+    # Calculate overlap based on the image widths and edge cutoffs
+    edge_cutoff = 0.05  # 5% cutoff from edge
+    gradient_ratio = 0.2  # 20% width for gradient
     
-    # Calculate new dimensions
-    max_height = max(height1, height2)
+    # Calculate positions with proper overlap
+    # The second image should start at 75% of the first image width plus any additional gap
+    img2_x_position = int(width1 * (1 - edge_cutoff - gradient_ratio/2)) + gap
+    
+    # Calculate new total width (not just adding the widths)
     total_width = img2_x_position + width2
+    
+    # Calculate maximum height
+    max_height = max(height1, height2)
     
     # Create new image with transparent background
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
-    # Paste images
+    # Calculate y positions for centering
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
+    # Paste images with their alpha channels
     merged.paste(img1, (0, y1), img1)
     merged.paste(img2, (img2_x_position, y2), img2)
     
