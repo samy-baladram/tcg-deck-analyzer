@@ -139,6 +139,7 @@ def display_deck_template_tab(results):
     # Right column: Core Cards and Flexible Slots in vertical layout
     with outer_col2:
         # Create header
+        st.write("### Deck Composition", unsafe_allow_html=True)
         if energy_types:
             # Render energy icons for header
             energy_html = ""
@@ -148,10 +149,10 @@ def display_deck_template_tab(results):
             
             # Create header with energy types
             archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
-            core_cards_header = f"""### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html}{archetype_note})</span>"""
+            core_cards_header = f"""##### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html}{archetype_note})</span>"""
         else:
             # Just "Core Cards" if no energy found
-            core_cards_header = "### Core Cards"
+            core_cards_header = "##### Core Cards"
         
         # Display the header
         st.write(core_cards_header, unsafe_allow_html=True)
@@ -160,13 +161,13 @@ def display_deck_template_tab(results):
         from card_renderer import CardGrid
         
         # Pokemon cards section
-        st.write("#### Pokémon")
+        st.write("###### Pokémon")
         pokemon_grid = CardGrid(card_width=70, gap=4)
         pokemon_grid.add_cards_from_dict(deck_info['Pokemon'], repeat_by_count=True)
         pokemon_grid.display()
         
         # Trainer cards section
-        st.write("#### Trainer")
+        st.write("###### Trainer")
         trainer_grid = CardGrid(card_width=70, gap=4)
         trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
         trainer_grid.display()
