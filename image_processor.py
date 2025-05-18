@@ -459,9 +459,8 @@ def create_deck_header_images(deck_info, analysis_results=None):
     # Special handling for single Pokémon case
     if len(pil_images) == 1:
         # For single Pokémon, don't cut or merge - just apply gradient and return
-        pil_images[1] = pil_images[0]
-        # single_image = pil_images[0]
-        
+        single_image = pil_images[0]
+        pil_images.append(single_image)
         # # Apply gradient to the single image
         # with_gradient = apply_vertical_gradient(single_image)
         
