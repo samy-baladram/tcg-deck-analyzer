@@ -381,30 +381,32 @@ def add_card_hover_effect():
 def enhance_card_image_html(img_html, full_size_url=None):
     """
     Enhance an image HTML string to make it clickable.
-    Wraps the image in an anchor tag that opens the image in a new tab.
+    Links to the Limitless TCG card page rather than the image itself.
     
     Parameters:
     img_html: HTML string containing an img tag
     full_size_url: Optional URL to a full-size version of the image
     
     Returns:
-    Enhanced HTML string with clickable functionality
+    Enhanced HTML string with clickable functionality to card page
     """
-    # Use full_size_url if provided, otherwise extract src from img_html
-    if not full_size_url:
-        # Extract src from img_html
-        import re
-        src_match = re.search(r'src="([^"]+)"', img_html)
-        if src_match:
-            full_size_url = src_match.group(1)
-        else:
-            return img_html  # Return original if no src found
+    # Extract set_code and card number from the image URL
+    import re
+    src_match = re.search(r'src="[^"]+/([A-Za-z0-9]+)/\1_(\d+)_EN\.webp"', img_html)
     
-    # Remove any existing wrappers if present
-    if img_html.startswith('<a '):
-        return img_html  # Already wrapped in anchor, return as is
+    if src_match:
+        set_code = src_match.group(1)
+        card_num = src_match.group(2)
+        
+        # Remove leading zeros from card number to match the format
+        card_num = card_num.lstrip('0')
+        
+        # Create the card page URL
+        card_page_url = f"https://pocket.limitlesstcg.com/cards/{set_code}/{card_num}"
+        
+        # Wrap the image in an anchor tag with the card page URL
+        enhanced_html = f'<a href="{card_page_url}" target="_blank" style="cursor: pointer;">{img_html}</a>'
+        return enhanced_html
     
-    # Wrap the image in an anchor tag
-    enhanced_html = f'<a href="{full_size_url}" target="_blank" style="cursor: pointer;">{img_html}</a>'
-    
-    return enhanced_html
+    # If we couldn't extract the set code and number, return the original HTML
+    return img_html
