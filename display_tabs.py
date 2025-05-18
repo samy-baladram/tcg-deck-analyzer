@@ -242,16 +242,23 @@ def display_metagame_tab():
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
-    # Define a styling function
-    def highlight_current_deck(s):
-        is_current = s.str.contains('➡️', na=False)
-        return ['background-color: rgba(0, 160, 255, 0.2)' if v else '' for v in is_current]
+    # Define a function to highlight the entire row
+    def highlight_current_row(df):
+        # Create an empty DataFrame with the same shape as the input
+        styles = pd.DataFrame('', index=df.index, columns=df.columns)
+        
+        # Find rows where the Deck column contains the arrow emoji
+        mask = df['Deck'].str.contains('➡️', na=False)
+        
+        # Set the style for all cells in the highlighted rows
+        if mask.any():
+            for col in df.columns:
+                styles.loc[mask, col] = 'background-color: rgba(0, 160, 255, 0.10)'
+        
+        return styles
     
-    # Apply styling to the Deck column only
-    styled_df = final_df.style.apply(
-        highlight_current_deck, 
-        subset=['Deck']
-    )
+    # Apply styling to entire DataFrame
+    styled_df = final_df.style.apply(highlight_current_row, axis=None)
     
     # Display with styling
     st.dataframe(
