@@ -136,7 +136,7 @@ def apply_diagonal_cut(image, cut_type):
     draw = ImageDraw.Draw(mask)
     
     # Calculate gradient width (30% of the image width)
-    gradient_width = int(width * 0.3)
+    gradient_width = int(width * 0.2)
     
     if cut_type == "left":
         # Apply gradient to right edge
