@@ -240,18 +240,20 @@ def display_metagame_tab():
         'power_index': 'Power Index'
     }
     
-    final_df = display_df[display_cols.keys()].rename(columns=display_cols)
+    # Create flag to identify current deck for styling
+    display_df['is_current'] = display_df['deck_name'] == current_deck_name
     
-    # Define a styling function
-    def highlight_current_deck(s):
-        is_current = s.str.contains('➡️', na=False)
-        return ['background-color: rgba(0, 160, 255, 0.2)' if v else '' for v in is_current]
+    final_df = display_df[list(display_cols.keys()) + ['is_current']].rename(columns=display_cols)
     
-    # Apply styling to the Deck column only
-    styled_df = final_df.style.apply(
-        highlight_current_deck, 
-        subset=['Deck']
-    )
+    # Define a function to highlight the entire row
+    def highlight_rows(s):
+        return ['background-color: rgba(0, 160, 255, 0.15)' if s['is_current'] else '' for i in range(len(s.index))]
+    
+    # Apply styling to the entire dataframe based on the is_current column
+    styled_df = final_df.style.apply(highlight_rows, axis=1)
+    
+    # Drop the is_current column before display
+    styled_df = styled_df.hide(columns=['is_current'])
     
     # Display with styling
     st.dataframe(
