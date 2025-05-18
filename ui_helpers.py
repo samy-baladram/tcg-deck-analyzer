@@ -173,7 +173,9 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
     power_index = round(deck['power_index'], 2)
     
     # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
-    circled_numbers = ["⓪", "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
+    #circled_numbers = ["⓪", "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
+    circled_numbers = ["⓿", "❶", "❷", "❸", "❹", "❺", "❻", "❼", "❽", "❾", "❿"]
+
     
     # Get the appropriate circled number based on rank
     if rank is not None and 0 <= rank <= 10:
