@@ -23,8 +23,9 @@ def display_deck_header(deck_info, results):
     else:
         st.header(format_deck_name(deck_info['deck_name']))
 
-def display_card_usage_tab(results, total_decks, variant_df):
-    """Display the Card Usage tab"""
+# In display_card_usage_tab function in display_tabs.py
+def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
+    """Display the Card Usage tab with energy-colored charts"""
     # Create two columns for Pokemon and Trainer
     st.write("#### Card Usage & Variants")
     col1, col2 = st.columns([1, 1])
@@ -34,7 +35,8 @@ def display_card_usage_tab(results, total_decks, variant_df):
         type_cards = results[results['type'] == 'Pokemon']
         
         if not type_cards.empty:
-            fig = create_usage_bar_chart(type_cards, 'Pokemon')
+            # Pass energy types for coloring
+            fig = create_usage_bar_chart(type_cards, 'Pokemon', energy_types)
             display_chart(fig)
         else:
             st.info("No Pokemon cards found")
@@ -55,7 +57,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
                     var2_set = '-'.join(var2.split('-')[:-1])
                     var2_num = var2.split('-')[-1]
                     
-                    # # Create the 2-column layout
+                    # Create the 2-column layout
                     var_col1, var_col2 = st.columns([2, 5])
                     
                     # Column 1: Both Variants side by side
@@ -65,8 +67,8 @@ def display_card_usage_tab(results, total_decks, variant_df):
                     
                     # Column 2: Bar Chart
                     with var_col2:
-                        # Create variant bar chart with fixed height
-                        fig_var = create_variant_bar_chart(row)
+                        # Create variant bar chart with fixed height, passing energy types
+                        fig_var = create_variant_bar_chart(row, energy_types)
                         display_chart(fig_var) 
     
     with col2:
@@ -74,6 +76,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
         type_cards = results[results['type'] == 'Trainer']
         
         if not type_cards.empty:
+            # For trainers, don't pass energy types to keep default colors
             fig = create_usage_bar_chart(type_cards, 'Trainer')
             display_chart(fig)
         else:
