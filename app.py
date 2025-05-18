@@ -87,6 +87,9 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 /* Expander header styling */
 .stExpander > details > summary {
     border-color: #00A0FF !important;
+}
+
+.stExpander > details > summary > p{
     font-size: 4rem;
 }
 
