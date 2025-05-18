@@ -281,8 +281,8 @@ def display_metagame_tab():
         'displayed_name': 'Deck',
         'power_index': 'Power Index',
         'share': 'Meta Share %',
-        'win_rate': 'Win %',
         'tournaments_played': 'Best Finish Entries',
+        'win_rate': 'Win %',
         'total_wins': 'Wins',
         'total_losses': 'Losses',
         'total_ties': 'Ties'      
@@ -333,16 +333,18 @@ def display_metagame_tab():
     
     st.markdown(f"""
     ##### Understanding the Metrics
+
+    **Rank**: Rank based on Power Index
+
+    **Power Index**: Our key performance metric calculated as (Wins + 0.75×Ties - Losses) ÷ √(Total Games). Higher values indicate stronger performance.
+
+    **Meta Share %**: Percentage representation of this deck in the overall competitive metagame.
+
+    **Best Finish Entries**: Number of tournament entries in the "Best Finishes" section.
     
     **Win %**: Percentage of matches won out of total matches played.
     
-    **Wins, Losses, Ties**: Total wins, losses, and ties from all recorded matches.
-    
-    **Best Finish Entries**: Number of tournament entries in the "Best Finishes" section.
-    
-    **Meta Share %**: Percentage representation of this deck in the competitive metagame.
-    
-    **Power Index**: Our key performance metric calculated as (Wins + 0.75×Ties - Losses) ÷ √(Total Games). Higher values indicate stronger performance.
+    **Wins, Losses, Ties**: Total wins, losses, and ties from all recorded "Best Finishes" matches.
     
     ---
     
