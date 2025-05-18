@@ -8,6 +8,9 @@ from io import BytesIO
 import re
 from config import IMAGE_BASE_URL, IMAGE_CROP_BOX, IMAGE_GRADIENT
 from utils import is_set_code
+GAP_RATIO = -0.3
+EDGE_CUTOFF = 0.05
+GRADIENT_RATIO = 0.2
 
 # Simple utility functions
 def get_base64_image(path):
@@ -136,13 +139,12 @@ def apply_diagonal_cut(image, cut_type):
     draw = ImageDraw.Draw(mask)
     
     # Define cutoff percentages and gradient width
-    edge_cutoff = 0.05  # 5% cutoff from edge
-    gradient_ratio = 0.2  # 20% of width for gradient
+    edge_cutoff = EDGE_CUTOFF  # 5% cutoff from edge
+    gradient_ratio = GRADIENT_RATIO  # 20% of width for gradient
     gradient_width = int(width * gradient_ratio)
     
     if cut_type == "left":
         # For left image, keep everything except right 5% and apply gradient to right edge
-        gradient_width = int(width * (gradient_ratio-0.1))
         # Calculate where to start the cutoff
         cutoff_start = int(width * (1 - edge_cutoff))
         gradient_start = cutoff_start - gradient_width
@@ -161,7 +163,6 @@ def apply_diagonal_cut(image, cut_type):
             
     else:  # cut_type == "right"
         # For right image, keep everything except left 5% and apply gradient to left edge
-        gradient_width = int(width * (gradient_ratio+0.1))
         # Calculate where the cutoff ends
         cutoff_end = int(width * edge_cutoff)
         gradient_end = cutoff_end + gradient_width
@@ -183,8 +184,8 @@ def apply_diagonal_cut(image, cut_type):
     result.putalpha(mask)
     
     return result
-
-def merge_header_images(img1, img2, gap_ratio=-0.4, cutoff_percentage=0.7):
+ 
+def merge_header_images(img1, img2, gap_ratio=GAP_RATIO, cutoff_percentage=0.7):
     """
     Merge two images with edge gradients and cutoffs by overlapping them
     
@@ -208,8 +209,8 @@ def merge_header_images(img1, img2, gap_ratio=-0.4, cutoff_percentage=0.7):
     width2, height2 = img2.size
     
     # Calculate overlap based on the image widths and edge cutoffs
-    edge_cutoff = 0.05  # 5% cutoff from edge
-    gradient_ratio = 0.2  # 20% width for gradient
+    edge_cutoff = EDGE_CUTOFF  # 5% cutoff from edge
+    gradient_ratio = GRADIENT_RATIO  # 20% width for gradient
     
     # Calculate positions with proper overlap
     # The second image should start at 75% of the first image width plus any additional gap
