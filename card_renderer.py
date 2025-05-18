@@ -380,33 +380,31 @@ def add_card_hover_effect():
 
 def enhance_card_image_html(img_html, full_size_url=None):
     """
-    Enhance an image HTML string to work with the hover effect
+    Enhance an image HTML string to make it clickable.
+    Wraps the image in an anchor tag that opens the image in a new tab.
     
     Parameters:
     img_html: HTML string containing an img tag
     full_size_url: Optional URL to a full-size version of the image
     
     Returns:
-    Enhanced HTML string with hover effect classes and data attributes
+    Enhanced HTML string with clickable functionality
     """
-    # Log the original HTML for debugging
-    print(f"Enhancing image HTML: {img_html[:50]}...")
+    # Use full_size_url if provided, otherwise extract src from img_html
+    if not full_size_url:
+        # Extract src from img_html
+        import re
+        src_match = re.search(r'src="([^"]+)"', img_html)
+        if src_match:
+            full_size_url = src_match.group(1)
+        else:
+            return img_html  # Return original if no src found
     
-    # Check if it already has card-image class
-    if 'class="card-image"' in img_html or "class='card-image'" in img_html:
-        # Already has the class, just add full-size URL if provided
-        if full_size_url:
-            img_html = img_html.replace('<img ', f'<img data-fullsize="{full_size_url}" ')
-    else:
-        # Add card-image class
-        img_html = img_html.replace('<img ', '<img class="card-image" ')
-        
-        # Add full-size URL if provided
-        if full_size_url:
-            img_html = img_html.replace('<img ', f'<img data-fullsize="{full_size_url}" ')
+    # Remove any existing wrappers if present
+    if img_html.startswith('<a '):
+        return img_html  # Already wrapped in anchor, return as is
     
-    # Add a data attribute to make debugging easier
-    img_html = img_html.replace('<img ', '<img data-card-enhanced="true" ')
+    # Wrap the image in an anchor tag
+    enhanced_html = f'<a href="{full_size_url}" target="_blank" style="cursor: pointer;">{img_html}</a>'
     
-    print(f"Enhanced to: {img_html[:50]}...")
-    return img_html
+    return enhanced_html
