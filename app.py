@@ -19,6 +19,10 @@ background.add_app_background()
 # Apply custom styles
 st.markdown("""
 <style>
+div[data-testid="stExpander"] details summary p{
+    font-size: 2rem;
+}
+
 /* Change primary color to blue */
 div[data-baseweb="select"] > div {
     border-color: #00A0FF !important;
