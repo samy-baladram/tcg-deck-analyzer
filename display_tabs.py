@@ -279,13 +279,13 @@ def display_metagame_tab():
     # Select and rename columns for display
     display_cols = {
         'displayed_name': 'Deck',
+        'power_index': 'Power Index'
+        'share': 'Meta Share %',
         'win_rate': 'Win %',
+        'tournaments_played': 'Best Finish Entries',
         'total_wins': 'Wins',
         'total_losses': 'Losses',
-        'total_ties': 'Ties',
-        'tournaments_played': 'Best Finish Entries',
-        'share': 'Meta Share %',
-        'power_index': 'Power Index'
+        'total_ties': 'Ties',        
     }
     
     # Create indicator for highlighting
@@ -293,6 +293,9 @@ def display_metagame_tab():
     
     # Create final display dataframe
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
+
+    # Add Rank column based on the index
+    final_df.insert(0, 'Rank', range(1, len(final_df) + 1))
     
     # Create a styling function that works with DataFrame.style
     def highlight_current_deck(df):
@@ -324,24 +327,12 @@ def display_metagame_tab():
         hide_index=True
     )
     
-    # Show note about current deck if one is selected
-    # if current_deck_name and current_deck_name in display_df['deck_name'].values:
-    #     selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0]
-    #     selected_name = selected_deck_name.replace('➡️ ', '')
-        
-    #     st.markdown(f"""
-    #     <div style="background-color: rgba(0, 160, 255, 0.1); padding: 12px; border-radius: 5px; 
-    #                 border-left: 4px solid #00A0FF; margin-top: 10px; margin-bottom: 20px;">
-    #         <span style="font-weight: bold;">➡️ Currently analyzing:</span> {selected_name}
-    #     </div>
-    #     """, unsafe_allow_html=True)
-    
     # Add explanation
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
     
     st.markdown(f"""
-    ### Understanding the Metrics
+    ##### Understanding the Metrics
     
     **Win %**: Percentage of matches won out of total matches played.
     
@@ -355,7 +346,7 @@ def display_metagame_tab():
     
     ---
     
-    *Data is based on tournament results from {current_month_year} on Limitless TCG.*
+    *Data is based on tournament results from up to 40 most recent community tournaments in {current_month_year} on Limitless TCG.*
     """)
     
 # Add this to display_tabs.py - Add a new tab for energy debugging
