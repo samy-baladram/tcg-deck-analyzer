@@ -259,11 +259,11 @@ def render_sidebar():
         # Add disclaimer with update time in one line
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.sidebar.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.85rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
             <div>Top performers from {current_month_year}</div>
             <div>Updated {performance_time_str}</div>
         </div>
-        <div style="font-size: 0.75rem; margin-bottom: 12px; color: #777;">
+        <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
             Based on up to {TOURNAMENT_COUNT} tournament results
         </div>
         """, unsafe_allow_html=True)
