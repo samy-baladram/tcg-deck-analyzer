@@ -3,6 +3,7 @@
 
 import streamlit as st
 from formatters import format_deck_name
+from related_decks import find_related_decks
 from image_processor import create_deck_header_images
 from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
 from analyzer import build_deck_template
