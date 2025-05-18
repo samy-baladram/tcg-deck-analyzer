@@ -107,6 +107,9 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     color: #00A0FF !important;
 }*/
 
+div[data-testid="stExpander"] div[role="button"] p {
+    font-size: 4rem;
+}
 
 </style>
 """, unsafe_allow_html=True)
