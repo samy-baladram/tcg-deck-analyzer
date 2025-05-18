@@ -73,36 +73,38 @@ div[role="option"]:hover {
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
     border-bottom: none !important;
 }
-/* Sidebar font size adjustments */
-.sidebar .stExpander {
-    font-size: 18px !important; 
-}
-
-.sidebar .stExpander summary {
+/* More targeted sidebar font size adjustments */
+[data-testid="stSidebar"] [data-testid="stExpander"] > details > summary {
     font-size: 18px !important;
     font-weight: 500 !important;
 }
 
+/* Target the deck name specifically */
+[data-testid="stSidebar"] [data-testid="stExpander"] > details > summary > div > p {
+    font-size: 17px !important;
+    line-height: 1.3 !important;
+}
+
 /* Make circled numbers more visible */
-.sidebar .stExpander summary span:first-child {
-    font-size: 20px !important;
+[data-testid="stSidebar"] [data-testid="stExpander"] > details > summary > div > p span {
+    font-size: 19px !important;
     margin-right: 4px !important;
 }
 
 /* Improve sidebar content typography */
-.sidebar .stMarkdown, 
-.sidebar .stMarkdown p {
+[data-testid="stSidebar"] [data-testid="stMarkdown"] p {
     font-size: 16px !important;
+    line-height: 1.4 !important;
 }
 
 /* Make energy icons more visible */
-.sidebar img[src*="energy"] {
+[data-testid="stSidebar"] img[src*="pocket"] {
     height: 22px !important;
     margin-right: 6px !important;
 }
 
 /* Ensure sidebar expander spacing is consistent */
-.sidebar .stExpander details {
+[data-testid="stSidebar"] [data-testid="stExpander"] {
     margin-bottom: 10px !important;
 }
 </style>
