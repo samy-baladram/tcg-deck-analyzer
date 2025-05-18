@@ -173,7 +173,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
     power_index = round(deck['power_index'], 2)
     
     # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
-    circled_numbers = ["⓪", "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
+    circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
     #circled_numbers = ["⓿", "❶", "❷", "❸", "❹", "❺", "❻", "❼", "❽", "❾", "❿"]
 
     
@@ -184,7 +184,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         rank_symbol = ""
     
     # Create a plain text expander title with the rank and power index
-    with st.sidebar.expander(f"{rank_symbol}  {deck['displayed_name']} ({power_index})", expanded=expanded):
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ({power_index})", expanded=expanded):
         # Determine the color class based on power index
         power_class = "positive-index" if power_index > 0 else "negative-index"
         
