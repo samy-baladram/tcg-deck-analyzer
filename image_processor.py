@@ -162,9 +162,9 @@ def apply_diagonal_cut(image, cut_type):
     
     return result
 
-def merge_header_images(img1, img2, gap=20, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     """
-    Merge two diagonally cut images side by side
+    Merge two diagonally cut images side by side using an alpha mask
     
     Parameters:
     img1: PIL Image - left image with right side cut
@@ -192,29 +192,22 @@ def merge_header_images(img1, img2, gap=20, cutoff_percentage=0.7):
     max_height = max(height1, height2)
     total_width = img2_x_position + width2
     
-    # Create new image with transparent background
+    # Create a completely transparent canvas
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
-    # Paste images
+    # Create alpha masks for each image
+    mask1 = Image.new('L', img1.size, 255)  # 'L' mode for grayscale
+    mask2 = Image.new('L', img2.size, 255)  # 'L' mode for grayscale
+    
+    # Calculate y positions for centering
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
-    merged.paste(img1, (0, y1), img1)
-    merged.paste(img2, (img2_x_position, y2), img2)
+    # Paste first image with its mask
+    merged.paste(img1, (0, y1), mask=img1.split()[3])  # Using the alpha channel as mask
     
-    # Remove pure black pixels (make them transparent)
-    # Get the pixel data
-    pixels = merged.load()
-    
-    # For each pixel in the image
-    for y in range(merged.height):
-        for x in range(merged.width):
-            # Check if the pixel is pure black (or very close to black)
-            # Format is (R, G, B, A)
-            r, g, b, a = pixels[x, y]
-            if r <= 5 and g <= 5 and b <= 5 and a > 0:
-                # Make black pixels transparent
-                pixels[x, y] = (0, 0, 0, 0)
+    # Paste second image with its mask
+    merged.paste(img2, (img2_x_position, y2), mask=img2.split()[3])  # Using the alpha channel as mask
     
     return merged
 
