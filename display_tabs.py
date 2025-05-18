@@ -242,9 +242,20 @@ def display_metagame_tab():
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
-    # Use data_editor with correct parameters for Streamlit 1.45
-    st.data_editor(
-        final_df,
+    # Define a styling function
+    def highlight_current_deck(s):
+        is_current = s.str.contains('➡️', na=False)
+        return ['background-color: rgba(0, 160, 255, 0.2)' if v else '' for v in is_current]
+    
+    # Apply styling to the Deck column only
+    styled_df = final_df.style.apply(
+        highlight_current_deck, 
+        subset=['Deck']
+    )
+    
+    # Display with styling
+    st.dataframe(
+        styled_df,
         use_container_width=True,
         height=800,
         column_config={
@@ -252,8 +263,7 @@ def display_metagame_tab():
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
             "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
         },
-        hide_index=True,
-        disabled=["Deck", "Win %", "Wins", "Losses", "Ties", "Best Finish Entries", "Meta Share %", "Power Index"]
+        hide_index=True
     )
     
     # Show note about current deck if one is selected
@@ -268,7 +278,7 @@ def display_metagame_tab():
         </div>
         """, unsafe_allow_html=True)
     
-    # Add explanation below the table
+    # Add explanation
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
     
