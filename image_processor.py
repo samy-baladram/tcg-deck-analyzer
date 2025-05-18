@@ -459,17 +459,18 @@ def create_deck_header_images(deck_info, analysis_results=None):
     # Special handling for single Pokémon case
     if len(pil_images) == 1:
         # For single Pokémon, don't cut or merge - just apply gradient and return
-        single_image = pil_images[0]
+        pil_images[1] = pil_images[0]
+        # single_image = pil_images[0]
         
-        # Apply gradient to the single image
-        with_gradient = apply_vertical_gradient(single_image)
+        # # Apply gradient to the single image
+        # with_gradient = apply_vertical_gradient(single_image)
         
-        # Convert to base64
-        buffered = BytesIO()
-        with_gradient.save(buffered, format="PNG")
-        img_base64 = base64.b64encode(buffered.getvalue()).decode()
+        # # Convert to base64
+        # buffered = BytesIO()
+        # with_gradient.save(buffered, format="PNG")
+        # img_base64 = base64.b64encode(buffered.getvalue()).decode()
         
-        return img_base64
+        # return img_base64
     
     # For multiple images, merge them with diagonal cuts
     # Merge the two images
