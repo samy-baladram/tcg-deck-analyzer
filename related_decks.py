@@ -3,7 +3,9 @@
 import pandas as pd
 from image_processor import extract_pokemon_from_deck_name
 
-def find_related_decks(current_deck_name, deck_list_mapping, max_related=9):
+# Updated find_related_decks function in related_decks.py
+
+def find_related_decks(current_deck_name, deck_list_mapping, max_related=10):
     """
     Find decks related to the current deck based on shared Pokémon in deck names.
     Only includes decks that are in the current deck selection dropdown.
@@ -25,12 +27,29 @@ def find_related_decks(current_deck_name, deck_list_mapping, max_related=9):
     # Convert deck_list_mapping to DataFrame for easier processing
     deck_data = []
     for display_name, deck_info in deck_list_mapping.items():
-        # Extract display name without the parentheses part (Power Index)
-        clean_display = display_name.split(" (")[0] if " (" in display_name else display_name
+        # Extract meta share percentage from display name if available
+        share = 0.0
+        if "%" in display_name:
+            try:
+                share_part = display_name.split("- ")[-1].strip()
+                share = float(share_part.replace("%", ""))
+            except:
+                # If using power index format instead of share percentage
+                share = 0.0
+        
+        # Extract clean display name without the percentage/power index part
+        if " (" in display_name:
+            clean_display = display_name.split(" (")[0]
+        elif " - " in display_name:
+            clean_display = display_name.split(" - ")[0]
+        else:
+            clean_display = display_name
+            
         deck_data.append({
             'display_name': clean_display,
             'deck_name': deck_info['deck_name'],
-            'set': deck_info['set']
+            'set': deck_info['set'],
+            'share': share
         })
     
     deck_df = pd.DataFrame(deck_data)
@@ -54,8 +73,11 @@ def find_related_decks(current_deck_name, deck_list_mapping, max_related=9):
     # Remove the current deck
     related_decks = related_decks[related_decks['deck_name'] != current_deck_name]
     
-    # Sort by number of shared Pokémon (desc)
-    related_decks = related_decks.sort_values(by='shared_pokemon', ascending=False)
+    # Sort by number of shared Pokémon (desc) and share percentage (desc)
+    related_decks = related_decks.sort_values(
+        by=['shared_pokemon', 'share'], 
+        ascending=[False, False]
+    )
     
     # Limit to max_related
     if len(related_decks) > max_related:
