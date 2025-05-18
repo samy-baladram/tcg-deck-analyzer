@@ -183,9 +183,9 @@ def apply_diagonal_cut(image, cut_type):
             # Calculate position in the gradient region
             x_pos = cutoff_end + x
             norm_pos = x / gradient_width
-            opacity = int(255 * math.sqrt(norm_pos))
+            #opacity = int(255 * math.sqrt(norm_pos))
             #opacity = int(255 * (x / gradient_width))  # Fade from transparent to opaque
-            
+            opacity = int(255 * (0.5 + 0.5 * math.tanh(5 * (norm_pos - 0.5))))
             # Draw vertical line with calculated opacity
             draw.line([(x_pos, 0), (x_pos, height)], fill=opacity)
     
