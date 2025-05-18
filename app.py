@@ -89,7 +89,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     border-color: #00A0FF !important;
 }
 
-
 /* Expander hover effect */
 .stExpander > details > summary:hover {
     color: #00A0FF !important;
@@ -99,10 +98,8 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 
 /* Expander open state */
 .stExpander > details[open] > summary {
-    border-top: 2px solid #00A0FF !important;
+    border-top: 0px solid #00A0FF !important;
     color: #00A0FF !important;
-    font-size: 20px;
-
 }
 
 /* Expander arrow/icon color 
