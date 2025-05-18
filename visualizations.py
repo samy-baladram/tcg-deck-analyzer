@@ -161,7 +161,9 @@ def create_usage_bar_chart(type_cards, card_type, energy_type=None):
         font=dict(size=CHART_FONT_SIZE),
         yaxis=dict(tickfont=dict(size=CHART_FONT_SIZE)),
         bargap=CHART_BAR_GAP,
-        uniformtext=dict(minsize=12, mode='show')
+        uniformtext=dict(minsize=12, mode='show'),
+        paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+        plot_bgcolor='rgba(0,0,0,0)'   # Transparent plot area
     )
     
     # Reverse the order to show highest usage at top
