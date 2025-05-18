@@ -8,6 +8,9 @@ IMAGE_BASE_URL = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"
 # Cache settings
 CACHE_TTL = 3600  # 1 hour in seconds
 
+# Tournament count
+TOURNAMENT_COUNT = 40
+
 # Display settings
 MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
 
