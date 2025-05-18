@@ -381,7 +381,7 @@ def display_related_decks_tab(deck_info, results):
             
             # Display each related deck
             for i, (_, deck) in enumerate(related_decks.iterrows()):
-                col_idx = i % 3
+                col_idx = i % 4
                 
                 with cols[col_idx]:
                     # Format deck name
