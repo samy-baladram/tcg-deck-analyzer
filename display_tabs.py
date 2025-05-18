@@ -199,20 +199,19 @@ def display_raw_data_tab(results, variant_df):
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
-    st.write(st.__version__)
-    st.write("Results:")
+    
     # Get performance data
     performance_df = st.session_state.performance_data
     
     if performance_df.empty:
         st.warning("No tournament performance data available.")
         return
-        
+    
     # Get the currently selected deck
     current_deck_name = None
     if 'analyze' in st.session_state:
         current_deck_name = st.session_state.analyze.get('deck_name', None)
-        
+    
     # Create a cleaned, displayable version of the data
     display_df = performance_df.copy()
     
@@ -243,30 +242,31 @@ def display_metagame_tab():
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
-    # Create a list of rows to highlight
-    highlight_rows = []
-    for i, row in final_df.iterrows():
-        if "➡️" in str(row["Deck"]):
-            highlight_rows.append(i)
-    
-    # Display the table using data_editor
+    # Use data_editor with correct parameters for Streamlit 1.45
     st.data_editor(
         final_df,
-        hide_index=True,
         use_container_width=True,
-        disabled=True,  # Make it read-only like a dataframe
-        height=800,  # Adjust height as needed
+        height=800,
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
-            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
-            "Deck": st.column_config.TextColumn(
-                "Deck",
-                help="Deck archetype"
-            )
+            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
         },
-        highlight_rows=highlight_rows
+        hide_index=True,
+        disabled=["Deck", "Win %", "Wins", "Losses", "Ties", "Best Finish Entries", "Meta Share %", "Power Index"]
     )
+    
+    # Show note about current deck if one is selected
+    if current_deck_name and current_deck_name in display_df['deck_name'].values:
+        selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0]
+        selected_name = selected_deck_name.replace('➡️ ', '')
+        
+        st.markdown(f"""
+        <div style="background-color: rgba(0, 160, 255, 0.1); padding: 12px; border-radius: 5px; 
+                    border-left: 4px solid #00A0FF; margin-top: 10px; margin-bottom: 20px;">
+            <span style="font-weight: bold;">➡️ Currently analyzing:</span> {selected_name}
+        </div>
+        """, unsafe_allow_html=True)
     
     # Add explanation below the table
     from datetime import datetime
