@@ -83,10 +83,11 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     font-size: 14px !important;
     padding: 8px 12px !important;
 }
-
 /* Expander header styling */
 .stExpander > details > summary {
     border-color: #00A0FF !important;
+    font-size: 18px !important;  /* Increased font size */
+    font-weight: 500 !important; /* Slightly bolder */
 }
 
 /* Expander hover effect */
@@ -107,6 +108,21 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     color: #00A0FF !important;
 }
 
+/* Expander content text */
+.stExpander > details > div p {
+    font-size: 16px !important; /* Increased content font size */
+    line-height: 1.5 !important; /* Better line spacing */
+}
+
+/* Specifically target text inside the summary (the title text) */
+.stExpander > details > summary span {
+    font-size: 18px !important;
+}
+
+/* Improve overall text layout in expanders */
+.stExpander > details > div {
+    padding-top: 5px !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
