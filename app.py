@@ -73,27 +73,27 @@ div[role="option"]:hover {
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
     border-bottom: none !important;
 }
-/* More targeted sidebar font size adjustments */
-[data-testid="stSidebar"] [data-testid="stExpander"] > details > summary {
-    font-size: 18px !important;
-    font-weight: 500 !important;
+
+/* Expander styles */
+.streamlit-expanderHeader {
+    color: #4169E1 !important;
+    font-weight: 600;
 }
 
-/* Target all Streamlit expander headers */
-[data-testid="stExpander"] > details > summary {
-    font-size: 18px !important;
-    font-weight: 500 !important;
+/* Expander arrow color */
+.streamlit-expanderHeader svg {
+    color: #4169E1 !important;
+    fill: #4169E1 !important;
 }
 
-/* Target paragraphs inside expander headers for deck names */
-[data-testid="stExpander"] > details > summary > div > p {
-    font-size: 18px !important;
-    line-height: 1.4 !important;
+/* Expander hover effect */
+.streamlit-expanderHeader:hover {
+    color: rgba(65, 105, 225, 0.8) !important;
 }
 
-/* Make expander content text larger too */
-[data-testid="stExpander"] > details > div > div > div > div > p {
-    font-size: 16px !important;
+/* Expander border when open */
+.streamlit-expanderContent {
+    border-left-color: #4169E1 !important;
 }
 </style>
 """, unsafe_allow_html=True)
