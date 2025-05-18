@@ -223,10 +223,10 @@ def display_metagame_tab():
     display_df['power_index'] = display_df['power_index'].round(2)
     
     # Add an indicator emoji for the current deck
-    display_df['displayed_name'] = display_df.apply(
-        lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
-        axis=1
-    )
+    # display_df['displayed_name'] = display_df.apply(
+    #     lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+    #     axis=1
+    # )
     
     # Select and rename columns for display
     display_cols = {
@@ -277,16 +277,16 @@ def display_metagame_tab():
     )
     
     # Show note about current deck if one is selected
-    if current_deck_name and current_deck_name in display_df['deck_name'].values:
-        selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0]
-        selected_name = selected_deck_name.replace('➡️ ', '')
+    # if current_deck_name and current_deck_name in display_df['deck_name'].values:
+    #     selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0]
+    #     selected_name = selected_deck_name.replace('➡️ ', '')
         
-        st.markdown(f"""
-        <div style="background-color: rgba(0, 160, 255, 0.1); padding: 12px; border-radius: 5px; 
-                    border-left: 4px solid #00A0FF; margin-top: 10px; margin-bottom: 20px;">
-            <span style="font-weight: bold;">➡️ Currently analyzing:</span> {selected_name}
-        </div>
-        """, unsafe_allow_html=True)
+    #     st.markdown(f"""
+    #     <div style="background-color: rgba(0, 160, 255, 0.1); padding: 12px; border-radius: 5px; 
+    #                 border-left: 4px solid #00A0FF; margin-top: 10px; margin-bottom: 20px;">
+    #         <span style="font-weight: bold;">➡️ Currently analyzing:</span> {selected_name}
+    #     </div>
+    #     """, unsafe_allow_html=True)
     
     # Add explanation
     from datetime import datetime
