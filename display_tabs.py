@@ -256,7 +256,7 @@ def display_metagame_tab():
         
         # Apply background color to all cells in the matching rows
         for col in styles.columns:
-            styles.loc[is_current, col] = 'background-color: rgba(0, 160, 255, 0.15)'
+            styles.loc[is_current, col] = 'background-color: rgba(0, 208, 255, 0.15)'
             
         return styles
     
