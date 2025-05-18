@@ -199,7 +199,7 @@ def display_raw_data_tab(results, variant_df):
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
-    
+    import pandas as pd
     # Get performance data
     performance_df = st.session_state.performance_data
     
