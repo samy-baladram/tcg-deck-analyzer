@@ -412,64 +412,64 @@ def create_deck_header_images(deck_info, analysis_results=None):
     
     # Handle cases with less than 2 images
     if not pil_images:
-    return None
-elif len(pil_images) == 1:
-    # For the case with one Pokémon, we need to handle this differently
-    # Instead of duplicating the cut image, we need to fetch the original image again
-    
-    if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
-        # If we have Pokemon info in the cache
-        pokemon_info = st.session_state.deck_pokemon_info[deck_name]
-        if pokemon_info and len(pokemon_info) > 0:
-            pokemon = pokemon_info[0]  # Get the first (and only) Pokemon
-            
-            if pokemon.get('set') and pokemon.get('num'):
-                formatted_num = format_card_number(pokemon['num'])
-                
-                # Fetch and crop the image AGAIN, but don't apply left cut
-                img = fetch_and_crop_image(pokemon['set'], formatted_num)
-                
-                if img:
-                    # Apply RIGHT cut for the second image
-                    img = apply_diagonal_cut(img, "right") 
-                    pil_images.append(img)
-    
-    # If we couldn't add a second image using cached info, duplicate the first one
-    if len(pil_images) == 1:
-        # Find where we applied the left cut to get the original uncut image
-        original_set = None
-        original_num = None
+        return None
+    elif len(pil_images) == 1:
+        # For the case with one Pokémon, we need to handle this differently
+        # Instead of duplicating the cut image, we need to fetch the original image again
         
-        # Try to find the original set and number from the session state
         if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
+            # If we have Pokemon info in the cache
             pokemon_info = st.session_state.deck_pokemon_info[deck_name]
             if pokemon_info and len(pokemon_info) > 0:
-                original_set = pokemon_info[0].get('set')
-                original_num = pokemon_info[0].get('num')
+                pokemon = pokemon_info[0]  # Get the first (and only) Pokemon
+                
+                if pokemon.get('set') and pokemon.get('num'):
+                    formatted_num = format_card_number(pokemon['num'])
+                    
+                    # Fetch and crop the image AGAIN, but don't apply left cut
+                    img = fetch_and_crop_image(pokemon['set'], formatted_num)
+                    
+                    if img:
+                        # Apply RIGHT cut for the second image
+                        img = apply_diagonal_cut(img, "right") 
+                        pil_images.append(img)
         
-        # If we found the original info, fetch it again
-        if original_set and original_num:
-            formatted_num = format_card_number(original_num)
+        # If we couldn't add a second image using cached info, duplicate the first one
+        if len(pil_images) == 1:
+            # Find where we applied the left cut to get the original uncut image
+            original_set = None
+            original_num = None
             
-            # Fetch and crop the image again
-            img = fetch_and_crop_image(original_set, formatted_num)
+            # Try to find the original set and number from the session state
+            if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
+                pokemon_info = st.session_state.deck_pokemon_info[deck_name]
+                if pokemon_info and len(pokemon_info) > 0:
+                    original_set = pokemon_info[0].get('set')
+                    original_num = pokemon_info[0].get('num')
             
-            if img:
-                # Apply RIGHT cut this time
+            # If we found the original info, fetch it again
+            if original_set and original_num:
+                formatted_num = format_card_number(original_num)
+                
+                # Fetch and crop the image again
+                img = fetch_and_crop_image(original_set, formatted_num)
+                
+                if img:
+                    # Apply RIGHT cut this time
+                    img = apply_diagonal_cut(img, "right")
+                    pil_images.append(img)
+            else:
+                # Fallback: duplicate the first image with opposite cut
+                # This is not ideal but better than nothing
+                img = pil_images[0].copy()
+                
+                # We can't "uncut" it, but we can flip it horizontally to make it less obvious
+                from PIL import ImageOps
+                img = ImageOps.mirror(img)
+                
+                # Apply right cut pattern
                 img = apply_diagonal_cut(img, "right")
                 pil_images.append(img)
-        else:
-            # Fallback: duplicate the first image with opposite cut
-            # This is not ideal but better than nothing
-            img = pil_images[0].copy()
-            
-            # We can't "uncut" it, but we can flip it horizontally to make it less obvious
-            from PIL import ImageOps
-            img = ImageOps.mirror(img)
-            
-            # Apply right cut pattern
-            img = apply_diagonal_cut(img, "right")
-            pil_images.append(img)
 
 # Add a simple in-memory cache for thumbnails
 _thumbnail_cache = {}
