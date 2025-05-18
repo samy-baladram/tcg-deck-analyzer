@@ -181,17 +181,19 @@ def display_deck_template_tab(results):
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
         trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
-        # Pokemon options in vertical layout
-        st.write("###### Pokémon Options")
-        pokemon_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
-        pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
-        pokemon_options_grid.display()
+        # Only show Pokemon options if there are any
+        if not pokemon_options.empty:
+            st.write("###### Pokémon Options")
+            pokemon_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
+            pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
+            pokemon_options_grid.display()
         
-        # Trainer options in vertical layout
-        st.write("###### Trainer Options")
-        trainer_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
-        trainer_options_grid.add_cards_from_dataframe(trainer_options)
-        trainer_options_grid.display()
+        # Only show Trainer options if there are any
+        if not trainer_options.empty:
+            st.write("###### Trainer Options")
+            trainer_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
+            trainer_options_grid.add_cards_from_dataframe(trainer_options)
+            trainer_options_grid.display()
 
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
