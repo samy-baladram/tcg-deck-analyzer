@@ -74,18 +74,6 @@ div[role="option"]:hover {
     border-bottom: none !important;
 }
 
-/* Expander styling - using direct class approach */
-/* Expander hover effect */
-.stExpander > details > summary:hover {
-    color: #00A0FF !important;
-    background-color: rgba(0, 160, 255, 0.1) !important;
-}
-/* Remove left border highlight */
-.stExpander > details[open] > summary {
-    color: #00A0FF !important;
-    /* No border-left styling */
-}
-
 /* Increase font size in sidebar */
 .sidebar .stExpander summary {
     font-size: 16px !important;  /* Main expander font size */
