@@ -47,8 +47,8 @@ ENERGY_COLORS = {
         'secondary': '#aeddab'      # Light green
     },
     'metal': {
-        'primary': '#b8b889',       # Steel gray
-        'secondary': '#dedeba'      # Light gray
+        'primary': '#c0baa7',       # Steel gray
+        'secondary': '#dfdcd2'      # Light gray
     },
     'colorless': {
         'primary': '#EEEEEE',       # Light gray
