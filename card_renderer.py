@@ -283,7 +283,7 @@ def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
     
     return html
 
-function add_card_hover_effect():
+def add_card_hover_effect():
     """
     Add JavaScript and CSS for an improved card hover effect.
     This shows an enlarged card (about 90% of original size) on hover.
