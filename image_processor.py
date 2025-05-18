@@ -193,7 +193,6 @@ def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     total_width = img2_x_position + width2
     
     # Create new image with transparent background
-    # This is the key line - make sure the background is fully transparent (0, 0, 0, 0)
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
     # Paste images
@@ -202,6 +201,20 @@ def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     
     merged.paste(img1, (0, y1), img1)
     merged.paste(img2, (img2_x_position, y2), img2)
+    
+    # Remove pure black pixels (make them transparent)
+    # Get the pixel data
+    pixels = merged.load()
+    
+    # For each pixel in the image
+    for y in range(merged.height):
+        for x in range(merged.width):
+            # Check if the pixel is pure black (or very close to black)
+            # Format is (R, G, B, A)
+            r, g, b, a = pixels[x, y]
+            if r <= 5 and g <= 5 and b <= 5 and a > 0:
+                # Make black pixels transparent
+                pixels[x, y] = (0, 0, 0, 0)
     
     return merged
 
