@@ -164,7 +164,7 @@ def apply_diagonal_cut(image, cut_type):
 
 def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     """
-    Merge two diagonally cut images side by side and manually set gap transparency
+    Merge two diagonally cut images side by side using layer compositing
     
     Parameters:
     img1: PIL Image - left image with right side cut
@@ -175,6 +175,8 @@ def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     Returns:
     PIL Image - merged image
     """
+    from PIL import ImageChops  # For compositing operations
+    
     # Ensure both images have alpha channel
     if img1.mode != 'RGBA':
         img1 = img1.convert('RGBA')
@@ -192,43 +194,23 @@ def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     max_height = max(height1, height2)
     total_width = img2_x_position + width2
     
-    # Create new image with transparent background
-    merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
+    # Create separate transparent canvases for each image
+    canvas1 = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
+    canvas2 = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
-    # Paste images
+    # Calculate y positions for centering
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
-    merged.paste(img1, (0, y1), img1)
-    merged.paste(img2, (img2_x_position, y2), img2)
+    # Place each image on its own canvas
+    canvas1.paste(img1, (0, y1), img1)
+    canvas2.paste(img2, (img2_x_position, y2), img2)
     
-    # Explicitly set gap area to transparent
-    # Get image data as a list of pixels
-    data = list(merged.getdata())
-    width, height = merged.size
+    # Composite the images together
+    # This preserves the transparency
+    merged = ImageChops.add(canvas1, canvas2)
     
-    # Calculate gap region
-    gap_start_x = int(width1 * cutoff_percentage)
-    gap_end_x = img2_x_position
-    
-    # Create new data with gap area made transparent
-    new_data = []
-    for y in range(height):
-        for x in range(width):
-            # Get pixel index in the flattened data list
-            idx = y * width + x
-            
-            # If pixel is in gap area, make it transparent
-            if gap_start_x <= x < gap_end_x:
-                new_data.append((0, 0, 0, 0))  # Fully transparent
-            else:
-                new_data.append(data[idx])  # Keep original pixel
-    
-    # Create a new image with the modified data
-    result = Image.new('RGBA', merged.size)
-    result.putdata(new_data)
-    
-    return result
+    return merged
 
 # Data extraction functions
 def extract_pokemon_from_deck_name(deck_name):
