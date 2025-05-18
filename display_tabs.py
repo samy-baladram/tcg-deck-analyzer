@@ -17,7 +17,7 @@ def display_deck_header(deck_info, results):
     if header_image:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0rem; margin-top:-1rem">
-            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px; border:4px solid #394551">{format_deck_name(deck_info['deck_name'])}</h1>
+            <h1 style="margin: 0rem 0 0 0;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 10px; border:4px solid #394551">{format_deck_name(deck_info['deck_name'])}</h1>
         </div>
         """, unsafe_allow_html=True)
     else:
