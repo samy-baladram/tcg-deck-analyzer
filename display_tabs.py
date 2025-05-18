@@ -399,13 +399,13 @@ def display_related_decks_tab(deck_info, results):
                     # Display the banner image
                     if header_image:
                         st.markdown(f"""
-                        <div style="width: 100%; height: 80px; overflow: hidden; border-radius: 5px; margin-bottom: 8px;">
+                        <div style="width: 100%; height: auto; overflow: hidden; border-radius: 6px 6px 0 0; margin-bottom: 8px;">
                             <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
                         st.markdown(f"""
-                        <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 5px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px 6px 0 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;">
                             <span style="color: #888;">No image</span>
                         </div>
                         """, unsafe_allow_html=True)
