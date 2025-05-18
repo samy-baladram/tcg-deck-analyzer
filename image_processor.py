@@ -162,7 +162,7 @@ def apply_diagonal_cut(image, cut_type):
     
     return result
 
-def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     """
     Merge two diagonally cut images side by side
     
@@ -193,6 +193,7 @@ def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
     total_width = img2_x_position + width2
     
     # Create new image with transparent background
+    # This is the key line - make sure the background is fully transparent (0, 0, 0, 0)
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
     # Paste images
