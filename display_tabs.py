@@ -196,8 +196,6 @@ def display_raw_data_tab(results, variant_df):
         st.write("#### Variant Analysis Data")
         st.dataframe(variant_df, use_container_width=True)
 
-# def highlight_selected_deck(df, current_deck_name):
-#     return ['background-color: rgba(0, 160, 255, 0.2)'] * len(df.columns) if df['deck_name'] == current_deck_name else [''] * len(df.columns)
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
@@ -244,41 +242,43 @@ def display_metagame_tab():
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
-    # Display the table
-    st.dataframe(
+    # Create a list of rows to highlight
+    highlight_rows = []
+    for i, row in final_df.iterrows():
+        if "➡️" in str(row["Deck"]):
+            highlight_rows.append(i)
+    
+    # Display the table using data_editor
+    st.data_editor(
         final_df,
+        hide_index=True,
         use_container_width=True,
-        height=1000,  # Set the height in pixels
+        disabled=True,  # Make it read-only like a dataframe
+        height=800,  # Adjust height as needed
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
             "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
             "Deck": st.column_config.TextColumn(
                 "Deck",
-                help="Deck archetype - arrow (➡️) indicates currently selected deck"
+                help="Deck archetype"
             )
         },
-        hide_index=True
+        highlight_rows=highlight_rows
     )
     
-    # Show note about current deck if one is selected
-    if current_deck_name:
-        selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0] if len(display_df[display_df['deck_name'] == current_deck_name]) > 0 else "Unknown"
-        
-        # Create a visual highlight with a colored box and emoji
-        st.markdown(f"""<div style="background-color: rgba(0, 160, 255, 0.1); padding: 10px; border-radius: 5px; border-left: 4px solid #00A0FF; margin-top: 10px; margin-bottom: 20px;">
-            <span style="font-weight: bold;">➡️ Currently analyzing:</span> {selected_deck_name.replace('➡️ ', '')}
-        </div>""", unsafe_allow_html=True)
-    
     # Add explanation below the table
-    st.markdown("""
-    ##### Understanding the Metrics
+    from datetime import datetime
+    current_month_year = datetime.now().strftime("%B %Y")
+    
+    st.markdown(f"""
+    ### Understanding the Metrics
     
     **Win %**: Percentage of matches won out of total matches played.
     
     **Wins, Losses, Ties**: Total wins, losses, and ties from all recorded matches.
     
-    **Tournaments**: Number of tournaments where this deck was played.
+    **Best Finish Entries**: Number of tournament entries in the "Best Finishes" section.
     
     **Meta Share %**: Percentage representation of this deck in the competitive metagame.
     
@@ -286,7 +286,7 @@ def display_metagame_tab():
     
     ---
     
-    *Data is based on tournament results from the past 7 days on Limitless TCG.*
+    *Data is based on tournament results from {current_month_year} on Limitless TCG.*
     """)
     
 # Add this to display_tabs.py - Add a new tab for energy debugging
