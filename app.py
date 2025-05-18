@@ -73,27 +73,31 @@ div[role="option"]:hover {
 .stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
     border-bottom: none !important;
 }
-
-/* Expander styles */
-.streamlit-expanderHeader {
+/* Expander header text color */
+[data-testid="stExpander"] summary {
     color: #4169E1 !important;
-    font-weight: 600;
+    font-weight: 500;
 }
 
-/* Expander arrow color */
-.streamlit-expanderHeader svg {
-    color: #4169E1 !important;
+/* Expander icon color */
+[data-testid="stExpander"] summary:focus:not(:active) {
+    border-color: #4169E1 !important;
+}
+
+/* Expander icon color */
+[data-testid="stExpander"] summary span[role="img"] svg {
     fill: #4169E1 !important;
+    color: #4169E1 !important;
 }
 
-/* Expander hover effect */
-.streamlit-expanderHeader:hover {
-    color: rgba(65, 105, 225, 0.8) !important;
+/* Expander content border */
+[data-testid="stExpander"] details {
+    border-color: #4169E1 !important;
 }
 
-/* Expander border when open */
-.streamlit-expanderContent {
-    border-left-color: #4169E1 !important;
+/* Expander open/close animation duration */
+[data-testid="stExpander"] details[open] div {
+    transition: all 0.3s ease;
 }
 </style>
 """, unsafe_allow_html=True)
