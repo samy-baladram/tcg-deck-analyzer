@@ -5,7 +5,7 @@ import streamlit as st
 from formatters import format_deck_name
 from related_decks import find_related_decks
 from image_processor import create_deck_header_images
-from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
+from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart, ENERGY_COLORS
 from analyzer import build_deck_template
 from card_renderer import render_deck_section, render_option_section
 from energy_utils import get_archetype_from_deck_name, render_energy_icons
@@ -32,7 +32,7 @@ def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
     
     # Get the primary energy type (first in the list if available)
     primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
-    
+    st.write(ENERGY_COLORS)
     with col1:
         st.write("##### Pokemon")
         type_cards = results[results['type'] == 'Pokemon']
