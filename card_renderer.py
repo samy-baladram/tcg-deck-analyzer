@@ -5,7 +5,7 @@ from image_processor import format_card_number
 # Configuration constants
 class CardConfig:
     """Configuration constants for card rendering"""
-    WIDTH = 100
+    WIDTH = 70
     GAP = 8
     MARGIN = 8
     BORDER_RADIUS = 5
