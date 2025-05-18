@@ -24,21 +24,37 @@ def display_deck_header(deck_info, results):
         st.header(format_deck_name(deck_info['deck_name']))
 
 # In display_card_usage_tab function in display_tabs.py
-def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
-    """Display the Card Usage tab with energy-colored charts"""
+def display_card_usage_tab(results, total_decks, variant_df):
+    """Display the Card Usage tab with energy-colored charts based on deck energy types"""
     # Create two columns for Pokemon and Trainer
     st.write("#### Card Usage & Variants")
     col1, col2 = st.columns([1, 1])
     
-    # Get the primary energy type (first in the list if available)
-    primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
-    st.write(energy_types[0])
+    # Get energy types the same way as in display_deck_template_tab
+    from energy_utils import get_energy_types_for_deck
+    
+    # Initialize empty energy types list
+    energy_types = []
+    is_typical = False
+    primary_energy = None
+    
+    # Look for energy_types in the session state for this deck
+    if 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+        set_name = st.session_state.analyze.get('set_name', '')
+        
+        # Get the most common energy combination
+        energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
+        
+        # Get primary energy (first one in the list)
+        primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
+    
     with col1:
         st.write("##### Pokemon")
         type_cards = results[results['type'] == 'Pokemon']
         
         if not type_cards.empty:
-            # Pass only the primary energy type
+            # Pass primary energy type to chart
             fig = create_usage_bar_chart(type_cards, 'Pokemon', primary_energy)
             display_chart(fig)
         else:
@@ -70,7 +86,7 @@ def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
                     
                     # Column 2: Bar Chart
                     with var_col2:
-                        # Create variant bar chart with the primary energy type
+                        # Create variant bar chart with primary energy type
                         fig_var = create_variant_bar_chart(row, primary_energy)
                         display_chart(fig_var) 
     
