@@ -318,9 +318,10 @@ def create_deck_header_images(deck_info, analysis_results=None):
                     img = fetch_and_crop_image(pokemon['set'], formatted_num)
                     
                     if img:
-                        # Apply diagonal cut based on position
-                        cut_type = "left" if i == 0 else "right"
-                        img = apply_diagonal_cut(img, cut_type)
+                        # Apply diagonal cut based on position - only if we have 2+ Pokémon
+                        if len(pokemon_info) >= 2:
+                            cut_type = "left" if i == 0 else "right"
+                            img = apply_diagonal_cut(img, cut_type)
                         pil_images.append(img)
     
     # 2. If no images yet, check if we're currently analyzing this deck
@@ -340,9 +341,10 @@ def create_deck_header_images(deck_info, analysis_results=None):
                     img = fetch_and_crop_image(card_info['set'], formatted_num)
                     
                     if img:
-                        # Apply diagonal cut based on position
-                        cut_type = "left" if i == 0 else "right"
-                        img = apply_diagonal_cut(img, cut_type)
+                        # Apply diagonal cut based on position - only if we have 2+ Pokémon
+                        if len(pokemon_names) >= 2:
+                            cut_type = "left" if i == 0 else "right"
+                            img = apply_diagonal_cut(img, cut_type)
                         pil_images.append(img)
                         
                         # Also store this info in session state for future use
@@ -389,9 +391,10 @@ def create_deck_header_images(deck_info, analysis_results=None):
                         img = fetch_and_crop_image(card['set'], formatted_num)
                         
                         if img:
-                            # Apply diagonal cut based on position
-                            cut_type = "left" if i == 0 else "right"
-                            img = apply_diagonal_cut(img, cut_type)
+                            # Apply diagonal cut based on position - only if we have 2+ Pokémon
+                            if len(pokemon_names) >= 2:
+                                cut_type = "left" if i == 0 else "right"
+                                img = apply_diagonal_cut(img, cut_type)
                             pil_images.append(img)
                             
                             # Store this info for future use
@@ -410,15 +413,26 @@ def create_deck_header_images(deck_info, analysis_results=None):
                             
                             break
     
-    # Handle cases with less than 2 images
+    # Handle cases with no images
     if not pil_images:
         return None
-    elif len(pil_images) == 1:
-        # Duplicate the image for the right side with right cut
-        img = pil_images[0].copy()
-        img = apply_diagonal_cut(img, "right")
-        pil_images.append(img)
     
+    # Special handling for single Pokémon case
+    if len(pil_images) == 1:
+        # For single Pokémon, don't cut or merge - just apply gradient and return
+        single_image = pil_images[0]
+        
+        # Apply gradient to the single image
+        with_gradient = apply_vertical_gradient(single_image)
+        
+        # Convert to base64
+        buffered = BytesIO()
+        with_gradient.save(buffered, format="PNG")
+        img_base64 = base64.b64encode(buffered.getvalue()).decode()
+        
+        return img_base64
+    
+    # For multiple images, merge them with diagonal cuts
     # Merge the two images
     cutoff_percentage = 0.7
     merged_image = merge_header_images(
