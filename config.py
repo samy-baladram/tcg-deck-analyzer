@@ -19,7 +19,7 @@ CHART_COLORS = {
     'pokemon_2': '#0288D1',  # Darker blue
     'trainer_1': '#dfdde0',  # Light green
     'trainer_2': '#bbb7bd',  # Darker green
-    'mixed': '#b0acb2'       # Medium blue
+    'mixed': '#bbb7bd'       # Medium blue
 }
 
 # Chart settings
