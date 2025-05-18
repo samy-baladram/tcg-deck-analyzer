@@ -213,7 +213,7 @@ def merge_header_images(img1, img2, gap_ratio=-0.2, cutoff_percentage=0.7):
     
     # Calculate positions with proper overlap
     # The second image should start at 75% of the first image width plus any additional gap
-    img2_x_position = int(width1 * (1 - edge_cutoff - gradient_ratio/2)) + width1*gap_ratio
+    img2_x_position = int(width1 * (1 - edge_cutoff - gradient_ratio/2) + width1 * gap_ratio) 
     
     # Calculate new total width (not just adding the widths)
     total_width = img2_x_position + width2
