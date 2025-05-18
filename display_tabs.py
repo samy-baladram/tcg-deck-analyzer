@@ -400,7 +400,7 @@ def display_related_decks_tab(deck_info, results):
                     if header_image:
                         st.markdown(f"""
                         <div style="width: 100%; height: auto; overflow: hidden; border-radius: 6px 6px 0 0; margin-bottom: 8px;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:150px; object-fit: cover;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:200px; object-fit: cover;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
