@@ -137,12 +137,12 @@ def apply_diagonal_cut(image, cut_type):
     
     # Define cutoff percentages and gradient width
     edge_cutoff = 0.05  # 5% cutoff from edge
-    gradient_ratio = 0.3  # 20% of width for gradient
+    gradient_ratio = 0.2  # 20% of width for gradient
     gradient_width = int(width * gradient_ratio)
     
     if cut_type == "left":
         # For left image, keep everything except right 5% and apply gradient to right edge
-        gradient_width = int(width * (gradient_ratio-0.2))
+        gradient_width = int(width * (gradient_ratio-0.1))
         # Calculate where to start the cutoff
         cutoff_start = int(width * (1 - edge_cutoff))
         gradient_start = cutoff_start - gradient_width
@@ -161,7 +161,7 @@ def apply_diagonal_cut(image, cut_type):
             
     else:  # cut_type == "right"
         # For right image, keep everything except left 5% and apply gradient to left edge
-        gradient_width = int(width * (gradient_ratio+0.2))
+        gradient_width = int(width * (gradient_ratio+0.1))
         # Calculate where the cutoff ends
         cutoff_end = int(width * edge_cutoff)
         gradient_end = cutoff_end + gradient_width
