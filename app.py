@@ -105,10 +105,10 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 
 }
 
-/* Expander arrow/icon color */
+/* Expander arrow/icon color 
 .stExpander svg {
     color: #00A0FF !important;
-}
+}*/
 
 
 </style>
