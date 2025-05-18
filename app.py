@@ -152,7 +152,7 @@ if 'analyze' in st.session_state and selected_option:
         display_tabs.display_metagame_tab()
         
     with tab5:
-        display_tabs.display_related_decks_tab(original_deck_info)
+        display_tabs.display_related_decks_tab(original_deck_info, results)
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
