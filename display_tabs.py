@@ -401,27 +401,22 @@ def display_related_decks_tab(deck_info, results):
                         # Create the card with image and info
                         image_html = ""
                         if header_image:
-                            image_html = f"""
-                            <div style="width: 100%; height: 120px; overflow: hidden; border-radius: 4px 4px 0 0;">
+                            image_html = f"""<div style="width: 100%; height: 120px; overflow: hidden; border-radius: 4px 4px 0 0;">
                                 <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
-                            </div>
-                            """
+                            </div>"""
                         else:
                             image_html = f"""
                             <div style="width: 100%; height: 120px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
                                 <span style="color: #888;">No image</span>
-                            </div>
-                            """
+                            </div>"""
                         
-                        st.markdown(f"""
-                        <div style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); background-color: white;">
+                        st.markdown(f"""<div style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); background-color: white;">
                             {image_html}
                             <div style="padding: 12px;">
                                 <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
                                 <p style="margin: 0; color: #666; font-size: 14px;">Meta share: {deck.get('share', 0):.2f}%</p>
                             </div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        </div>""", unsafe_allow_html=True)
                         
                         # Add a button that matches the card's width and has minimal padding
                         # Use HTML/CSS to style the button to look more integrated with the card
