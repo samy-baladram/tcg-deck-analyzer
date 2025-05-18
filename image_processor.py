@@ -162,7 +162,7 @@ def apply_diagonal_cut(image, cut_type):
     
     return result
 
-def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap=20, cutoff_percentage=0.7):
     """
     Merge two diagonally cut images side by side
     
