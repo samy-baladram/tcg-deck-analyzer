@@ -7,7 +7,7 @@ from formatters import format_deck_name, format_deck_option
 from utils import calculate_time_ago
 from scraper import get_deck_list
 import cache_manager
-from config import MIN_META_SHARE
+from config import MIN_META_SHARE, TOURNAMENT_COUNT
 import pandas as pd
 
 def display_banner(img_path, max_width=800):
@@ -223,7 +223,7 @@ def render_sidebar():
             <div>Updated {performance_time_str}</div>
         </div>
         <div style="font-size: 0.75rem; margin-bottom: 12px; color: #777;">
-            Based on up to 50 tournament results
+            Based on up to {TOURNAMENT_COUNT} tournament results
         </div>
         """, unsafe_allow_html=True)
     
