@@ -112,6 +112,9 @@ ui_helpers.display_banner("title_banner.png")
 with st.spinner("Loading app data..."):
     # Load initial data - this is where the heavy lifting happens
     ui_helpers.load_initial_data()
+    # Add this line to preload Pokémon info for all decks
+    from pokemon_info_manager import preload_all_deck_pokemon_info
+    preload_all_deck_pokemon_info()
 
 # Create sidebar
 with st.spinner("Loading sidebar data..."):
