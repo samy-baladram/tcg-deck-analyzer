@@ -135,7 +135,7 @@ def apply_diagonal_cut(image, cut_type):
     mask = Image.new('L', image.size, 255)  # 255 = fully opaque
     draw = ImageDraw.Draw(mask)
     
-    # Calculate gradient width (30% of the image width)
+    # Calculate gradient width (20% of the image width)
     gradient_width = int(width * 0.2)
     
     if cut_type == "left":
@@ -169,7 +169,7 @@ def apply_diagonal_cut(image, cut_type):
     
     return result
 
-def merge_header_images(img1, img2, gap=-30, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap=-0.2, cutoff_percentage=0.7):
     """
     Merge two diagonally cut images side by side
     
@@ -193,7 +193,7 @@ def merge_header_images(img1, img2, gap=-30, cutoff_percentage=0.7):
     width2, height2 = img2.size
     
     # Calculate positions
-    img2_x_position = int(width1 * cutoff_percentage) + gap
+    img2_x_position = int(width1 * cutoff_percentage) + width1*gap
     
     # Calculate new dimensions
     max_height = max(height1, height2)
