@@ -8,10 +8,13 @@ import ui_helpers
 import cache_manager
 import display_tabs
 from config import MIN_META_SHARE
-#from card_renderer import add_card_hover_effect
+import background
 
 # Set up page
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
+
+# Add background from repository
+background.add_app_background()
 
 # Apply custom styles
 st.markdown("""
