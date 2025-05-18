@@ -452,6 +452,8 @@ def preload_all_deck_pokemon_info():
     
     # Get list of all meta decks
     deck_list = st.session_state.deck_list
+    total_decks = len(deck_list)
+
     
     # Process each deck to extract Pokémon info
     with st.spinner("Pre-loading Pokémon data for meta decks..."):
