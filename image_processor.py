@@ -331,49 +331,46 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
 
 # Update in image_processor.py
 
-def create_deck_header_images(deck_info, analysis_results=None):
+def find_pokemon_images(deck_info, analysis_results=None):
     """
-    Create header images for a deck based on Pokemon in the deck name
-    Uses pre-loaded Pokemon info if available, falls back to extracting from analysis_results
+    Find Pokémon card images for a deck header based on deck name.
     
-    Returns a single base64 encoded merged image
+    Args:
+        deck_info: Dictionary containing deck information
+        analysis_results: Optional DataFrame of analysis results
+        
+    Returns:
+        List of PIL Image objects for the Pokémon in the deck (up to 2)
     """
     # Get deck name
     deck_name = deck_info['deck_name']
     
+    # Extract Pokémon from deck name (we'll need this regardless of approach)
+    pokemon_names = extract_pokemon_from_deck_name(deck_name)
+    
     # Initialize list for images
     pil_images = []
     
-    # Try the three approaches in order of preference:
-    # 1. First try to use pre-loaded info from session state
+    # Approach 1: Use pre-loaded info from session state
     if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
         pokemon_info = st.session_state.deck_pokemon_info[deck_name]
         
         if pokemon_info:
-            # Get images for each Pokemon (up to 2)
+            # Get images for each Pokémon (up to 2)
             for i, pokemon in enumerate(pokemon_info[:2]):
                 if pokemon.get('set') and pokemon.get('num'):
                     formatted_num = format_card_number(pokemon['num'])
                     
                     # Fetch and crop the image
                     img = fetch_and_crop_image(pokemon['set'], formatted_num)
-
                     if img:
-                        # Apply diagonal cut based on position - only if we have 2+ Pokémon
-
-                        if len(pokemon_info) >= 2:
-                            cut_type = "left" if i == 0 else "right"
-                            img = apply_diagonal_cut(img, cut_type)
                         pil_images.append(img)
     
-    # 2. If no images yet, check if we're currently analyzing this deck
+    # Approach 2: Extract from current analysis results
     if not pil_images and analysis_results is not None and not analysis_results.empty:
-        # Extract Pokemon from deck name
-        pokemon_names = extract_pokemon_from_deck_name(deck_name)
-        
         if pokemon_names:
-            # Get images for each Pokemon
-            for i, pokemon_name in enumerate(pokemon_names[:2]):
+            # Get images for each Pokémon
+            for pokemon_name in pokemon_names[:2]:
                 card_info = get_pokemon_card_info(pokemon_name, analysis_results)
                 
                 if card_info:
@@ -382,20 +379,14 @@ def create_deck_header_images(deck_info, analysis_results=None):
                     # Fetch and crop the image
                     img = fetch_and_crop_image(card_info['set'], formatted_num)
                     if img:
-                        # Apply diagonal cut based on position - only if we have 2+ Pokémon
-
-                        if len(pokemon_names) >= 2:
-                            cut_type = "left" if i == 0 else "right"
-                            img = apply_diagonal_cut(img, cut_type)
                         pil_images.append(img)
                         
-                        # Also store this info in session state for future use
+                        # Store this info for future use
                         if 'deck_pokemon_info' not in st.session_state:
                             st.session_state.deck_pokemon_info = {}
                         if deck_name not in st.session_state.deck_pokemon_info:
                             st.session_state.deck_pokemon_info[deck_name] = []
-                            
-                        # Add this pokemon to the cached info
+                        
                         st.session_state.deck_pokemon_info[deck_name].append({
                             'name': pokemon_name,
                             'card_name': card_info['name'],
@@ -403,7 +394,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
                             'num': card_info['num']
                         })
     
-    # 3. Last resort: Try to load sample deck data to get pokemon info
+    # Approach 3: Use sample deck data 
     if not pil_images and 'analyze' in st.session_state:
         import cache_manager
         
@@ -413,12 +404,9 @@ def create_deck_header_images(deck_info, analysis_results=None):
         # Get sample deck
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
         
-        # Extract Pokemon from deck name
-        pokemon_names = extract_pokemon_from_deck_name(deck_name)
-        
         if pokemon_names and 'pokemon_cards' in sample_deck:
-            # Look for matching Pokemon in sample deck
-            for i, pokemon_name in enumerate(pokemon_names[:2]):
+            # Look for matching Pokémon in sample deck
+            for pokemon_name in pokemon_names[:2]:
                 # Clean up the name for matching
                 clean_name = pokemon_name.replace('-', ' ').title()
                 if 'Ex' in clean_name:
@@ -431,13 +419,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
                         
                         # Fetch and crop the image
                         img = fetch_and_crop_image(card['set'], formatted_num)
-                        
                         if img:
-                            # Apply diagonal cut based on position - only if we have 2+ Pokémon
-                            
-                            if len(pokemon_names) >= 2:
-                                cut_type = "left" if i == 0 else "right"
-                                img = apply_diagonal_cut(img, cut_type)
                             pil_images.append(img)
                             
                             # Store this info for future use
@@ -446,38 +428,47 @@ def create_deck_header_images(deck_info, analysis_results=None):
                             if deck_name not in st.session_state.deck_pokemon_info:
                                 st.session_state.deck_pokemon_info[deck_name] = []
                             
-                            # Add to cached info
                             st.session_state.deck_pokemon_info[deck_name].append({
                                 'name': pokemon_name,
                                 'card_name': card['card_name'],
                                 'set': card['set'],
                                 'num': card['num']
                             })
-                            
                             break
     
-    # Handle cases with no images
+    return pil_images
+
+def create_deck_header_images(deck_info, analysis_results=None):
+    """
+    Create header images for a deck based on Pokémon in the deck name.
+    
+    Args:
+        deck_info: Dictionary containing deck information
+        analysis_results: Optional DataFrame of analysis results
+        
+    Returns:
+        A single base64 encoded merged image, or None if no images found
+    """
+    # Find Pokémon images
+    pil_images = find_pokemon_images(deck_info, analysis_results)
+    
+    # Handle case with no images
     if not pil_images:
         return None
     
-    # Special handling for single Pokémon case
+    # Handle case with single image - duplicate it
     if len(pil_images) == 1:
-        # For single Pokémon, don't cut or merge - just apply gradient and return
-        single_image = pil_images[0]
-        # Flip the image vertically (mirror)
-        #image = ImageOps.mirror(single_image)
-        pil_images.append(single_image)
-        # # Apply gradient to the single image
-        # with_gradient = apply_vertical_gradient(single_image)
-        
-        # # Convert to base64
-        # buffered = BytesIO()
-        # with_gradient.save(buffered, format="PNG")
-        # img_base64 = base64.b64encode(buffered.getvalue()).decode()
-        
-        # return img_base64
+        # Duplicate the image for the second position
+        pil_images.append(pil_images[0])
     
-    # For multiple images, merge them with diagonal cuts
+    # Ensure we only use up to 2 images
+    pil_images = pil_images[:2]
+    
+    # Apply diagonal cuts to images
+    for i in range(len(pil_images)):
+        cut_type = "left" if i == 0 else "right"
+        pil_images[i] = apply_diagonal_cut(pil_images[i], cut_type)
+    
     # Merge the two images
     cutoff_percentage = 0.7
     merged_image = merge_header_images(
