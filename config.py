@@ -47,7 +47,7 @@ IMAGE_CROP_BOX = {
     'left': 0.05,
     'top': 0.115,
     'right': 0.95,
-    'bottom': 0.475
+    'bottom': 0.47
 }
 
 IMAGE_GRADIENT = {
