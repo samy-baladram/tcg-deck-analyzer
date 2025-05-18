@@ -455,7 +455,13 @@ def preload_all_deck_pokemon_info():
     
     # Process each deck to extract Pokémon info
     with st.spinner("Pre-loading Pokémon data for meta decks..."):
-        for _, deck in deck_list.iterrows():
+        progress_bar = st.progress(0)
+        
+        # Process each deck with progress updates
+        for i, (_, deck) in enumerate(deck_list.iterrows()):
+            # Update progress bar
+            progress_bar.progress((i + 1) / total_decks)
+            
             deck_name = deck['deck_name']
             set_name = deck['set']
             
@@ -504,6 +510,8 @@ def preload_all_deck_pokemon_info():
                         'set': '',
                         'num': ''
                     })
+                st.caption(f"Processing deck {i+1}/{total_decks}: {deck_name}")
             
             # Store in session state
+            progress_bar.empty()
             st.session_state.deck_pokemon_info[deck_name] = pokemon_info
