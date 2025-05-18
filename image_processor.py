@@ -462,8 +462,8 @@ def create_deck_header_images(deck_info, analysis_results=None):
         # For single Pokémon, don't cut or merge - just apply gradient and return
         single_image = pil_images[0]
         # Flip the image vertically (mirror)
-        image = ImageOps.mirror(single_image)
-        pil_images.append(image)
+        #image = ImageOps.mirror(single_image)
+        pil_images.append(single_image)
         # # Apply gradient to the single image
         # with_gradient = apply_vertical_gradient(single_image)
         
