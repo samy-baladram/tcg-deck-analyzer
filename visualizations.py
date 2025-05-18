@@ -19,8 +19,8 @@ import streamlit as st
 # Energy color mapping - primary and secondary colors for each type
 ENERGY_COLORS = {
     'fire': {
-        'primary': '#ff6e66',       # Bright orange-red
-        'secondary': '#f4bcb9'      # Light orange
+        'primary': '#f86943',       # Bright orange-red
+        'secondary': '#f4beae'      # Light orange
     },
     'lightning': {
         'primary': '#ffcf52',       # Yellow
