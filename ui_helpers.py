@@ -225,16 +225,16 @@ def render_sidebar():
     """Render the sidebar with tournament performance data"""    
     # Load and encode the banner image if it exists
     banner_path = "sidebar_banner.png"
-    if os.path.exists(banner_path):
-        with open(banner_path, "rb") as f:
-            banner_base64 = base64.b64encode(f.read()).decode()
-        st.sidebar.markdown(f"""
-        <div style="width:100%; text-align:left;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:400px;">
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.sidebar.title("Top 10 Meta Decks")
+    # if os.path.exists(banner_path):
+    #     with open(banner_path, "rb") as f:
+    #         banner_base64 = base64.b64encode(f.read()).decode()
+    #     st.sidebar.markdown(f"""
+    #     <div style="width:100%; text-align:left;">
+    #         <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:400px;">
+    #     </div>
+    #     """, unsafe_allow_html=True)
+    # else:
+    #     st.sidebar.title("Top 10 Meta Decks")
     
     # Initialize energy types
     from energy_utils import initialize_energy_types
