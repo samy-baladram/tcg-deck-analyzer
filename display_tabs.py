@@ -330,3 +330,52 @@ def display_energy_debug_tab(deck_info):
     
     # Add energy visualization table (using the function we created earlier)
     st.markdown(display_detailed_energy_table(deck_name), unsafe_allow_html=True)
+
+# Modify the display_related_decks_tab function in display_tabs.py:
+
+def display_related_decks_tab(deck_info):
+    """Display the Related Decks tab"""
+    st.subheader("Related Decks")
+    
+    # Get the current deck name
+    current_deck_name = deck_info['deck_name']
+    
+    # Find related decks
+    if 'deck_list' in st.session_state:
+        related_decks = find_related_decks(current_deck_name, st.session_state.deck_list)
+        
+        if related_decks.empty:
+            st.info("No related decks found.")
+        else:
+            # Display related decks in a card-like format
+            st.write("Decks sharing Pokémon with this archetype:")
+            
+            # Create a 3-column layout
+            cols = st.columns(3)
+            
+            # Display each related deck
+            for i, (_, deck) in enumerate(related_decks.iterrows()):
+                col_idx = i % 3
+                
+                with cols[col_idx]:
+                    # Create a card-like container
+                    with st.container():
+                        # Display formatted deck name
+                        formatted_name = format_deck_name(deck['deck_name'])
+                        
+                        # Show meta share
+                        st.markdown(f"""
+                        <div style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px;">
+                            <h4 style="margin: 0 0 5px 0;">{formatted_name}</h4>
+                            <p style="margin: 0 0 10px 0; color: #666;">Meta share: {deck['share']:.2f}%</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        # Add a button to analyze this deck
+                        if st.button(f"Analyze {formatted_name}", key=f"btn_{deck['deck_name']}"):
+                            # Set this deck to be analyzed
+                            st.session_state.deck_to_analyze = deck['deck_name']
+                            # Force rerun to trigger the analysis
+                            st.rerun()
+    else:
+        st.info("Deck list not available. Unable to find related decks.")
