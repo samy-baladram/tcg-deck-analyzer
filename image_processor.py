@@ -3,6 +3,7 @@
 import functools
 import base64
 import requests
+import math
 from PIL import Image, ImageDraw, ImageOps
 from io import BytesIO
 import re
