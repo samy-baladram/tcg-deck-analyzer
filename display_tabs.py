@@ -228,6 +228,9 @@ def display_metagame_tab():
         axis=1
     )
     
+    # Add a flag for the current deck for styling purposes
+    display_df['is_current'] = display_df['deck_name'] == current_deck_name
+    
     # Select and rename columns for display
     display_cols = {
         'displayed_name': 'Deck',
@@ -237,28 +240,24 @@ def display_metagame_tab():
         'total_ties': 'Ties',
         'tournaments_played': 'Best Finish Entries',
         'share': 'Meta Share %',
-        'power_index': 'Power Index'
+        'power_index': 'Power Index',
+        'is_current': 'is_current'  # Keep this for styling
     }
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
-    # Define a function to highlight the entire row
-    def highlight_current_row(df):
-        # Create an empty DataFrame with the same shape as the input
-        styles = pd.DataFrame('', index=df.index, columns=df.columns)
-        
-        # Find rows where the Deck column contains the arrow emoji
-        mask = df['Deck'].str.contains('➡️', na=False)
-        
-        # Set the style for all cells in the highlighted rows
-        if mask.any():
-            for col in df.columns:
-                styles.loc[mask, col] = 'background-color: rgba(0, 160, 255, 0.10)'
-        
-        return styles
+    # Simple row-wise styling function that works in most Streamlit versions
+    def highlight_row(row):
+        if row['is_current']:
+            return ['background-color: rgba(0, 160, 255, 0.15)'] * (len(row) - 1) + ['']
+        else:
+            return [''] * len(row)
     
-    # Apply styling to entire DataFrame
-    styled_df = final_df.style.apply(highlight_current_row, axis=None)
+    # Apply styling
+    styled_df = final_df.style.apply(highlight_row, axis=1)
+    
+    # Hide the is_current column
+    styled_df = styled_df.hide_columns(['is_current'])
     
     # Display with styling
     st.dataframe(
