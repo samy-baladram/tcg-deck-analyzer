@@ -111,7 +111,7 @@ def apply_vertical_gradient(image):
 
 def apply_diagonal_cut(image, cut_type):
     """
-    Apply a diagonal cut to an image (trapezoid shape)
+    Apply a diagonal cut to an image (trapezoid shape) with proper transparency
     
     Parameters:
     image: PIL Image
@@ -127,42 +127,42 @@ def apply_diagonal_cut(image, cut_type):
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
     
-    # Create a mask for the diagonal cut
+    # Create a transparent mask for the diagonal cut
     width, height = image.size
-    cut_mask = Image.new('L', image.size, 255)
+    cut_mask = Image.new('L', image.size, 0)  # Start with black (transparent)
     draw = ImageDraw.Draw(cut_mask)
     
     # Define the cutoff percentage
     cutoff_percentage = 0.7
     
     if cut_type == "left":
-        # Cut lower right trapezoid
+        # For left image, keep left side and diagonal cut on right
         points = [
-            (width, 0),                             # Top right (full width)
-            (width, height),                        # Bottom right
-            (width * cutoff_percentage, height),    # Bottom cut point
-            (width, 0),                             # Back to top right
+            (0, 0),                              # Top left
+            (width * cutoff_percentage, 0),      # Top right cutoff point
+            (width, height),                     # Bottom right
+            (0, height),                         # Bottom left
+            (0, 0),                              # Back to top left
         ]
-        draw.polygon(points, fill=0)
+        draw.polygon(points, fill=255)  # White (opaque)
     else:  # cut_type == "right"
-        # Cut upper left trapezoid
+        # For right image, keep right side and diagonal cut on left
         points = [
-            (0, 0),                                      # Top left
-            (width * (1 - cutoff_percentage), 0),        # Top cut point
-            (0, height),                                 # Bottom left (full width)
-            (0, 0),                                      # Back to top left
+            (width, 0),                          # Top right
+            (width, height),                     # Bottom right
+            (width * (1 - cutoff_percentage), height),  # Bottom left cutoff point
+            (0, 0),                              # Top left
+            (width, 0),                          # Back to top right
         ]
-        draw.polygon(points, fill=0)
+        draw.polygon(points, fill=255)  # White (opaque)
     
     # Apply the cut mask to the alpha channel
     result = image.copy()
-    alpha = result.split()[-1]
-    alpha = Image.composite(alpha, Image.new('L', alpha.size, 0), cut_mask)
-    result.putalpha(alpha)
+    result.putalpha(cut_mask)
     
     return result
 
-def merge_header_images(img1, img2, gap=5, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     """
     Merge two diagonally cut images side by side
     
