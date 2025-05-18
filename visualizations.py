@@ -19,36 +19,36 @@ import streamlit as st
 # Energy color mapping - primary and secondary colors for each type
 ENERGY_COLORS = {
     'fire': {
-        'primary': '#FF5722',       # Bright orange-red
-        'secondary': '#FFAB91'      # Light orange
+        'primary': '#ff6e66',       # Bright orange-red
+        'secondary': '#f4bcb9'      # Light orange
     },
     'lightning': {
-        'primary': '#FFC107',       # Yellow
-        'secondary': '#FFE082'      # Light yellow
+        'primary': '#ffcf52',       # Yellow
+        'secondary': '#ffe8ad'      # Light yellow
     },
     'psychic': {
-        'primary': '#9C27B0',       # Purple
-        'secondary': '#CE93D8'      # Light purple
+        'primary': '#b97dff',       # Purple
+        'secondary': '#d8b7ff'      # Light purple
     },
     'water': {
-        'primary': '#2196F3',       # Blue
-        'secondary': '#90CAF9'      # Light blue
+        'primary': '#3dafff',       # Blue
+        'secondary': '#9fd7ff'      # Light blue
     },
     'fighting': {
-        'primary': '#795548',       # Brown
-        'secondary': '#BCAAA4'      # Light brown
+        'primary': '#ec8758',       # Brown
+        'secondary': '#ebc4b2'      # Light brown
     },
     'darkness': {
-        'primary': '#424242',       # Dark gray
-        'secondary': '#BDBDBD'      # Light gray
+        'primary': '#4d909b',       # Dark gray
+        'secondary': '#b6d3d8'      # Light gray
     },
     'grass': {
-        'primary': '#4CAF50',       # Green
-        'secondary': '#A5D6A7'      # Light green
+        'primary': '#6bc464',       # Green
+        'secondary': '#aeddab'      # Light green
     },
     'metal': {
-        'primary': '#9E9E9E',       # Steel gray
-        'secondary': '#E0E0E0'      # Light gray
+        'primary': '#b8b889',       # Steel gray
+        'secondary': '#dedeba'      # Light gray
     },
     'colorless': {
         'primary': '#EEEEEE',       # Light gray
