@@ -8,7 +8,7 @@ import ui_helpers
 import cache_manager
 import display_tabs
 from config import MIN_META_SHARE
-from card_renderer import add_card_hover_effect
+#from card_renderer import add_card_hover_effect
 
 # Set up page
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
@@ -103,7 +103,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 """, unsafe_allow_html=True)
 
 # Add the hover effect setup after your page_config and style settings
-add_card_hover_effect()
+#add_card_hover_effect()
 
 # Display banner
 ui_helpers.display_banner("title_banner.png")
