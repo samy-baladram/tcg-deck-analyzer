@@ -354,9 +354,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
                     
                     # Fetch and crop the image
                     img = fetch_and_crop_image(pokemon['set'], formatted_num)
-                    if len(img) == 1:
-                       duplicate = img[0]
-                       img.append(duplicate)
+
                     if img:
                         # Apply diagonal cut based on position - only if we have 2+ Pokémon
 
@@ -372,6 +370,9 @@ def create_deck_header_images(deck_info, analysis_results=None):
         
         if pokemon_names:
             # Get images for each Pokemon
+            if len(pokemon_names)==1:
+                duplicate = pokemon_names[0]
+                pokemon_names.append(duplicate)
             for i, pokemon_name in enumerate(pokemon_names[:2]):
                 card_info = get_pokemon_card_info(pokemon_name, analysis_results)
                 
@@ -380,9 +381,6 @@ def create_deck_header_images(deck_info, analysis_results=None):
                     
                     # Fetch and crop the image
                     img = fetch_and_crop_image(card_info['set'], formatted_num)
-                    if len(img) == 1:
-                       duplicate = img[0]
-                       img.append(duplicate)
                     if img:
                         # Apply diagonal cut based on position - only if we have 2+ Pokémon
 
