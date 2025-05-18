@@ -23,6 +23,31 @@ div[data-testid="stExpander"] details summary p{
     font-size: 1rem;
 }
 
+
+/* Expander header styling */
+.stExpander > details > summary {
+    border-color: #00A0FF !important;
+}
+
+/* Expander hover effect */
+.stExpander > details > summary:hover {
+    color: #00A0FF !important;
+    border-color: #00A0FF !important;
+    background-color: rgba(0, 160, 255, 0.1) !important;
+}
+
+/* Expander open state */
+.stExpander > details[open] > summary {
+    border-top: 0px solid #00A0FF !important;
+    color: #00A0FF !important;
+}
+
+/* Expander arrow/icon color 
+.stExpander svg {
+    color: #00A0FF !important;
+}*/
+
+
 /* Change primary color to blue */
 div[data-baseweb="select"] > div {
     border-color: #00A0FF !important;
@@ -88,31 +113,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     padding: 8px 12px !important;
 }
 
-/* Expander header styling */
-.stExpander > details > summary {
-    border-color: #00A0FF !important;
-}
-
-/* Expander hover effect */
-.stExpander > details > summary:hover {
-    color: #00A0FF !important;
-    border-color: #00A0FF !important;
-    background-color: rgba(0, 160, 255, 0.1) !important;
-}
-
-/* Expander open state */
-.stExpander > details[open] > summary {
-    border-top: 0px solid #00A0FF !important;
-    color: #00A0FF !important;
-}
-
-/* Expander arrow/icon color 
-.stExpander svg {
-    color: #00A0FF !important;
-}*/
-
-div[data-testid="stExpander"] div[role="button"] p {
-    font-size: 4rem;
 }
 
 </style>
