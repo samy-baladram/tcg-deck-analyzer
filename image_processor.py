@@ -111,7 +111,7 @@ def apply_vertical_gradient(image):
 
 def apply_diagonal_cut(image, cut_type):
     """
-    Apply a horizontal gradient on the edges of an image
+    Cut off 5% from the edge and apply a horizontal gradient
     (Note: Function name kept the same for compatibility)
     
     Parameters:
@@ -119,7 +119,7 @@ def apply_diagonal_cut(image, cut_type):
     cut_type: String - "left" for gradient on right edge, "right" for gradient on left edge
     
     Returns:
-    PIL Image with edge gradient applied
+    PIL Image with edge cutoff and gradient applied
     """
     if cut_type not in ["left", "right"]:
         return image
@@ -131,18 +131,26 @@ def apply_diagonal_cut(image, cut_type):
     # Get image dimensions
     width, height = image.size
     
-    # Create a mask with full opacity
-    mask = Image.new('L', image.size, 255)  # 255 = fully opaque
+    # Create a mask for the cutoff and gradient
+    mask = Image.new('L', image.size, 0)  # Start with fully transparent
     draw = ImageDraw.Draw(mask)
     
-    # Calculate gradient width (20% of the image width)
-    gradient_width = int(width * 0.2)
+    # Define cutoff percentages and gradient width
+    edge_cutoff = 0.05  # 5% cutoff from edge
+    gradient_ratio = 0.2  # 20% of width for gradient
+    gradient_width = int(width * gradient_ratio)
     
     if cut_type == "left":
-        # Apply gradient to right edge
-        gradient_start = width - gradient_width
+        # For left image, keep everything except right 5% and apply gradient to right edge
         
-        # Draw gradient from right to left
+        # Calculate where to start the cutoff
+        cutoff_start = int(width * (1 - edge_cutoff))
+        gradient_start = cutoff_start - gradient_width
+        
+        # Draw the fully opaque region (left part of the image)
+        draw.rectangle([(0, 0), (gradient_start, height)], fill=255)
+        
+        # Draw gradient from opaque to transparent
         for x in range(gradient_width):
             # Calculate position and opacity
             x_pos = gradient_start + x
@@ -152,16 +160,23 @@ def apply_diagonal_cut(image, cut_type):
             draw.line([(x_pos, 0), (x_pos, height)], fill=opacity)
             
     else:  # cut_type == "right"
-        # Apply gradient to left edge
-        gradient_end = gradient_width
+        # For right image, keep everything except left 5% and apply gradient to left edge
         
-        # Draw gradient from left to right
+        # Calculate where the cutoff ends
+        cutoff_end = int(width * edge_cutoff)
+        gradient_end = cutoff_end + gradient_width
+        
+        # Draw the fully opaque region (right part of the image)
+        draw.rectangle([(gradient_end, 0), (width, height)], fill=255)
+        
+        # Draw gradient from transparent to opaque
         for x in range(gradient_width):
-            # Calculate position and opacity
+            # Calculate position in the gradient region
+            x_pos = cutoff_end + x
             opacity = int(255 * (x / gradient_width))  # Fade from transparent to opaque
             
             # Draw vertical line with calculated opacity
-            draw.line([(x, 0), (x, height)], fill=opacity)
+            draw.line([(x_pos, 0), (x_pos, height)], fill=opacity)
     
     # Apply mask to alpha channel
     result = image.copy()
@@ -208,20 +223,6 @@ def merge_header_images(img1, img2, gap=-0.4, cutoff_percentage=0.7):
     
     merged.paste(img1, (0, y1), img1)
     merged.paste(img2, (img2_x_position, y2), img2)
-    
-    # Remove pure black pixels (make them transparent)
-    # Get the pixel data
-    pixels = merged.load()
-    
-    # For each pixel in the image
-    for y in range(merged.height):
-        for x in range(merged.width):
-            # Check if the pixel is pure black (or very close to black)
-            # Format is (R, G, B, A)
-            r, g, b, a = pixels[x, y]
-            if r <= 5 and g <= 5 and b <= 5 and a > 0:
-                # Make black pixels transparent
-                pixels[x, y] = (0, 0, 0, 0)
     
     return merged
 
