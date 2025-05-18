@@ -130,7 +130,14 @@ def apply_diagonal_cut(image, cut_type):
     # Ensure image has alpha channel
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
-    
+
+    # For right image, flip vertically before processing
+    if cut_type == "right":
+        # Import ImageOps for flipping
+        from PIL import ImageOps
+        # Flip the image vertically (mirror)
+        image = ImageOps.mirror(image)
+        
     # Get image dimensions
     width, height = image.size
     
@@ -164,6 +171,7 @@ def apply_diagonal_cut(image, cut_type):
     else:  # cut_type == "right"
         # For right image, keep everything except left 5% and apply gradient to left edge
         # Calculate where the cutoff ends
+        
         cutoff_end = int(width * edge_cutoff)
         gradient_end = cutoff_end + gradient_width
         
