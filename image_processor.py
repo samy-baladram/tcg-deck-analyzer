@@ -9,9 +9,9 @@ from io import BytesIO
 import re
 from config import IMAGE_BASE_URL, IMAGE_CROP_BOX, IMAGE_GRADIENT
 from utils import is_set_code
-GAP_RATIO = -0.25
+GAP_RATIO = -0.2
 EDGE_CUTOFF = 0.04
-GRADIENT_RATIO = 0.2 
+GRADIENT_RATIO = 0.15 
 
 # Simple utility functions
 def get_base64_image(path):
