@@ -246,6 +246,16 @@ def render_sidebar():
     
     # Display performance data if it exists
     if not st.session_state.performance_data.empty:
+        
+    
+        # Get the top 10 performing decks
+        top_decks = st.session_state.performance_data.head(10)
+        
+        # Render each deck one by one, passing the rank (index + 1)
+        for idx, deck in top_decks.iterrows():
+            rank = idx + 1  # Calculate rank (1-based)
+            render_deck_in_sidebar(deck, rank=rank)
+
         # Add disclaimer with update time in one line
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.sidebar.markdown(f"""
@@ -257,14 +267,6 @@ def render_sidebar():
             Based on up to {TOURNAMENT_COUNT} tournament results
         </div>
         """, unsafe_allow_html=True)
-    
-        # Get the top 10 performing decks
-        top_decks = st.session_state.performance_data.head(10)
-        
-        # Render each deck one by one, passing the rank (index + 1)
-        for idx, deck in top_decks.iterrows():
-            rank = idx + 1  # Calculate rank (1-based)
-            render_deck_in_sidebar(deck, rank=rank)
         
         # Add a divider
         st.sidebar.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
