@@ -357,6 +357,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
                     
                     if img:
                         # Apply diagonal cut based on position - only if we have 2+ Pokémon
+
                         if len(pokemon_info) >= 2:
                             cut_type = "left" if i == 0 else "right"
                             img = apply_diagonal_cut(img, cut_type)
@@ -380,6 +381,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
                     
                     if img:
                         # Apply diagonal cut based on position - only if we have 2+ Pokémon
+
                         if len(pokemon_names) >= 2:
                             cut_type = "left" if i == 0 else "right"
                             img = apply_diagonal_cut(img, cut_type)
@@ -430,6 +432,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
                         
                         if img:
                             # Apply diagonal cut based on position - only if we have 2+ Pokémon
+                            
                             if len(pokemon_names) >= 2:
                                 cut_type = "left" if i == 0 else "right"
                                 img = apply_diagonal_cut(img, cut_type)
