@@ -452,7 +452,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
     merged_image = merge_header_images(
         pil_images[0], 
         pil_images[1], 
-        gap=8,
+        gap=10,
         cutoff_percentage=cutoff_percentage
     )
     
