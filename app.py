@@ -84,22 +84,27 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     padding: 8px 12px !important;
 }
 
-/* Sidebar style for performance cards */
-.performance-card {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid rgba(0, 160, 255, 0.3);
+/* Expander header styling */
+.stExpander > details > summary {
+    border-color: #00A0FF !important;
 }
 
-.positive-index {
-    color: #00A02A;
-    font-weight: bold;
+/* Expander hover effect */
+.stExpander > details > summary:hover {
+    color: #00A0FF !important;
+    border-color: #00A0FF !important;
+    background-color: rgba(0, 160, 255, 0.1) !important;
 }
 
-.negative-index {
-    color: #FF4500;
-    font-weight: bold;
+/* Expander open state */
+.stExpander > details[open] > summary {
+    border-left: 4px solid #00A0FF !important;
+    color: #00A0FF !important;
+}
+
+/* Expander arrow/icon color */
+.stExpander svg {
+    color: #00A0FF !important;
 }
 
 </style>
