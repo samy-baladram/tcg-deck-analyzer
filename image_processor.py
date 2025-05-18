@@ -478,8 +478,8 @@ def preload_all_deck_pokemon_info():
             # Rest of the function remains the same...
             
             # Update caption less frequently
-            if i % 5 == 0:
-                st.caption(f"Processing deck {i+1}/{total_decks}: {display_name}")
+            #if i % 5 == 0:
+            #    st.caption(f"Processing deck {i+1}/{total_decks}: {display_name}")
         
         # Clear progress bar when done
         progress_bar.empty()
