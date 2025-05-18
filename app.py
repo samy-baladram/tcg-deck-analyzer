@@ -137,7 +137,7 @@ if 'analyze' in st.session_state and selected_option:
     display_tabs.display_deck_header(original_deck_info, results)
     
     # Display tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Card Usage", "Deck Template", "Raw Data", "Tournament Performance Data", "Energy Debug"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Card Usage", "Deck Template", "Raw Data", "Metagame Overview", "Related Decks"])
     
     with tab1:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
@@ -150,9 +150,9 @@ if 'analyze' in st.session_state and selected_option:
     
     with tab4:
         display_tabs.display_metagame_tab()
-
+        
     with tab5:
-        display_tabs.display_energy_debug_tab(original_deck_info)
+        display_tabs.display_related_decks_tab(original_deck_info)
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
