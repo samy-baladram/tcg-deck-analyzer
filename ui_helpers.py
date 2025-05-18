@@ -12,7 +12,7 @@ import pandas as pd
 import base64
 import os
 
-def display_banner(img_path, max_width=800):
+def display_banner(img_path, max_width=900):
     """Display the app banner image"""
     from image_processor import get_base64_image
     
