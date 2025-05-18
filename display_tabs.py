@@ -334,8 +334,6 @@ def display_energy_debug_tab(deck_info):
 
 # Modify the display_related_decks_tab function in display_tabs.py:
 
-# Updated display_related_decks_tab function for display_tabs.py
-
 def display_related_decks_tab(deck_info, results):
     """Display the Related Decks tab with header images"""
     st.subheader("Related Decks")
@@ -343,12 +341,16 @@ def display_related_decks_tab(deck_info, results):
     # Get the current deck name
     current_deck_name = deck_info['deck_name']
     
-    # Find related decks
-    if 'deck_list' in st.session_state:
-        related_decks = find_related_decks(current_deck_name, st.session_state.deck_list)
+    # Make sure we have the deck name mapping from the dropdown
+    if 'deck_name_mapping' in st.session_state:
+        # Import cache_manager to preload sample decks
+        import cache_manager
+        
+        # Find related decks from the deck selection dropdown list
+        related_decks = find_related_decks(current_deck_name, st.session_state.deck_name_mapping)
         
         if related_decks.empty:
-            st.info("No related decks found.")
+            st.info("No related decks found in the current meta.")
         else:
             # Display related decks in a card-like format
             st.write("Decks sharing Pokémon with this archetype:")
@@ -373,31 +375,35 @@ def display_related_decks_tab(deck_info, results):
                     # Generate header image
                     header_image = create_deck_header_images(related_deck_info, results)
                     
-                    # Create a card-like container with image and button integrated
+                    # Create card container
                     with st.container():
+                        # Add image at top of card
                         if header_image:
-                            image_html = f'<img src="data:image/png;base64,{header_image}" style="width: 100%; height: 70px; object-fit: cover; border-radius: 4px 4px 0 0;">'
-                        else:
-                            image_html = f'<div style="width: 100%; height: 70px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center; color: #888;">No image</div>'
-                        
-                        # Create card with image at top, then info, then button at bottom
-                        st.markdown(f"""
-                        <div style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            {image_html}
-                            <div style="padding: 10px;">
-                                <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
-                                <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Meta share: {deck['share']:.2f}%</p>
+                            st.markdown(f"""
+                            <div style="width: 100%; height: 70px; overflow: hidden; border-radius: 4px 4px 0 0; margin-bottom: 8px;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
                             </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                            <div style="width: 100%; height: 70px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                                <span style="color: #888;">No image</span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        
+                        # Add deck name and button in a card-like container
+                        st.markdown(f"""
+                        <div style="border: 1px solid #ddd; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
+                            <h4 style="margin: 0 0 5px 0;">{formatted_name}</h4>
+                            <p style="margin: 0 0 10px 0; color: #666;">Meta share: {deck.get('share', 0):.2f}%</p>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Add a button that fits the card design
-                        button_col1, button_col2, button_col3 = st.columns([1, 2, 1])
-                        with button_col2:
-                            if st.button(f"Analyze", key=f"btn_{deck['deck_name']}"):
-                                # Set this deck to be analyzed
-                                st.session_state.deck_to_analyze = deck['deck_name']
-                                # Force rerun to trigger the analysis
-                                st.rerun()
+                        # Add button below card
+                        if st.button(f"Analyze", key=f"btn_{deck['deck_name']}"):
+                            # Set this deck to be analyzed
+                            st.session_state.deck_to_analyze = deck['deck_name']
+                            # Force rerun to trigger the analysis
+                            st.rerun()
     else:
         st.info("Deck list not available. Unable to find related decks.")
