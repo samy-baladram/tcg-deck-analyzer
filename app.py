@@ -182,3 +182,34 @@ setTimeout(function() {
 }, 2000);
 </script>
 """, unsafe_allow_html=True)
+
+# At the very end of app.py, after footer
+st.markdown("""
+<script>
+// Simple direct script test
+document.addEventListener('DOMContentLoaded', function() {
+    alert('Card hover script loaded directly!');
+    
+    // Create a simple hover popup
+    const popup = document.createElement('div');
+    popup.id = 'direct-card-popup';
+    popup.style.cssText = 'position:fixed; top:0; left:0; background:red; padding:5px; z-index:10000; display:none;';
+    popup.textContent = 'Card popup';
+    document.body.appendChild(popup);
+    
+    // Add hover to ALL images
+    const allImages = document.querySelectorAll('img');
+    allImages.forEach(img => {
+        img.addEventListener('mouseenter', function() {
+            popup.style.top = (this.getBoundingClientRect().top + window.scrollY) + 'px';
+            popup.style.left = (this.getBoundingClientRect().right + window.scrollX) + 'px';
+            popup.style.display = 'block';
+        });
+        
+        img.addEventListener('mouseleave', function() {
+            popup.style.display = 'none';
+        });
+    });
+});
+</script>
+""", unsafe_allow_html=True)
