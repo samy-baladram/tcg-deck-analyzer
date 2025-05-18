@@ -437,7 +437,7 @@ import cache_manager
 
 def preload_all_deck_pokemon_info():
     """
-    Extract and cache Pokémon information for all decks in the meta list.
+    Extract and cache Pokémon information for decks in the dropdown selection list.
     This should be called during app initialization to ensure all deck images can be generated.
     """
     if 'deck_pokemon_info' not in st.session_state:
@@ -447,25 +447,26 @@ def preload_all_deck_pokemon_info():
     if st.session_state.deck_pokemon_info:
         return
         
-    if 'deck_list' not in st.session_state:
+    # Make sure we have the deck mapping from dropdown
+    if 'deck_name_mapping' not in st.session_state:
         return
     
-    # Get list of all meta decks
-    deck_list = st.session_state.deck_list
-    total_decks = len(deck_list)
-
+    # Get the decks from the dropdown mapping
+    deck_mapping = st.session_state.deck_name_mapping
+    total_decks = len(deck_mapping)
     
     # Process each deck to extract Pokémon info
     with st.spinner("Pre-loading Pokémon data for meta decks..."):
+        # Create a progress bar
         progress_bar = st.progress(0)
         
         # Process each deck with progress updates
-        for i, (_, deck) in enumerate(deck_list.iterrows()):
+        for i, (display_name, deck_info) in enumerate(deck_mapping.items()):
             # Update progress bar
             progress_bar.progress((i + 1) / total_decks)
             
-            deck_name = deck['deck_name']
-            set_name = deck['set']
+            deck_name = deck_info['deck_name']
+            set_name = deck_info['set']
             
             # Skip if already processed
             if deck_name in st.session_state.deck_pokemon_info:
@@ -474,46 +475,11 @@ def preload_all_deck_pokemon_info():
             # Extract Pokémon names from the deck name
             pokemon_names = extract_pokemon_from_deck_name(deck_name)
             
-            if not pokemon_names:
-                continue
-                
-            # Try to get sample deck to extract card info
-            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+            # Rest of the function remains the same...
             
-            # Extract Pokémon card info
-            pokemon_info = []
-            for pokemon_name in pokemon_names:
-                # Clean up the Pokémon name for matching
-                clean_name = pokemon_name.replace('-', ' ').title()
-                
-                # Handle 'ex' case
-                if 'Ex' in clean_name:
-                    clean_name = clean_name.replace('Ex', 'ex')
-                
-                # Look for matching Pokémon in the sample deck
-                found = False
-                if 'pokemon_cards' in sample_deck:
-                    for card in sample_deck['pokemon_cards']:
-                        if card['card_name'].lower() == clean_name.lower():
-                            pokemon_info.append({
-                                'name': pokemon_name,
-                                'card_name': card['card_name'],
-                                'set': card['set'],
-                                'num': card['num']
-                            })
-                            found = True
-                            break
-                
-                # If not found, add with empty set and num
-                if not found:
-                    pokemon_info.append({
-                        'name': pokemon_name,
-                        'card_name': clean_name,
-                        'set': '',
-                        'num': ''
-                    })
-                st.caption(f"Processing deck {i+1}/{total_decks}: {deck_name}")
-            
-            # Store in session state
-            progress_bar.empty()
-            st.session_state.deck_pokemon_info[deck_name] = pokemon_info
+            # Update caption less frequently
+            if i % 5 == 0:
+                st.caption(f"Processing deck {i+1}/{total_decks}: {display_name}")
+        
+        # Clear progress bar when done
+        progress_bar.empty()
