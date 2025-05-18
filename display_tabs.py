@@ -80,7 +80,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
             st.info("No Trainer cards found")
 
 def display_deck_template_tab(results):
-    """Display the Deck Template tab with revised layout"""
+    """Display the Deck Template tab with revised layout and two-column card sections"""
     # Import needed functions
     from energy_utils import get_energy_types_for_deck, get_archetype_from_deck_name
     
@@ -160,17 +160,22 @@ def display_deck_template_tab(results):
         # Create single column card grid renderer with larger card size
         from card_renderer import CardGrid
         
-        # Pokemon cards section
-        st.write("###### Pokémon")
-        pokemon_grid = CardGrid(card_width=70, gap=4)
-        pokemon_grid.add_cards_from_dict(deck_info['Pokemon'], repeat_by_count=True)
-        pokemon_grid.display()
+        # Core Cards: Pokemon and Trainer in columns with 1:2 ratio
+        core_col1, core_col2 = st.columns([1, 2])
         
-        # Trainer cards section
-        st.write("###### Trainer")
-        trainer_grid = CardGrid(card_width=70, gap=4)
-        trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
-        trainer_grid.display()
+        with core_col1:
+            # Pokemon cards section
+            st.write("###### Pokémon")
+            pokemon_grid = CardGrid(card_width=65, gap=4)
+            pokemon_grid.add_cards_from_dict(deck_info['Pokemon'], repeat_by_count=True)
+            pokemon_grid.display()
+        
+        with core_col2:
+            # Trainer cards section
+            st.write("###### Trainer")
+            trainer_grid = CardGrid(card_width=65, gap=4)
+            trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
+            trainer_grid.display()
         
         # Flexible slots section
         remaining = 20 - total_cards
@@ -181,19 +186,29 @@ def display_deck_template_tab(results):
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
         trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
-        # Only show Pokemon options if there are any
-        if not pokemon_options.empty:
-            st.write("###### Pokémon Options")
-            pokemon_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
-            pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
-            pokemon_options_grid.display()
+        # Flexible Slots: Pokemon and Trainer options in columns with 1:2 ratio
+        flex_options_available = not pokemon_options.empty or not trainer_options.empty
         
-        # Only show Trainer options if there are any
-        if not trainer_options.empty:
-            st.write("###### Trainer Options")
-            trainer_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
-            trainer_options_grid.add_cards_from_dataframe(trainer_options)
-            trainer_options_grid.display()
+        if flex_options_available:
+            flex_col1, flex_col2 = st.columns([1, 2])
+            
+            with flex_col1:
+                # Only show Pokemon options if there are any
+                if not pokemon_options.empty:
+                    st.write("###### Pokémon Options")
+                    pokemon_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
+                    pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
+                    pokemon_options_grid.display()
+            
+            with flex_col2:
+                # Only show Trainer options if there are any
+                if not trainer_options.empty:
+                    st.write("###### Trainer Options")
+                    trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
+                    trainer_options_grid.add_cards_from_dataframe(trainer_options)
+                    trainer_options_grid.display()
+        else:
+            st.info("No flexible options available for this deck.")
 
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
