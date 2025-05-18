@@ -228,9 +228,6 @@ def display_metagame_tab():
         axis=1
     )
     
-    # Add a flag for the current deck for styling purposes
-    display_df['is_current'] = display_df['deck_name'] == current_deck_name
-    
     # Select and rename columns for display
     display_cols = {
         'displayed_name': 'Deck',
@@ -240,24 +237,21 @@ def display_metagame_tab():
         'total_ties': 'Ties',
         'tournaments_played': 'Best Finish Entries',
         'share': 'Meta Share %',
-        'power_index': 'Power Index',
-        'is_current': 'is_current'  # Keep this for styling
+        'power_index': 'Power Index'
     }
     
     final_df = display_df[display_cols.keys()].rename(columns=display_cols)
     
-    # Simple row-wise styling function that works in most Streamlit versions
-    def highlight_row(row):
-        if row['is_current']:
-            return ['background-color: rgba(0, 160, 255, 0.15)'] * (len(row) - 1) + ['']
-        else:
-            return [''] * len(row)
+    # Define a styling function
+    def highlight_current_deck(s):
+        is_current = s.str.contains('➡️', na=False)
+        return ['background-color: rgba(0, 160, 255, 0.2)' if v else '' for v in is_current]
     
-    # Apply styling
-    styled_df = final_df.style.apply(highlight_row, axis=1)
-    
-    # Hide the is_current column
-    styled_df = styled_df.hide_columns(['is_current'])
+    # Apply styling to the Deck column only
+    styled_df = final_df.style.apply(
+        highlight_current_deck, 
+        subset=['Deck']
+    )
     
     # Display with styling
     st.dataframe(
