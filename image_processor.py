@@ -3,7 +3,7 @@
 import functools
 import base64
 import requests
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageChops
 from io import BytesIO
 import re
 from config import IMAGE_BASE_URL, IMAGE_CROP_BOX, IMAGE_GRADIENT
