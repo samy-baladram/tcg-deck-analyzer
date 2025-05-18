@@ -164,7 +164,8 @@ def apply_diagonal_cut(image, cut_type):
     
 def apply_diagonal_cut_with_gradient(image, cut_type):
     """
-    Apply a diagonal cut to an image with a transparent gradient along the cut edge
+    Apply a diagonal cut to an image with a transparent gradient along the cut edge,
+    preserving the original diagonal cut behavior
     
     Parameters:
     image: PIL Image
@@ -182,73 +183,78 @@ def apply_diagonal_cut_with_gradient(image, cut_type):
     
     # Create a mask for the diagonal cut with gradient
     width, height = image.size
-    mask = Image.new('L', image.size, 255)  # 'L' mode for grayscale
+    mask = Image.new('L', image.size, 0)  # 'L' mode for grayscale, initially transparent
     draw = ImageDraw.Draw(mask)
     
-    # Define the cutoff percentage and gradient width
+    # Define the cutoff percentage
     cutoff_percentage = 0.7
-    gradient_width = 40  # Width of the gradient in pixels
+    
+    # Define gradient width (pixels from the cut line)
+    gradient_width = 15
     
     if cut_type == "left":
-        # For left image, create gradient on right edge
-        # Draw the main shape
+        # Calculate the x position of the diagonal cut line
+        cut_x = width * cutoff_percentage
+        
+        # Create base polygon (fully opaque)
         points = [
-            (0, 0),                               # Top left
-            (width * cutoff_percentage, 0),       # Top right-ish (start of gradient)
-            (0, height),                          # Bottom left
-            (0, 0),                               # Back to top left
+            (0, 0),                # Top left
+            (cut_x, 0),            # Top at cut line
+            (0, height),           # Bottom left
+            (0, 0),                # Back to top left
         ]
         draw.polygon(points, fill=255)  # Fully opaque
         
-        # Create gradient from cutoff to edge
-        gradient_start = width * cutoff_percentage
-        gradient_end = min(width, gradient_start + gradient_width)
-        
-        for x in range(int(gradient_start), int(gradient_end)):
-            # Calculate alpha value (255 = fully opaque, 0 = fully transparent)
-            alpha = 255 - int(255 * (x - gradient_start) / (gradient_end - gradient_start))
+        # Add gradient from cut line
+        for offset in range(gradient_width):
+            # Calculate alpha for this offset line (255 = opaque, 0 = transparent)
+            alpha = 255 - int((offset / gradient_width) * 255)
             
-            # Draw a vertical line with this alpha value
-            draw.line([(x, 0), (x, height)], fill=alpha)
-    
+            # Draw a line with decreasing opacity
+            x_pos = cut_x - offset
+            if x_pos > 0:  # Make sure we stay within image bounds
+                draw.line([(x_pos, 0), (x_pos - height, height)], fill=alpha, width=1)
+        
     else:  # cut_type == "right"
-        # For right image, create gradient on left edge
-        # Draw the main shape
+        # For right image, the cut is on the left side
+        # Calculate the x position of the diagonal cut line
+        cut_x = width * (1 - cutoff_percentage)
+        
+        # Create base polygon (fully opaque)
         points = [
-            (width * (1 - cutoff_percentage), 0), # Top left-ish (end of gradient)
-            (width, 0),                          # Top right
-            (width, height),                     # Bottom right
-            (width * cutoff_percentage, height), # Bottom left-ish (start of gradient)
-            (width * (1 - cutoff_percentage), 0), # Back to top left-ish
+            (cut_x, 0),            # Top at cut line
+            (width, 0),            # Top right
+            (width, height),       # Bottom right
+            (cut_x + height, height if cut_x + height <= width else width),  # Bottom at cut line
+            (cut_x, 0),            # Back to top at cut line
         ]
         draw.polygon(points, fill=255)  # Fully opaque
         
-        # Create gradient from edge to cutoff
-        gradient_end = width * (1 - cutoff_percentage)
-        gradient_start = max(0, gradient_end - gradient_width)
-        
-        for x in range(int(gradient_start), int(gradient_end)):
-            # Calculate alpha value (255 = fully opaque, 0 = fully transparent)
-            alpha = int(255 * (x - gradient_start) / (gradient_end - gradient_start))
+        # Add gradient from cut line
+        for offset in range(gradient_width):
+            # Calculate alpha for this offset line
+            alpha = 255 - int((offset / gradient_width) * 255)
             
-            # Draw a vertical line with this alpha value
-            draw.line([(x, 0), (x, height)], fill=alpha)
+            # Draw a line with decreasing opacity
+            x_pos = cut_x + offset
+            if x_pos < width:  # Make sure we stay within image bounds
+                draw.line([(x_pos, 0), (x_pos + height, height)], fill=alpha, width=1)
     
-    # Apply the mask to the image
+    # Apply the mask to the alpha channel of the image
     result = image.copy()
-    result.putalpha(mask)
+    result.putalpha(ImageChops.multiply(result.getchannel('A'), mask))
     
     return result
     
-def merge_header_images(img1, img2, overlap=30, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, overlap=10, cutoff_percentage=0.7):
     """
-    Merge two images with gradient edges by overlapping them
+    Merge two images with gradient edges by overlapping them slightly
     
     Parameters:
-    img1: PIL Image - left image with gradient on right edge
-    img2: PIL Image - right image with gradient on left edge
+    img1: PIL Image - left image with gradient on right diagonal edge
+    img2: PIL Image - right image with gradient on left diagonal edge
     overlap: int - how many pixels to overlap the images
-    cutoff_percentage: float - the percentage used in the gradient cut
+    cutoff_percentage: float - the percentage used in the diagonal cut
     
     Returns:
     PIL Image - merged image
@@ -263,25 +269,28 @@ def merge_header_images(img1, img2, overlap=30, cutoff_percentage=0.7):
     width1, height1 = img1.size
     width2, height2 = img2.size
     
-    # Calculate positions - now with overlap
-    gradient_width = overlap
-    img2_x_position = int(width1 * cutoff_percentage) - gradient_width
+    # Calculate positions - with slight overlap
+    # For the right edge of the left image
+    left_edge = int(width1 * cutoff_percentage)
+    
+    # Position the second image with a slight overlap
+    img2_x_position = left_edge - overlap
     
     # Calculate new dimensions
     max_height = max(height1, height2)
-    total_width = img2_x_position + width2
+    total_width = max(width1, img2_x_position + width2)
     
     # Create new image with transparent background
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
-    # Paste images - the second one will be on top where they overlap
+    # Calculate y positions for centering
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
-    # Paste first image (will show through the transparent parts of the second)
+    # Paste the first image
     merged.paste(img1, (0, y1), img1)
     
-    # Paste second image on top
+    # Paste the second image on top - its transparency will let the first image show through
     merged.paste(img2, (img2_x_position, y2), img2)
     
     return merged
