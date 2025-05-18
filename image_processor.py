@@ -153,7 +153,7 @@ def apply_diagonal_cut(image, cut_type):
         # For left image, keep everything except right 5% and apply gradient to right edge
         # Calculate where to start the cutoff
         cutoff_start = int(width * (1 - edge_cutoff))
-        gradient_start = cutoff_start - gradient_width
+        gradient_start = cutoff_start - gradient_width*0.95
         
         # Draw the fully opaque region (left part of the image)
         draw.rectangle([(0, 0), (gradient_start, height)], fill=255)
