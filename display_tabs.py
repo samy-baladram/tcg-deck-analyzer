@@ -225,7 +225,6 @@ def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data and deck images"""
     st.subheader("Tournament Performance Data")
     import pandas as pd
-    from image_processor import create_deck_header_images
     import base64
     from io import BytesIO
     
@@ -251,95 +250,86 @@ def display_metagame_tab():
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
     
-    # Generate deck images for each row
-    def generate_deck_image(row):
+    # Generate deck images for each deck
+    from image_processor import create_deck_header_images
+    
+    # Create deck image function to get base64 image
+    def get_deck_image(deck_name, deck_set):
+        # Create deck info dict
         deck_info = {
-            'deck_name': row['deck_name'],
-            'set': row['set']
+            'deck_name': deck_name,
+            'set': deck_set
         }
-        image = create_deck_header_images(deck_info)
         
-        if image:
-            # Return the base64 image string (already encoded by create_deck_header_images)
-            return image
+        # Generate header image
+        header_image = create_deck_header_images(deck_info)
+        
+        # If image was generated successfully, return it
+        if header_image:
+            return header_image
+        
+        # Return a placeholder if no image
         return None
     
-    # Add deck images to the dataframe
-    display_df['deck_image'] = display_df.apply(generate_deck_image, axis=1)
-    
-    # Convert None values to empty strings to avoid display issues
-    display_df['deck_image'] = display_df['deck_image'].fillna('')
-    
-    # Add clickable functionality by making the deck_name a markdown link
-    display_df['formatted_name'] = display_df.apply(
-        lambda row: f"**{row['displayed_name']}**" if row['deck_name'] == current_deck_name 
-                    else row['displayed_name'], 
+    # Generate images and add to dataframe
+    display_df['image'] = display_df.apply(
+        lambda row: get_deck_image(row['deck_name'], row['set']), 
         axis=1
     )
     
-    # Select and rename columns for display
+    # Create indicator for highlighting
+    display_df['is_current'] = display_df['deck_name'] == current_deck_name
+    
+    # Select and rename columns for display (add image column first)
     display_cols = {
-        'deck_image': 'Deck Image',
-        'formatted_name': 'Deck',
+        'image': 'Deck Image',
+        'displayed_name': 'Deck',
         'win_rate': 'Win %',
         'total_wins': 'Wins',
         'total_losses': 'Losses',
         'total_ties': 'Ties',
         'tournaments_played': 'Best Finish Entries',
         'share': 'Meta Share %',
-        'power_index': 'Power Index',
-        'deck_name': 'deck_name'  # Keep for selection functionality
+        'power_index': 'Power Index'
     }
-    
-    # Create indicator for highlighting
-    display_df['is_current'] = display_df['deck_name'] == current_deck_name
     
     # Create final display dataframe
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
     
-    # Display the table with column configuration for images
+    # Create a styling function that works with DataFrame.style
+    def highlight_current_deck(df):
+        # Create an empty styles DataFrame with same shape as input
+        styles = pd.DataFrame('', index=df.index, columns=df.columns)
+        
+        # Find the rows where deck_name matches current_deck_name
+        is_current = display_df['is_current']
+        
+        # Apply background color to all cells in the matching rows
+        for col in styles.columns:
+            styles.loc[is_current, col] = 'background-color: rgba(0, 208, 255, 0.15)'
+            
+        return styles
+    
+    # Apply styling
+    styled_df = final_df.style.apply(highlight_current_deck, axis=None)
+    
+    # Display with styling and image column configuration
     st.dataframe(
-        final_df,
+        styled_df,
         use_container_width=True,
         height=800,
         column_config={
             "Deck Image": st.column_config.ImageColumn(
                 "Deck Image", 
-                help="Deck header image",
+                help="Banner image for the deck",
                 width="medium"
             ),
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
-            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
-            "deck_name": st.column_config.Column(
-                "Deck Name",
-                required=True,
-                help="Internal deck name (used for analysis)",
-                disabled=True
-            )
+            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
         },
-        column_order=["Deck Image", "Deck", "Power Index", "Win %", "Wins", "Losses", "Ties", "Best Finish Entries", "Meta Share %"],
         hide_index=True
     )
-    
-    # Add deck selection functionality
-    st.markdown("Click on a row to analyze that deck:")
-    selected_rows = st.data_editor(
-        pd.DataFrame({"Selected": [False] * len(final_df)}),
-        use_container_width=True,
-        hide_index=True,
-        key="deck_selector",
-        disabled=True
-    )
-    
-    # Check if a row is selected
-    if selected_rows.get("edited_rows"):
-        selected_idx = list(selected_rows["edited_rows"].keys())[0]
-        selected_deck = final_df.iloc[int(selected_idx)]["deck_name"]
-        
-        # Set this deck to be analyzed
-        st.session_state.deck_to_analyze = selected_deck
-        st.rerun()
     
     # Add explanation
     from datetime import datetime
