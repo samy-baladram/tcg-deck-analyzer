@@ -377,11 +377,11 @@ def display_related_decks_tab(deck_info, results):
             st.write("Decks sharing Pokémon with this archetype:")
             
             # Create a 4-column layout
-            cols = st.columns(4)
+            cols = st.columns(6)
             
             # Display each related deck
             for i, (_, deck) in enumerate(related_decks.iterrows()):
-                col_idx = i % 4
+                col_idx = i % 6
                 
                 with cols[col_idx]:
                     # Format deck name
@@ -400,7 +400,7 @@ def display_related_decks_tab(deck_info, results):
                     if header_image:
                         st.markdown(f"""
                         <div style="width: 100%; height: auto; overflow: hidden; border-radius: 6px 6px 0 0; margin-bottom: 8px;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:200px; object-fit: cover;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:170px; object-fit: cover;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
