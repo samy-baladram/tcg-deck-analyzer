@@ -279,13 +279,13 @@ def display_metagame_tab():
     # Select and rename columns for display
     display_cols = {
         'displayed_name': 'Deck',
-        'power_index': 'Power Index'
+        'power_index': 'Power Index',
         'share': 'Meta Share %',
         'win_rate': 'Win %',
         'tournaments_played': 'Best Finish Entries',
         'total_wins': 'Wins',
         'total_losses': 'Losses',
-        'total_ties': 'Ties',        
+        'total_ties': 'Ties'      
     }
     
     # Create indicator for highlighting
