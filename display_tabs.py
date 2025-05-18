@@ -411,7 +411,7 @@ def display_related_decks_tab(deck_info, results):
                         """, unsafe_allow_html=True)
                     
                     # Simple tertiary button with the deck name
-                    if st.button(formatted_name, key=f"btn_{deck['deck_name']}_{i}", type="secondary"):
+                    if st.button(formatted_name, key=f"btn_{deck['deck_name']}_{i}", type="tertiary"):
                         # Set this deck to be analyzed
                         st.session_state.deck_to_analyze = deck['deck_name']
                         # Force rerun to trigger the analysis
