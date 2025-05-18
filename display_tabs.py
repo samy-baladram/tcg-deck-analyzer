@@ -222,12 +222,9 @@ def display_raw_data_tab(results, variant_df):
         st.dataframe(variant_df, use_container_width=True)
 
 def display_metagame_tab():
-    """Display the Metagame Overview tab with detailed performance data and deck images"""
+    """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
     import pandas as pd
-    import base64
-    from io import BytesIO
-    
     # Get performance data
     performance_df = st.session_state.performance_data
     
@@ -250,39 +247,14 @@ def display_metagame_tab():
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
     
-    # Generate deck images for each deck
-    from image_processor import create_deck_header_images
+    # Add an indicator emoji for the current deck
+    # display_df['displayed_name'] = display_df.apply(
+    #     lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+    #     axis=1
+    # )
     
-    # Create deck image function to get base64 image
-    def get_deck_image(deck_name, deck_set):
-        # Create deck info dict
-        deck_info = {
-            'deck_name': deck_name,
-            'set': deck_set
-        }
-        
-        # Generate header image
-        header_image = create_deck_header_images(deck_info)
-        
-        # If image was generated successfully, return it
-        if header_image:
-            return header_image
-        
-        # Return a placeholder if no image
-        return None
-    
-    # Generate images and add to dataframe
-    display_df['image'] = display_df.apply(
-        lambda row: get_deck_image(row['deck_name'], row['set']), 
-        axis=1
-    )
-    
-    # Create indicator for highlighting
-    display_df['is_current'] = display_df['deck_name'] == current_deck_name
-    
-    # Select and rename columns for display (add image column first)
+    # Select and rename columns for display
     display_cols = {
-        'image': 'Deck Image',
         'displayed_name': 'Deck',
         'win_rate': 'Win %',
         'total_wins': 'Wins',
@@ -292,6 +264,9 @@ def display_metagame_tab():
         'share': 'Meta Share %',
         'power_index': 'Power Index'
     }
+    
+    # Create indicator for highlighting
+    display_df['is_current'] = display_df['deck_name'] == current_deck_name
     
     # Create final display dataframe
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
@@ -313,23 +288,30 @@ def display_metagame_tab():
     # Apply styling
     styled_df = final_df.style.apply(highlight_current_deck, axis=None)
     
-    # Display with styling and image column configuration
+    # Display with styling
     st.dataframe(
         styled_df,
         use_container_width=True,
         height=800,
         column_config={
-            "Deck Image": st.column_config.ImageColumn(
-                "Deck Image", 
-                help="Banner image for the deck",
-                width="medium"
-            ),
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
             "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
         },
         hide_index=True
     )
+    
+    # Show note about current deck if one is selected
+    # if current_deck_name and current_deck_name in display_df['deck_name'].values:
+    #     selected_deck_name = display_df[display_df['deck_name'] == current_deck_name]['displayed_name'].values[0]
+    #     selected_name = selected_deck_name.replace('➡️ ', '')
+        
+    #     st.markdown(f"""
+    #     <div style="background-color: rgba(0, 160, 255, 0.1); padding: 12px; border-radius: 5px; 
+    #                 border-left: 4px solid #00A0FF; margin-top: 10px; margin-bottom: 20px;">
+    #         <span style="font-weight: bold;">➡️ Currently analyzing:</span> {selected_name}
+    #     </div>
+    #     """, unsafe_allow_html=True)
     
     # Add explanation
     from datetime import datetime
