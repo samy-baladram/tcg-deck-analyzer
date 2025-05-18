@@ -75,24 +75,24 @@ def add_bg_from_local(image_file, fixed_position=True):
             background-attachment: {position};
         }}
         
-        /* Add a semi-transparent overlay to improve text readability */
-        .stApp::before {{
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.7);  /* White with 70% opacity */
-            z-index: -1;
-        }}
+        # /* Add a semi-transparent overlay to improve text readability */
+        # .stApp::before {{
+        #     content: "";
+        #     position: fixed;
+        #     top: 0;
+        #     left: 0;
+        #     width: 100%;
+        #     height: 100%;
+        #     background-color: rgba(255, 255, 255, 0.7);  /* White with 70% opacity */
+        #     z-index: -1;
+        # }}
         
-        /* Make sure content containers have some transparency */
-        .stTabs [data-baseweb="tab-panel"] > div {{
-            background-color: rgba(255, 255, 255, 0.85);
-            padding: 1rem;
-            border-radius: 5px;
-        }}
+        # /* Make sure content containers have some transparency */
+        # .stTabs [data-baseweb="tab-panel"] > div {{
+        #     background-color: rgba(255, 255, 255, 0.85);
+        #     padding: 1rem;
+        #     border-radius: 5px;
+        # }}
         </style>
         """,
         unsafe_allow_html=True
