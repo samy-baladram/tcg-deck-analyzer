@@ -376,8 +376,8 @@ def display_related_decks_tab(deck_info, results):
             # Display related decks in a simple grid
             st.write("Decks sharing Pokémon with this archetype:")
             
-            # Create a 3-column layout
-            cols = st.columns(3)
+            # Create a 4-column layout
+            cols = st.columns(4)
             
             # Display each related deck
             for i, (_, deck) in enumerate(related_decks.iterrows()):
