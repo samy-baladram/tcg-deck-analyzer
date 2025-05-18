@@ -184,7 +184,7 @@ def apply_diagonal_cut(image, cut_type):
     
     return result
 
-def merge_header_images(img1, img2, gap_ratio=-0.2, cutoff_percentage=0.7):
+def merge_header_images(img1, img2, gap_ratio=-0.5, cutoff_percentage=0.7):
     """
     Merge two images with edge gradients and cutoffs by overlapping them
     
