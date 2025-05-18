@@ -9,6 +9,8 @@ from scraper import get_deck_list
 import cache_manager
 from config import MIN_META_SHARE, TOURNAMENT_COUNT
 import pandas as pd
+import base64
+import os
 
 def display_banner(img_path, max_width=800):
     """Display the app banner image"""
@@ -220,8 +222,19 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         st.markdown(deck_html, unsafe_allow_html=True)
 
 def render_sidebar():
-    """Render the sidebar with tournament performance data"""
-    st.sidebar.title("Top 10 Meta Decks")
+    """Render the sidebar with tournament performance data"""    
+    # Load and encode the banner image if it exists
+    banner_path = "sidebar_banner.png"
+    if os.path.exists(banner_path):
+        with open(banner_path, "rb") as f:
+            banner_base64 = base64.b64encode(f.read()).decode()
+        st.sidebar.markdown(f"""
+        <div style="width:100%; text-align:center; margin:-15px 0 5px 0;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:95%; max-width:280px;">
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.sidebar.title("Top 10 Meta Decks")
     
     # Initialize energy types
     from energy_utils import initialize_energy_types
