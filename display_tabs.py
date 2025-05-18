@@ -240,23 +240,28 @@ def display_metagame_tab():
         'power_index': 'Power Index'
     }
     
-    final_df = display_df[display_cols.keys()].rename(columns=display_cols)
+    # Create indicator for highlighting
+    display_df['is_current'] = display_df['deck_name'] == current_deck_name
     
-    # Create a list to mark which rows have the current deck
-    is_current_row = [deck_name == current_deck_name for deck_name in display_df['deck_name']]
+    # Create final display dataframe
+    final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
     
-    # Define a styling function to highlight the full row
-    def highlight_current_row(df, is_current_list):
-        styles = []
-        for i in range(len(df)):
-            if is_current_list[i]:
-                styles.append(['background-color: rgba(0, 160, 255, 0.15)'] * len(df.columns))
-            else:
-                styles.append([''] * len(df.columns))
+    # Create a styling function that works with DataFrame.style
+    def highlight_current_deck(df):
+        # Create an empty styles DataFrame with same shape as input
+        styles = pd.DataFrame('', index=df.index, columns=df.columns)
+        
+        # Find the rows where deck_name matches current_deck_name
+        is_current = display_df['is_current']
+        
+        # Apply background color to all cells in the matching rows
+        for col in styles.columns:
+            styles.loc[is_current, col] = 'background-color: rgba(0, 160, 255, 0.15)'
+            
         return styles
     
     # Apply styling
-    styled_df = final_df.style.apply(lambda _: highlight_current_row(final_df, is_current_row), axis=None)
+    styled_df = final_df.style.apply(highlight_current_deck, axis=None)
     
     # Display with styling
     st.dataframe(
