@@ -334,6 +334,8 @@ def display_energy_debug_tab(deck_info):
 
 # Modify the display_related_decks_tab function in display_tabs.py:
 
+# Updated display_related_decks_tab function for display_tabs.py
+
 def display_related_decks_tab(deck_info, results):
     """Display the Related Decks tab with header images"""
     st.subheader("Related Decks")
@@ -343,9 +345,6 @@ def display_related_decks_tab(deck_info, results):
     
     # Make sure we have the deck name mapping from the dropdown
     if 'deck_name_mapping' in st.session_state:
-        # Import cache_manager to preload sample decks
-        import cache_manager
-        
         # Find related decks from the deck selection dropdown list
         related_decks = find_related_decks(current_deck_name, st.session_state.deck_name_mapping)
         
@@ -372,30 +371,36 @@ def display_related_decks_tab(deck_info, results):
                         'set': deck['set']
                     }
                     
-                    # Generate header image
-                    header_image = create_deck_header_images(related_deck_info, results)
+                    # Generate header image using pre-loaded Pokémon info
+                    header_image = create_deck_header_images(related_deck_info)
                     
-                    # Create card container
+                    # Create card with integrated button
                     with st.container():
+                        # Card container with image at top
+                        st.markdown(f"""
+                        <div style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        """, unsafe_allow_html=True)
+                        
                         # Add image at top of card
                         if header_image:
                             st.markdown(f"""
-                            <div style="width: 100%; height: 70px; overflow: hidden; border-radius: 4px 4px 0 0; margin-bottom: 8px;">
+                            <div style="width: 100%; height: 70px; overflow: hidden; border-radius: 4px 4px 0 0;">
                                 <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
                             st.markdown(f"""
-                            <div style="width: 100%; height: 70px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                            <div style="width: 100%; height: 70px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
                                 <span style="color: #888;">No image</span>
                             </div>
                             """, unsafe_allow_html=True)
                         
-                        # Add deck name and button in a card-like container
+                        # Add deck info
                         st.markdown(f"""
-                        <div style="border: 1px solid #ddd; border-radius: 5px; padding: 10px; margin-bottom: 15px;">
-                            <h4 style="margin: 0 0 5px 0;">{formatted_name}</h4>
-                            <p style="margin: 0 0 10px 0; color: #666;">Meta share: {deck.get('share', 0):.2f}%</p>
+                            <div style="padding: 10px;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
+                                <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Meta share: {deck.get('share', 0):.2f}%</p>
+                            </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
