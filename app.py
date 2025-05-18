@@ -107,7 +107,7 @@ div[role="option"]:hover {
 
 /* Even more specific selector targeting the text */
 div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
-    font-size: 14px !important;
+    font-size: 15px !important;
     padding: 8px 12px !important;
 }
 
