@@ -100,7 +100,7 @@ def display_deck_template_tab(results):
         energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
     
     # Create outer columns: Sample Deck (2) and Template (3) - switched order and ratio
-    outer_col1, outer_col2 = st.columns([2, 3])
+    outer_col1, outer_col2 = st.columns([1, 2])
     
     # Left column: Sample Deck
     with outer_col1:
