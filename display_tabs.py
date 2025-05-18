@@ -358,10 +358,8 @@ def display_energy_debug_tab(deck_info):
 
 # Modify the display_related_decks_tab function in display_tabs.py:
 
-# Updated display_related_decks_tab function for display_tabs.py
-
 def display_related_decks_tab(deck_info, results):
-    """Display the Related Decks tab with header images"""
+    """Display the Related Decks tab with clickable card UI elements"""
     st.subheader("Related Decks")
     
     # Get the current deck name
@@ -398,41 +396,72 @@ def display_related_decks_tab(deck_info, results):
                     # Generate header image using pre-loaded Pokémon info
                     header_image = create_deck_header_images(related_deck_info)
                     
-                    # Create card with integrated button
-                    with st.container():
-                        # Card container with image at top
-                        st.markdown(f"""
-                        <div style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                        """, unsafe_allow_html=True)
-                        
-                        # Add image at top of card
-                        if header_image:
-                            st.markdown(f"""
-                            <div style="width: 100%; height: 70px; overflow: hidden; border-radius: 4px 4px 0 0;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown(f"""
-                            <div style="width: 100%; height: 70px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
-                                <span style="color: #888;">No image</span>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        # Add deck info
-                        st.markdown(f"""
-                            <div style="padding: 10px;">
-                                <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
-                                <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Meta share: {deck.get('share', 0):.2f}%</p>
-                            </div>
+                    # Create a hidden button as the actual click handler
+                    # The key's random suffix helps prevent collisions when deck names are similar
+                    import random
+                    unique_key = f"btn_{deck['deck_name']}_{random.randint(1000, 9999)}"
+                    
+                    if st.button("", key=unique_key, help=f"Analyze {formatted_name}", label_visibility="collapsed"):
+                        # Set this deck to be analyzed
+                        st.session_state.deck_to_analyze = deck['deck_name']
+                        # Force rerun to trigger the analysis
+                        st.rerun()
+                    
+                    # Create card with integrated image and CSS hover effect for clickable appearance
+                    image_html = ""
+                    if header_image:
+                        image_html = f"""
+                        <div style="width: 100%; height: 120px; overflow: hidden; border-radius: 4px 4px 0 0;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; object-fit: cover;">
                         </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Add button below card
-                        if st.button(f"Analyze", key=f"btn_{deck['deck_name']}"):
-                            # Set this deck to be analyzed
-                            st.session_state.deck_to_analyze = deck['deck_name']
-                            # Force rerun to trigger the analysis
-                            st.rerun()
+                        """
+                    else:
+                        image_html = f"""
+                        <div style="width: 100%; height: 120px; background-color: #f0f0f0; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #888;">No image</span>
+                        </div>
+                        """
+                    
+                    # Use CSS to position the card above the button to create a clickable effect
+                    st.markdown(f"""
+                    <style>
+                    /* Target the specific button div */
+                    [data-testid="baseButton-secondary"]:has(#{unique_key}) {{
+                        position: relative;
+                        padding: 0 !important;
+                        width: 100%;
+                        height: 0;
+                        overflow: visible;
+                    }}
+                    
+                    /* Hide the button text */
+                    [data-testid="baseButton-secondary"]:has(#{unique_key}) p {{
+                        display: none;
+                    }}
+                    
+                    /* Position the card on top of the button */
+                    #card_{i} {{
+                        position: relative;
+                        z-index: 1;
+                        margin-top: -2rem;
+                        cursor: pointer;
+                        transition: transform 0.2s, box-shadow 0.2s;
+                    }}
+                    
+                    /* Hover effect for card */
+                    #card_{i}:hover {{
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    }}
+                    </style>
+                    
+                    <div id="card_{i}" class="clickable-card" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; background-color: white;">
+                        {image_html}
+                        <div style="padding: 12px;">
+                            <h4 style="margin: 0 0 5px 0; font-size: 16px;">{formatted_name}</h4>
+                            <p style="margin: 0; color: #666; font-size: 14px;">Meta share: {deck.get('share', 0):.2f}%</p>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
     else:
         st.info("Deck list not available. Unable to find related decks.")
