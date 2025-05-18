@@ -161,22 +161,98 @@ def apply_diagonal_cut(image, cut_type):
     result.putalpha(alpha)
     
     return result
-
-def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
+    
+def apply_diagonal_cut_with_gradient(image, cut_type):
     """
-    Merge two diagonally cut images side by side using layer compositing
+    Apply a diagonal cut to an image with a transparent gradient along the cut edge
     
     Parameters:
-    img1: PIL Image - left image with right side cut
-    img2: PIL Image - right image with left side cut
-    gap: int - gap in pixels between the visible parts
-    cutoff_percentage: float - the percentage used in the diagonal cut
+    image: PIL Image
+    cut_type: String - "left" for left image, "right" for right image
+    
+    Returns:
+    PIL Image with diagonal cut and gradient
+    """
+    if cut_type not in ["left", "right"]:
+        return image
+    
+    # Ensure image has alpha channel
+    if image.mode != 'RGBA':
+        image = image.convert('RGBA')
+    
+    # Create a mask for the diagonal cut with gradient
+    width, height = image.size
+    mask = Image.new('L', image.size, 255)  # 'L' mode for grayscale
+    draw = ImageDraw.Draw(mask)
+    
+    # Define the cutoff percentage and gradient width
+    cutoff_percentage = 0.7
+    gradient_width = 40  # Width of the gradient in pixels
+    
+    if cut_type == "left":
+        # For left image, create gradient on right edge
+        # Draw the main shape
+        points = [
+            (0, 0),                               # Top left
+            (width * cutoff_percentage, 0),       # Top right-ish (start of gradient)
+            (0, height),                          # Bottom left
+            (0, 0),                               # Back to top left
+        ]
+        draw.polygon(points, fill=255)  # Fully opaque
+        
+        # Create gradient from cutoff to edge
+        gradient_start = width * cutoff_percentage
+        gradient_end = min(width, gradient_start + gradient_width)
+        
+        for x in range(int(gradient_start), int(gradient_end)):
+            # Calculate alpha value (255 = fully opaque, 0 = fully transparent)
+            alpha = 255 - int(255 * (x - gradient_start) / (gradient_end - gradient_start))
+            
+            # Draw a vertical line with this alpha value
+            draw.line([(x, 0), (x, height)], fill=alpha)
+    
+    else:  # cut_type == "right"
+        # For right image, create gradient on left edge
+        # Draw the main shape
+        points = [
+            (width * (1 - cutoff_percentage), 0), # Top left-ish (end of gradient)
+            (width, 0),                          # Top right
+            (width, height),                     # Bottom right
+            (width * cutoff_percentage, height), # Bottom left-ish (start of gradient)
+            (width * (1 - cutoff_percentage), 0), # Back to top left-ish
+        ]
+        draw.polygon(points, fill=255)  # Fully opaque
+        
+        # Create gradient from edge to cutoff
+        gradient_end = width * (1 - cutoff_percentage)
+        gradient_start = max(0, gradient_end - gradient_width)
+        
+        for x in range(int(gradient_start), int(gradient_end)):
+            # Calculate alpha value (255 = fully opaque, 0 = fully transparent)
+            alpha = int(255 * (x - gradient_start) / (gradient_end - gradient_start))
+            
+            # Draw a vertical line with this alpha value
+            draw.line([(x, 0), (x, height)], fill=alpha)
+    
+    # Apply the mask to the image
+    result = image.copy()
+    result.putalpha(mask)
+    
+    return result
+    
+def merge_header_images(img1, img2, overlap=30, cutoff_percentage=0.7):
+    """
+    Merge two images with gradient edges by overlapping them
+    
+    Parameters:
+    img1: PIL Image - left image with gradient on right edge
+    img2: PIL Image - right image with gradient on left edge
+    overlap: int - how many pixels to overlap the images
+    cutoff_percentage: float - the percentage used in the gradient cut
     
     Returns:
     PIL Image - merged image
     """
-    from PIL import ImageChops  # For compositing operations
-    
     # Ensure both images have alpha channel
     if img1.mode != 'RGBA':
         img1 = img1.convert('RGBA')
@@ -187,28 +263,26 @@ def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     width1, height1 = img1.size
     width2, height2 = img2.size
     
-    # Calculate positions
-    img2_x_position = int(width1 * cutoff_percentage) + gap
+    # Calculate positions - now with overlap
+    gradient_width = overlap
+    img2_x_position = int(width1 * cutoff_percentage) - gradient_width
     
     # Calculate new dimensions
     max_height = max(height1, height2)
     total_width = img2_x_position + width2
     
-    # Create separate transparent canvases for each image
-    canvas1 = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
-    canvas2 = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
+    # Create new image with transparent background
+    merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
-    # Calculate y positions for centering
+    # Paste images - the second one will be on top where they overlap
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
-    # Place each image on its own canvas
-    canvas1.paste(img1, (0, y1), img1)
-    canvas2.paste(img2, (img2_x_position, y2), img2)
+    # Paste first image (will show through the transparent parts of the second)
+    merged.paste(img1, (0, y1), img1)
     
-    # Composite the images together
-    # This preserves the transparency
-    merged = ImageChops.add(canvas1, canvas2)
+    # Paste second image on top
+    merged.paste(img2, (img2_x_position, y2), img2)
     
     return merged
 
@@ -329,7 +403,7 @@ def create_deck_header_images(deck_info, analysis_results=None):
                         # Apply diagonal cut based on position - only if we have 2+ Pokémon
                         if len(pokemon_info) >= 2:
                             cut_type = "left" if i == 0 else "right"
-                            img = apply_diagonal_cut(img, cut_type)
+                            img = apply_diagonal_cut_with_gradient(img, cut_type)
                         pil_images.append(img)
     
     # 2. If no images yet, check if we're currently analyzing this deck
@@ -446,8 +520,8 @@ def create_deck_header_images(deck_info, analysis_results=None):
     merged_image = merge_header_images(
         pil_images[0], 
         pil_images[1], 
-        gap=10,
-        cutoff_percentage=cutoff_percentage
+        #overlap=30,  # Adjust this value to control the amount of overlap
+        cutoff_percentage=0.7
     )
     
     # Apply gradient to the merged image
