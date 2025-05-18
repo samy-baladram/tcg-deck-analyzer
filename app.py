@@ -90,7 +90,11 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 }
 
 .stExpander > details > summary > p{
-    font-size: 4rem;
+    font-size: 20px;
+}
+
+.stExpander > details > summary:p {
+    font-size: 20px;
 }
 
 /* Expander hover effect */
