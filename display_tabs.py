@@ -32,7 +32,7 @@ def display_card_usage_tab(results, total_decks, variant_df, energy_types=None):
     
     # Get the primary energy type (first in the list if available)
     primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
-    st.write(ENERGY_COLORS)
+    st.write(energy_types[0])
     with col1:
         st.write("##### Pokemon")
         type_cards = results[results['type'] == 'Pokemon']
