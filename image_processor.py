@@ -111,14 +111,14 @@ def apply_vertical_gradient(image):
 
 def apply_diagonal_cut(image, cut_type):
     """
-    Apply a diagonal cut to an image (trapezoid shape)
+    Apply a diagonal cut to an image with a gradient along the cut edge
     
     Parameters:
     image: PIL Image
     cut_type: String - "left" for left image, "right" for right image
     
     Returns:
-    PIL Image with diagonal cut applied
+    PIL Image with diagonal cut and gradient edge
     """
     if cut_type not in ["left", "right"]:
         return image
@@ -129,33 +129,86 @@ def apply_diagonal_cut(image, cut_type):
     
     # Create a mask for the diagonal cut
     width, height = image.size
-    cut_mask = Image.new('L', image.size, 255)
+    cut_mask = Image.new('L', image.size, 255)  # Start with full opacity
     draw = ImageDraw.Draw(cut_mask)
     
     # Define the cutoff percentage
     cutoff_percentage = 0.7
     
+    # Define gradient width as 30% of the relevant edge
+    gradient_width = int(width * 0.3)
+    
     if cut_type == "left":
-        # Cut lower right trapezoid
+        # For left image, we keep left side and fade out the right edge
+        
+        # First, create the full cut (just like original function)
         points = [
-            (width, 0),                             # Top right (full width)
+            (width, 0),                             # Top right
             (width, height),                        # Bottom right
             (width * cutoff_percentage, height),    # Bottom cut point
             (width, 0),                             # Back to top right
         ]
-        draw.polygon(points, fill=0)
+        draw.polygon(points, fill=0)  # This part will be fully transparent
+        
+        # Now add the gradient along the diagonal edge
+        # Calculate the slope of the diagonal line
+        slope = height / (width * (1 - cutoff_percentage))
+        
+        # Add gradient from the diagonal edge inward
+        for offset in range(gradient_width):
+            # Calculate the position of this gradient line 
+            # (moving inward from the diagonal edge)
+            x_offset = offset / gradient_width * width * (1 - cutoff_percentage)
+            
+            # Calculate opacity for this line (255=opaque, 0=transparent)
+            # We want to fade from opaque to transparent as we approach the cut edge
+            opacity = int(255 * (1 - offset / gradient_width))
+            
+            # Draw this gradient line
+            x_start = width * cutoff_percentage - x_offset
+            if x_start >= 0:  # Make sure we're still within the image
+                points = [
+                    (x_start, height),              # Bottom point
+                    (x_start + width / slope, 0),   # Top point (following diagonal angle)
+                ]
+                draw.line(points, fill=opacity, width=1)
+        
     else:  # cut_type == "right"
-        # Cut upper left trapezoid
+        # For right image, we keep right side and fade out the left edge
+        
+        # First, create the full cut (just like original function)
         points = [
             (0, 0),                                      # Top left
             (width * (1 - cutoff_percentage), 0),        # Top cut point
-            (0, height),                                 # Bottom left (full width)
+            (0, height),                                 # Bottom left
             (0, 0),                                      # Back to top left
         ]
-        draw.polygon(points, fill=0)
+        draw.polygon(points, fill=0)  # This part will be fully transparent
+        
+        # Now add the gradient along the diagonal edge
+        # Calculate the slope of the diagonal line
+        slope = height / (width * (1 - cutoff_percentage))
+        
+        # Add gradient from the diagonal edge inward
+        for offset in range(gradient_width):
+            # Calculate the position of this gradient line
+            x_offset = offset / gradient_width * width * (1 - cutoff_percentage)
+            
+            # Calculate opacity for this line
+            opacity = int(255 * (1 - offset / gradient_width))
+            
+            # Draw this gradient line
+            x_start = width * (1 - cutoff_percentage) + x_offset
+            if x_start < width:  # Make sure we're still within the image
+                points = [
+                    (x_start, 0),                    # Top point
+                    (x_start - height * slope, height)  # Bottom point (following diagonal angle)
+                ]
+                draw.line(points, fill=opacity, width=1)
     
     # Apply the cut mask to the alpha channel
     result = image.copy()
+    # Combine with the existing alpha channel
     alpha = result.split()[-1]
     alpha = Image.composite(alpha, Image.new('L', alpha.size, 0), cut_mask)
     result.putalpha(alpha)
