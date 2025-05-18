@@ -164,7 +164,7 @@ def apply_diagonal_cut(image, cut_type):
 
 def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     """
-    Merge two diagonally cut images side by side
+    Merge two diagonally cut images side by side with transparent gap
     
     Parameters:
     img1: PIL Image - left image with right side cut
@@ -193,12 +193,14 @@ def merge_header_images(img1, img2, gap=8, cutoff_percentage=0.7):
     total_width = img2_x_position + width2
     
     # Create new image with transparent background
+    # Explicitly use (0, 0, 0, 0) for RGBA - fully transparent
     merged = Image.new('RGBA', (total_width, max_height), (0, 0, 0, 0))
     
-    # Paste images
+    # Paste images with their alpha channels as masks
     y1 = (max_height - height1) // 2
     y2 = (max_height - height2) // 2
     
+    # Use the alpha channel of each image as the mask
     merged.paste(img1, (0, y1), img1)
     merged.paste(img2, (img2_x_position, y2), img2)
     
