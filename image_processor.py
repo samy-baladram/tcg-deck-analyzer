@@ -288,48 +288,79 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     
     return None
 
-def create_deck_header_images(deck_info, analysis_results):
+# Update in image_processor.py
+
+def create_deck_header_images(deck_info, analysis_results=None):
     """
     Create header images for a deck based on Pokemon in the deck name
+    Uses pre-loaded Pokemon info if available, falls back to extracting from analysis_results
+    
     Returns a single base64 encoded merged image
     """
-    # Extract Pokemon from deck name
-    pokemon_names = extract_pokemon_from_deck_name(deck_info['deck_name'])
+    # Get deck name
+    deck_name = deck_info['deck_name']
     
-    if not pokemon_names:
-        return None
-    
-    pil_images = []
-    
-    # Get images for each Pokemon
-    for i, pokemon_name in enumerate(pokemon_names[:2]):
-        card_info = get_pokemon_card_info(pokemon_name, analysis_results)
+    # First try to use pre-loaded info from session state
+    if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
+        pokemon_info = st.session_state.deck_pokemon_info[deck_name]
         
-        if card_info:
-            formatted_num = format_card_number(card_info['num'])
+        if not pokemon_info:
+            return None
+        
+        pil_images = []
+        
+        # Get images for each Pokemon (up to 2)
+        for i, pokemon in enumerate(pokemon_info[:2]):
+            if pokemon['set'] and pokemon['num']:
+                formatted_num = format_card_number(pokemon['num'])
+                
+                # Fetch and crop the image (without gradient)
+                img = fetch_and_crop_image(pokemon['set'], formatted_num)
+                
+                if img:
+                    # Apply diagonal cut based on position
+                    cut_type = "left" if i == 0 else "right"
+                    img = apply_diagonal_cut(img, cut_type)
+                    pil_images.append(img)
+    
+    # If no pre-loaded info or images, fall back to old method
+    else:
+        # Extract Pokemon from deck name
+        pokemon_names = extract_pokemon_from_deck_name(deck_name)
+        
+        if not pokemon_names:
+            return None
+        
+        pil_images = []
+        
+        # Get images for each Pokemon
+        for i, pokemon_name in enumerate(pokemon_names[:2]):
+            # Skip if analysis_results is None
+            if analysis_results is None:
+                continue
+                
+            card_info = get_pokemon_card_info(pokemon_name, analysis_results)
             
-            # Fetch and crop the image (without gradient)
-            img = fetch_and_crop_image(card_info['set'], formatted_num)
-            
-            if img:
-                # Apply diagonal cut based on position
-                cut_type = "left" if i == 0 else "right"
-                img = apply_diagonal_cut(img, cut_type)
-                pil_images.append(img)
+            if card_info:
+                formatted_num = format_card_number(card_info['num'])
+                
+                # Fetch and crop the image (without gradient)
+                img = fetch_and_crop_image(card_info['set'], formatted_num)
+                
+                if img:
+                    # Apply diagonal cut based on position
+                    cut_type = "left" if i == 0 else "right"
+                    img = apply_diagonal_cut(img, cut_type)
+                    pil_images.append(img)
     
     # Handle cases with less than 2 images
     if len(pil_images) == 0:
         return None
     elif len(pil_images) == 1:
-        # Fetch the same image again for the right side
-        pokemon_name = pokemon_names[0]
-        card_info = get_pokemon_card_info(pokemon_name, analysis_results)
-        if card_info:
-            formatted_num = format_card_number(card_info['num'])
-            img = fetch_and_crop_image(card_info['set'], formatted_num)
-            if img:
-                img = apply_diagonal_cut(img, "right")
-                pil_images.append(img)
+        # Duplicate the image for the right side with right cut
+        img = pil_images[0].copy()
+        img = apply_diagonal_cut(img, "right")
+        pil_images.append(img)
     
     if len(pil_images) < 2:
         return None
@@ -397,3 +428,82 @@ def get_card_thumbnail(set_code, number, size=40):
     except Exception as e:
         print(f"Error creating thumbnail for {set_code}-{number}: {e}")
         return None
+
+# Add this to image_processor.py or create a new pokemon_info_manager.py file
+
+import streamlit as st
+from image_processor import extract_pokemon_from_deck_name
+import cache_manager
+
+def preload_all_deck_pokemon_info():
+    """
+    Extract and cache Pokémon information for all decks in the meta list.
+    This should be called during app initialization to ensure all deck images can be generated.
+    """
+    if 'deck_pokemon_info' not in st.session_state:
+        st.session_state.deck_pokemon_info = {}
+    
+    # Skip if we already have data
+    if st.session_state.deck_pokemon_info:
+        return
+        
+    if 'deck_list' not in st.session_state:
+        return
+    
+    # Get list of all meta decks
+    deck_list = st.session_state.deck_list
+    
+    # Process each deck to extract Pokémon info
+    with st.spinner("Pre-loading Pokémon data for meta decks..."):
+        for _, deck in deck_list.iterrows():
+            deck_name = deck['deck_name']
+            set_name = deck['set']
+            
+            # Skip if already processed
+            if deck_name in st.session_state.deck_pokemon_info:
+                continue
+                
+            # Extract Pokémon names from the deck name
+            pokemon_names = extract_pokemon_from_deck_name(deck_name)
+            
+            if not pokemon_names:
+                continue
+                
+            # Try to get sample deck to extract card info
+            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+            
+            # Extract Pokémon card info
+            pokemon_info = []
+            for pokemon_name in pokemon_names:
+                # Clean up the Pokémon name for matching
+                clean_name = pokemon_name.replace('-', ' ').title()
+                
+                # Handle 'ex' case
+                if 'Ex' in clean_name:
+                    clean_name = clean_name.replace('Ex', 'ex')
+                
+                # Look for matching Pokémon in the sample deck
+                found = False
+                if 'pokemon_cards' in sample_deck:
+                    for card in sample_deck['pokemon_cards']:
+                        if card['card_name'].lower() == clean_name.lower():
+                            pokemon_info.append({
+                                'name': pokemon_name,
+                                'card_name': card['card_name'],
+                                'set': card['set'],
+                                'num': card['num']
+                            })
+                            found = True
+                            break
+                
+                # If not found, add with empty set and num
+                if not found:
+                    pokemon_info.append({
+                        'name': pokemon_name,
+                        'card_name': clean_name,
+                        'set': '',
+                        'num': ''
+                    })
+            
+            # Store in session state
+            st.session_state.deck_pokemon_info[deck_name] = pokemon_info
