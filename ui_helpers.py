@@ -223,7 +223,7 @@ def render_sidebar():
             <div>Updated {performance_time_str}</div>
         </div>
         <div style="font-size: 0.75rem; margin-bottom: 12px; color: #777;">
-            Based on recent tournament results from the current month
+            Based on up to 50 tournament results from {current_month_year}
         </div>
         """, unsafe_allow_html=True)
     
