@@ -16,17 +16,16 @@ def display_deck_header(deck_info, results):
     
     if header_image:
         st.markdown(f"""
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0rem; margin-top:-1rem">
             <h1 style="margin: 0rem 0 0 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic;"><img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; margin-bottom:0.2em; margin-right:0.5em;border-radius: 4px;">{format_deck_name(deck_info['deck_name'])}</h1>
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         """, unsafe_allow_html=True)
-        st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
-
+        st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
 # In display_card_usage_tab function in display_tabs.py
 def display_card_usage_tab(results, total_decks, variant_df):
     """Display the Card Usage tab with energy-colored charts based on deck energy types"""
