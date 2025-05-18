@@ -175,20 +175,20 @@ def display_deck_template_tab(results):
         # Flexible slots section
         remaining = 20 - total_cards
         st.write("<br>", unsafe_allow_html=True)
-        st.write(f"### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+        st.write(f"##### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
         
         # Sort options by usage percentage (descending) and split by type
         pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
         trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
         
         # Pokemon options in vertical layout
-        st.write("#### Pokémon Options")
+        st.write("###### Pokémon Options")
         pokemon_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
         pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
         pokemon_options_grid.display()
         
         # Trainer options in vertical layout
-        st.write("#### Trainer Options")
+        st.write("###### Trainer Options")
         trainer_options_grid = CardGrid(card_width=70, gap=4, show_percentage=True)
         trainer_options_grid.add_cards_from_dataframe(trainer_options)
         trainer_options_grid.display()
