@@ -283,10 +283,10 @@ def render_sidebar_deck(pokemon_cards, trainer_cards, card_width=65):
     
     return html
 
-def add_card_hover_effect():
+function add_card_hover_effect():
     """
-    Add JavaScript and CSS for card hover effect.
-    Call this once at the start of your app to add the hover functionality.
+    Add JavaScript and CSS for an improved card hover effect.
+    This shows an enlarged card (about 90% of original size) on hover.
     """
     hover_js = """
     <script>
@@ -308,9 +308,10 @@ def add_card_hover_effect():
                 padding: 0;
                 border-radius: 4.2%;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-                transition: opacity 0.2s ease-in-out;
+                transition: all 0.2s ease;
                 opacity: 0;
                 pointer-events: none;
+                transform: translateY(10px);
             `;
             document.body.appendChild(popup);
             
@@ -344,44 +345,81 @@ def add_card_hover_effect():
                 const scrollY = window.scrollY || window.pageYOffset;
                 const scrollX = window.scrollX || window.pageXOffset;
                 
-                // Set image size based on viewport
-                const maxWidth = Math.min(300, window.innerWidth * 0.4);
-                popup.style.width = maxWidth + 'px';
+                // Get original card dimensions - TCG cards are typically 63mm × 88mm (ratio 0.72)
+                const cardRatio = 0.72; 
+                
+                // Set popup size - aim for 90% of original card size relative to viewport
+                // Calculate height based on viewport height
+                const viewportHeight = window.innerHeight;
+                const viewportWidth = window.innerWidth;
+                
+                // Target height is 90% of viewport height, but max 500px
+                const targetHeight = Math.min(viewportHeight * 0.9, 500);
+                // Calculate width based on card aspect ratio
+                const targetWidth = targetHeight * cardRatio;
+                
+                // Ensure width doesn't exceed reasonable limits
+                const finalWidth = Math.min(targetWidth, viewportWidth * 0.4);
+                popup.style.width = finalWidth + 'px';
                 
                 // Position popup based on available space
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
+                // Default positioning near the cursor but slightly offset
+                let left = e.clientX + 20 + scrollX;
+                let top = e.clientY - 50 + scrollY;
                 
-                // Default positioning to the right of the card
-                let left = rect.right + 10 + scrollX;
-                let top = rect.top + scrollY;
-                
-                // If no room on right, show on left
-                if (rect.right + maxWidth + 20 > viewportWidth) {
-                    left = rect.left - maxWidth - 10 + scrollX;
+                // Check if popup would go off right edge
+                if (e.clientX + finalWidth + 30 > viewportWidth) {
+                    left = e.clientX - finalWidth - 20 + scrollX;
                 }
                 
-                // If it would go off the bottom, adjust up
-                const popupHeight = 400; // Estimate height
-                if (rect.top + popupHeight > viewportHeight) {
-                    top = Math.max(scrollY, rect.bottom + scrollY - popupHeight);
+                // Check if popup would go off bottom edge
+                if (e.clientY + targetHeight - 50 > viewportHeight) {
+                    top = Math.max(scrollY, (viewportHeight - targetHeight) + scrollY);
+                }
+                
+                // Check if popup would go off top edge
+                if (top < scrollY) {
+                    top = scrollY + 10;
                 }
                 
                 popup.style.left = left + 'px';
                 popup.style.top = top + 'px';
                 
-                // Show the popup
+                // Show the popup with animation
                 popup.style.display = 'block';
                 setTimeout(() => {
                     popup.style.opacity = '1';
+                    popup.style.transform = 'translateY(0)';
                 }, 10);
             });
             
             img.addEventListener('mouseleave', function() {
                 popup.style.opacity = '0';
+                popup.style.transform = 'translateY(10px)';
                 setTimeout(() => {
                     popup.style.display = 'none';
                 }, 200);
+            });
+            
+            // Add touch functionality for mobile devices
+            img.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // Prevent scrolling on touch
+                const touch = e.touches[0];
+                
+                // Simulate mouseenter with touch position
+                const mouseEvent = new MouseEvent('mouseenter', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                this.dispatchEvent(mouseEvent);
+            });
+            
+            // Close popup when touching elsewhere
+            document.addEventListener('touchstart', function(e) {
+                if (e.target !== img && popup.style.display === 'block') {
+                    const mouseEvent = new MouseEvent('mouseleave');
+                    img.dispatchEvent(mouseEvent);
+                }
             });
         });
     }
