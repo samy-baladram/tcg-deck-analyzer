@@ -79,33 +79,21 @@ div[role="option"]:hover {
     font-weight: 500 !important;
 }
 
-/* Target the deck name specifically */
-[data-testid="stSidebar"] [data-testid="stExpander"] > details > summary > div > p {
-    font-size: 17px !important;
-    line-height: 1.3 !important;
+/* Target all Streamlit expander headers */
+[data-testid="stExpander"] > details > summary {
+    font-size: 18px !important;
+    font-weight: 500 !important;
 }
 
-/* Make circled numbers more visible */
-[data-testid="stSidebar"] [data-testid="stExpander"] > details > summary > div > p span {
-    font-size: 19px !important;
-    margin-right: 4px !important;
-}
-
-/* Improve sidebar content typography */
-[data-testid="stSidebar"] [data-testid="stMarkdown"] p {
-    font-size: 16px !important;
+/* Target paragraphs inside expander headers for deck names */
+[data-testid="stExpander"] > details > summary > div > p {
+    font-size: 18px !important;
     line-height: 1.4 !important;
 }
 
-/* Make energy icons more visible */
-[data-testid="stSidebar"] img[src*="pocket"] {
-    height: 22px !important;
-    margin-right: 6px !important;
-}
-
-/* Ensure sidebar expander spacing is consistent */
-[data-testid="stSidebar"] [data-testid="stExpander"] {
-    margin-bottom: 10px !important;
+/* Make expander content text larger too */
+[data-testid="stExpander"] > details > div > div > div > div > p {
+    font-size: 16px !important;
 }
 </style>
 """, unsafe_allow_html=True)
