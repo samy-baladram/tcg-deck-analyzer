@@ -171,107 +171,25 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     # Track decks we've already shown to avoid duplicates
     shown_deck_nums = set()
     
-    # Also track which variants we've already shown
-    shown_variants = set()
-    
-    # For each different Pokemon, try to show a unique variant deck in an expander
+    # For each different Pokemon, show a variant deck in an expander
     for _, pokemon in different_pokemon.iterrows():
-        pokemon_name = pokemon['card_name'].lower()
-        
-        # Skip if we've already shown this variant
-        if pokemon_name in shown_variants:
-            continue
-        
-        # Check if this variant always appears with already shown variants
-        if is_always_dependent(pokemon_name, shown_variants, variant_pokemon_names):
-            continue
-            
-        # Create expander for this variant
-        with st.expander(f"##### {pokemon['card_name']} Variant", expanded=False):
+        pokemon_name = pokemon['card_name']
+        with st.expander(f"##### {pokemon_name} Variant", expanded=False):
             # Create a set of Pokémon to avoid (other variants)
-            other_variants = set(name for name in variant_pokemon_names if name != pokemon_name)
+            other_variants = set(name for name in variant_pokemon_names if name.lower() != pokemon_name.lower())
             
             # Render a deck with this Pokémon but preferably without other variants
-            deck_num, deck_variants = render_optimal_variant_deck(
-                pokemon['card_name'], 
-                other_variants, 
-                shown_deck_nums, 
-                energy_types, 
-                is_typical
-            )
+            deck_num = render_optimal_variant_deck(pokemon, other_variants, shown_deck_nums, energy_types, is_typical)
             
-            # If we found a deck, add it to the shown list and track the variants
+            # If we found a deck, add it to the shown list
             if deck_num is not None:
                 shown_deck_nums.add(deck_num)
-                shown_variants.update(deck_variants)
 
-def is_always_dependent(pokemon_name, shown_variants, all_variants):
-    """
-    Check if this Pokémon always appears in decks with already shown variants
-    
-    Returns True if this Pokémon is always dependent on already shown variants
-    """
-    # If we haven't shown any variants yet, this can't be dependent
-    if not shown_variants:
-        return False
-        
-    # Get deck info
-    if 'analyze' not in st.session_state:
-        return True
-        
-    deck_name = st.session_state.analyze.get('deck_name', '')
-    set_name = st.session_state.analyze.get('set_name', '')
-    deck_key = f"{deck_name}_{set_name}"
-    
-    # Get collected decks
-    if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
-        return True
-        
-    collected_data = st.session_state.collected_decks[deck_key]
-    all_decks = collected_data['decks']
-    
-    # Find all decks containing this Pokémon
-    decks_with_pokemon = []
-    
-    for deck in all_decks:
-        # Check if deck contains this Pokémon
-        has_pokemon = False
-        for card in deck['cards']:
-            if card['type'] == 'Pokemon' and card['card_name'].lower() == pokemon_name:
-                has_pokemon = True
-                break
-                
-        if has_pokemon:
-            decks_with_pokemon.append(deck)
-    
-    # If no decks contain this Pokémon, consider it dependent
-    if not decks_with_pokemon:
-        return True
-    
-    # Check if each deck also contains at least one shown variant
-    for deck in decks_with_pokemon:
-        has_shown_variant = False
-        
-        for card in deck['cards']:
-            if card['type'] == 'Pokemon' and card['card_name'].lower() in shown_variants:
-                has_shown_variant = True
-                break
-        
-        # If we found a deck without a shown variant, then this Pokémon is independent
-        if not has_shown_variant:
-            return False
-    
-    # If all decks with this Pokémon also have a shown variant, it's dependent
-    return True
-
-def render_optimal_variant_deck(variant_pokemon_name, other_variants, shown_deck_nums, energy_types, is_typical):
-    """Find and render the best deck for this variant Pokémon
-    
-    Returns: (deck_num, set of variants in the deck) or (None, empty set) if no deck found
-    """
+def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums, energy_types, is_typical):
+    """Find and render the best deck for this variant Pokémon"""
     if 'analyze' not in st.session_state:
         st.info("Select a deck to view a sample")
-        return None, set()
+        return None
         
     deck_name = st.session_state.analyze.get('deck_name', '')
     set_name = st.session_state.analyze.get('set_name', '')
@@ -280,16 +198,15 @@ def render_optimal_variant_deck(variant_pokemon_name, other_variants, shown_deck
     # Check if we have collected decks
     if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
         st.info("No collected deck data available")
-        return None, set()
+        return None
     
     collected_data = st.session_state.collected_decks[deck_key]
     all_decks = collected_data['decks']
     
-    variant_pokemon_name = variant_pokemon_name.lower()
+    pokemon_name = variant_pokemon['card_name']
     best_deck = None
     best_deck_num = None
     best_score = -1
-    best_deck_variants = set()
     
     # Score function: Higher is better
     # +3 points if contains our variant
@@ -302,19 +219,17 @@ def render_optimal_variant_deck(variant_pokemon_name, other_variants, shown_deck
             
         score = 0
         has_our_variant = False
-        deck_variants = set()
+        other_variant_count = 0
         
         # Check cards in this deck
         for card in deck['cards']:
             if card['type'] == 'Pokemon':
-                card_name = card['card_name'].lower()
-                if card_name == variant_pokemon_name:
+                if card['card_name'].lower() == pokemon_name.lower():
                     has_our_variant = True
                     score += 3
-                    deck_variants.add(card_name)
-                elif card_name in other_variants:
+                elif card['card_name'].lower() in other_variants:
+                    other_variant_count += 1
                     score -= 1
-                    deck_variants.add(card_name)
         
         # Skip if it doesn't contain our variant
         if not has_our_variant:
@@ -325,7 +240,6 @@ def render_optimal_variant_deck(variant_pokemon_name, other_variants, shown_deck
             best_deck = deck
             best_deck_num = deck['deck_num']
             best_score = score
-            best_deck_variants = deck_variants
     
     # If we found a deck, render it
     if best_deck:
@@ -352,10 +266,10 @@ def render_optimal_variant_deck(variant_pokemon_name, other_variants, shown_deck
             if card['card_name'].lower() in other_variants:
                 other_variants_in_deck.append(card['card_name'])
         
-        if other_variants_in_deck:
-            st.caption(f"Deck featuring {variant_pokemon_name.title()} (also contains {', '.join(other_variants_in_deck)})")
-        else:
-            st.caption(f"Deck featuring {variant_pokemon_name.title()} exclusively")
+        # if other_variants_in_deck:
+        #     st.caption(f"Deck featuring {pokemon_name} (also contains {', '.join(other_variants_in_deck)})")
+        # else:
+        #     st.caption(f"Deck featuring {pokemon_name} exclusively")
         
         # Render the deck
         from card_renderer import render_sidebar_deck
@@ -366,11 +280,11 @@ def render_optimal_variant_deck(variant_pokemon_name, other_variants, shown_deck
         )
         st.markdown(deck_html, unsafe_allow_html=True)
         
-        # Return the deck number and variants so we can track what we've shown
-        return best_deck_num, best_deck_variants
+        # Return the deck number so we can track that we've shown it
+        return best_deck_num
     else:
-        st.info(f"No suitable deck found containing {variant_pokemon_name}")
-        return None, set()
+        st.info(f"No suitable deck found containing {pokemon_name}")
+        return None
 
 def render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical):
     """Render a sample deck that doesn't contain any of the variant Pokémon"""
