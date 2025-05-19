@@ -25,7 +25,7 @@ def display_banner(img_path, max_width=900):
 
 def load_initial_data():
     """Load initial data required for the app"""
-    # Initialize caches
+    # Initialize caches - this now handles comprehensive updates
     cache_manager.init_caches()
     
     # Initialize deck list if not already loaded
@@ -33,14 +33,14 @@ def load_initial_data():
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
     
-    # Load or update tournament data
-    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
+    # Get the performance data from session state (already loaded by init_caches)
+    if 'performance_data' not in st.session_state:
+        # Only load if not already in session state
+        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
+        st.session_state.performance_data = performance_df
+        st.session_state.performance_fetch_time = performance_timestamp
     
-    # Store in session state
-    st.session_state.performance_data = performance_df
-    st.session_state.performance_fetch_time = performance_timestamp
-    
-    # Initialize card usage data if not already loaded
+    # Initialize card usage data if not already loaded (similar approach)
     if 'card_usage_data' not in st.session_state:
         st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
     
@@ -104,6 +104,12 @@ def on_deck_change():
             'deck_name': deck_info['deck_name'],
             'set_name': deck_info['set'],
         }
+        
+        # Track player-tournament mapping for this deck to enable efficient updates
+        cache_manager.track_player_tournament_mapping(
+            deck_info['deck_name'], 
+            deck_info['set']
+        )
     else:
         st.session_state.selected_deck_index = None
 
@@ -192,6 +198,8 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         # Get sample deck data
         deck_name = deck['deck_name']
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
+
+        cache_manager.track_player_tournament_mapping(deck_name, deck['set'])
         
         # Get and store energy types
         from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons
@@ -300,7 +308,55 @@ def render_sidebar():
             * **Positive vs Negative**: Positive numbers mean winning more than losing
             * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
             """)
+            
+        # Add cache statistics at the bottom (optional, could be in a collapsed expander)
+        with st.sidebar.expander("🔧 Cache Statistics", expanded=False):
+            cache_stats = cache_manager.get_cache_statistics()
+            st.markdown(f"""
+            - **Decks Cached**: {cache_stats['decks_cached']}
+            - **Sample Decks**: {cache_stats['sample_decks_cached']}
+            - **Tournaments Tracked**: {cache_stats['tournaments_tracked']}
+            - **Last Updated**: {cache_stats['last_update']}
+            """)
+        # Add a button to force update cache data
+        st.sidebar.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
+        col1, col2 = st.sidebar.columns(2)
+        
+        with col1:
+            if st.button("🔄 Force Update Data", help="Force refresh all tournament data"):
+                with st.spinner("Updating tournament data..."):
+                    stats = cache_manager.update_all_caches()
+                    st.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
+                    st.rerun()  # Refresh the app
+        
+        with col2:
+            if st.button("📊 Update Card Stats", help="Refresh card usage statistics"):
+                with st.spinner("Updating card statistics..."):
+                    cache_manager.aggregate_card_usage(force_update=True)
+                    st.success("Card statistics updated")
+                    st.rerun()  # Refresh the app
     else:
         from datetime import datetime
         current_month_year = datetime.now().strftime("%B %Y")
         st.sidebar.info(f"No tournament performance data available for {current_month_year}")
+        
+def display_deck_update_info(deck_name, set_name):
+    """Display when the deck was last updated"""
+    import os
+    from cache_utils import ANALYZED_DECKS_DIR
+    
+    # Create a safe filename base
+    safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+    base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}")
+    timestamp_path = f"{base_path}_timestamp.txt"
+    
+    if os.path.exists(timestamp_path):
+        with open(timestamp_path, 'r') as f:
+            timestamp_str = f.read().strip()
+            try:
+                timestamp = datetime.fromisoformat(timestamp_str)
+                time_ago = calculate_time_ago(timestamp)
+                return f"Last updated: {time_ago}"
+            except:
+                pass
+    return None
