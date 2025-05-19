@@ -157,7 +157,7 @@ if 'analyze' in st.session_state and selected_option:
     display_tabs.display_deck_header(original_deck_info, results)
     
     # Display tabs
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", "Card Usage",  "Energy Data", "Related Decks",  "Metagame Overview", "Raw Data"])
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Deck Template", "Card Usage",  "Energy Data", "Related Decks",  "Metagame Overview", "Raw Data", "Meta Matchups"])
     
     with tab1:
         display_tabs.display_deck_template_tab(results)
@@ -183,6 +183,9 @@ if 'analyze' in st.session_state and selected_option:
         
     with tab6:
         display_tabs.display_raw_data_tab(results, variant_df)
+
+    with tab7:
+        display_tabs.display_matchup_tab()
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
