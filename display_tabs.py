@@ -975,7 +975,7 @@ def display_energy_debug_tab(deck_info):
     #         st.write("Not found in archetype_energy_combos")
     
     # Add the detailed energy table at the bottom
-    st.write("### Detailed Energy Data")
+    st.write("##### Detailed Energy Data")
     
     # First check if we have per-deck energy data
     if 'per_deck_energy' in st.session_state and deck_name in st.session_state.per_deck_energy:
@@ -1017,13 +1017,11 @@ def display_energy_debug_tab(deck_info):
 def generate_energy_table_html(all_energies, energy_by_deck):
     """Generate HTML for energy table from collected decks data in two columns"""
     # Create the overall container with columns
-    table_html = """
-    <div style="margin-top: 15px; display: flex; gap: 20px;">
+    table_html = """<div style="margin-top: 15px; display: flex; gap: 20px;">
         <div style="flex: 1;">"""
     
     # First column: Energy by Deck table
-    table_html += """
-            <h5 style="margin-bottom: 10px;">Energy by Deck</h5>
+    table_html += """<h6 style="margin-bottom: 10px;">Energy by Deck</h6>
             <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid #ddd;">
                     <th style="text-align: left; padding: 4px;">Deck #</th>"""
@@ -1050,13 +1048,10 @@ def generate_energy_table_html(all_energies, energy_by_deck):
         table_html += "</tr>"
     
     # Close the first table and column
-    table_html += """
-            </table>
-        </div>"""
+    table_html += """</table></div>"""
         
     # Second column: Energy Combinations
-    table_html += """
-        <div style="flex: 1;">"""
+    table_html += """<div style="flex: 1;">"""
     
     # Calculate combinations for the second table
     combo_stats = {}
@@ -1068,8 +1063,7 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     sorted_combos = sorted(combo_stats.items(), key=lambda x: x[1], reverse=True)
     
     # Add combo statistics
-    table_html += """
-            <h5 style="margin-bottom: 10px;">Energy Combinations</h5>
+    table_html += """<h6 style="margin-bottom: 10px;">Energy Combinations</h6>
             <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid #ddd;">
                     <th style="text-align: left; padding: 4px;">Energy Combination</th>
@@ -1088,16 +1082,14 @@ def generate_energy_table_html(all_energies, energy_by_deck):
         
         percentage = (count / total_decks * 100) if total_decks > 0 else 0
         
-        table_html += f"""
-                <tr style="border-bottom: 1px solid #eee;">
+        table_html += f"""<tr style="border-bottom: 1px solid #eee;">
                     <td style="text-align: left; padding: 4px;">{energy_html}</td>
                     <td style="text-align: right; padding: 4px;">{count}</td>
                     <td style="text-align: right; padding: 4px;">{percentage:.1f}%</td>
                 </tr>"""
     
     # Close the second table and both divs
-    table_html += """
-            </table>
+    table_html += """</table>
         </div>
     </div>"""
     
