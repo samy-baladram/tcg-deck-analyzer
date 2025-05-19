@@ -1158,6 +1158,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     import requests
     from bs4 import BeautifulSoup
     import pandas as pd
+    import re
     from config import BASE_URL
     import streamlit as st
     
@@ -1176,14 +1177,14 @@ def fetch_matchup_data(deck_name, set_name="A3"):
         # Parse the HTML
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Find the matchup table - similar to how other tables are found in the codebase
+        # Find the matchup table
         table = soup.find('table', class_='striped')
         
         if not table:
             st.warning(f"No matchup table found for {deck_name}")
             return pd.DataFrame()
         
-        # Extract table headers
+        # Get column headers
         headers = []
         header_row = table.find('tr')
         if header_row:
@@ -1195,72 +1196,72 @@ def fetch_matchup_data(deck_name, set_name="A3"):
             cells = row.find_all(['td'])
             
             # Skip rows with insufficient cells
-            if len(cells) < 4:  
+            if len(cells) < 5:
                 continue
             
-            # Extract opponent deck name (first column)
-            opponent_cell = cells[0]
-            opponent_link = opponent_cell.find('a')
-            opponent_name = opponent_link.text.strip() if opponent_link else opponent_cell.text.strip()
+            # Extract opponent deck display name (second column)
+            opponent_display_name = cells[1].text.strip()
             
-            # Extract raw deck name from URL
+            # Extract opponent deck raw name from URL
             opponent_deck_name = ""
+            opponent_link = cells[1].find('a')
+            
             if opponent_link and 'href' in opponent_link.attrs:
                 href = opponent_link['href']
-                import re
-                match = re.search(r'/decks/([^/]+)/', href)
+                # Look for links to matchup pages which contain the deck name
+                match = re.search(r'/matchups/([^/?]+)', href)
                 if match:
                     opponent_deck_name = match.group(1)
+                else:
+                    # Try alternate pattern for direct deck links
+                    match = re.search(r'/decks/([^/?]+)', href)
+                    if match:
+                        opponent_deck_name = match.group(1)
             
-            # Extract record (second column) - format: W-L-T
-            record_cell = cells[1]
-            record_text = record_cell.text.strip()
+            # Extract matches played (third column)
+            matches_text = cells[2].text.strip()
+            matches_played = 0
+            try:
+                matches_played = int(matches_text)
+            except ValueError:
+                pass
+            
+            # Extract record (fourth column) - format: "W - L - T"
+            record_text = cells[3].text.strip()
             wins, losses, ties = 0, 0, 0
             
-            if record_text and '-' in record_text:
-                parts = record_text.split('-')
-                if len(parts) >= 3:
-                    try:
-                        wins = int(parts[0])
-                        losses = int(parts[1])
-                        ties = int(parts[2])
-                    except ValueError:
-                        # Handle non-numeric values
-                        pass
+            # Use regex to extract numbers from the record text
+            win_match = re.search(r'^(\d+)', record_text)
+            loss_match = re.search(r'-\s*(\d+)\s*-', record_text)
+            tie_match = re.search(r'-\s*(\d+)$', record_text)
             
-            # Extract win percentage (third column)
-            win_pct_cell = cells[2]
-            win_pct_text = win_pct_cell.text.strip()
+            if win_match:
+                wins = int(win_match.group(1))
+            if loss_match:
+                losses = int(loss_match.group(1))
+            if tie_match:
+                ties = int(tie_match.group(1))
+            
+            # Extract win percentage (fifth column)
+            win_pct_text = cells[4].text.strip()
             win_pct = 0.0
             
             if win_pct_text and '%' in win_pct_text:
                 try:
                     win_pct = float(win_pct_text.replace('%', ''))
                 except ValueError:
-                    # Handle non-numeric values
-                    pass
-            
-            # Extract games played (fourth column)
-            games_cell = cells[3]
-            games_text = games_cell.text.strip()
-            games_played = 0
-            
-            if games_text:
-                try:
-                    games_played = int(games_text)
-                except ValueError:
-                    # Handle non-numeric values
                     pass
             
             # Create row data
             row_data = {
-                'opponent_name': opponent_name,
+                'opponent_name': opponent_display_name,
                 'opponent_deck_name': opponent_deck_name,
                 'wins': wins,
                 'losses': losses,
                 'ties': ties,
                 'win_pct': win_pct,
-                'games_played': games_played
+                'matches_played': matches_played,
+                'games_played': wins + losses + ties
             }
             
             rows.append(row_data)
