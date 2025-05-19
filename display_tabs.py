@@ -174,7 +174,13 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     # For each different Pokemon, show a variant deck in an expander
     for _, pokemon in different_pokemon.iterrows():
         pokemon_name = pokemon['card_name']
-        with st.expander(f"{pokemon_name} Variant", expanded=False):
+        set_code = pokemon['set']
+        num = pokemon['num']
+        
+        # Create a formatted title with set and number info
+        variant_title = f"{pokemon_name} ({set_code}-{num}) Variant"
+        
+        with st.expander(variant_title, expanded=False):
             # Create a set of Pokémon to avoid (other variants)
             other_variants = set(name for name in variant_pokemon_names if name.lower() != pokemon_name.lower())
             
