@@ -1250,8 +1250,38 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     except Exception as e:
         return pd.DataFrame()
 
+def filter_matchup_by_meta_decks(matchup_df, meta_decks):
+    """
+    Filter matchup dataframe to only include decks in the meta decks list.
+    
+    Args:
+        matchup_df: DataFrame containing matchup data
+        meta_decks: List of deck names in the current meta
+        
+    Returns:
+        Filtered DataFrame containing only matchups against meta decks
+    """
+    # Create a copy to avoid modifying the original
+    filtered_df = matchup_df.copy()
+    
+    # Convert deck names to lowercase for case-insensitive matching
+    filtered_df['deck_name_lower'] = filtered_df['opponent_deck_name'].str.lower()
+    meta_decks_lower = [d.lower() for d in meta_decks]
+    
+    # Apply the filter
+    result_df = filtered_df[filtered_df['deck_name_lower'].isin(meta_decks_lower)]
+    
+    # Remove the temporary column
+    if not result_df.empty and 'deck_name_lower' in result_df.columns:
+        result_df = result_df.drop(columns=['deck_name_lower'])
+    
+    # Log results for debugging
+    print(f"Original matchups: {len(filtered_df)}")
+    print(f"Meta decks: {len(meta_decks_lower)}")
+    print(f"Filtered matchups: {len(result_df)}")
+    
+    return result_df
 
-# Add these functions to display_tabs.py
 def display_matchup_tab(deck_info=None):
     """Display the Matchup tab with detailed matchup data."""
     st.subheader("Matchup Analysis")
@@ -1276,6 +1306,10 @@ def display_matchup_tab(deck_info=None):
         st.info(f"No matchup data available for {deck_name}.")
         return
     
+    # Display raw data count
+    total_matchups = len(matchup_df)
+    st.caption(f"Found {total_matchups} total matchup records")
+    
     # Get list of top meta decks to filter by
     meta_decks = []
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
@@ -1284,55 +1318,50 @@ def display_matchup_tab(deck_info=None):
     # Show filter option
     show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
     
-    # Only apply filtering if we have meta decks and user wants filtering
+    # Apply filtering if needed
+    working_df = matchup_df.copy()
     if meta_decks and not show_all:
-        # Add lowercase versions for better matching
-        matchup_df['deck_name_lower'] = matchup_df['opponent_deck_name'].str.lower()
-        meta_decks_lower = [d.lower() for d in meta_decks]
+        filtered_df = filter_matchup_by_meta_decks(matchup_df, meta_decks)
         
-        # Apply filter
-        filtered_df = matchup_df[matchup_df['deck_name_lower'].isin(meta_decks_lower)]
-        
-        # Use filtered data if we found matches
         if not filtered_df.empty:
-            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {len(matchup_df)} total matchups)")
-            matchup_df = filtered_df
+            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {total_matchups} total matchups)")
+            working_df = filtered_df
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
     
-    # Drop the working column if it exists
-    if 'deck_name_lower' in matchup_df.columns:
-        matchup_df = matchup_df.drop(columns=['deck_name_lower'])
-    
-    # Create display DataFrame
-    final_df = pd.DataFrame()
-    final_df['Rank'] = range(1, len(matchup_df) + 1)
-    final_df['Deck'] = matchup_df['opponent_name']
-    final_df['Win %'] = matchup_df['win_pct']
-    final_df['Record'] = matchup_df.apply(
-        lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
-    )
-    final_df['Matches'] = matchup_df['matches_played']
-    final_df['Matchup'] = matchup_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
-    )
-    
-    # Display dataframe
-    st.dataframe(
-        final_df,
-        use_container_width=True,
-        height=600,
-        column_config={
-            "Win %": st.column_config.NumberColumn("Win %", format="%.1f%%"),
-        },
-        hide_index=True
-    )
-    
-    # Calculate overall statistics
-    if not matchup_df.empty:
-        total_wins = matchup_df['wins'].sum()
-        total_losses = matchup_df['losses'].sum()
-        total_ties = matchup_df['ties'].sum()
+    # Create display DataFrame - basic version without images
+    if not working_df.empty:
+        # Create a basic dataframe first to ensure it works
+        final_df = pd.DataFrame()
+        final_df['Rank'] = range(1, len(working_df) + 1)
+        final_df['Deck'] = working_df['opponent_name']
+        final_df['Win %'] = working_df['win_pct']
+        final_df['Record'] = working_df.apply(
+            lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
+        )
+        final_df['Matches'] = working_df['matches_played']
+        
+        # Add a "Matchup" column to indicate favorability
+        final_df['Matchup'] = working_df['win_pct'].apply(
+            lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
+        )
+        
+        # Display dataframe - verify this works before adding images
+        st.write("##### Matchup Data")
+        st.dataframe(
+            final_df,
+            use_container_width=True,
+            height=600,
+            column_config={
+                "Win %": st.column_config.NumberColumn("Win %", format="%.1f%%"),
+            },
+            hide_index=True
+        )
+        
+        # Calculate overall statistics
+        total_wins = working_df['wins'].sum()
+        total_losses = working_df['losses'].sum()
+        total_ties = working_df['ties'].sum()
         total_games = total_wins + total_losses + total_ties
         overall_win_pct = round((total_wins / total_games * 100), 1) if total_games > 0 else 0
         
@@ -1341,6 +1370,8 @@ def display_matchup_tab(deck_info=None):
             label="Overall Matchup Record", 
             value=f"{total_wins}-{total_losses}-{total_ties} ({overall_win_pct}%)"
         )
+    else:
+        st.warning("No matchup data available after filtering.")
     
     # Add explanation
     from formatters import format_deck_name
