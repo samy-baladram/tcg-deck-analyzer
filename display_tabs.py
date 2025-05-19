@@ -266,10 +266,10 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             if card['card_name'].lower() in other_variants:
                 other_variants_in_deck.append(card['card_name'])
         
-        if other_variants_in_deck:
-            st.caption(f"Deck featuring {pokemon_name} (also contains {', '.join(other_variants_in_deck)})")
-        else:
-            st.caption(f"Deck featuring {pokemon_name} exclusively")
+        # if other_variants_in_deck:
+        #     st.caption(f"Deck featuring {pokemon_name} (also contains {', '.join(other_variants_in_deck)})")
+        # else:
+        #     st.caption(f"Deck featuring {pokemon_name} exclusively")
         
         # Render the deck
         from card_renderer import render_sidebar_deck
