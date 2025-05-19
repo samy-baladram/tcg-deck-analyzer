@@ -725,6 +725,9 @@ def display_metagame_tab():
     display_df['pokemon_image1'] = display_df['pokemon_images'].apply(lambda x: x[0] if x else None)
     display_df['pokemon_image2'] = display_df['pokemon_images'].apply(lambda x: x[1] if len(x) > 1 else None)
     
+    # Create indicator for highlighting
+    display_df['is_current'] = display_df['deck_name'] == current_deck_name
+    
     # Select and rename columns for display
     display_cols = {
         'displayed_name': 'Deck',
@@ -747,8 +750,34 @@ def display_metagame_tab():
     final_df.insert(1, 'Icon1', display_df['pokemon_image1'])
     final_df.insert(2, 'Icon2', display_df['pokemon_image2'])
     
-    # Create indicator for highlighting current deck
-    final_df['is_current'] = display_df['deck_name'] == current_deck_name
+    # For styling, we need to ensure the image columns won't be colored
+    # Create a copy of the dataframe for styling
+    styling_df = final_df.copy()
+    styling_df['Icon1'] = None  # Replace with None to not affect styling
+    styling_df['Icon2'] = None  # Replace with None to not affect styling
+    
+    # Create a styling function that works with DataFrame.style
+    def highlight_current_deck(df):
+        # Create an empty styles DataFrame with same shape as input
+        styles = pd.DataFrame('', index=df.index, columns=df.columns)
+        
+        # Find the rows where deck_name matches current_deck_name
+        is_current = display_df['is_current']
+        
+        # Apply background color to all cells in the matching rows
+        for col in styles.columns:
+            styles.loc[is_current, col] = 'background-color: rgba(0, 208, 255, 0.15)'
+            
+        return styles
+    
+    # Apply styling to the copy
+    styled_df = styling_df.style.apply(highlight_current_deck, axis=None)
+    
+    # Now transfer the styling to the original dataframe with image columns
+    # (This is a workaround since we're not directly styling the image columns)
+    final_df = styled_df.data  # Get the data back
+    final_df['Icon1'] = display_df['pokemon_image1']  # Restore image columns
+    final_df['Icon2'] = display_df['pokemon_image2']
     
     # Display the dataframe with custom column config
     st.dataframe(
@@ -794,6 +823,7 @@ def display_metagame_tab():
     
     *Data is based on tournament results from up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.*
     """)
+    
 # Modify the display_related_decks_tab function in display_tabs.py:
 
 def display_related_decks_tab(deck_info, results):
