@@ -276,13 +276,13 @@ def render_sidebar():
             #### Power Index: How We Rank the Best Decks
             
             **Where the Data Comes From**  
-            Our Power Index uses the most recent 40 community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in competitive play, not just how popular they are.
+            Our Power Index uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in the most recent competitive play, not just how popular they are.
             
             **What the Power Index Measures**  
             The Power Index is calculated as:
             """)
             
-            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) ÷ √(Total Games)", language="")
+            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
             
             st.markdown("""
             This formula captures three key things:
@@ -299,8 +299,6 @@ def render_sidebar():
             * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
             * **Positive vs Negative**: Positive numbers mean winning more than losing
             * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
-            
-            The Power Index gives you a clear picture of which decks are actually winning tournaments, not just which ones everyone is playing.
             """)
     else:
         from datetime import datetime
