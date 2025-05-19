@@ -673,14 +673,10 @@ def display_metagame_tab():
         'oricorio': 'oricorio-pom-pom'
     }
     
-    # Function to extract Pokémon names and generate HTML for icons
-    def generate_pokemon_icons(deck_name, displayed_name):
-        # Extract Pokémon names from displayed_name (which has better formatting than deck_name)
-        # Remove any text in parentheses, then split by spaces and handle special cases
+    # Function to extract Pokémon names and generate image URLs
+    def get_pokemon_image_urls(deck_name, displayed_name):
+        # Extract Pokémon names from displayed_name
         clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        
-        # Split by common separators to identify individual Pokémon
-        # This handles formats like "Giratina ex Darkrai ex" or "Giratina/Darkrai"
         pokemon_parts = re.split(r'[\s/]+', clean_name)
         
         # Filter out common suffixes that aren't Pokémon names
@@ -689,12 +685,10 @@ def display_metagame_tab():
         
         i = 0
         while i < len(pokemon_parts):
-            # Skip empty parts
             if not pokemon_parts[i]:
                 i += 1
                 continue
                 
-            # Check if current part is a Pokémon name (not a suffix)
             if pokemon_parts[i].lower() not in suffixes_to_remove:
                 pokemon_name = pokemon_parts[i].lower()
                 
@@ -704,29 +698,26 @@ def display_metagame_tab():
                     
                 pokemon_names.append(pokemon_name)
                 
-                # Limit to 2 Pokémon icons
+                # Limit to 2 Pokémon
                 if len(pokemon_names) >= 2:
                     break
                     
             i += 1
         
-        # Generate HTML for the icons
-        icons_html = ""
-        for pokemon in pokemon_names:
-            icon_url = f"https://r2.limitlesstcg.net/pokemon/gen9/{pokemon}.png"
-            icons_html += f'<img src="{icon_url}" style="height:30px; margin-right:3px;">'
-            
-        return icons_html
+        # For ImageColumn, we just need the first Pokémon URL
+        if pokemon_names:
+            # Return the URL of the first Pokémon image
+            return f"https://r2.limitlesstcg.net/pokemon/gen9/{pokemon_names[0]}.png"
+        return None
     
-    # Generate Pokémon icons for each deck
-    display_df['pokemon_icons'] = display_df.apply(
-        lambda row: generate_pokemon_icons(row['deck_name'], row['displayed_name']), 
+    # Generate Pokémon image URLs
+    display_df['pokemon_image'] = display_df.apply(
+        lambda row: get_pokemon_image_urls(row['deck_name'], row['displayed_name']), 
         axis=1
     )
     
     # Select and rename columns for display
     display_cols = {
-        'pokemon_icons': 'Icons',
         'displayed_name': 'Deck',
         'power_index': 'Power Index',
         'share': 'Meta Share %',
@@ -737,46 +728,31 @@ def display_metagame_tab():
         'total_ties': 'Ties'      
     }
     
-    # Create indicator for highlighting
-    display_df['is_current'] = display_df['deck_name'] == current_deck_name
-    
     # Create final display dataframe
-    final_df = display_df[['pokemon_icons'] + list(display_cols.keys())].rename(columns=display_cols)
+    final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
     
     # Add Rank column based on the index
     final_df.insert(0, 'Rank', range(1, len(final_df) + 1))
     
-    # Create a styling function that works with DataFrame.style
-    def highlight_current_deck(df):
-        # Create an empty styles DataFrame with same shape as input
-        styles = pd.DataFrame('', index=df.index, columns=df.columns)
-        
-        # Find the rows where deck_name matches current_deck_name
-        is_current = display_df['is_current']
-        
-        # Apply background color to all cells in the matching rows
-        for col in styles.columns:
-            styles.loc[is_current, col] = 'background-color: rgba(0, 208, 255, 0.15)'
-            
-        return styles
+    # Add the Pokémon image column after Rank
+    final_df.insert(1, 'Icon', display_df['pokemon_image'])
     
-    # Apply styling
-    styled_df = final_df.style.apply(highlight_current_deck, axis=None)
+    # Create indicator for highlighting current deck
+    final_df['is_current'] = display_df['deck_name'] == current_deck_name
     
-    # Display with styling
+    # Display the dataframe with custom column config
     st.dataframe(
-        styled_df,
+        final_df,
         use_container_width=True,
         height=800,
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
             "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
-            "Icons": st.column_config.Column(
-                "Icons",
-                help="Pokémon icons",
+            "Icon": st.column_config.ImageColumn(
+                "Icon",
+                help="Main Pokémon in the deck",
                 width="small",
-                disabled=True,
             )
         },
         hide_index=True
