@@ -1258,7 +1258,7 @@ def display_matchup_tab(deck_info=None):
     Args:
         deck_info: Dictionary containing deck information (optional)
     """
-    st.subheader("Matchup Analysis")
+    #st.subheader("Matchup Analysis")
     import pandas as pd
     import re
     
@@ -1304,7 +1304,7 @@ def display_matchup_tab(deck_info=None):
         
         # Use filtered data if we found matches
         if not filtered_df.empty:
-            st.success(f"Showing {len(filtered_df)} meta deck matchups")
+            #st.success(f"Showing {len(filtered_df)} meta deck matchups")
             working_df = filtered_df.drop(columns=['deck_name_lower'])
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
