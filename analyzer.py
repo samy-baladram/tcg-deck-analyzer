@@ -70,6 +70,8 @@ def analyze_recent_performance(raw_performance_data=None):
     return results_df
     
 # In analyzer.py - Modify analyze_deck function
+# Modify the collect_decks function in analyzer.py to save to disk
+
 def collect_decks(deck_name, set_name="A3"):
     """Collect all decks for an archetype and store their data"""
     # Get all player-tournament pairs instead of just URLs
@@ -143,6 +145,10 @@ def collect_decks(deck_name, set_name="A3"):
         'all_energy_types': list(all_energy_types),
         'total_decks': total_decks
     }
+    
+    # Save to disk cache
+    import cache_utils
+    cache_utils.save_collected_decks(deck_name, set_name, all_decks, list(all_energy_types), total_decks)
     
     # Return collected data
     return all_decks, list(all_energy_types), total_decks
