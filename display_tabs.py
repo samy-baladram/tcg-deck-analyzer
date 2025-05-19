@@ -836,10 +836,11 @@ def debug_deck_collection(deck_name, set_name):
 
 def display_energy_debug_tab(deck_info):
     """Display the Energy Debug tab with detailed analysis and diagnostic information"""
-    # st.write("### Energy Type Analysis")
     
-    # deck_name = deck_info['deck_name']
-    # set_name = deck_info.get('set_name', 'A3')
+    deck_name = deck_info['deck_name']
+    set_name = deck_info.get('set_name', 'A3')
+
+    # st.write("### Energy Type Analysis")
     
     # # Create columns for different data sources
     # col1, col2 = st.columns(2)
