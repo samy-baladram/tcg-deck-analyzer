@@ -1293,25 +1293,18 @@ def display_matchup_tab(deck_info=None):
         # Use the same source as Tournament Performance Data tab
         meta_decks = st.session_state.performance_data['deck_name'].tolist()
         
-        # Log for debugging (can remove later)
-        st.write(f"Found {len(meta_decks)} meta decks to filter by")
-        
         # Filter to only include decks from our meta list
         if meta_decks:
             # Filter using lowercase comparison for better matching
             matchup_df['opponent_deck_name_lower'] = matchup_df['opponent_deck_name'].str.lower()
             meta_decks_lower = [d.lower() for d in meta_decks]
             
-            # Debug: Show which decks are found in both lists
-            meta_matches = matchup_df[matchup_df['opponent_deck_name_lower'].isin(meta_decks_lower)]
-            st.write(f"Found {len(meta_matches)} matching decks in the meta")
-            
             # Apply filter
             filtered_df = matchup_df[matchup_df['opponent_deck_name_lower'].isin(meta_decks_lower)]
             
             if not filtered_df.empty:
                 matchup_df = filtered_df.drop(columns=['opponent_deck_name_lower'])
-                st.success(f"Showing matchups against {len(matchup_df)} meta decks out of {len(matchup_df.index)} total matchups")
+                st.info(f"Showing matchups against {len(matchup_df)} meta decks")
             else:
                 st.warning("No matchups found against current meta decks. Showing all matchups.")
                 matchup_df = matchup_df.drop(columns=['opponent_deck_name_lower'])
@@ -1370,57 +1363,60 @@ def display_matchup_tab(deck_info=None):
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Remove the debug messages once filtering is confirmed working
-    st.write("Data loaded successfully. Displaying matchup table.")
-    
-    # Display dataframe with column configuration
-    st.dataframe(
-        final_df,
-        use_container_width=True,
-        height=600,
-        column_config={
-            "Win %": st.column_config.NumberColumn(
-                "Win %",
-                format="%.1f%%",
-                width="small",
-            ),
-            "Icon1": st.column_config.ImageColumn(
-                "Icon 1",
-                help="First Pokémon in the deck",
-                width="small",
-            ),
-            "Icon2": st.column_config.ImageColumn(
-                "Icon 2",
-                help="Second Pokémon in the deck",
-                width="small",
-            ),
-            "Rank": st.column_config.NumberColumn(
-                "Rank",
-                help="Rank by win percentage",
-                width="small",
-            ),
-            "Deck": st.column_config.Column(
-                "Deck",
-                width="medium",
-            ),
-            "Record": st.column_config.Column(
-                "Record (W-L-T)",
-                help="Win-Loss-Tie record",
-                width="small",
-            ),
-            "Matches": st.column_config.NumberColumn(
-                "Matches",
-                help="Total matches played",
-                width="small",
-            ),
-            "Matchup": st.column_config.Column(
-                "Matchup",
-                help="Matchup favorability",
-                width="small",
-            ),
-        },
-        hide_index=True
-    )
+    try:
+        # Display dataframe with column configuration
+        st.dataframe(
+            final_df,
+            use_container_width=True,
+            height=600,
+            column_config={
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    format="%.1f%%",
+                    width="small",
+                ),
+                "Icon1": st.column_config.ImageColumn(
+                    "Icon 1",
+                    help="First Pokémon in the deck",
+                    width="small",
+                ),
+                "Icon2": st.column_config.ImageColumn(
+                    "Icon 2",
+                    help="Second Pokémon in the deck",
+                    width="small",
+                ),
+                "Rank": st.column_config.NumberColumn(
+                    "Rank",
+                    help="Rank by win percentage",
+                    width="small",
+                ),
+                "Deck": st.column_config.Column(
+                    "Deck",
+                    width="medium",
+                ),
+                "Record": st.column_config.Column(
+                    "Record (W-L-T)",
+                    help="Win-Loss-Tie record",
+                    width="small",
+                ),
+                "Matches": st.column_config.NumberColumn(
+                    "Matches",
+                    help="Total matches played",
+                    width="small",
+                ),
+                "Matchup": st.column_config.Column(
+                    "Matchup",
+                    help="Matchup favorability",
+                    width="small",
+                ),
+            },
+            hide_index=True
+        )
+    except Exception as e:
+        st.error(f"Error displaying matchup table: {str(e)}")
+        # As a fallback, display a simple version of the table without custom formatting
+        st.write("Displaying simplified matchup table due to error:")
+        st.write(final_df)
     
     # Calculate overall statistics
     if not matchup_df.empty:
