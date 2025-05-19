@@ -1278,11 +1278,6 @@ def display_matchup_tab(deck_info=None):
         st.warning("No deck selected for matchup analysis.")
         return
     
-    # Get meta deck list for filtering
-    meta_decks = []
-    if 'deck_name_mapping' in st.session_state:
-        meta_decks = [info['deck_name'] for info in st.session_state.deck_name_mapping.values()]
-    
     # Show loading spinner while fetching data
     with st.spinner(f"Fetching matchup data for {deck_name}..."):
         # Fetch matchup data
@@ -1292,14 +1287,34 @@ def display_matchup_tab(deck_info=None):
         st.info(f"No matchup data available for {deck_name}.")
         return
     
-    # Filter to only include decks from our meta list
-    if meta_decks:
-        filtered_df = matchup_df[matchup_df['opponent_deck_name'].isin(meta_decks)]
-        if not filtered_df.empty:
-            matchup_df = filtered_df
-            st.info(f"Showing matchups against {len(matchup_df)} meta decks")
-        else:
-            st.warning("No matchups found against current meta decks")
+    # Get meta deck list for filtering
+    meta_decks = []
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Use the same source as Tournament Performance Data tab
+        meta_decks = st.session_state.performance_data['deck_name'].tolist()
+        
+        # Log for debugging (can remove later)
+        st.write(f"Found {len(meta_decks)} meta decks to filter by")
+        
+        # Filter to only include decks from our meta list
+        if meta_decks:
+            # Filter using lowercase comparison for better matching
+            matchup_df['opponent_deck_name_lower'] = matchup_df['opponent_deck_name'].str.lower()
+            meta_decks_lower = [d.lower() for d in meta_decks]
+            
+            # Debug: Show which decks are found in both lists
+            meta_matches = matchup_df[matchup_df['opponent_deck_name_lower'].isin(meta_decks_lower)]
+            st.write(f"Found {len(meta_matches)} matching decks in the meta")
+            
+            # Apply filter
+            filtered_df = matchup_df[matchup_df['opponent_deck_name_lower'].isin(meta_decks_lower)]
+            
+            if not filtered_df.empty:
+                matchup_df = filtered_df.drop(columns=['opponent_deck_name_lower'])
+                st.success(f"Showing matchups against {len(matchup_df)} meta decks out of {len(matchup_df.index)} total matchups")
+            else:
+                st.warning("No matchups found against current meta decks. Showing all matchups.")
+                matchup_df = matchup_df.drop(columns=['opponent_deck_name_lower'])
     
     # Define the exceptions dictionary for special Pokémon names
     pokemon_exceptions = {
@@ -1354,6 +1369,9 @@ def display_matchup_tab(deck_info=None):
     final_df['Matchup'] = matchup_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
+    
+    # Remove the debug messages once filtering is confirmed working
+    st.write("Data loaded successfully. Displaying matchup table.")
     
     # Display dataframe with column configuration
     st.dataframe(
