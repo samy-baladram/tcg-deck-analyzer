@@ -138,6 +138,42 @@ def display_deck_template_tab(results):
     with outer_col2:
         display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
 
+def display_variant_decks(results, deck_info, energy_types, is_typical, options):
+    """Display the main sample deck and any variant decks containing other Pokémon options"""
+    # Get Pokemon options that have different names from core Pokemon
+    pokemon_options = options[options['type'] == 'Pokemon'].copy()
+    
+    # Get core Pokemon names for comparison
+    core_pokemon_names = set()
+    for card in deck_info['Pokemon']:
+        core_pokemon_names.add(card['name'].lower())
+    
+    # Filter options to only include Pokemon with different names
+    different_pokemon = pokemon_options[~pokemon_options['card_name'].str.lower().isin(core_pokemon_names)]
+    
+    # If no different Pokemon in options, just show the standard sample deck
+    if different_pokemon.empty:
+        st.write("### Sample Deck")
+        render_sample_deck(energy_types, is_typical)
+        return
+        
+    # Display the original sample deck in an expander
+    with st.expander("### Original Sample Deck", expanded=True):
+        render_sample_deck(energy_types, is_typical)
+    
+    # Get deck name and set name
+    if 'analyze' not in st.session_state:
+        return
+        
+    deck_name = st.session_state.analyze.get('deck_name', '')
+    set_name = st.session_state.analyze.get('set_name', '')
+    
+    # Display a variant deck for each different Pokemon option
+    for _, pokemon in different_pokemon.iterrows():
+        pokemon_name = pokemon['card_name']
+        with st.expander(f"##### {pokemon_name} Variant", expanded=False):
+            render_variant_deck(results, deck_name, set_name, pokemon, energy_types, is_typical)
+
 def render_variant_deck(results, deck_name, set_name, variant_pokemon, energy_types, is_typical):
     """Find and render a deck containing the variant Pokemon directly from results DataFrame"""
     from card_renderer import render_sidebar_deck
