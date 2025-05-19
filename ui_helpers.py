@@ -327,14 +327,18 @@ def render_sidebar():
                 with st.spinner("Updating tournament data..."):
                     stats = cache_manager.update_all_caches()
                     st.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
-                    st.rerun()  # Refresh the app
+                    # Instead add a button that says "Apply Updates":
+                    if st.button("Apply Updates"):
+                        st.rerun()
         
         with col2:
             if st.button("📊 Update Card Stats", help="Refresh card usage statistics"):
                 with st.spinner("Updating card statistics..."):
                     cache_manager.aggregate_card_usage(force_update=True)
                     st.success("Card statistics updated")
-                    st.rerun()  # Refresh the app
+                    # Instead add a button that says "Apply Updates":
+                    if st.button("Apply Updates"):
+                        st.rerun()
     else:
         from datetime import datetime
         current_month_year = datetime.now().strftime("%B %Y")
