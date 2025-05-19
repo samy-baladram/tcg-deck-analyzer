@@ -52,6 +52,10 @@ def get_or_analyze_full_deck(deck_name, set_name):
     cache_key = f"full_deck_{deck_name}_{set_name}"
     if cache_key in st.session_state.analyzed_deck_cache:
         print(f"Found {deck_name} in session cache")
+        
+        # Try to load collected decks metadata if not already loaded
+        load_collected_decks_metadata(deck_name, set_name)
+        
         return st.session_state.analyzed_deck_cache[cache_key]
     
     # Then check disk cache
@@ -59,6 +63,9 @@ def get_or_analyze_full_deck(deck_name, set_name):
     
     if cached_results is not None:
         print(f"Using cached data for {deck_name}")
+        
+        # Try to load collected decks metadata if not already loaded
+        load_collected_decks_metadata(deck_name, set_name)
         
         # Generate the deck template from cached results
         deck_list, deck_info, total_cards, options = build_deck_template(cached_results)
@@ -650,6 +657,12 @@ def calculate_and_cache_energy(deck_name, set_name="A3"):
     
     # First try to get from collected decks
     deck_key = f"{deck_name}_{set_name}"
+    
+    # If collected decks aren't in session state, try to load from disk
+    if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
+        load_collected_decks_metadata(deck_name, set_name)
+    
+    # Now check if we have collected decks
     if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
         collected_data = st.session_state.collected_decks[deck_key]
         if 'decks' in collected_data and collected_data['decks']:
@@ -665,6 +678,8 @@ def calculate_and_cache_energy(deck_name, set_name="A3"):
             print(f"No decks found for {deck_name}")
     else:
         print(f"No collected decks found for {deck_name}")
+    
+    # Rest of the function remains the same...
     
     # If not found from collected decks, try analyzed cache
     if not energy_types:
@@ -715,3 +730,36 @@ def calculate_and_cache_energy(deck_name, set_name="A3"):
     print(f"Cached energy for {deck_name}: {energy_types}")
     
     return energy_types
+
+# Add this function to cache_manager.py
+
+def load_collected_decks_metadata(deck_name, set_name):
+    """Load collected decks metadata from disk and store in session state"""
+    import cache_utils
+    
+    # Create key
+    deck_key = f"{deck_name}_{set_name}"
+    
+    # Skip if we already have collected decks in session state
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        return True
+    
+    # Try to load from disk
+    data = cache_utils.load_collected_decks(deck_name, set_name)
+    if data and 'all_energy_types' in data:
+        # Initialize if needed
+        if 'collected_decks' not in st.session_state:
+            st.session_state.collected_decks = {}
+        
+        # Store in session state
+        st.session_state.collected_decks[deck_key] = {
+            'decks': data.get('decks', []),
+            'all_energy_types': data.get('all_energy_types', []),
+            'total_decks': data.get('total_decks', 0)
+        }
+        
+        print(f"Loaded collected deck metadata for {deck_name} from disk")
+        return True
+    
+    print(f"No collected deck metadata found for {deck_name}")
+    return False
