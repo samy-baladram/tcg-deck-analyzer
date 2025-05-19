@@ -1254,12 +1254,15 @@ def fetch_matchup_data(deck_name, set_name="A3"):
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
+    
+    Args:
+        deck_info: Dictionary containing deck information (optional)
     """
     st.subheader("Matchup Analysis")
     import pandas as pd
     import re
     
-    # Get deck information
+    # Use current deck if none provided
     if not deck_info and 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
         set_name = st.session_state.analyze.get('set_name', 'A3')
@@ -1277,10 +1280,18 @@ def display_matchup_tab(deck_info=None):
         st.info(f"No matchup data available for {deck_name}.")
         return
     
+    # Debug: Show some raw matchup data
+    st.write("Sample of raw matchup data:")
+    st.write(matchup_df[['opponent_name', 'opponent_deck_name', 'win_pct', 'matches_played']].head())
+    
     # Get list of top meta decks to filter by
     meta_decks = []
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         meta_decks = st.session_state.performance_data['deck_name'].tolist()
+        
+        # Debug: Show sample of meta deck names
+        st.write("Sample of meta deck names:")
+        st.write(meta_decks[:5])
     
     # Show filter option
     show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
@@ -1290,9 +1301,29 @@ def display_matchup_tab(deck_info=None):
     
     # Only apply filtering if we have meta decks and user wants filtering
     if meta_decks and not show_all:
+        # Debug the matching process
+        st.write("Debugging filtering process:")
+        
+        # Print some example values from both lists
+        st.write("Example matchup opponent deck names:")
+        for name in working_df['opponent_deck_name'].head(5):
+            st.write(f"  - '{name}'")
+            
+        st.write("Example meta deck names:")
+        for name in meta_decks[:5]:
+            st.write(f"  - '{name}'")
+        
         # Add lowercase versions for better matching
         working_df['deck_name_lower'] = working_df['opponent_deck_name'].str.lower()
         meta_decks_lower = [d.lower() for d in meta_decks]
+        
+        # Count matches for each deck in meta list
+        match_counts = 0
+        for meta_deck in meta_decks_lower:
+            matches = working_df[working_df['deck_name_lower'] == meta_deck]
+            if not matches.empty:
+                match_counts += len(matches)
+                st.write(f"Found {len(matches)} matches for '{meta_deck}'")
         
         # Apply filter
         filtered_df = working_df[working_df['deck_name_lower'].isin(meta_decks_lower)]
@@ -1301,22 +1332,56 @@ def display_matchup_tab(deck_info=None):
         if not filtered_df.empty:
             st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {len(working_df)} total matchups)")
             working_df = filtered_df.drop(columns=['deck_name_lower'])
+            
+            # Show some of the filtered data
+            st.write("Sample of filtered data:")
+            st.write(working_df[['opponent_name', 'opponent_deck_name', 'win_pct']].head())
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
-    elif 'deck_name_lower' in working_df.columns:
-        # Ensure deck_name_lower is dropped even if not filtering
-        working_df = working_df.drop(columns=['deck_name_lower'])
     
-    # Process data for display
+    # Define the exceptions dictionary for special Pokémon names
+    pokemon_exceptions = {
+        'oricorio': 'oricorio-pom-pom'
+    }
+    
+    # Function to extract Pokémon names and create image URLs
+    def extract_pokemon_urls(displayed_name):
+        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+        parts = re.split(r'[\s/]+', clean_name)
+        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+        pokemon_names = []
+        
+        for part in parts:
+            part = part.lower()
+            if part and part not in suffixes:
+                if part in pokemon_exceptions:
+                    part = pokemon_exceptions[part]
+                pokemon_names.append(part)
+                if len(pokemon_names) >= 2:
+                    break
+        
+        urls = []
+        for name in pokemon_names:
+            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+        
+        # Ensure we have exactly 2 elements
+        while len(urls) < 2:
+            urls.append(None)
+            
+        return urls[0], urls[1]
+    
+    # Apply the function to extract Pokémon image URLs
+    working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
+        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
+        axis=1
+    )
+    
     # Create display DataFrame
     final_df = pd.DataFrame()
     final_df['Rank'] = range(1, len(working_df) + 1)
-    
-    # Add Pokémon icons
     final_df['Icon1'] = working_df['pokemon_url1']
     final_df['Icon2'] = working_df['pokemon_url2']
-    
     final_df['Deck'] = working_df['opponent_name']
     final_df['Win %'] = working_df['win_pct']
     final_df['Record'] = working_df.apply(
@@ -1329,32 +1394,36 @@ def display_matchup_tab(deck_info=None):
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Display the dataframe with column configuration
-    st.write("Matchup Data:")
-    st.dataframe(
-        final_df,
-        use_container_width=True,
-        height=600,
-        column_config={
-            "Win %": st.column_config.NumberColumn(format="%.1f%%"),
-            "Icon1": st.column_config.ImageColumn(
-                "Icon 1", 
-                help="First Pokémon in the deck",
-                width="20px",
-            ),
-            "Icon2": st.column_config.ImageColumn(
-                "Icon 2",
-                help="Second Pokémon in the deck",
-                width="20px",
-            ),
-            "Matchup": st.column_config.SelectboxColumn(
-                help="Favorability of the matchup",
-                options=["Favorable", "Even", "Unfavorable"],
-                required=True,
-            )
-        },
-        hide_index=True
-    )
+    # Debug: Show final dataframe content
+    st.write(f"Final dataframe has {len(final_df)} rows")
+    st.write(final_df.head())
+    
+    try:
+        # Display dataframe with proper column configuration for icons
+        st.dataframe(
+            final_df,
+            use_container_width=True,
+            height=600,
+            column_config={
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    format="%.1f%%",
+                ),
+                "Icon1": st.column_config.ImageColumn(
+                    "Icon 1",
+                    help="First Pokémon in the deck",
+                ),
+                "Icon2": st.column_config.ImageColumn(
+                    "Icon 2",
+                    help="Second Pokémon in the deck",
+                ),
+            },
+            hide_index=True
+        )
+    except Exception as e:
+        st.error(f"Error displaying dataframe: {str(e)}")
+        st.write("Showing basic version:")
+        st.write(final_df)
     
     # Calculate overall statistics
     if not working_df.empty:
