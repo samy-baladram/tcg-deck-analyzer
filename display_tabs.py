@@ -1285,8 +1285,10 @@ def display_matchup_tab(deck_info=None):
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         meta_decks = st.session_state.performance_data['deck_name'].tolist()
     
-    # Show filter option
-    show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
+    # Show filter option - commented out as requested
+    # show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
+    # Always filter by default
+    show_all = False
     
     # Create a copy to work with
     working_df = matchup_df.copy()
@@ -1302,7 +1304,7 @@ def display_matchup_tab(deck_info=None):
         
         # Use filtered data if we found matches
         if not filtered_df.empty:
-            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {len(working_df)} total matchups)")
+            st.success(f"Showing {len(filtered_df)} meta deck matchups")
             working_df = filtered_df.drop(columns=['deck_name_lower'])
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
@@ -1402,12 +1404,12 @@ def display_matchup_tab(deck_info=None):
                 "Icon1": st.column_config.ImageColumn(
                     "Icon 1",
                     help="First Pokémon in the deck",
-                    width="small",
+                    width="20px",  # Set width to 20px as requested
                 ),
                 "Icon2": st.column_config.ImageColumn(
                     "Icon 2", 
                     help="Second Pokémon in the deck",
-                    width="small",
+                    width="20px",  # Set width to 20px as requested
                 ),
             },
             hide_index=True
@@ -1432,19 +1434,19 @@ def display_matchup_tab(deck_info=None):
             hide_index=True
         )
     
-    # Calculate overall statistics
-    if not working_df.empty:
-        total_wins = working_df['wins'].sum()
-        total_losses = working_df['losses'].sum()
-        total_ties = working_df['ties'].sum()
-        total_games = total_wins + total_losses + total_ties
-        overall_win_pct = round((total_wins / total_games * 100), 1) if total_games > 0 else 0
-        
-        # Display overall statistics
-        st.metric(
-            label="Overall Matchup Record", 
-            value=f"{total_wins}-{total_losses}-{total_ties} ({overall_win_pct}%)"
-        )
+    # Calculate overall statistics - hidden as requested
+    # if not working_df.empty:
+    #     total_wins = working_df['wins'].sum()
+    #     total_losses = working_df['losses'].sum()
+    #     total_ties = working_df['ties'].sum()
+    #     total_games = total_wins + total_losses + total_ties
+    #     overall_win_pct = round((total_wins / total_games * 100), 1) if total_games > 0 else 0
+    #     
+    #     # Display overall statistics
+    #     st.metric(
+    #         label="Overall Matchup Record", 
+    #         value=f"{total_wins}-{total_losses}-{total_ties} ({overall_win_pct}%)"
+    #     )
     
     # Add explanation
     from formatters import format_deck_name
