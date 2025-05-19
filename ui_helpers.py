@@ -305,8 +305,8 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
     # Show loading spinner while sidebar initializes
-    with st.sidebar:
-        with st.spinner("Loading sidebar data..."):
+    with st.spinner("Loading sidebar data..."):
+        with st.sidebar:
             # Load and encode the banner image if it exists
             banner_path = "sidebar_banner.png"
             if os.path.exists(banner_path):
