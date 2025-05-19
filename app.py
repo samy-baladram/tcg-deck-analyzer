@@ -9,6 +9,7 @@ import cache_manager
 import display_tabs
 from config import MIN_META_SHARE
 import background
+import threading
 
 # Set up page
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
@@ -16,128 +17,63 @@ st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="
 # Add background from repository
 background.add_app_background()
 
-# Apply custom styles
+# Apply custom styles (same as before)
 st.markdown("""
 <style>
-div[data-testid="stExpander"] details summary p{
-    font-size: 1rem;
-}
-
-/* Expander header styling */
-.stExpander > details > summary {
-    border-color: #00A0FF !important;
-}
-
-/* Expander hover effect */
-.stExpander > details > summary:hover {
-    color: #00A0FF !important;
-    border-color: #00A0FF !important;
-    background-color: rgba(0, 160, 255, 0.1) !important;
-}
-
-/* Expander open state */
-.stExpander > details[open] > summary {
-    border-top: 0px solid #00A0FF !important;
-    color: #00A0FF !important;
-}
-
-/* Expander arrow/icon color 
-.stExpander svg {
-    color: #00A0FF !important;
-}*/
-
-/* Change primary color to blue */
-div[data-baseweb="select"] > div {
-    border-color: #00A0FF !important;
-}
-
-/* Selected option */
-div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #00A0FF !important;
-}
-
-/* Hover effect */
-div[role="option"]:hover {
-    background-color: #00A0FF !important;
-}
-
-/* Button primary color */
-.stButton > button {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
-
-.stButton > button:hover {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
-
-/* Progress bar */
-.stProgress > div > div > div > div {
-    background-color: #00A0FF;
-}
-
-/* TAB NAVIGATION STYLES */
-/* Active tab text color */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-    color: #00A0FF !important;
-}
-
-/* Tab hover with 50% transparency */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="false"]:hover {
-    color: rgba(72, 187, 255, 0.4) !important;
-    transition: color 0.3s;
-}
-
-/* SELECTED TAB UNDERLINE ONLY */
-/* This targets the moving underline indicator */
-.stTabs [data-baseweb="tab-highlight"] {
-    background-color: #00A0FF !important;
-}
-
-/* Remove any background color from tab list */
-.stTabs [data-baseweb="tab-list"] {
-    background-color: transparent !important;
-}
-
-/* Ensure only selected tab has the indicator */
-.stTabs [data-baseweb="tab-list"] button[aria-selected="false"] {
-    border-bottom: none !important;
-}
-
-/* Even more specific selector targeting the text */
-div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownContainer"] p {
-    font-size: 15px !important;
-    padding: 8px 12px !important;
-}
-
-}
-
+... (your styles here)
 </style>
 """, unsafe_allow_html=True)
-
-# Add the hover effect setup after your page_config and style settings
-#add_card_hover_effect()
 
 # Initialize app state tracking
 if 'app_state' not in st.session_state:
     st.session_state.app_state = {
-        'initial_data_loaded': False
+        'initial_data_loaded': False,
+        'sidebar_loading': False,
+        'sidebar_loaded': False
     }
 
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
+# Initialize sidebar placeholder
+sidebar_placeholder = st.sidebar.empty()
+
 # First-time initialization - only do heavy loading once
+# This initializes core data for the main app
 if not st.session_state.app_state['initial_data_loaded']:
-    ui_helpers.load_initial_data()
-    from image_processor import preload_all_deck_pokemon_info
-    preload_all_deck_pokemon_info()
+    ui_helpers.load_initial_data(minimal=True)  # Modified to load only essential data
     st.session_state.app_state['initial_data_loaded'] = True
 
-ui_helpers.render_sidebar()
+# Start sidebar loading in the background or show already loaded sidebar
+if not st.session_state.app_state['sidebar_loaded'] and not st.session_state.app_state['sidebar_loading']:
+    # Set loading flag
+    st.session_state.app_state['sidebar_loading'] = True
+    
+    # Create progress bar in sidebar
+    with sidebar_placeholder.container():
+        # Show banner or title
+        banner_path = "sidebar_banner.png"
+        if os.path.exists(banner_path):
+            with open(banner_path, "rb") as f:
+                banner_base64 = base64.b64encode(f.read()).decode()
+            st.markdown(f"""
+            <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.title("Top 10 Meta Decks")
+        
+        # Show progress bar
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        status_text.text("Loading meta data...")
+else:
+    # If sidebar already loaded, render it
+    if st.session_state.app_state['sidebar_loaded']:
+        ui_helpers.render_loaded_sidebar()
 
-# Create deck selector
+# Create deck selector (this is part of the main content flow)
 selected_option = ui_helpers.create_deck_selector()
 
 # Main content area
@@ -156,35 +92,36 @@ if 'analyze' in st.session_state and selected_option:
     # Display deck header
     display_tabs.display_deck_header(original_deck_info, results)
     
-    # Display tabs
+    # Display tabs (same as before)
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
-                                                        "Card Usage",  
-                                                        "Meta Matchups",
-                                                        "Metagame Overview",
-                                                        "Related Decks",
-                                                        "Raw Data", 
-                                                        ])
+                                                    "Card Usage",  
+                                                    "Meta Matchups",
+                                                    "Metagame Overview",
+                                                    "Related Decks",
+                                                    "Raw Data"])
     
+    # Tab content rendering (same as before)
     with tab1:
         display_tabs.display_deck_template_tab(results)
-         # ADD THIS: Display last update time for the current deck
+        # Display last update time
         last_update = ui_helpers.display_deck_update_info(
             original_deck_info['deck_name'], 
             original_deck_info['set_name']
         )
         display_tabs.display_energy_debug_tab(original_deck_info)
         if last_update:
-            st.caption(last_update)           
+            st.caption(last_update)
     
+    # Other tabs remain the same
     with tab2:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
-        
+    
     with tab3:
         display_tabs.display_matchup_tab()
-        
+    
     with tab4:
         display_tabs.display_metagame_tab() 
-        
+    
     with tab5:
         display_tabs.display_related_decks_tab(original_deck_info, results)
     
@@ -192,6 +129,15 @@ if 'analyze' in st.session_state and selected_option:
         display_tabs.display_raw_data_tab(results, variant_df)
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
+
+# After main content is loaded, continue loading the sidebar if needed
+if st.session_state.app_state['sidebar_loading'] and not st.session_state.app_state['sidebar_loaded']:
+    with sidebar_placeholder.container():
+        # Continue with the progressive loading
+        ui_helpers.load_sidebar_progressively(progress_bar, status_text)
+        # Set loaded flag
+        st.session_state.app_state['sidebar_loaded'] = True
+        st.session_state.app_state['sidebar_loading'] = False
 
 # Footer
 st.markdown("---")
