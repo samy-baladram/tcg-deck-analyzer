@@ -6,12 +6,21 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 import cache_utils
-from analyzer import analyze_deck, build_deck_template
-from scraper import analyze_recent_performance, get_sample_deck_for_archetype
+from analyzer import analyze_deck, build_deck_template, create_tournament_deck_mapping, update_deck_analysis
+from scraper import get_all_recent_tournaments, get_new_tournament_ids, get_affected_decks, analyze_recent_performance, get_sample_deck_for_archetype
 from config import MIN_META_SHARE
 
 def init_caches():
-    """Initialize all necessary caches in session state"""
+    """
+    Initialize all necessary caches in session state.
+    
+    This function sets up:
+    - analyzed_deck_cache: Dictionary mapping keys to analyzed deck data
+    - sample_deck_cache: Dictionary mapping keys to sample deck data
+    - known_tournament_ids: List of known tournament IDs
+    - fetch_time: Timestamp of last data fetch
+    - performance_fetch_time: Timestamp of last performance data update
+    """
     # Deck analysis cache
     if 'analyzed_deck_cache' not in st.session_state:
         st.session_state.analyzed_deck_cache = {}
@@ -20,12 +29,22 @@ def init_caches():
     if 'sample_deck_cache' not in st.session_state:
         st.session_state.sample_deck_cache = {}
     
+    # Track tournament IDs in session state
+    if 'known_tournament_ids' not in st.session_state:
+        # Load from disk
+        st.session_state.known_tournament_ids = cache_utils.load_tournament_ids()
+    
     # Initialize cache timestamps
     if 'fetch_time' not in st.session_state:
         st.session_state.fetch_time = datetime.now()
     
     if 'performance_fetch_time' not in st.session_state:
         st.session_state.performance_fetch_time = datetime.now()
+        
+    # Ensure initial data is loaded
+    if 'first_load' not in st.session_state:
+        update_all_caches()
+        st.session_state.first_load = True
 
 def get_or_analyze_full_deck(deck_name, set_name):
     """Get full analyzed deck from cache or analyze if not cached"""
@@ -253,14 +272,160 @@ def load_or_update_tournament_data():
     # Check if data needs to be updated (if it's older than 1 hour)
     if performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(hours=1):
         with st.spinner("Updating tournament performance data..."):
-            # Analyze recent performance
-            performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+            # First check for new tournaments and update affected decks
+            update_stats = update_tournament_tracking()
             
-            # Save to cache
-            cache_utils.save_tournament_performance_data(performance_df)
-            
-            # Update timestamp
-            performance_timestamp = datetime.now()
+            # Only reanalyze performance if there are new tournaments or no existing data
+            if update_stats['new_tournaments'] > 0 or performance_df.empty:
+                # Then update performance metrics
+                performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+                
+                # Save to cache
+                cache_utils.save_tournament_performance_data(performance_df)
+                
+                # Update timestamp
+                performance_timestamp = datetime.now()
+                
+                # Show update stats if there were any updates
+                if update_stats['new_tournaments'] > 0:
+                    st.success(f"Found {update_stats['new_tournaments']} new tournaments. "
+                              f"Updated {update_stats['updated_decks']} affected decks.")
 
     # Return the loaded or updated data with timestamp
     return performance_df, performance_timestamp
+
+#######################################################################################################################
+
+def track_player_tournament_mapping(deck_name, set_name):
+    """Track player and tournament IDs for a deck"""
+    from scraper import get_player_tournament_pairs, create_mapping_key
+    
+    try:
+        # Get all player-tournament pairs
+        pairs = get_player_tournament_pairs(deck_name, set_name)
+        
+        if not pairs:
+            print(f"No player-tournament pairs found for {deck_name}")
+            return 0
+        
+        # Load existing mapping
+        mapping = cache_utils.load_player_tournament_mapping()
+        
+        # Add new mappings
+        count = 0
+        for pair in pairs:
+            player_id = pair['player_id']
+            tournament_id = pair['tournament_id']
+            
+            # Create key
+            key = create_mapping_key(player_id, tournament_id)
+            
+            # Add to mapping
+            if key not in mapping:
+                mapping[key] = deck_name
+                count += 1
+        
+        # Save updated mapping
+        cache_utils.save_player_tournament_mapping(mapping)
+        
+        # Return number of new pairs tracked
+        return count
+    except Exception as e:
+        st.error(f"Error tracking player-tournament mapping for {deck_name}: {str(e)}")
+        return 0
+    
+def update_tournament_tracking():
+    """
+    Update tournament tracking and deck caches
+    
+    Returns:
+        Dict with stats on updates performed
+    """
+    # Track update statistics
+    stats = {
+        'current_tournaments': 0,
+        'new_tournaments': 0,
+        'affected_decks': 0,
+        'updated_decks': 0
+    }
+    
+    with st.spinner("Checking for new tournaments..."):
+        # Load previous tournament IDs
+        previous_ids = cache_utils.load_tournament_ids()
+        
+        # Get current tournament IDs
+        current_ids = get_all_recent_tournaments()
+        stats['current_tournaments'] = len(current_ids)
+        
+        # Find new tournament IDs
+        new_ids = get_new_tournament_ids(previous_ids)
+        stats['new_tournaments'] = len(new_ids)
+        
+        # If no new tournaments, nothing to do
+        if not new_ids:
+            return stats
+        
+        # Save updated tournament IDs
+        cache_utils.save_tournament_ids(current_ids)
+        
+        # Load player-tournament mapping
+        mapping = cache_utils.load_player_tournament_mapping()
+        
+        # Find affected deck archetypes
+        affected_decks = get_affected_decks(new_ids, mapping)
+        stats['affected_decks'] = len(affected_decks)
+
+        print(f"Found {len(new_ids)} new tournaments: {new_ids}")
+        print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
+      
+        # In update_tournament_tracking, add batch processing
+        if len(affected_decks) > 5:
+            st.info(f"Updating {len(affected_decks)} decks. This may take a while...")
+            
+        # Update each affected deck
+        for deck_name in affected_decks:
+            # For now, assume set_name is 'A3' - could be stored in mapping
+            set_name = 'A3'
+            
+            # Update the deck analysis
+            success = update_deck_analysis(deck_name, set_name, new_ids)
+            
+            if success:
+                stats['updated_decks'] += 1
+    
+    return stats
+
+def update_all_caches():
+    """
+    Comprehensive update of all caching systems.
+    """
+    # First, update tournament data - this already calls load_or_update_tournament_data internally
+    stats = update_tournament_tracking()
+    
+    # Get the updated performance data
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+        performance_df, performance_timestamp = load_or_update_tournament_data()
+        
+        # Update session state with performance data
+        st.session_state.performance_data = performance_df
+        st.session_state.performance_fetch_time = performance_timestamp
+    
+    # Finally, update card usage data (only if performance data exists)
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        card_usage_df = aggregate_card_usage(force_update=False)
+        st.session_state.card_usage_data = card_usage_df
+    
+    # Set timestamp
+    st.session_state.fetch_time = datetime.now()
+    
+    return stats
+
+def get_cache_statistics():
+    """Return statistics about cache usage"""
+    stats = {
+        'decks_cached': len(st.session_state.analyzed_deck_cache),
+        'sample_decks_cached': len(st.session_state.sample_deck_cache),
+        'tournaments_tracked': len(st.session_state.known_tournament_ids) if 'known_tournament_ids' in st.session_state else 0,
+        'last_update': st.session_state.fetch_time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+    return stats
