@@ -310,152 +310,118 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
-    with st.sidebar:
-        # Load and encode the banner image if it exists
-        banner_path = "sidebar_banner.png"
-        if os.path.exists(banner_path):
-            with open(banner_path, "rb") as f:
-                banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""
-            <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.title("Top 10 Meta Decks")
-        
-        # Create progress bar and status message placeholders
-        progress_placeholder = st.empty()
-        status_placeholder = st.empty()
-        
-        # Initialize progress bar
-        progress_bar = progress_placeholder.progress(0)
-        status_placeholder.text("Loading meta data...")
-        
-        # Stage 1: Initialize energy cache (10%)
-        import cache_manager
-        cache_manager.ensure_energy_cache()
-        progress_bar.progress(10)
-        status_placeholder.text("Preparing deck data...")
-        
-        # Get current month and year for display
-        from datetime import datetime
-        current_month_year = datetime.now().strftime("%B %Y")  # Format: May 2025
-        
-        # Stage 2: Check performance data (20%)
-        if st.session_state.performance_data.empty:
-            progress_bar.progress(100)
-            status_placeholder.empty()
-            progress_placeholder.empty()
-            st.info(f"No tournament performance data available for {current_month_year}")
-            return
-        
-        # Update progress
-        progress_bar.progress(20)
-        status_placeholder.text("Processing top decks...")
-        
-        # Stage 3: Get top decks (30%)
-        top_decks = st.session_state.performance_data.head(10)
-        progress_bar.progress(30)
-        status_placeholder.text("Loading deck data...")
-        
-        # Stage 4: Pre-load deck data (40%)
-        # This helps ensure smooth rendering of each deck
-        progress_bar.progress(40)
-        
-        # Stage 5: Render each deck (40% to 90%)
-        # 5% progress per deck
-        for idx, deck in top_decks.iterrows():
-            rank = idx + 1
-            current_progress = 40 + (idx * 5)
-            progress_bar.progress(current_progress)
-            status_placeholder.text(f"Loading deck {rank}/10: {deck['displayed_name']}")
+    # Show loading spinner while sidebar initializes
+    with st.spinner("Loading sidebar data..."):
+        with st.sidebar:
+            # Load and encode the banner image if it exists
+            banner_path = "sidebar_banner.png"
+            if os.path.exists(banner_path):
+                with open(banner_path, "rb") as f:
+                    banner_base64 = base64.b64encode(f.read()).decode()
+                st.markdown(f"""
+                <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
+                    <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.title("Top 10 Meta Decks")
             
-            # Render the deck
-            render_deck_in_sidebar(deck, rank=rank)
-        
-        # Stage 6: Finishing up (100%)
-        progress_bar.progress(100)
-        status_placeholder.empty()
-        progress_placeholder.empty()
-        
-        # Add disclaimer with update time in one line
-        performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-        st.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
-            <div>Top performers from {current_month_year}</div>
-            <div>Updated {performance_time_str}</div>
-        </div>
-        <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-            Based on up to {TOURNAMENT_COUNT} tournament results
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Add a divider
-        st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
-        
-        # Add expandable methodology section
-        with st.expander("🔍 About the Power Index"):
-            st.markdown(f"""
-            #### Power Index: How We Rank the Best Decks
+            # Ensure energy cache is initialized
+            import cache_manager
+            cache_manager.ensure_energy_cache()
             
-            **Where the Data Comes From**  
-            Our Power Index uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in the most recent competitive play, not just how popular they are.
+            # Get current month and year for display
+            from datetime import datetime
+            current_month_year = datetime.now().strftime("%B %Y")  # Format: May 2025
             
-            **What the Power Index Measures**  
-            The Power Index is calculated as:
-            """)
-            
-            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
-            
-            st.markdown("""
-            This formula captures three key things:
-            * How many more wins than losses a deck achieves
-            * The value of ties (counted as 75% of a win)
-            * Statistical confidence (more games = more reliable data)
-            
-            **Why It's Better Than Other Methods**
-            * **Better than Win Rate**: Accounts for both winning and avoiding losses
-            * **Better than Popularity**: Measures actual performance, not just what people choose to play
-            * **Better than Record Alone**: Balances impressive results against sample size
-            
-            **Reading the Numbers**
-            * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
-            * **Positive vs Negative**: Positive numbers mean winning more than losing
-            * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
-            """)
-            
-        # Add cache statistics at the bottom
-        with st.expander("🔧 Cache Statistics", expanded=False):
-            cache_stats = cache_manager.get_cache_statistics()
-            st.markdown(f"""
-            - **Decks Cached**: {cache_stats['decks_cached']}
-            - **Sample Decks**: {cache_stats['sample_decks_cached']}
-            - **Tournaments Tracked**: {cache_stats['tournaments_tracked']}
-            - **Last Updated**: {cache_stats['last_update']}
-            """)
-            
-        # Add update buttons
-        st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            if st.button("🔄 Force Update Data", help="Force refresh all tournament data"):
-                with st.spinner("Updating tournament data..."):
-                    stats = cache_manager.update_all_caches()
-                    st.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
-                    # Instead add a button that says "Apply Updates":
-                    if st.button("Apply Updates"):
-                        st.rerun()
-        
-        with col2:
-            if st.button("📊 Update Card Stats", help="Refresh card usage statistics"):
-                with st.spinner("Updating card statistics..."):
-                    cache_manager.aggregate_card_usage(force_update=True)
-                    st.success("Card statistics updated")
-                    # Instead add a button that says "Apply Updates":
-                    if st.button("Apply Updates"):
-                        st.rerun()
+            # Display performance data if it exists
+            if not st.session_state.performance_data.empty:
+                # Get the top 10 performing decks
+                top_decks = st.session_state.performance_data.head(10)
+                
+                # Render each deck one by one, passing the rank (index + 1)
+                for idx, deck in top_decks.iterrows():
+                    rank = idx + 1  # Calculate rank (1-based)
+                    render_deck_in_sidebar(deck, rank=rank)
+    
+                # Add disclaimer with update time in one line
+                performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+                st.markdown(f"""
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
+                    <div>Top performers from {current_month_year}</div>
+                    <div>Updated {performance_time_str}</div>
+                </div>
+                <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+                    Based on up to {TOURNAMENT_COUNT} tournament results
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Add a divider
+                st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
+                
+                # Add expandable methodology section
+                with st.expander("🔍 About the Power Index"):
+                    st.markdown(f"""
+                    #### Power Index: How We Rank the Best Decks
+                    
+                    **Where the Data Comes From**  
+                    Our Power Index uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in the most recent competitive play, not just how popular they are.
+                    
+                    **What the Power Index Measures**  
+                    The Power Index is calculated as:
+                    """)
+                    
+                    st.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
+                    
+                    st.markdown("""
+                    This formula captures three key things:
+                    * How many more wins than losses a deck achieves
+                    * The value of ties (counted as 75% of a win)
+                    * Statistical confidence (more games = more reliable data)
+                    
+                    **Why It's Better Than Other Methods**
+                    * **Better than Win Rate**: Accounts for both winning and avoiding losses
+                    * **Better than Popularity**: Measures actual performance, not just what people choose to play
+                    * **Better than Record Alone**: Balances impressive results against sample size
+                    
+                    **Reading the Numbers**
+                    * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
+                    * **Positive vs Negative**: Positive numbers mean winning more than losing
+                    * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
+                    """)
+                    
+                # Add cache statistics at the bottom (optional, could be in a collapsed expander)
+                with st.expander("🔧 Cache Statistics", expanded=False):
+                    cache_stats = cache_manager.get_cache_statistics()
+                    st.markdown(f"""
+                    - **Decks Cached**: {cache_stats['decks_cached']}
+                    - **Sample Decks**: {cache_stats['sample_decks_cached']}
+                    - **Tournaments Tracked**: {cache_stats['tournaments_tracked']}
+                    - **Last Updated**: {cache_stats['last_update']}
+                    """)
+                # Add a button to force update cache data
+                st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    if st.button("🔄 Force Update Data", help="Force refresh all tournament data"):
+                        with st.spinner("Updating tournament data..."):
+                            stats = cache_manager.update_all_caches()
+                            st.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
+                            # Instead add a button that says "Apply Updates":
+                            if st.button("Apply Updates"):
+                                st.rerun()
+                
+                with col2:
+                    if st.button("📊 Update Card Stats", help="Refresh card usage statistics"):
+                        with st.spinner("Updating card statistics..."):
+                            cache_manager.aggregate_card_usage(force_update=True)
+                            st.success("Card statistics updated")
+                            # Instead add a button that says "Apply Updates":
+                            if st.button("Apply Updates"):
+                                st.rerun()
+            else:
+                st.info(f"No tournament performance data available for {current_month_year}")
         
 def display_deck_update_info(deck_name, set_name):
     """Display when the deck was last updated"""
@@ -505,211 +471,3 @@ def update_energy_cache(deck_name, energy_types):
         st.session_state.energy_combinations[deck_name][combo_key] += 1
     else:
         st.session_state.energy_combinations[deck_name][combo_key] = 1
-
-
-# Add these new functions to ui_helpers.py
-
-def load_initial_data(minimal=False):
-    """
-    Load initial data required for the app
-    
-    Args:
-        minimal: If True, only load essential data needed for the main interface
-    """
-    # Initialize caches
-    cache_manager.init_caches()
-    
-    # Initialize deck list if not already loaded - needed for basic UI
-    if 'deck_list' not in st.session_state:
-        st.session_state.deck_list = get_deck_list()
-        st.session_state.fetch_time = datetime.now()
-    
-    # Load performance data if not already and not minimal
-    if 'performance_data' not in st.session_state and not minimal:
-        # Only load if not already in session state
-        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
-        st.session_state.performance_data = performance_df
-        st.session_state.performance_fetch_time = performance_timestamp
-    
-    # For minimal load, we can skip the rest
-    if minimal:
-        return
-        
-    # Initialize card usage data if not already loaded
-    if 'card_usage_data' not in st.session_state:
-        st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
-    
-    # Initialize selected deck if not exists
-    if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = None
-        
-    # Initialize deck_to_analyze if not exists
-    if 'deck_to_analyze' not in st.session_state:
-        st.session_state.deck_to_analyze = None
-        
-    # Preload Pokemon data
-    from image_processor import preload_all_deck_pokemon_info
-    preload_all_deck_pokemon_info()
-
-def load_sidebar_progressively(progress_bar, status_text):
-    """Load sidebar data with incremental progress updates"""
-    # Get current month and year for display
-    from datetime import datetime
-    current_month_year = datetime.now().strftime("%B %Y")
-    
-    # Stage 1: Ensure energy cache (10%)
-    import cache_manager
-    cache_manager.ensure_energy_cache()
-    progress_bar.progress(10)
-    status_text.text("Preparing deck data...")
-    
-    # Stage 2: Load performance data if needed (20%)
-    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-        # Load performance data
-        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
-        st.session_state.performance_data = performance_df
-        st.session_state.performance_fetch_time = performance_timestamp
-    
-    progress_bar.progress(20)
-    
-    # Exit if no performance data
-    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-        progress_bar.progress(100)
-        status_text.empty()
-        st.info(f"No tournament performance data available for {current_month_year}")
-        return
-    
-    # Stage 3: Get top decks (30%)
-    status_text.text("Processing top decks...")
-    top_decks = st.session_state.performance_data.head(10)
-    progress_bar.progress(30)
-    status_text.text("Loading deck data...")
-    
-    # Stage 4: Preload deck data (40%)
-    # This is a placeholder for any preloading steps
-    progress_bar.progress(40)
-    
-    # Stage 5: Render each deck (40% to 90%)
-    # 5% progress per deck
-    for idx, deck in enumerate(top_decks.iterrows()):
-        _, deck_data = deck  # Unpack the tuple
-        rank = idx + 1
-        current_progress = 40 + (idx * 5)
-        progress_bar.progress(current_progress)
-        status_text.text(f"Loading deck {rank}/10: {deck_data['displayed_name']}")
-        
-        # Render the deck
-        render_deck_in_sidebar(deck_data, rank=rank)
-    
-    # Stage 6: Finishing touches (100%)
-    progress_bar.progress(95)
-    status_text.text("Completing sidebar...")
-    
-    # Add disclaimer with update time
-    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-    st.markdown(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
-        <div>Top performers from {current_month_year}</div>
-        <div>Updated {performance_time_str}</div>
-    </div>
-    <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-        Based on up to {TOURNAMENT_COUNT} tournament results
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Add a divider
-    st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
-    
-    # Add expandable methodology section
-    with st.expander("🔍 About the Power Index"):
-        # Power Index content (same as before)
-        st.markdown(f"... (Power Index content)")
-    
-    # Add cache statistics at the bottom
-    with st.expander("🔧 Cache Statistics", expanded=False):
-        cache_stats = cache_manager.get_cache_statistics()
-        st.markdown(f"... (Cache stats content)")
-    
-    # Add update buttons
-    st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Force update button (same as before)
-        st.button("🔄 Force Update Data", help="Force refresh all tournament data")
-    
-    with col2:
-        # Update card stats button (same as before)
-        st.button("📊 Update Card Stats", help="Refresh card usage statistics")
-    
-    # Final progress update
-    progress_bar.progress(100)
-    status_text.empty()
-
-def render_loaded_sidebar():
-    """Render the fully loaded sidebar (no progress indicators)"""
-    # Get current month and year for display
-    from datetime import datetime
-    current_month_year = datetime.now().strftime("%B %Y")
-    
-    with st.sidebar:
-        # Show banner or title
-        banner_path = "sidebar_banner.png"
-        if os.path.exists(banner_path):
-            with open(banner_path, "rb") as f:
-                banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""
-            <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.title("Top 10 Meta Decks")
-        
-        # Display top decks
-        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-            top_decks = st.session_state.performance_data.head(10)
-            
-            # Render each deck
-            for idx, deck in top_decks.iterrows():
-                rank = idx + 1
-                render_deck_in_sidebar(deck, rank=rank)
-            
-            # Add disclaimer with update time
-            performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-            st.markdown(f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
-                <div>Top performers from {current_month_year}</div>
-                <div>Updated {performance_time_str}</div>
-            </div>
-            <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                Based on up to {TOURNAMENT_COUNT} tournament results
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Add a divider
-            st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
-            
-            # Add expandable methodology section
-            with st.expander("🔍 About the Power Index"):
-                # Power Index content (same as before)
-                st.markdown(f"... (Power Index content)")
-            
-            # Add cache statistics
-            with st.expander("🔧 Cache Statistics", expanded=False):
-                cache_stats = cache_manager.get_cache_statistics()
-                st.markdown(f"... (Cache stats content)")
-            
-            # Add update buttons
-            st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                # Force update button (same as before)
-                st.button("🔄 Force Update Data", help="Force refresh all tournament data")
-            
-            with col2:
-                # Update card stats button (same as before)
-                st.button("📊 Update Card Stats", help="Refresh card usage statistics")
-        else:
-            st.info(f"No tournament performance data available for {current_month_year}")
