@@ -644,6 +644,8 @@ def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.subheader("Tournament Performance Data")
     import pandas as pd
+    import re
+    
     # Get performance data
     performance_df = st.session_state.performance_data
     
@@ -666,14 +668,65 @@ def display_metagame_tab():
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
     
-    # Add an indicator emoji for the current deck
-    # display_df['displayed_name'] = display_df.apply(
-    #     lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
-    #     axis=1
-    # )
+    # Define the exceptions dictionary for special Pokémon names
+    pokemon_exceptions = {
+        'oricorio': 'oricorio-pom-pom'
+    }
+    
+    # Function to extract Pokémon names and generate HTML for icons
+    def generate_pokemon_icons(deck_name, displayed_name):
+        # Extract Pokémon names from displayed_name (which has better formatting than deck_name)
+        # Remove any text in parentheses, then split by spaces and handle special cases
+        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+        
+        # Split by common separators to identify individual Pokémon
+        # This handles formats like "Giratina ex Darkrai ex" or "Giratina/Darkrai"
+        pokemon_parts = re.split(r'[\s/]+', clean_name)
+        
+        # Filter out common suffixes that aren't Pokémon names
+        suffixes_to_remove = ['ex', 'v', 'vmax', 'vstar', 'gx']
+        pokemon_names = []
+        
+        i = 0
+        while i < len(pokemon_parts):
+            # Skip empty parts
+            if not pokemon_parts[i]:
+                i += 1
+                continue
+                
+            # Check if current part is a Pokémon name (not a suffix)
+            if pokemon_parts[i].lower() not in suffixes_to_remove:
+                pokemon_name = pokemon_parts[i].lower()
+                
+                # Apply exceptions if needed
+                if pokemon_name in pokemon_exceptions:
+                    pokemon_name = pokemon_exceptions[pokemon_name]
+                    
+                pokemon_names.append(pokemon_name)
+                
+                # Limit to 2 Pokémon icons
+                if len(pokemon_names) >= 2:
+                    break
+                    
+            i += 1
+        
+        # Generate HTML for the icons
+        icons_html = ""
+        for pokemon in pokemon_names:
+            icon_url = f"https://r2.limitlesstcg.net/pokemon/gen9/{pokemon}.png"
+            icons_html += f'<img src="{icon_url}" style="height:30px; margin-right:3px;">'
+            
+        return icons_html
+    
+    # Generate Pokémon icons for each deck
+    display_df['pokemon_icons'] = display_df.apply(
+        lambda row: generate_pokemon_icons(row['deck_name'], row['displayed_name']), 
+        axis=1
+    )
     
     # Select and rename columns for display
     display_cols = {
+        'pokemon_icons': 'Icons',
         'displayed_name': 'Deck',
         'power_index': 'Power Index',
         'share': 'Meta Share %',
@@ -688,8 +741,8 @@ def display_metagame_tab():
     display_df['is_current'] = display_df['deck_name'] == current_deck_name
     
     # Create final display dataframe
-    final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
-
+    final_df = display_df[['pokemon_icons'] + list(display_cols.keys())].rename(columns=display_cols)
+    
     # Add Rank column based on the index
     final_df.insert(0, 'Rank', range(1, len(final_df) + 1))
     
@@ -718,7 +771,13 @@ def display_metagame_tab():
         column_config={
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
-            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%")
+            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
+            "Icons": st.column_config.Column(
+                "Icons",
+                help="Pokémon icons",
+                width="small",
+                disabled=True,
+            )
         },
         hide_index=True
     )
@@ -744,7 +803,6 @@ def display_metagame_tab():
     
     *Data is based on tournament results from up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.*
     """)
-
 # Modify the display_related_decks_tab function in display_tabs.py:
 
 def display_related_decks_tab(deck_info, results):
