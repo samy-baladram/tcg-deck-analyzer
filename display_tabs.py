@@ -156,27 +156,47 @@ def display_sample_deck_variants(results, deck_info, energy_types, is_typical, o
         display_standard_sample_deck(energy_types, is_typical)
     else:
         # Find decks containing each variant Pokemon
-        variant_decks = find_variant_decks(results, different_pokemon)
-        
-        # Display the original sample deck (one that doesn't contain variants)
-        with st.expander("### Original Sample Deck", expanded=True):
-            display_clean_sample_deck(energy_types, is_typical, different_pokemon)
-        
-        # Display variant decks for each different Pokemon
-        for pokemon_name, deck_data in variant_decks.items():
-            if deck_data:
-                with st.expander(f"##### {pokemon_name} Variant", expanded=False):
-                    display_actual_variant_deck(deck_data, energy_types, is_typical, pokemon_name)
-            else:
-                # If no actual deck found with this Pokemon, show placeholder
-                with st.expander(f"##### {pokemon_name} Variant", expanded=False):
-                    st.info(f"No complete deck found with {pokemon_name}.")
+        try:
+            variant_decks = find_variant_decks(results, different_pokemon)
+            
+            # Check if any variant decks were found
+            any_variant_decks_found = any(deck_data is not None for deck_data in variant_decks.values())
+            
+            if not any_variant_decks_found:
+                # If no variant decks found, just show the standard sample deck
+                display_standard_sample_deck(energy_types, is_typical)
+                return
+                
+            # Display the original sample deck (one that doesn't contain variants)
+            with st.expander("### Original Sample Deck", expanded=True):
+                display_clean_sample_deck(energy_types, is_typical, different_pokemon)
+            
+            # Display variant decks for each different Pokemon
+            for pokemon_name, deck_data in variant_decks.items():
+                if deck_data:
+                    with st.expander(f"##### {pokemon_name} Variant", expanded=False):
+                        display_actual_variant_deck(deck_data, energy_types, is_typical, pokemon_name)
+                else:
+                    # If no actual deck found with this Pokemon, show placeholder
+                    with st.expander(f"##### {pokemon_name} Variant", expanded=False):
+                        st.info(f"No complete deck found with {pokemon_name}.")
+                        
+        except Exception as e:
+            # If any error occurs, fall back to displaying standard sample deck
+            st.warning(f"Could not display variant decks: {str(e)}")
+            display_standard_sample_deck(energy_types, is_typical)
 
 def find_variant_decks(results, different_pokemon):
     """Find actual decks containing each variant Pokemon"""
-    import pandas as pd
-    
     variant_decks = {}
+    
+    # Check if 'deck_num' exists in results
+    if 'deck_num' not in results.columns:
+        # Handle case where deck_num doesn't exist
+        for _, pokemon in different_pokemon.iterrows():
+            pokemon_name = pokemon['card_name']
+            variant_decks[pokemon_name] = None
+        return variant_decks
     
     for _, pokemon in different_pokemon.iterrows():
         pokemon_name = pokemon['card_name']
