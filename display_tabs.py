@@ -165,7 +165,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     variant_pokemon_names = set(different_pokemon['card_name'].str.lower())
     
     # Display the original sample deck (without variants) in an expander
-    with st.expander("### Original Sample Deck", expanded=True):
+    with st.expander("Sample Deck", expanded=True):
         render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical)
     
     # Track decks we've already shown to avoid duplicates
@@ -174,7 +174,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     # For each different Pokemon, show a variant deck in an expander
     for _, pokemon in different_pokemon.iterrows():
         pokemon_name = pokemon['card_name']
-        with st.expander(f"##### {pokemon_name} Variant", expanded=False):
+        with st.expander(f"{pokemon_name} Variant", expanded=False):
             # Create a set of Pokémon to avoid (other variants)
             other_variants = set(name for name in variant_pokemon_names if name.lower() != pokemon_name.lower())
             
