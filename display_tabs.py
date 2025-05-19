@@ -35,8 +35,8 @@ def display_card_usage_tab(results, total_decks, variant_df):
     st.write("#### Card Usage & Variants")
     col1, col2 = st.columns([1, 1])
     
-    # Get energy types the same way as in display_deck_template_tab
-    from energy_utils import get_energy_types_for_deck
+    # Get energy types using our improved function from ui_helpers
+    from ui_helpers import get_energy_types_for_deck
     
     # Initialize empty energy types list
     energy_types = []
@@ -46,14 +46,13 @@ def display_card_usage_tab(results, total_decks, variant_df):
     # Look for energy_types in the session state for this deck
     if 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
-        set_name = st.session_state.analyze.get('set_name', '')
         
         # Get the most common energy combination
-        energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
+        energy_types, is_typical = get_energy_types_for_deck(deck_name)
         
         # Get primary energy (first one in the list)
         primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
-    
+      
     with col1:
         st.write("##### Pokemon")
         type_cards = results[results['type'] == 'Pokemon']
@@ -110,7 +109,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
 def display_deck_template_tab(results):
     """Display the Deck Template tab with revised layout and two-column card sections"""
     # Import needed functions
-    from energy_utils import get_energy_types_for_deck, get_archetype_from_deck_name
+    from ui_helpers import get_energy_types_for_deck
     
     # Use the updated function that returns deck_info
     deck_list, deck_info, total_cards, options = build_deck_template(results)
@@ -122,10 +121,9 @@ def display_deck_template_tab(results):
     # Look for energy_types in the session state for this deck
     if 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
-        set_name = st.session_state.analyze.get('set_name', '')
         
         # Get the most common energy combination
-        energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
+        energy_types, is_typical = get_energy_types_for_deck(deck_name)
         
         # No need to ensure collected decks since we're now caching everything
         # The data should already be in st.session_state.collected_decks if needed
