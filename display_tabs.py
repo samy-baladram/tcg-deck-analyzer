@@ -132,13 +132,13 @@ def display_deck_template_tab(results):
     
     # Left column: Sample Deck(s)
     with outer_col1:
-        display_variant_decks(deck_info, energy_types, is_typical, options)
+        display_variant_decks(results, deck_info, energy_types, is_typical, options)
     
     # Right column: Core Cards and Flexible Slots in vertical layout
     with outer_col2:
         display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
 
-def display_variant_decks(deck_info, energy_types, is_typical, options):
+def display_variant_decks(results, deck_info, energy_types, is_typical, options):
     """Display the main sample deck and any variant decks containing other Pokémon options"""
     # Get Pokemon options that have different names from core Pokemon
     pokemon_options = options[options['type'] == 'Pokemon'].copy()
@@ -172,7 +172,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     for _, pokemon in different_pokemon.iterrows():
         pokemon_name = pokemon['card_name']
         with st.expander(f"##### {pokemon_name} Variant", expanded=False):
-            render_variant_deck(deck_name, set_name, pokemon, energy_types, is_typical)
+            render_variant_deck(results, deck_name, set_name, pokemon, energy_types, is_typical)
 
 def render_sample_deck(energy_types, is_typical):
     """Render the standard sample deck for the current archetype"""
@@ -327,6 +327,7 @@ def render_variant_deck(results, deck_name, set_name, variant_pokemon, energy_ty
 
 def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options):
     """Display the deck composition section"""
+    # (This function remains unchanged)
     # Create header
     st.write("### Deck Composition", unsafe_allow_html=True)
     if energy_types:
