@@ -122,15 +122,12 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 # Initialize app state tracking
 if 'app_state' not in st.session_state:
     st.session_state.app_state = {
-        'sidebar_loaded': False,
         'initial_data_loaded': False
     }
-
 
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
-# ========= FIRST APP RUN HANDLING =========
 # First-time initialization - only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
     with st.spinner("Loading app data..."):
@@ -139,19 +136,10 @@ if not st.session_state.app_state['initial_data_loaded']:
         preload_all_deck_pokemon_info()
         st.session_state.app_state['initial_data_loaded'] = True
 
-# Sidebar handling - only create fully on first load
-with st.sidebar:
-    # Always show the sidebar container, but only populate it once
-    if not st.session_state.app_state['sidebar_loaded']:
-        with st.spinner("Loading sidebar data..."):
-            ui_helpers.render_sidebar()
-            st.session_state.app_state['sidebar_loaded'] = True
-    else:
-        # On subsequent runs, use the cached sidebar content
-        # The sidebar will still be visible but won't be rerendered
-        pass
+# Always render the sidebar, but content is cached after first load
+ui_helpers.render_sidebar()
 
-# Create deck selector - this runs on every interaction
+# Create deck selector
 selected_option = ui_helpers.create_deck_selector()
 
 # Main content area
