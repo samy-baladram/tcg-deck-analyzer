@@ -669,10 +669,10 @@ def display_metagame_tab():
     display_df['power_index'] = display_df['power_index'].round(2)
     
     # Add an indicator emoji for the current deck
-    display_df['displayed_name'] = display_df.apply(
-        lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
-        axis=1
-    )
+    # display_df['displayed_name'] = display_df.apply(
+    #     lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+    #     axis=1
+    # )
 
     # Define the exceptions dictionary for special Pokémon names
     pokemon_exceptions = {
