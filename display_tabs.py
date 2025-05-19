@@ -660,6 +660,13 @@ def display_metagame_tab():
     
     # Create a cleaned, displayable version of the data
     display_df = performance_df.copy()
+
+    display_df.insert(0, 'Rank', range(1, len(final_df) + 1))
+    # Add an indicator emoji for the current deck
+    display_df['Rank'] = display_df.apply(
+        lambda row: f"➡️ {row['Rank']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+        axis=1
+    )
     
     # Calculate win rate
     display_df['win_rate'] = round((display_df['total_wins'] / (display_df['total_wins'] + display_df['total_losses'] + display_df['total_ties'])) * 100, 1)
@@ -730,14 +737,6 @@ def display_metagame_tab():
     # Create final display dataframe
     
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
-    
-    # Add Rank column
-    final_df.insert(0, 'Rank', range(1, len(final_df) + 1))
-    # Add an indicator emoji for the current deck
-    final_df['Rank'] = final_df.apply(
-        lambda row: f"➡️ {row['Rank']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
-        axis=1
-    )
     
     # Add Pokémon image columns
     final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
