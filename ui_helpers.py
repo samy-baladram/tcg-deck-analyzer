@@ -17,7 +17,7 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 # Replace the existing get_energy_types_for_deck function with this one
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
     """
-    Get energy types for a deck, prioritizing provided types, then cache, then calculation
+    Get energy types for a deck, using dedicated energy cache
     
     Args:
         deck_name: The name of the deck
@@ -30,7 +30,7 @@ def get_energy_types_for_deck(deck_name, deck_energy_types=None):
     if deck_energy_types:
         return deck_energy_types, False
     
-    # Get the most common energy combination from cache_manager
+    # Get from dedicated energy cache
     import cache_manager
     set_name = "A3"  # Default set
     
@@ -38,11 +38,11 @@ def get_energy_types_for_deck(deck_name, deck_energy_types=None):
     if 'analyze' in st.session_state:
         set_name = st.session_state.analyze.get('set_name', 'A3')
     
-    # Get most common energy from cache_manager
-    most_common = cache_manager.get_most_common_energy(deck_name, set_name)
+    # Get from dedicated cache
+    energy_types = cache_manager.get_cached_energy(deck_name, set_name)
     
-    if most_common:
-        return most_common, True
+    if energy_types:
+        return energy_types, True
     
     # Fallback: Empty list
     return [], False
@@ -257,14 +257,7 @@ def create_deck_selector():
 
 # In ui_helpers.py - Updated render_deck_in_sidebar function
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
-    """
-    Render a single deck in the sidebar
-    
-    Args:
-        deck: Deck data dictionary
-        expanded: Whether the expander is expanded by default
-        rank: Rank number to display (1-10)
-    """
+    """Render a single deck in the sidebar"""
     # Format power index to 2 decimal places
     power_index = round(deck['power_index'], 2)
     
@@ -283,7 +276,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         deck_name = deck['deck_name']
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
         
-        # Get energy types using our improved function
+        # Get energy types from dedicated cache
         energy_types, is_typical = get_energy_types_for_deck(deck_name)
         
         # Display energy types if available
@@ -320,8 +313,9 @@ def render_sidebar():
             else:
                 st.title("Top 10 Meta Decks")
             
-            # Remove this line - no longer using energy_utils
-            # initialize_energy_cache()
+            # Ensure energy cache is initialized
+            import cache_manager
+            cache_manager.ensure_energy_cache()
             
             # Get current month and year for display
             from datetime import datetime
