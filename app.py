@@ -119,6 +119,14 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 # Add the hover effect setup after your page_config and style settings
 #add_card_hover_effect()
 
+# Initialize app state tracking
+if 'app_state' not in st.session_state:
+    st.session_state.app_state = {
+        'sidebar_loaded': False,
+        'initial_data_loaded': False
+    }
+
+
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
