@@ -603,3 +603,60 @@ def get_most_common_energy(deck_name, set_name):
     
     # Fall back to empty list if nothing found
     return []
+
+# Add this to cache_manager.py
+def ensure_energy_cache():
+    """Ensure energy cache exists in session state"""
+    if 'energy_cache' not in st.session_state:
+        st.session_state.energy_cache = {}
+        
+def get_cached_energy(deck_name, set_name="A3"):
+    """Get cached energy for a deck, calculating if needed"""
+    ensure_energy_cache()
+    
+    # Create a unique key for this deck
+    cache_key = f"{deck_name}_{set_name}_energy"
+    
+    # Return cached value if it exists
+    if cache_key in st.session_state.energy_cache:
+        return st.session_state.energy_cache[cache_key]
+    
+    # Calculate and cache the most common energy
+    energy_types = calculate_and_cache_energy(deck_name, set_name)
+    return energy_types
+
+def calculate_and_cache_energy(deck_name, set_name="A3"):
+    """Calculate most common energy and cache it"""
+    ensure_energy_cache()
+    cache_key = f"{deck_name}_{set_name}_energy"
+    
+    # Start with an empty list
+    energy_types = []
+    
+    # First try to get from collected decks
+    deck_key = f"{deck_name}_{set_name}"
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        collected_data = st.session_state.collected_decks[deck_key]
+        if 'decks' in collected_data and collected_data['decks']:
+            energy_types = calculate_most_common_energy(collected_data['decks'])
+            print(f"Calculated energy for {deck_name} from collected decks: {energy_types}")
+    
+    # If not found from collected decks, try analyzed cache
+    if not energy_types:
+        analyzed_key = f"full_deck_{deck_name}_{set_name}"
+        if analyzed_key in st.session_state.analyzed_deck_cache:
+            energy_types = st.session_state.analyzed_deck_cache[analyzed_key].get('energy_types', [])
+            print(f"Using energy from analyzed cache for {deck_name}: {energy_types}")
+    
+    # If still not found, try sample deck
+    if not energy_types:
+        sample_key = f"sample_deck_{deck_name}_{set_name}"
+        if sample_key in st.session_state.sample_deck_cache:
+            energy_types = st.session_state.sample_deck_cache[sample_key].get('energy_types', [])
+            print(f"Using energy from sample deck for {deck_name}: {energy_types}")
+    
+    # Cache the result
+    st.session_state.energy_cache[cache_key] = energy_types
+    print(f"Cached energy for {deck_name}: {energy_types}")
+    
+    return energy_types
