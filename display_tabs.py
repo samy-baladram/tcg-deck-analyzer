@@ -704,17 +704,26 @@ def display_metagame_tab():
                     
             i += 1
         
-        # For ImageColumn, we just need the first Pokémon URL
-        if pokemon_names:
-            # Return the URL of the first Pokémon image
-            return f"https://r2.limitlesstcg.net/pokemon/gen9/{pokemon_names[0]}.png"
-        return None
+        # Generate URLs for up to 2 Pokémon
+        urls = []
+        for pokemon in pokemon_names:
+            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{pokemon}.png")
+            
+        # Ensure we return a list of exactly 2 elements (with None for missing Pokémon)
+        while len(urls) < 2:
+            urls.append(None)
+            
+        return urls
     
     # Generate Pokémon image URLs
-    display_df['pokemon_image'] = display_df.apply(
+    display_df['pokemon_images'] = display_df.apply(
         lambda row: get_pokemon_image_urls(row['deck_name'], row['displayed_name']), 
         axis=1
     )
+    
+    # Extract the first and second Pokémon image URLs
+    display_df['pokemon_image1'] = display_df['pokemon_images'].apply(lambda x: x[0] if x else None)
+    display_df['pokemon_image2'] = display_df['pokemon_images'].apply(lambda x: x[1] if len(x) > 1 else None)
     
     # Select and rename columns for display
     display_cols = {
@@ -734,8 +743,9 @@ def display_metagame_tab():
     # Add Rank column based on the index
     final_df.insert(0, 'Rank', range(1, len(final_df) + 1))
     
-    # Add the Pokémon image column after Rank
-    final_df.insert(1, 'Icon', display_df['pokemon_image'])
+    # Add the two Pokémon image columns after Rank
+    final_df.insert(1, 'Icon1', display_df['pokemon_image1'])
+    final_df.insert(2, 'Icon2', display_df['pokemon_image2'])
     
     # Create indicator for highlighting current deck
     final_df['is_current'] = display_df['deck_name'] == current_deck_name
@@ -749,9 +759,14 @@ def display_metagame_tab():
             "Power Index": st.column_config.NumberColumn(format="%.2f"),
             "Win %": st.column_config.NumberColumn(format="%.1f%%"),
             "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
-            "Icon": st.column_config.ImageColumn(
-                "Icon",
-                help="Main Pokémon in the deck",
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1",
+                help="First Pokémon in the deck",
+                width="small",
+            ),
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2",
+                help="Second Pokémon in the deck",
                 width="small",
             )
         },
