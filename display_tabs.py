@@ -666,7 +666,7 @@ def display_metagame_tab():
 
     # Add an indicator emoji for the current deck
     display_df['rank'] = display_df.apply(
-        lambda row: f"➡️ {row['rank']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+        lambda row: f"➡️ {row['rank']}" if row['deck_name'] == current_deck_name else row['rank'], 
         axis=1
     )
     
