@@ -1141,3 +1141,258 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     return table_html
     
     return table_html
+
+# Add these functions to display_tabs.py
+
+def fetch_matchup_data(deck_name, set_name="A3"):
+    """
+    Fetch matchup data for a specific deck from Limitless TCG.
+    
+    Args:
+        deck_name: The name of the deck (e.g., "giratina-ex-a2b-greninja-a1")
+        set_name: The set name (default: "A3")
+        
+    Returns:
+        DataFrame containing matchup data or empty DataFrame if not found
+    """
+    import requests
+    from bs4 import BeautifulSoup
+    import pandas as pd
+    from config import BASE_URL
+    
+    # Construct the URL for matchups
+    url = f"{BASE_URL}/decks/{deck_name}/matchups/?game=POCKET&format=standard&set={set_name}"
+    
+    try:
+        # Fetch the webpage
+        response = requests.get(url)
+        response.raise_for_status()  # Raise exception for HTTP errors
+        
+        # Parse the HTML
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Find the matchup table
+        table = soup.find('table', class_='striped')
+        
+        if not table:
+            st.warning(f"No matchup data found for {deck_name}")
+            return pd.DataFrame()
+        
+        # Extract table headers
+        headers = []
+        header_row = table.find('tr')
+        if header_row:
+            headers = [th.text.strip() for th in header_row.find_all(['th'])]
+        
+        # Extract table data
+        rows = []
+        for row in table.find_all('tr')[1:]:  # Skip header row
+            cells = row.find_all(['td'])
+            
+            if not cells:
+                continue
+                
+            # Extract the opponent deck name
+            opponent_link = cells[0].find('a')
+            opponent_name = opponent_link.text.strip() if opponent_link else cells[0].text.strip()
+            
+            # Extract raw deck name from URL if available
+            opponent_deck_name = ""
+            if opponent_link and 'href' in opponent_link.attrs:
+                href = opponent_link['href']
+                # Extract deck name from URL pattern /decks/deck-name/?
+                import re
+                match = re.search(r'/decks/([^/]+)/?', href)
+                if match:
+                    opponent_deck_name = match.group(1)
+            
+            # Extract win-loss record and win percentage
+            record_text = cells[1].text.strip() if len(cells) > 1 else ""
+            win_pct_text = cells[2].text.strip() if len(cells) > 2 else ""
+            
+            # Parse record (format: "W-L-T")
+            wins, losses, ties = 0, 0, 0
+            if record_text:
+                record_parts = record_text.split('-')
+                wins = int(record_parts[0]) if len(record_parts) > 0 and record_parts[0].isdigit() else 0
+                losses = int(record_parts[1]) if len(record_parts) > 1 and record_parts[1].isdigit() else 0
+                ties = int(record_parts[2]) if len(record_parts) > 2 and record_parts[2].isdigit() else 0
+            
+            # Parse win percentage (remove % sign)
+            win_pct = 0.0
+            if win_pct_text:
+                win_pct = float(win_pct_text.rstrip('%')) if win_pct_text.rstrip('%').replace('.', '', 1).isdigit() else 0.0
+            
+            # Extract data for any additional columns (games played, etc.)
+            additional_data = {}
+            for i, cell in enumerate(cells[3:], 3):
+                if i < len(headers):
+                    additional_data[headers[i]] = cell.text.strip()
+            
+            # Create row data
+            row_data = {
+                'opponent_name': opponent_name,
+                'opponent_deck_name': opponent_deck_name,
+                'wins': wins,
+                'losses': losses,
+                'ties': ties,
+                'win_pct': win_pct
+            }
+            row_data.update(additional_data)
+            
+            rows.append(row_data)
+        
+        # Create DataFrame
+        df = pd.DataFrame(rows)
+        
+        return df
+        
+    except Exception as e:
+        st.error(f"Error fetching matchup data for {deck_name}: {str(e)}")
+        return pd.DataFrame()
+
+def display_matchup_tab(deck_info=None):
+    """
+    Display the Matchup tab with detailed matchup data.
+    
+    Args:
+        deck_info: Dictionary containing deck information (optional)
+    """
+    st.subheader("Matchup Analysis")
+    import pandas as pd
+    import re
+    
+    # Use current deck if none provided
+    if not deck_info and 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+        set_name = st.session_state.analyze.get('set_name', 'A3')
+    elif deck_info:
+        deck_name = deck_info.get('deck_name', '')
+        set_name = deck_info.get('set', 'A3')
+    else:
+        st.warning("No deck selected for matchup analysis.")
+        return
+    
+    # Show loading spinner while fetching data
+    with st.spinner(f"Fetching matchup data for {deck_name}..."):
+        # Fetch matchup data
+        matchup_df = fetch_matchup_data(deck_name, set_name)
+    
+    if matchup_df.empty:
+        st.info(f"No matchup data available for {deck_name}.")
+        return
+    
+    # Define the exceptions dictionary for special Pokémon names
+    pokemon_exceptions = {
+        'oricorio': 'oricorio-pom-pom'
+    }
+    
+    # Function to extract Pokémon names and create image URLs
+    def extract_pokemon_urls(displayed_name):
+        # Remove content in parentheses and clean
+        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+        
+        # Split by spaces and slashes
+        parts = re.split(r'[\s/]+', clean_name)
+        
+        # Filter out suffixes
+        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+        pokemon_names = []
+        
+        for part in parts:
+            part = part.lower()
+            if part and part not in suffixes:
+                # Apply exceptions
+                if part in pokemon_exceptions:
+                    part = pokemon_exceptions[part]
+                
+                pokemon_names.append(part)
+                
+                # Limit to 2 Pokémon
+                if len(pokemon_names) >= 2:
+                    break
+        
+        # Create URLs
+        urls = []
+        for name in pokemon_names:
+            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+            
+        # Ensure we have exactly 2 elements
+        while len(urls) < 2:
+            urls.append(None)
+            
+        return urls[0], urls[1]  # Return as separate values
+    
+    # Apply the function to extract Pokémon image URLs
+    matchup_df[['pokemon_url1', 'pokemon_url2']] = matchup_df.apply(
+        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
+        axis=1
+    )
+    
+    # Format the DataFrame for display
+    display_df = matchup_df.copy()
+    
+    # Create a display DataFrame with selected columns and renamed headers
+    final_df = pd.DataFrame()
+    final_df['Rank'] = range(1, len(display_df) + 1)
+    final_df['Icon1'] = display_df['pokemon_url1']
+    final_df['Icon2'] = display_df['pokemon_url2']
+    final_df['Deck'] = display_df['opponent_name']
+    final_df['Win %'] = display_df['win_pct']
+    final_df['Record'] = display_df.apply(
+        lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
+    )
+    
+    # Sort by win percentage (descending)
+    final_df = final_df.sort_values('Win %', ascending=False).reset_index(drop=True)
+    
+    # Display dataframe with column configuration
+    st.dataframe(
+        final_df,
+        use_container_width=True,
+        height=600,
+        column_config={
+            "Win %": st.column_config.NumberColumn(
+                "Win %",
+                format="%.1f%%",
+            ),
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1",
+                help="First Pokémon in the deck",
+                width="small",
+            ),
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2",
+                help="Second Pokémon in the deck",
+                width="small",
+            ),
+            "Rank": st.column_config.NumberColumn(
+                "Rank",
+                help="Rank by win percentage",
+                width="small",
+            ),
+            "Deck": st.column_config.Column(
+                "Deck",
+                width="medium",
+            ),
+            "Record": st.column_config.Column(
+                "Record (W-L-T)",
+                help="Win-Loss-Tie record",
+                width="small",
+            ),
+        },
+        hide_index=True
+    )
+    
+    # Add explanation
+    st.markdown(f"""
+    ##### Understanding Matchups
+    
+    This table shows how {deck_name} performs against other popular decks in the meta.
+    
+    **Win %**: Percentage of matches won against this deck.
+    
+    **Record**: Win-Loss-Tie record against this deck.
+    
+    *Data is based on reported tournament results from Limitless TCG.*
+    """)
