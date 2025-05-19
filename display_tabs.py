@@ -1365,7 +1365,7 @@ def display_matchup_tab(deck_info=None):
     
     # Select and rename columns for display - now including the icon columns
     formatted_df = pd.DataFrame({
-        'Fav. Rank': display_df['Rank'],
+        'Rank': display_df['Rank'],
         'Icon1': display_df['pokemon_url1'],
         'Icon2': display_df['pokemon_url2'],
         'Deck': display_df['opponent_name'],
@@ -1397,10 +1397,10 @@ def display_matchup_tab(deck_info=None):
             use_container_width=True,
             height=600,
             column_config={
-                "Fav. Rank": st.column_config.ImageColumn(
-                    "Fav. Rank",
+                "Rank": st.column_config.ImageColumn(
+                    "Rank",
                     help="Rank of Favorable-ness in Matchups",
-                    width="30px",  # Set width to 40px as requested
+                    width="20px",  # Set width to 40px as requested
                 ),
                 "Win %": st.column_config.NumberColumn(
                     "Win %",
