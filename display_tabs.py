@@ -1308,70 +1308,24 @@ def display_matchup_tab(deck_info=None):
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
     
-    # Define the exceptions dictionary for special Pokémon names
-    pokemon_exceptions = {
-        'oricorio': 'oricorio-pom-pom'
-    }
-    
-    # Function to extract Pokémon names and create image URLs
-    def extract_pokemon_urls(displayed_name):
-        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        parts = re.split(r'[\s/]+', clean_name)
-        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-        pokemon_names = []
-        
-        for part in parts:
-            part = part.lower()
-            if part and part not in suffixes:
-                if part in pokemon_exceptions:
-                    part = pokemon_exceptions[part]
-                pokemon_names.append(part)
-                if len(pokemon_names) >= 2:
-                    break
-        
-        urls = []
-        for name in pokemon_names:
-            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-        
-        # Ensure we have exactly 2 elements
-        while len(urls) < 2:
-            urls.append(None)
-            
-        return urls[0], urls[1]
-    
-    # Apply the function to extract Pokémon image URLs
-    working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
-        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
-        axis=1
-    )
-    
-    # Create display DataFrame
-    final_df = pd.DataFrame()
-    final_df['Rank'] = range(1, len(working_df) + 1)
-    
-    # Skip the image columns for now to ensure the table displays
-    # final_df['Icon1'] = working_df['pokemon_url1']
-    # final_df['Icon2'] = working_df['pokemon_url2']
-    
-    final_df['Deck'] = working_df['opponent_name']
-    final_df['Win %'] = working_df['win_pct']
-    final_df['Record'] = working_df.apply(
+    # Create completely new display DataFrame with simple types only
+    simple_df = pd.DataFrame()
+    simple_df['Rank'] = range(1, len(working_df) + 1)
+    simple_df['Deck'] = working_df['opponent_name']
+    simple_df['Win_Pct'] = working_df['win_pct'].round(1).astype(str) + '%'
+    simple_df['Record'] = working_df.apply(
         lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
     )
-    final_df['Matches'] = working_df['matches_played']
+    simple_df['Matches'] = working_df['matches_played']
     
-    # Add a "Matchup" column to indicate favorability
-    final_df['Matchup'] = working_df['win_pct'].apply(
+    # Add a simple text version of matchup favorability
+    simple_df['Matchup'] = working_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Display the dataframe without the image columns first
+    # Use the most basic display method
     st.write("Matchup Data:")
-    st.dataframe(
-        final_df,
-        use_container_width=True,
-        height=600,
-    )
+    st.write(simple_df)
     
     # Calculate overall statistics
     if not working_df.empty:
