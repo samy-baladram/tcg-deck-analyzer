@@ -1280,6 +1280,31 @@ def display_matchup_tab(deck_info=None):
         st.info(f"No matchup data available for {deck_name}.")
         return
     
+    # Get list of top meta decks to filter by
+    meta_decks = []
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        meta_decks = st.session_state.performance_data['deck_name'].tolist()
+    
+    # Show filter option
+    show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
+    
+    # Only apply filtering if we have meta decks and user wants filtering
+    if meta_decks and not show_all:
+        # Add lowercase versions for better matching
+        matchup_df['deck_name_lower'] = matchup_df['opponent_deck_name'].str.lower()
+        meta_decks_lower = [d.lower() for d in meta_decks]
+        
+        # Apply filter
+        filtered_df = matchup_df[matchup_df['deck_name_lower'].isin(meta_decks_lower)]
+        
+        # Use filtered data if we found matches
+        if not filtered_df.empty:
+            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {len(matchup_df)} total matchups)")
+            matchup_df = filtered_df.drop(columns=['deck_name_lower'])
+        else:
+            st.warning("No matches found with current meta decks. Showing all matchups instead.")
+            matchup_df = matchup_df.drop(columns=['deck_name_lower'])
+    
     # Define the exceptions dictionary for special Pokémon names
     pokemon_exceptions = {
         'oricorio': 'oricorio-pom-pom'
@@ -1334,8 +1359,27 @@ def display_matchup_tab(deck_info=None):
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Just show simple table first to ensure it works
-    st.write(final_df)
+    # Display dataframe with proper column configuration for icons
+    st.dataframe(
+        final_df,
+        use_container_width=True,
+        height=600,
+        column_config={
+            "Win %": st.column_config.NumberColumn(
+                "Win %",
+                format="%.1f%%",
+            ),
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1",
+                help="First Pokémon in the deck",
+            ),
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2",
+                help="Second Pokémon in the deck",
+            ),
+        },
+        hide_index=True
+    )
     
     # Calculate overall statistics
     if not matchup_df.empty:
