@@ -14,30 +14,37 @@ import os
 
 ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
+# Replace the existing get_energy_types_for_deck function with this one
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
     """
-    Get energy types for a deck, using the most common combination from cache
+    Get energy types for a deck, prioritizing provided types, then cache, then calculation
     
     Args:
         deck_name: The name of the deck
         deck_energy_types: Optional energy types to use instead of cache
         
     Returns:
-        Tuple of (energy_types, is_typical)
+        Tuple of (energy_types, is_typical) - energy_types is the most common combination
     """
     # If specific energy types provided, use them
     if deck_energy_types:
         return deck_energy_types, False
     
-    # Use the most common energy combination from session state cache
-    if 'energy_combinations' in st.session_state and deck_name in st.session_state.energy_combinations:
-        combos = st.session_state.energy_combinations[deck_name]
-        if combos:
-            # Find the most common combination
-            most_common_combo = max(combos.items(), key=lambda x: x[1])[0]
-            return list(most_common_combo), True
+    # Get the most common energy combination from cache_manager
+    import cache_manager
+    set_name = "A3"  # Default set
     
-    # No energy types found
+    # If we're in analyze context, get the proper set name
+    if 'analyze' in st.session_state:
+        set_name = st.session_state.analyze.get('set_name', 'A3')
+    
+    # Get most common energy from cache_manager
+    most_common = cache_manager.get_most_common_energy(deck_name, set_name)
+    
+    if most_common:
+        return most_common, True
+    
+    # Fallback: Empty list
     return [], False
 
 def render_energy_icons(energy_types, is_typical=False):
@@ -69,30 +76,30 @@ def render_energy_icons(energy_types, is_typical=False):
     </div>"""
     return energy_display
 
-def initialize_energy_cache():
-    """Initialize energy combinations cache from disk if available"""
-    if 'energy_combinations' not in st.session_state:
-        st.session_state.energy_combinations = {}
+# def initialize_energy_cache():
+#     """Initialize energy combinations cache from disk if available"""
+#     if 'energy_combinations' not in st.session_state:
+#         st.session_state.energy_combinations = {}
         
-        # Try to load from disk
-        try:
-            import json
-            import os
-            if os.path.exists(ENERGY_CACHE_FILE):
-                with open(ENERGY_CACHE_FILE, 'r') as f:
-                    data = json.load(f)
+#         # Try to load from disk
+#         try:
+#             import json
+#             import os
+#             if os.path.exists(ENERGY_CACHE_FILE):
+#                 with open(ENERGY_CACHE_FILE, 'r') as f:
+#                     data = json.load(f)
                 
-                # Load energy combinations statistics
-                combo_data = data.get('archetype_energy_combos', {})
+#                 # Load energy combinations statistics
+#                 combo_data = data.get('archetype_energy_combos', {})
                 
-                # Convert string keys to tuples
-                for archetype, combos in combo_data.items():
-                    st.session_state.energy_combinations[archetype] = {
-                        tuple(sorted(combo.split(','))): count 
-                        for combo, count in combos.items()
-                    }
-        except Exception as e:
-            print(f"Error loading energy types from disk: {e}")
+#                 # Convert string keys to tuples
+#                 for archetype, combos in combo_data.items():
+#                     st.session_state.energy_combinations[archetype] = {
+#                         tuple(sorted(combo.split(','))): count 
+#                         for combo, count in combos.items()
+#                     }
+#         except Exception as e:
+#             print(f"Error loading energy types from disk: {e}")
             
 def display_banner(img_path, max_width=900):
     """Display the app banner image"""
@@ -263,8 +270,6 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
     
     # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
     circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
-    #circled_numbers = ["⓿", "❶", "❷", "❸", "❹", "❺", "❻", "❼", "❽", "❾", "❿"]
-
     
     # Get the appropriate circled number based on rank
     if rank is not None and 0 <= rank <= 10:
@@ -274,18 +279,12 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
     
     # Create a plain text expander title with the rank and power index
     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ({power_index})", expanded=expanded):
-        # Determine the color class based on power index
-        power_class = "positive-index" if power_index > 0 else "negative-index"
-        
         # Get sample deck data
         deck_name = deck['deck_name']
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
         
-        # Get raw energy types from sample deck
-        raw_energy_types = sample_deck.get('energy_types', [])
-        
-        # Get energy types for display - specifically use the most common combination
-        energy_types, is_typical = get_energy_types_for_deck(deck_name, raw_energy_types)
+        # Get energy types using our improved function
+        energy_types, is_typical = get_energy_types_for_deck(deck_name)
         
         # Display energy types if available
         if energy_types:
@@ -302,7 +301,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         
         # Display the deck
         st.markdown(deck_html, unsafe_allow_html=True)
-
+        
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
     # Show loading spinner while sidebar initializes
@@ -320,8 +319,8 @@ def render_sidebar():
         else:
             st.title("Top 10 Meta Decks")
         
-        # Initialize energy types
-        initialize_energy_cache()
+        # Remove this line - no longer using energy_utils
+        # initialize_energy_cache()
         
         # Get current month and year for display
         from datetime import datetime
