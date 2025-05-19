@@ -1142,6 +1142,7 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     
     return table_html
 
+# Add these functions to display_tabs.py
 def fetch_matchup_data(deck_name, set_name="A3"):
     """
     Fetch matchup data for a specific deck from Limitless TCG.
@@ -1250,45 +1251,15 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     except Exception as e:
         return pd.DataFrame()
 
-def filter_matchup_by_meta_decks(matchup_df, meta_decks):
-    """
-    Filter matchup dataframe to only include decks in the meta decks list.
-    
-    Args:
-        matchup_df: DataFrame containing matchup data
-        meta_decks: List of deck names in the current meta
-        
-    Returns:
-        Filtered DataFrame containing only matchups against meta decks
-    """
-    # Create a copy to avoid modifying the original
-    filtered_df = matchup_df.copy()
-    
-    # Convert deck names to lowercase for case-insensitive matching
-    filtered_df['deck_name_lower'] = filtered_df['opponent_deck_name'].str.lower()
-    meta_decks_lower = [d.lower() for d in meta_decks]
-    
-    # Apply the filter
-    result_df = filtered_df[filtered_df['deck_name_lower'].isin(meta_decks_lower)]
-    
-    # Remove the temporary column
-    if not result_df.empty and 'deck_name_lower' in result_df.columns:
-        result_df = result_df.drop(columns=['deck_name_lower'])
-    
-    # Log results for debugging
-    print(f"Original matchups: {len(filtered_df)}")
-    print(f"Meta decks: {len(meta_decks_lower)}")
-    print(f"Filtered matchups: {len(result_df)}")
-    
-    return result_df
-
 def display_matchup_tab(deck_info=None):
-    """Display the Matchup tab with detailed matchup data."""
+    """
+    Display the Matchup tab with detailed matchup data.
+    """
     st.subheader("Matchup Analysis")
     import pandas as pd
     import re
     
-    # Use current deck if none provided
+    # Get deck information
     if not deck_info and 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
         set_name = st.session_state.analyze.get('set_name', 'A3')
@@ -1306,10 +1277,6 @@ def display_matchup_tab(deck_info=None):
         st.info(f"No matchup data available for {deck_name}.")
         return
     
-    # Display raw data count
-    total_matchups = len(matchup_df)
-    st.caption(f"Found {total_matchups} total matchup records")
-    
     # Get list of top meta decks to filter by
     meta_decks = []
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
@@ -1318,47 +1285,79 @@ def display_matchup_tab(deck_info=None):
     # Show filter option
     show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
     
-    # Apply filtering if needed
+    # Create a copy to work with
     working_df = matchup_df.copy()
+    
+    # Only apply filtering if we have meta decks and user wants filtering
     if meta_decks and not show_all:
-        filtered_df = filter_matchup_by_meta_decks(matchup_df, meta_decks)
+        # Add lowercase versions for better matching
+        working_df['deck_name_lower'] = working_df['opponent_deck_name'].str.lower()
+        meta_decks_lower = [d.lower() for d in meta_decks]
         
+        # Apply filter
+        filtered_df = working_df[working_df['deck_name_lower'].isin(meta_decks_lower)]
+        
+        # Use filtered data if we found matches
         if not filtered_df.empty:
-            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {total_matchups} total matchups)")
-            working_df = filtered_df
+            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {len(working_df)} total matchups)")
+            working_df = filtered_df.drop(columns=['deck_name_lower'])
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
+            working_df = working_df.drop(columns=['deck_name_lower'])
+    elif 'deck_name_lower' in working_df.columns:
+        # Ensure deck_name_lower is dropped even if not filtering
+        working_df = working_df.drop(columns=['deck_name_lower'])
     
-    # Create display DataFrame - basic version without images
+    # Process data for display
+    # Create display DataFrame
+    final_df = pd.DataFrame()
+    final_df['Rank'] = range(1, len(working_df) + 1)
+    
+    # Add Pokémon icons
+    final_df['Icon1'] = working_df['pokemon_url1']
+    final_df['Icon2'] = working_df['pokemon_url2']
+    
+    final_df['Deck'] = working_df['opponent_name']
+    final_df['Win %'] = working_df['win_pct']
+    final_df['Record'] = working_df.apply(
+        lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
+    )
+    final_df['Matches'] = working_df['matches_played']
+    
+    # Add a "Matchup" column to indicate favorability
+    final_df['Matchup'] = working_df['win_pct'].apply(
+        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
+    )
+    
+    # Display the dataframe with column configuration
+    st.write("Matchup Data:")
+    st.dataframe(
+        final_df,
+        use_container_width=True,
+        height=600,
+        column_config={
+            "Win %": st.column_config.NumberColumn(format="%.1f%%"),
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1", 
+                help="First Pokémon in the deck",
+                width="20px",
+            ),
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2",
+                help="Second Pokémon in the deck",
+                width="20px",
+            ),
+            "Matchup": st.column_config.SelectboxColumn(
+                help="Favorability of the matchup",
+                options=["Favorable", "Even", "Unfavorable"],
+                required=True,
+            )
+        },
+        hide_index=True
+    )
+    
+    # Calculate overall statistics
     if not working_df.empty:
-        # Create a basic dataframe first to ensure it works
-        final_df = pd.DataFrame()
-        final_df['Rank'] = range(1, len(working_df) + 1)
-        final_df['Deck'] = working_df['opponent_name']
-        final_df['Win %'] = working_df['win_pct']
-        final_df['Record'] = working_df.apply(
-            lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
-        )
-        final_df['Matches'] = working_df['matches_played']
-        
-        # Add a "Matchup" column to indicate favorability
-        final_df['Matchup'] = working_df['win_pct'].apply(
-            lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
-        )
-        
-        # Display dataframe - verify this works before adding images
-        st.write("##### Matchup Data")
-        st.dataframe(
-            final_df,
-            use_container_width=True,
-            height=600,
-            column_config={
-                "Win %": st.column_config.NumberColumn("Win %", format="%.1f%%"),
-            },
-            hide_index=True
-        )
-        
-        # Calculate overall statistics
         total_wins = working_df['wins'].sum()
         total_losses = working_df['losses'].sum()
         total_ties = working_df['ties'].sum()
@@ -1370,8 +1369,6 @@ def display_matchup_tab(deck_info=None):
             label="Overall Matchup Record", 
             value=f"{total_wins}-{total_losses}-{total_ties} ({overall_win_pct}%)"
         )
-    else:
-        st.warning("No matchup data available after filtering.")
     
     # Add explanation
     from formatters import format_deck_name
