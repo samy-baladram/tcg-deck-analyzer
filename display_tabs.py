@@ -714,12 +714,6 @@ def display_metagame_tab():
         lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
         axis=1
     )
-
-    # Add an indicator emoji for the current deck
-    display_df['displayed_name'] = display_df.apply(
-        lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
-        axis=1
-    )
     
     # Select and rename columns for display
     display_cols = {
@@ -739,6 +733,11 @@ def display_metagame_tab():
     
     # Add Rank column
     final_df.insert(0, 'Rank', range(1, len(final_df) + 1))
+    # Add an indicator emoji for the current deck
+    final_df['Rank'] = final_df.apply(
+        lambda row: f"➡️ {row['Rank']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+        axis=1
+    )
     
     # Add Pokémon image columns
     final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
