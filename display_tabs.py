@@ -136,75 +136,70 @@ def display_deck_template_tab(results):
         st.write("### Sample Deck")
         render_sample_deck(energy_types, is_typical)
         
-        # Now debug flexible Pokemon decks
-        debug_flexible_pokemon_decks(results, options)
+        # Display debug info for flexible Pokemon
+        if 'analyze' in st.session_state:
+            debug_flexible_pokemon(deck_name, set_name, options)
     
     # Right column: Core Cards and Flexible Slots in vertical layout
     with outer_col2:
         display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
 
-        
-def debug_flexible_pokemon_decks(results, options):
-    """Debug function to find decks containing flexible Pokemon"""
-    # Get Pokemon options 
+def debug_flexible_pokemon(deck_name, set_name, options):
+    """Debug function to examine flexible Pokemon and find decks containing them"""
+    # Get Pokemon options from flexible slots
     pokemon_options = options[options['type'] == 'Pokemon']
     
     if pokemon_options.empty:
-        st.write("No flexible Pokemon options available.")
         return
     
-    st.write("### Debug: Flexible Pokemon Decks")
+    st.write("### Debug: Flexible Pokemon")
     
-    # Display columns in results DataFrame for debugging
-    st.write("Columns in results DataFrame:")
-    st.write(list(results.columns))
-    
-    # Display a small sample of the results DataFrame
-    st.write("Sample of results DataFrame:")
-    st.write(results.head(2))
-    
-    # Check if deck_num exists
-    if 'deck_num' not in results.columns:
-        st.write("'deck_num' column not found in results DataFrame.")
+    # Check if we have collected decks in session state
+    deck_key = f"{deck_name}_{set_name}"
+    if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
+        st.info("No collected decks available in session state")
         return
     
-    # For each Pokemon, find decks containing it
+    # Get the collected decks
+    collected_data = st.session_state.collected_decks[deck_key]
+    all_decks = collected_data['decks']
+    
+    st.write(f"Found {len(all_decks)} collected decks in session state")
+    
+    # For each Pokemon option, find decks containing it
     for _, pokemon in pokemon_options.iterrows():
         pokemon_name = pokemon['card_name']
         
-        st.write(f"#### Looking for decks with {pokemon_name}")
+        st.write(f"#### {pokemon_name}")
         
-        # Find rows with this Pokemon
-        pokemon_rows = results[(results['card_name'] == pokemon_name) & (results['type'] == 'Pokemon')]
+        # Look for decks containing this Pokemon
+        decks_with_pokemon = []
         
-        if pokemon_rows.empty:
-            st.write(f"No rows found for {pokemon_name}")
-            continue
+        for deck in all_decks:
+            # Check if deck contains this Pokemon
+            for card in deck['cards']:
+                if card['card_name'] == pokemon_name and card['type'] == 'Pokemon':
+                    decks_with_pokemon.append(deck)
+                    break
         
-        # Get unique deck numbers containing this Pokemon
-        deck_nums = pokemon_rows['deck_num'].unique()
+        st.write(f"Found {len(decks_with_pokemon)} decks containing {pokemon_name}")
         
-        st.write(f"Found {len(deck_nums)} decks containing {pokemon_name}")
-        
-        # Print info about first deck containing this Pokemon
-        if len(deck_nums) > 0:
-            deck_num = deck_nums[0]
-            st.write(f"Details for deck #{deck_num}:")
+        # If we found decks, show details of the first one
+        if decks_with_pokemon:
+            deck = decks_with_pokemon[0]
+            st.write(f"Deck #{deck['deck_num']} details:")
             
-            # Get all cards in this deck
-            deck_cards = results[results['deck_num'] == deck_num]
+            # Count cards
+            pokemon_cards = [card for card in deck['cards'] if card['type'] == 'Pokemon']
+            trainer_cards = [card for card in deck['cards'] if card['type'] == 'Trainer']
             
-            # Count Pokemon and Trainer cards
-            pokemon_count = len(deck_cards[deck_cards['type'] == 'Pokemon'])
-            trainer_count = len(deck_cards[deck_cards['type'] == 'Trainer'])
+            st.write(f"- {len(pokemon_cards)} Pokemon")
+            st.write(f"- {len(trainer_cards)} Trainer cards")
             
-            st.write(f"This deck has {pokemon_count} Pokemon cards and {trainer_count} Trainer cards")
-            
-            # Show the Pokemon in this deck
-            st.write("Pokemon in this deck:")
-            for _, card in deck_cards[deck_cards['type'] == 'Pokemon'].iterrows():
-                amount = card.get('amount', 1)
-                st.write(f"- {amount}x {card['card_name']}")
+            # List the Pokemon
+            st.write("Pokemon:")
+            for card in pokemon_cards:
+                st.write(f"- {card['amount']}x {card['card_name']}")
                 
 def render_sample_deck(energy_types, is_typical):
     """Render the standard sample deck for the current archetype"""
