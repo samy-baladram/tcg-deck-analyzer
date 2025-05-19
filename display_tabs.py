@@ -1168,38 +1168,25 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     try:
         # Fetch the webpage
         response = requests.get(url)
-        
-        # Check if request was successful
         if response.status_code != 200:
-            st.warning(f"Failed to fetch matchup data for {deck_name}: HTTP {response.status_code}")
+            st.warning(f"Failed to fetch matchup data for {deck_name}")
             return pd.DataFrame()
         
         # Parse the HTML
         soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Find the matchup table
         table = soup.find('table', class_='striped')
         
         if not table:
-            st.warning(f"No matchup table found for {deck_name}")
             return pd.DataFrame()
-        
-        # Get column headers
-        headers = []
-        header_row = table.find('tr')
-        if header_row:
-            headers = [th.text.strip() for th in header_row.find_all(['th'])]
         
         # Process each data row
         rows = []
         for row in table.find_all('tr')[1:]:  # Skip header row
             cells = row.find_all(['td'])
-            
-            # Skip rows with insufficient cells
             if len(cells) < 5:
                 continue
             
-            # Extract opponent deck display name (second column)
+            # Extract opponent deck display name
             opponent_display_name = cells[1].text.strip()
             
             # Extract opponent deck raw name from URL
@@ -1208,49 +1195,39 @@ def fetch_matchup_data(deck_name, set_name="A3"):
             
             if opponent_link and 'href' in opponent_link.attrs:
                 href = opponent_link['href']
-                # Look for links to matchup pages which contain the deck name
                 match = re.search(r'/matchups/([^/?]+)', href)
                 if match:
                     opponent_deck_name = match.group(1)
                 else:
-                    # Try alternate pattern for direct deck links
                     match = re.search(r'/decks/([^/?]+)', href)
                     if match:
                         opponent_deck_name = match.group(1)
             
-            # Extract matches played (third column)
-            matches_text = cells[2].text.strip()
+            # Extract matches played
             matches_played = 0
             try:
-                matches_played = int(matches_text)
+                matches_played = int(cells[2].text.strip())
             except ValueError:
                 pass
             
-            # Extract record (fourth column) - format: "W - L - T"
+            # Extract record
             record_text = cells[3].text.strip()
             wins, losses, ties = 0, 0, 0
             
-            # Use regex to extract numbers from the record text
             win_match = re.search(r'^(\d+)', record_text)
             loss_match = re.search(r'-\s*(\d+)\s*-', record_text)
             tie_match = re.search(r'-\s*(\d+)$', record_text)
             
-            if win_match:
-                wins = int(win_match.group(1))
-            if loss_match:
-                losses = int(loss_match.group(1))
-            if tie_match:
-                ties = int(tie_match.group(1))
+            if win_match: wins = int(win_match.group(1))
+            if loss_match: losses = int(loss_match.group(1))
+            if tie_match: ties = int(tie_match.group(1))
             
-            # Extract win percentage (fifth column)
-            win_pct_text = cells[4].text.strip()
+            # Extract win percentage
             win_pct = 0.0
-            
-            if win_pct_text and '%' in win_pct_text:
-                try:
-                    win_pct = float(win_pct_text.replace('%', ''))
-                except ValueError:
-                    pass
+            try:
+                win_pct = float(cells[4].text.strip().replace('%', ''))
+            except ValueError:
+                pass
             
             # Create row data
             row_data = {
@@ -1269,24 +1246,19 @@ def fetch_matchup_data(deck_name, set_name="A3"):
         # Create DataFrame from all row data
         df = pd.DataFrame(rows)
         
-        if df.empty:
-            st.info(f"No matchup data found for {deck_name}")
-            return df
-        
-        # Sort by win percentage (descending)
-        df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
+        if not df.empty:
+            df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
         
         return df
         
     except Exception as e:
-        st.error(f"Error fetching matchup data for {deck_name}: {str(e)}")
-        import traceback
-        st.error(traceback.format_exc())
+        st.error(f"Error fetching matchup data: {str(e)}")
         return pd.DataFrame()
 
 def display_matchup_tab(deck_info=None):
     """
-    Display the Matchup tab with detailed matchup data.
+    Display the Matchup tab with detailed matchup data, filtered to only show 
+    decks from our meta deck list.
     
     Args:
         deck_info: Dictionary containing deck information (optional)
@@ -1306,6 +1278,11 @@ def display_matchup_tab(deck_info=None):
         st.warning("No deck selected for matchup analysis.")
         return
     
+    # Get meta deck list for filtering
+    meta_decks = []
+    if 'deck_name_mapping' in st.session_state:
+        meta_decks = [info['deck_name'] for info in st.session_state.deck_name_mapping.values()]
+    
     # Show loading spinner while fetching data
     with st.spinner(f"Fetching matchup data for {deck_name}..."):
         # Fetch matchup data
@@ -1315,6 +1292,15 @@ def display_matchup_tab(deck_info=None):
         st.info(f"No matchup data available for {deck_name}.")
         return
     
+    # Filter to only include decks from our meta list
+    if meta_decks:
+        filtered_df = matchup_df[matchup_df['opponent_deck_name'].isin(meta_decks)]
+        if not filtered_df.empty:
+            matchup_df = filtered_df
+            st.info(f"Showing matchups against {len(matchup_df)} meta decks")
+        else:
+            st.warning("No matchups found against current meta decks")
+    
     # Define the exceptions dictionary for special Pokémon names
     pokemon_exceptions = {
         'oricorio': 'oricorio-pom-pom'
@@ -1322,39 +1308,29 @@ def display_matchup_tab(deck_info=None):
     
     # Function to extract Pokémon names and create image URLs
     def extract_pokemon_urls(displayed_name):
-        # Remove content in parentheses and clean
         clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        
-        # Split by spaces and slashes
         parts = re.split(r'[\s/]+', clean_name)
-        
-        # Filter out common suffixes that aren't Pokémon names
         suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
         pokemon_names = []
         
         for part in parts:
             part = part.lower()
             if part and part not in suffixes:
-                # Apply exceptions
                 if part in pokemon_exceptions:
                     part = pokemon_exceptions[part]
-                
                 pokemon_names.append(part)
-                
-                # Limit to 2 Pokémon
                 if len(pokemon_names) >= 2:
                     break
         
-        # Create URLs
         urls = []
         for name in pokemon_names:
             urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-            
+        
         # Ensure we have exactly 2 elements
         while len(urls) < 2:
             urls.append(None)
             
-        return urls[0], urls[1]  # Return as separate values
+        return urls[0], urls[1]
     
     # Apply the function to extract Pokémon image URLs
     matchup_df[['pokemon_url1', 'pokemon_url2']] = matchup_df.apply(
@@ -1362,23 +1338,20 @@ def display_matchup_tab(deck_info=None):
         axis=1
     )
     
-    # Format the DataFrame for display
-    display_df = matchup_df.copy()
-    
-    # Create a display DataFrame with selected columns and renamed headers
+    # Create display DataFrame
     final_df = pd.DataFrame()
-    final_df['Rank'] = range(1, len(display_df) + 1)
-    final_df['Icon1'] = display_df['pokemon_url1']
-    final_df['Icon2'] = display_df['pokemon_url2']
-    final_df['Deck'] = display_df['opponent_name']
-    final_df['Win %'] = display_df['win_pct']
-    final_df['Record'] = display_df.apply(
+    final_df['Rank'] = range(1, len(matchup_df) + 1)
+    final_df['Icon1'] = matchup_df['pokemon_url1']
+    final_df['Icon2'] = matchup_df['pokemon_url2']
+    final_df['Deck'] = matchup_df['opponent_name']
+    final_df['Win %'] = matchup_df['win_pct']
+    final_df['Record'] = matchup_df.apply(
         lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
     )
-    final_df['Games'] = display_df['games_played']
+    final_df['Matches'] = matchup_df['matches_played']
     
-    # Add a "Favorable" column to indicate matchup favorability
-    final_df['Matchup'] = display_df['win_pct'].apply(
+    # Add a "Matchup" column to indicate favorability
+    final_df['Matchup'] = matchup_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
@@ -1417,9 +1390,9 @@ def display_matchup_tab(deck_info=None):
                 help="Win-Loss-Tie record",
                 width="small",
             ),
-            "Games": st.column_config.NumberColumn(
-                "Games",
-                help="Total games played",
+            "Matches": st.column_config.NumberColumn(
+                "Matches",
+                help="Total matches played",
                 width="small",
             ),
             "Matchup": st.column_config.Column(
@@ -1436,7 +1409,7 @@ def display_matchup_tab(deck_info=None):
         total_wins = matchup_df['wins'].sum()
         total_losses = matchup_df['losses'].sum()
         total_ties = matchup_df['ties'].sum()
-        total_games = matchup_df['games_played'].sum()
+        total_games = total_wins + total_losses + total_ties
         overall_win_pct = round((total_wins / total_games * 100), 1) if total_games > 0 else 0
         
         # Display overall statistics
@@ -1452,13 +1425,13 @@ def display_matchup_tab(deck_info=None):
     st.markdown(f"""
     ##### Understanding Matchups
     
-    This table shows how {formatted_deck_name} performs against other popular decks in the meta.
+    This table shows how {formatted_deck_name} performs against other meta decks.
     
     **Win %**: Percentage of matches won against this deck.
     
     **Record**: Win-Loss-Tie record against this deck.
     
-    **Games**: Total number of games played against this deck.
+    **Matches**: Total number of matches played against this deck.
     
     **Matchup**: Categorization of the matchup (Favorable: ≥60%, Unfavorable: <40%, Even: 40-59%).
     
