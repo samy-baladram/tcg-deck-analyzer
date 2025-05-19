@@ -1392,33 +1392,50 @@ def display_matchup_tab(deck_info=None):
         # First try with styled dataframe and images
         styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
         
-        st.dataframe(
-            styled_df,
-            use_container_width=True,
-            height=600,
-            column_config={
-                "Rank": st.column_config.NumberColumn(
-                    "Rank",
-                    help="Rank of Favorable-ness in Matchups",
-                    width="20px",  # Set width to 40px as requested
-                ),
-                "Win %": st.column_config.NumberColumn(
-                    "Win %",
-                    format="%.1f%%",
-                ),
-                "Icon1": st.column_config.ImageColumn(
-                    "Icon 1",
-                    help="First Pokémon in the deck",
-                    width="20px",  # Set width to 20px as requested
-                ),
-                "Icon2": st.column_config.ImageColumn(
-                    "Icon 2", 
-                    help="Second Pokémon in the deck",
-                    width="20px",  # Set width to 20px as requested
-                ),
-            },
-            hide_index=True
-        )
+    st.dataframe(
+        styled_df,
+        use_container_width=True,
+        height=600,
+        column_config={
+            "Rank": st.column_config.NumberColumn(
+                "Rank",
+                help="Position in the list sorted by Win %",
+                width="20px",
+            ),
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1",
+                help="First Pokémon in the deck",
+                width="20px",
+            ),
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2", 
+                help="Second Pokémon in the deck",
+                width="20px",
+            ),
+            "Deck": st.column_config.TextColumn(
+                "Deck",
+                help="Opponent deck archetype"
+            ),
+            "Win %": st.column_config.NumberColumn(
+                "Win %",
+                help="Percentage of matches won against this deck",
+                format="%.1f%%",
+            ),
+            "Record": st.column_config.TextColumn(
+                "Record",
+                help="Win-Loss-Tie record against this deck"
+            ),
+            "Matches": st.column_config.NumberColumn(
+                "Matches",
+                help="Total number of matches played against this deck"
+            ),
+            "Matchup": st.column_config.TextColumn(
+                "Matchup",
+                help="Favorable: ≥60%, Unfavorable: <40%, Even: 40-59%"
+            )
+        },
+        hide_index=True
+    )
     except Exception as e:
         # Fallback to simpler version if there's an issue
         st.error(f"Error displaying styled dataframe with images: {str(e)}")
@@ -1439,36 +1456,6 @@ def display_matchup_tab(deck_info=None):
             hide_index=True
         )
     
-    # Calculate overall statistics - hidden as requested
-    # if not working_df.empty:
-    #     total_wins = working_df['wins'].sum()
-    #     total_losses = working_df['losses'].sum()
-    #     total_ties = working_df['ties'].sum()
-    #     total_games = total_wins + total_losses + total_ties
-    #     overall_win_pct = round((total_wins / total_games * 100), 1) if total_games > 0 else 0
-    #     
-    #     # Display overall statistics
-    #     st.metric(
-    #         label="Overall Matchup Record", 
-    #         value=f"{total_wins}-{total_losses}-{total_ties} ({overall_win_pct}%)"
-    #     )
-    
     # Add explanation
     from formatters import format_deck_name
     formatted_deck_name = format_deck_name(deck_name)
-    
-    st.markdown(f"""
-    ##### Understanding Matchups
-    
-    This table shows how {formatted_deck_name} performs against other decks.
-    
-    **Win %**: Percentage of matches won against this deck.
-    
-    **Record**: Win-Loss-Tie record against this deck.
-    
-    **Matches**: Total number of matches played against this deck.
-    
-    **Matchup**: Categorization of the matchup (Favorable: ≥60%, Unfavorable: <40%, Even: 40-59%).
-    
-    *Data is based on reported tournament results from Limitless TCG.*
-    """)
