@@ -129,113 +129,201 @@ def display_deck_template_tab(results):
     # Create outer columns: Sample Deck (2) and Template (3) - switched order and ratio
     outer_col1, _, outer_col2 = st.columns([5, 1, 10])
     
-    # Left column: Sample Deck
+    # Left column: Sample Deck(s)
     with outer_col1:
-        st.write("### Sample Deck")
-        
-        if 'analyze' in st.session_state:
-            deck_name = st.session_state.analyze.get('deck_name', '')
-            set_name = st.session_state.analyze.get('set_name', '')
-            
-            # Import necessary functions
-            import cache_manager
-            from card_renderer import render_sidebar_deck
-            
-            # Get sample deck data
-            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
-            
-            # Display energy types if available
-            if energy_types:
-                from energy_utils import render_energy_icons
-                energy_html = render_energy_icons(energy_types, is_typical)
-                st.markdown(energy_html, unsafe_allow_html=True)
-            
-            # Render the sample deck
-            if sample_deck:
-                deck_html = render_sidebar_deck(
-                    sample_deck['pokemon_cards'], 
-                    sample_deck['trainer_cards'],
-                    card_width=70  # Slightly larger than sidebar
-                )
-                st.markdown(deck_html, unsafe_allow_html=True)
-            else:
-                st.info("No sample deck available")
-        else:
-            st.info("Select a deck to view a sample")
+        display_sample_deck_variants(deck_info, energy_types, is_typical, options)
     
     # Right column: Core Cards and Flexible Slots in vertical layout
     with outer_col2:
-        # Create header
-        st.write("### Deck Composition", unsafe_allow_html=True)
+        display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
+
+def display_sample_deck_variants(deck_info, energy_types, is_typical, options):
+    """Display sample deck and variant decks based on different Pokémon options"""
+    # Get Pokemon options that have different names from core Pokemon
+    pokemon_options = options[options['type'] == 'Pokemon'].copy()
+    
+    # Get core Pokemon names for comparison
+    core_pokemon_names = set()
+    for card in deck_info['Pokemon']:
+        core_pokemon_names.add(card['name'].lower())
+    
+    # Filter options to only include Pokemon with different names
+    different_pokemon = pokemon_options[~pokemon_options['card_name'].str.lower().isin(core_pokemon_names)]
+    
+    # If no different Pokemon in options, display standard sample deck
+    if different_pokemon.empty:
+        display_standard_sample_deck(energy_types, is_typical)
+    else:
+        # Display the standard sample deck first
+        with st.expander("### Original Sample Deck", expanded=True):
+            display_standard_sample_deck(energy_types, is_typical)
+        
+        # Display variant decks for each different Pokemon
+        for _, pokemon in different_pokemon.iterrows():
+            pokemon_name = pokemon['card_name']
+            with st.expander(f"##### {pokemon_name} Variant", expanded=False):
+                display_variant_deck(pokemon, energy_types, is_typical)
+
+def display_standard_sample_deck(energy_types, is_typical):
+    """Display the standard sample deck"""
+    st.write("### Sample Deck")
+    
+    if 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+        set_name = st.session_state.analyze.get('set_name', '')
+        
+        # Import necessary functions
+        import cache_manager
+        from card_renderer import render_sidebar_deck
+        
+        # Get sample deck data
+        sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+        
+        # Display energy types if available
         if energy_types:
-            # Render energy icons for header
-            energy_html = ""
-            for energy in energy_types:
-                energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
-            
-            # Create header with energy types
-            archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
-            core_cards_header = f"""##### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html}{archetype_note})</span>"""
+            from energy_utils import render_energy_icons
+            energy_html = render_energy_icons(energy_types, is_typical)
+            st.markdown(energy_html, unsafe_allow_html=True)
+        
+        # Render the sample deck
+        if sample_deck:
+            deck_html = render_sidebar_deck(
+                sample_deck['pokemon_cards'], 
+                sample_deck['trainer_cards'],
+                card_width=70  # Slightly larger than sidebar
+            )
+            st.markdown(deck_html, unsafe_allow_html=True)
         else:
-            # Just "Core Cards" if no energy found
-            core_cards_header = "##### Core Cards"
+            st.info("No sample deck available")
+    else:
+        st.info("Select a deck to view a sample")
+
+def display_variant_deck(variant_pokemon, energy_types, is_typical):
+    """Display a variant deck replacing a core Pokemon with the variant Pokemon"""
+    if 'analyze' not in st.session_state:
+        return
         
-        # Display the header
-        st.write(core_cards_header, unsafe_allow_html=True)
+    deck_name = st.session_state.analyze.get('deck_name', '')
+    set_name = st.session_state.analyze.get('set_name', '')
+    
+    # Import necessary functions
+    import cache_manager
+    from card_renderer import render_sidebar_deck
+    
+    # Get sample deck data
+    sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+    
+    if not sample_deck:
+        st.info("No sample deck available")
+        return
         
-        # Create single column card grid renderer with larger card size
-        from card_renderer import CardGrid
+    # Display energy types if available
+    if energy_types:
+        from energy_utils import render_energy_icons
+        energy_html = render_energy_icons(energy_types, is_typical)
+        st.markdown(energy_html, unsafe_allow_html=True)
+    
+    # Create a copy of the sample deck cards
+    pokemon_cards = sample_deck['pokemon_cards'].copy()
+    trainer_cards = sample_deck['trainer_cards'].copy()
+    
+    # Determine which Pokemon to replace (first one for simplicity)
+    # In a more advanced version, you could select the Pokemon to replace more intelligently
+    if pokemon_cards:
+        # Create a variant card with the same structure as sample deck cards
+        variant_card = {
+            'type': 'Pokemon',
+            'card_name': variant_pokemon['card_name'],
+            'amount': 1,  # Assume 1 copy for variant
+            'set': variant_pokemon['set'],
+            'num': variant_pokemon['num']
+        }
         
-        # Core Cards: Pokemon and Trainer in columns with 1:2 ratio
-        core_col1, core_col2 = st.columns([1, 2])
+        # Replace the first Pokemon with the variant
+        pokemon_cards[0] = variant_card
+        st.caption(f"Showing variant with {variant_pokemon['card_name']} replacing {sample_deck['pokemon_cards'][0]['card_name']}")
+    
+    # Render the variant deck
+    deck_html = render_sidebar_deck(
+        pokemon_cards, 
+        trainer_cards,
+        card_width=70
+    )
+    st.markdown(deck_html, unsafe_allow_html=True)
+
+def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options):
+    """Display the deck composition section"""
+    # Create header
+    st.write("### Deck Composition", unsafe_allow_html=True)
+    if energy_types:
+        # Render energy icons for header
+        energy_html = ""
+        for energy in energy_types:
+            energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+            energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
         
-        with core_col1:
-            # Pokemon cards section
-            st.write("###### Pokémon")
-            pokemon_grid = CardGrid(card_width=65, gap=4)
-            pokemon_grid.add_cards_from_dict(deck_info['Pokemon'], repeat_by_count=True)
-            pokemon_grid.display()
+        # Create header with energy types
+        archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
+        core_cards_header = f"""##### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html}{archetype_note})</span>"""
+    else:
+        # Just "Core Cards" if no energy found
+        core_cards_header = "##### Core Cards"
+    
+    # Display the header
+    st.write(core_cards_header, unsafe_allow_html=True)
+    
+    # Create single column card grid renderer with larger card size
+    from card_renderer import CardGrid
+    
+    # Core Cards: Pokemon and Trainer in columns with 1:2 ratio
+    core_col1, core_col2 = st.columns([1, 2])
+    
+    with core_col1:
+        # Pokemon cards section
+        st.write("###### Pokémon")
+        pokemon_grid = CardGrid(card_width=65, gap=4)
+        pokemon_grid.add_cards_from_dict(deck_info['Pokemon'], repeat_by_count=True)
+        pokemon_grid.display()
+    
+    with core_col2:
+        # Trainer cards section
+        st.write("###### Trainer")
+        trainer_grid = CardGrid(card_width=65, gap=4)
+        trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
+        trainer_grid.display()
+    
+    # Flexible slots section
+    remaining = 20 - total_cards
+    st.write("<br>", unsafe_allow_html=True)
+    st.write(f"##### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+    
+    # Sort options by usage percentage (descending) and split by type
+    pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
+    trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
+    
+    # Flexible Slots: Pokemon and Trainer options in columns with 1:2 ratio
+    flex_options_available = not pokemon_options.empty or not trainer_options.empty
+    
+    if flex_options_available:
+        flex_col1, flex_col2 = st.columns([1, 2])
         
-        with core_col2:
-            # Trainer cards section
-            st.write("###### Trainer")
-            trainer_grid = CardGrid(card_width=65, gap=4)
-            trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
-            trainer_grid.display()
+        with flex_col1:
+            # Only show Pokemon options if there are any
+            if not pokemon_options.empty:
+                st.write("###### Pokémon Options")
+                pokemon_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
+                pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
+                pokemon_options_grid.display()
         
-        # Flexible slots section
-        remaining = 20 - total_cards
-        st.write("<br>", unsafe_allow_html=True)
-        st.write(f"##### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
-        
-        # Sort options by usage percentage (descending) and split by type
-        pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
-        trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
-        
-        # Flexible Slots: Pokemon and Trainer options in columns with 1:2 ratio
-        flex_options_available = not pokemon_options.empty or not trainer_options.empty
-        
-        if flex_options_available:
-            flex_col1, flex_col2 = st.columns([1, 2])
-            
-            with flex_col1:
-                # Only show Pokemon options if there are any
-                if not pokemon_options.empty:
-                    st.write("###### Pokémon Options")
-                    pokemon_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
-                    pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
-                    pokemon_options_grid.display()
-            
-            with flex_col2:
-                # Only show Trainer options if there are any
-                if not trainer_options.empty:
-                    st.write("###### Trainer Options")
-                    trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
-                    trainer_options_grid.add_cards_from_dataframe(trainer_options)
-                    trainer_options_grid.display()
-        else:
-            st.info("No flexible options available for this deck.")
+        with flex_col2:
+            # Only show Trainer options if there are any
+            if not trainer_options.empty:
+                st.write("###### Trainer Options")
+                trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
+                trainer_options_grid.add_cards_from_dataframe(trainer_options)
+                trainer_options_grid.display()
+    else:
+        st.info("No flexible options available for this deck.")
 
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
