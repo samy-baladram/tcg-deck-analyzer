@@ -12,6 +12,88 @@ import pandas as pd
 import base64
 import os
 
+ENERGY_CACHE_FILE = "cached_data/energy_types.json"
+
+def get_energy_types_for_deck(deck_name, deck_energy_types=None):
+    """
+    Get energy types for a deck, using the most common combination from cache
+    
+    Args:
+        deck_name: The name of the deck
+        deck_energy_types: Optional energy types to use instead of cache
+        
+    Returns:
+        Tuple of (energy_types, is_typical)
+    """
+    # If specific energy types provided, use them
+    if deck_energy_types:
+        return deck_energy_types, False
+    
+    # Use the most common energy combination from session state cache
+    if 'energy_combinations' in st.session_state and deck_name in st.session_state.energy_combinations:
+        combos = st.session_state.energy_combinations[deck_name]
+        if combos:
+            # Find the most common combination
+            most_common_combo = max(combos.items(), key=lambda x: x[1])[0]
+            return list(most_common_combo), True
+    
+    # No energy types found
+    return [], False
+
+def render_energy_icons(energy_types, is_typical=False):
+    """
+    Generate HTML for energy icons
+    
+    Args:
+        energy_types: List of energy type strings
+        is_typical: Whether this is the typical/most common combination
+        
+    Returns:
+        HTML string for displaying energy icons
+    """
+    if not energy_types:
+        return ""
+        
+    energy_html = ""
+    # Create image tags for each energy type
+    for energy in energy_types:
+        # Direct URL to the energy icon
+        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
+    
+    # Add note if these are typical energy types
+    archetype_note = ''
+    
+    energy_display = f"""<div style="margin-bottom: 10px;">
+        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
+    </div>"""
+    return energy_display
+
+def initialize_energy_cache():
+    """Initialize energy combinations cache from disk if available"""
+    if 'energy_combinations' not in st.session_state:
+        st.session_state.energy_combinations = {}
+        
+        # Try to load from disk
+        try:
+            import json
+            import os
+            if os.path.exists(ENERGY_CACHE_FILE):
+                with open(ENERGY_CACHE_FILE, 'r') as f:
+                    data = json.load(f)
+                
+                # Load energy combinations statistics
+                combo_data = data.get('archetype_energy_combos', {})
+                
+                # Convert string keys to tuples
+                for archetype, combos in combo_data.items():
+                    st.session_state.energy_combinations[archetype] = {
+                        tuple(sorted(combo.split(','))): count 
+                        for combo, count in combos.items()
+                    }
+        except Exception as e:
+            print(f"Error loading energy types from disk: {e}")
+            
 def display_banner(img_path, max_width=900):
     """Display the app banner image"""
     from image_processor import get_base64_image
@@ -198,19 +280,12 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         # Get sample deck data
         deck_name = deck['deck_name']
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
-
-        cache_manager.track_player_tournament_mapping(deck_name, deck['set'])
         
-        # Get and store energy types
-        from energy_utils import store_energy_types, get_energy_types_for_deck, render_energy_icons
-        
-        # Get raw energy types and store them
+        # Get raw energy types from sample deck
         raw_energy_types = sample_deck.get('energy_types', [])
-        store_energy_types(deck_name, raw_energy_types)
         
-        # Get energy types for display - specifically use empty list to get most common
-        # This ensures we don't use raw_energy_types from just one deck
-        energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
+        # Get energy types for display - specifically use the most common combination
+        energy_types, is_typical = get_energy_types_for_deck(deck_name, raw_energy_types)
         
         # Display energy types if available
         if energy_types:
@@ -244,8 +319,7 @@ def render_sidebar():
         st.sidebar.title("Top 10 Meta Decks")
     
     # Initialize energy types
-    from energy_utils import initialize_energy_types
-    initialize_energy_types()
+    initialize_energy_cache()
     
     # Get current month and year for display
     from datetime import datetime
@@ -364,3 +438,31 @@ def display_deck_update_info(deck_name, set_name):
             except:
                 pass
     return None
+
+def update_energy_cache(deck_name, energy_types):
+    """
+    Update the energy combinations cache for a deck
+    
+    Args:
+        deck_name: The name of the deck
+        energy_types: List of energy types
+    """
+    if not energy_types:
+        return
+        
+    # Initialize if needed
+    if 'energy_combinations' not in st.session_state:
+        st.session_state.energy_combinations = {}
+    
+    # Initialize deck entry if needed
+    if deck_name not in st.session_state.energy_combinations:
+        st.session_state.energy_combinations[deck_name] = {}
+    
+    # Create a tuple from sorted energy types for consistency
+    combo_key = tuple(sorted(energy_types))
+    
+    # Increment count for this combination
+    if combo_key in st.session_state.energy_combinations[deck_name]:
+        st.session_state.energy_combinations[deck_name][combo_key] += 1
+    else:
+        st.session_state.energy_combinations[deck_name][combo_key] = 1
