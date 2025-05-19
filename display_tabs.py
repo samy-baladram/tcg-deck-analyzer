@@ -1143,7 +1143,6 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     return table_html
 
 # Add these functions to display_tabs.py
-
 def fetch_matchup_data(deck_name, set_name="A3"):
     """
     Fetch matchup data for a specific deck from Limitless TCG.
@@ -1169,7 +1168,6 @@ def fetch_matchup_data(deck_name, set_name="A3"):
         # Fetch the webpage
         response = requests.get(url)
         if response.status_code != 200:
-            st.warning(f"Failed to fetch matchup data for {deck_name}")
             return pd.DataFrame()
         
         # Parse the HTML
@@ -1237,8 +1235,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
                 'losses': losses,
                 'ties': ties,
                 'win_pct': win_pct,
-                'matches_played': matches_played,
-                'games_played': wins + losses + ties
+                'matches_played': matches_played
             }
             
             rows.append(row_data)
@@ -1252,13 +1249,11 @@ def fetch_matchup_data(deck_name, set_name="A3"):
         return df
         
     except Exception as e:
-        st.error(f"Error fetching matchup data: {str(e)}")
         return pd.DataFrame()
 
 def display_matchup_tab(deck_info=None):
     """
-    Display the Matchup tab with detailed matchup data, filtered to only show 
-    decks from our meta deck list.
+    Display the Matchup tab with detailed matchup data.
     
     Args:
         deck_info: Dictionary containing deck information (optional)
@@ -1278,36 +1273,12 @@ def display_matchup_tab(deck_info=None):
         st.warning("No deck selected for matchup analysis.")
         return
     
-    # Show loading spinner while fetching data
-    with st.spinner(f"Fetching matchup data for {deck_name}..."):
-        # Fetch matchup data
-        matchup_df = fetch_matchup_data(deck_name, set_name)
+    # Fetch matchup data
+    matchup_df = fetch_matchup_data(deck_name, set_name)
     
     if matchup_df.empty:
         st.info(f"No matchup data available for {deck_name}.")
         return
-    
-    # Get meta deck list for filtering
-    meta_decks = []
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Use the same source as Tournament Performance Data tab
-        meta_decks = st.session_state.performance_data['deck_name'].tolist()
-        
-        # Filter to only include decks from our meta list
-        if meta_decks:
-            # Filter using lowercase comparison for better matching
-            matchup_df['opponent_deck_name_lower'] = matchup_df['opponent_deck_name'].str.lower()
-            meta_decks_lower = [d.lower() for d in meta_decks]
-            
-            # Apply filter
-            filtered_df = matchup_df[matchup_df['opponent_deck_name_lower'].isin(meta_decks_lower)]
-            
-            if not filtered_df.empty:
-                matchup_df = filtered_df.drop(columns=['opponent_deck_name_lower'])
-                st.info(f"Showing matchups against {len(matchup_df)} meta decks")
-            else:
-                st.warning("No matchups found against current meta decks. Showing all matchups.")
-                matchup_df = matchup_df.drop(columns=['opponent_deck_name_lower'])
     
     # Define the exceptions dictionary for special Pokémon names
     pokemon_exceptions = {
@@ -1363,60 +1334,8 @@ def display_matchup_tab(deck_info=None):
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    try:
-        # Display dataframe with column configuration
-        st.dataframe(
-            final_df,
-            use_container_width=True,
-            height=600,
-            column_config={
-                "Win %": st.column_config.NumberColumn(
-                    "Win %",
-                    format="%.1f%%",
-                    width="small",
-                ),
-                "Icon1": st.column_config.ImageColumn(
-                    "Icon 1",
-                    help="First Pokémon in the deck",
-                    width="small",
-                ),
-                "Icon2": st.column_config.ImageColumn(
-                    "Icon 2",
-                    help="Second Pokémon in the deck",
-                    width="small",
-                ),
-                "Rank": st.column_config.NumberColumn(
-                    "Rank",
-                    help="Rank by win percentage",
-                    width="small",
-                ),
-                "Deck": st.column_config.Column(
-                    "Deck",
-                    width="medium",
-                ),
-                "Record": st.column_config.Column(
-                    "Record (W-L-T)",
-                    help="Win-Loss-Tie record",
-                    width="small",
-                ),
-                "Matches": st.column_config.NumberColumn(
-                    "Matches",
-                    help="Total matches played",
-                    width="small",
-                ),
-                "Matchup": st.column_config.Column(
-                    "Matchup",
-                    help="Matchup favorability",
-                    width="small",
-                ),
-            },
-            hide_index=True
-        )
-    except Exception as e:
-        st.error(f"Error displaying matchup table: {str(e)}")
-        # As a fallback, display a simple version of the table without custom formatting
-        st.write("Displaying simplified matchup table due to error:")
-        st.write(final_df)
+    # Just show simple table first to ensure it works
+    st.write(final_df)
     
     # Calculate overall statistics
     if not matchup_df.empty:
@@ -1439,7 +1358,7 @@ def display_matchup_tab(deck_info=None):
     st.markdown(f"""
     ##### Understanding Matchups
     
-    This table shows how {formatted_deck_name} performs against other meta decks.
+    This table shows how {formatted_deck_name} performs against other decks.
     
     **Win %**: Percentage of matches won against this deck.
     
