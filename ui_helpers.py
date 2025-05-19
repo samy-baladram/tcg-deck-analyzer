@@ -38,8 +38,21 @@ def get_energy_types_for_deck(deck_name, deck_energy_types=None):
     if 'analyze' in st.session_state:
         set_name = st.session_state.analyze.get('set_name', 'A3')
     
+    # Ensure energy cache is initialized
+    cache_manager.ensure_energy_cache()
+    
     # Get from dedicated cache
     energy_types = cache_manager.get_cached_energy(deck_name, set_name)
+    
+    if energy_types:
+        return energy_types, True
+    
+    # If no energy found in cache, try to force a new calculation
+    # First ensure deck is collected
+    cache_manager.ensure_deck_collected(deck_name, set_name)
+    
+    # Then recalculate 
+    energy_types = cache_manager.calculate_and_cache_energy(deck_name, set_name)
     
     if energy_types:
         return energy_types, True
