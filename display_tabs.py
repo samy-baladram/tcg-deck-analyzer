@@ -181,6 +181,13 @@ def render_variant_deck(results, deck_name, set_name, variant_pokemon, energy_ty
     # Find the Pokemon in results
     pokemon_name = variant_pokemon['card_name']
     
+    # Check if 'deck_num' column exists in results
+    if 'deck_num' not in results.columns:
+        st.warning(f"Cannot find decks with {pokemon_name}: 'deck_num' column missing in results. Using modified sample deck instead.")
+        # Fall back to modified sample deck
+        display_modified_variant(deck_name, set_name, variant_pokemon, energy_types, is_typical)
+        return
+    
     # We're going to try a different approach - directly use the original data
     # Get all unique deck numbers from the results
     all_deck_nums = results['deck_num'].unique()
@@ -198,10 +205,18 @@ def render_variant_deck(results, deck_name, set_name, variant_pokemon, energy_ty
             
             for _, card in deck_cards.iterrows():
                 # Create a card dictionary in the format expected by render_sidebar_deck
+                # Check if 'amount' exists, otherwise use majority or default to 1
+                if 'amount' in card:
+                    amount = card['amount']
+                elif 'majority' in card:
+                    amount = card['majority']
+                else:
+                    amount = 1
+                
                 card_dict = {
                     'type': card['type'],
                     'card_name': card['card_name'],
-                    'amount': card['amount'],  # Use the actual amount from the original deck
+                    'amount': amount,
                     'set': card['set'],
                     'num': card['num']
                 }
@@ -230,10 +245,60 @@ def render_variant_deck(results, deck_name, set_name, variant_pokemon, energy_ty
             st.markdown(deck_html, unsafe_allow_html=True)
             return
     
-    # This section should never be reached if the data is consistent,
-    # but we'll keep it as a fallback just in case something unexpected happens
-    st.warning(f"Could not find a deck with {pokemon_name}. This is unexpected since the Pokemon is in the flexible slots.")
+    # If we couldn't find a deck with this Pokemon (shouldn't happen, but just in case)
+    st.warning(f"No deck found with {pokemon_name}. Using modified sample deck instead.")
+    display_modified_variant(deck_name, set_name, variant_pokemon, energy_types, is_typical)
 
+def display_modified_variant(deck_name, set_name, variant_pokemon, energy_types, is_typical):
+    """Display a modified sample deck with the variant Pokemon added"""
+    import cache_manager
+    from card_renderer import render_sidebar_deck
+    
+    # Get sample deck data
+    sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+    
+    if not sample_deck:
+        st.info("No sample deck available")
+        return
+    
+    # Create copies of the card lists to modify
+    pokemon_cards = sample_deck['pokemon_cards'].copy()
+    trainer_cards = sample_deck['trainer_cards'].copy()
+    
+    # Create variant card
+    variant_card = {
+        'type': 'Pokemon',
+        'card_name': variant_pokemon['card_name'],
+        'amount': 1,  # Assume 1 copy for sample
+        'set': variant_pokemon['set'],
+        'num': variant_pokemon['num']
+    }
+    
+    # Add the variant Pokemon to the deck (replace the least important Pokemon)
+    if len(pokemon_cards) > 0:
+        # Replace the last Pokemon (assuming it's the least important)
+        replaced_pokemon = pokemon_cards[-1]['card_name']
+        pokemon_cards[-1] = variant_card
+        st.caption(f"Modified sample with {variant_pokemon['card_name']} replacing {replaced_pokemon}")
+    else:
+        # Just add the Pokemon if there are none
+        pokemon_cards.append(variant_card)
+        st.caption(f"Added {variant_pokemon['card_name']} to the deck")
+    
+    # Display energy types if available
+    if energy_types:
+        from energy_utils import render_energy_icons
+        energy_html = render_energy_icons(energy_types, is_typical)
+        st.markdown(energy_html, unsafe_allow_html=True)
+    
+    # Render the modified deck
+    deck_html = render_sidebar_deck(
+        pokemon_cards, 
+        trainer_cards,
+        card_width=70
+    )
+    st.markdown(deck_html, unsafe_allow_html=True)
+    
 def render_sample_deck(energy_types, is_typical):
     """Render the standard sample deck for the current archetype"""
     if 'analyze' not in st.session_state:
