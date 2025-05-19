@@ -1388,21 +1388,21 @@ def display_matchup_tab(deck_info=None):
         'Icon1': display_df['pokemon_url1'],
         'Icon2': display_df['pokemon_url2'],
         'Deck': display_df['opponent_name'],
+        'Matchup': display_df['Matchup'],
         'Win %': display_df['win_pct'],
         'Record': display_df['Record'],
         'Matches': display_df['matches_played'],
-        'Matchup': display_df['Matchup']
     })
     
     # Apply styling for matchups
     def highlight_matchups(val):
         """Apply colors to matchup column values"""
         if val == "Favorable":
-            return 'background-color: rgba(0, 200, 0, 0.2)'  # Light green
+            return 'background-color: rgba(0, 100, 0, 0.4)'  # Light green
         elif val == "Unfavorable":
-            return 'background-color: rgba(255, 0, 0, 0.2)'  # Light red
+            return 'background-color: rgba(125, 0, 0, 0.4)'  # Light red
         else:
-            return 'background-color: rgba(255, 255, 0, 0.1)'  # Light yellow
+            return 'background-color: rgba(125, 125, 0, 0.2)'  # Light yellow
     
     # Display the enhanced data table with all rows
     st.write("### Matchup Data")
