@@ -661,10 +661,12 @@ def display_metagame_tab():
     # Create a cleaned, displayable version of the data
     display_df = performance_df.copy()
 
-    display_df.insert(0, 'Rank', range(1, len(display_df) + 1))
+    # Add rank column
+    display_df.insert(0, 'rank', range(1, len(display_df) + 1))
+
     # Add an indicator emoji for the current deck
-    display_df['Rank'] = display_df.apply(
-        lambda row: f"➡️ {row['Rank']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+    display_df['rank'] = display_df.apply(
+        lambda row: f"➡️ {row['rank']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
         axis=1
     )
     
@@ -724,6 +726,7 @@ def display_metagame_tab():
     
     # Select and rename columns for display
     display_cols = {
+        'rank': 'Rank',
         'displayed_name': 'Deck',
         'power_index': 'Power Index',
         'share': 'Meta Share %',
