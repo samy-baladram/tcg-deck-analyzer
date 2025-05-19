@@ -757,12 +757,12 @@ def display_metagame_tab():
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
                 help="First Pokémon in the deck",
-                width="30px",
+                width="20px",
             ),
             "Icon2": st.column_config.ImageColumn(
                 "Icon 2",
                 help="Second Pokémon in the deck",
-                width="30px",
+                width="20px",
             )
         },
         hide_index=True
