@@ -751,9 +751,11 @@ def display_metagame_tab():
         use_container_width=True,
         height=800,
         column_config={
-            "Power Index": st.column_config.NumberColumn(format="%.2f"),
-            "Win %": st.column_config.NumberColumn(format="%.1f%%"),
-            "Meta Share %": st.column_config.NumberColumn(format="%.2f%%"),
+            # "Rank": st.column_config.NumberColumn(
+            #     "Rank",
+            #     help="Position in the meta based on Power Index",
+            #     width="small"
+            # ),
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
                 help="First Pokémon in the deck",
@@ -763,35 +765,52 @@ def display_metagame_tab():
                 "Icon 2",
                 help="Second Pokémon in the deck",
                 width="20px",
+            ),
+            "Deck": st.column_config.TextColumn(
+                "Deck",
+                help="Deck archetype name"
+            ),
+            "Power Index": st.column_config.NumberColumn(
+                "Power Index",
+                help="Performance metric: (Wins + 0.75×Ties - Losses) ÷ √(Total Games). Higher values indicate stronger performance",
+                format="%.2f"
+            ),
+            "Meta Share %": st.column_config.NumberColumn(
+                "Meta Share %",
+                help="Percentage representation of this deck in the overall competitive metagame",
+                format="%.2f%%"
+            ),
+            "Best Finish Entries": st.column_config.NumberColumn(
+                "Best Finish Entries",
+                help="Number of tournament entries in the 'Best Finishes' section"
+            ),
+            "Win %": st.column_config.NumberColumn(
+                "Win %",
+                help="Percentage of matches won out of total matches played",
+                format="%.1f%%"
+            ),
+            "Wins": st.column_config.NumberColumn(
+                "Wins",
+                help="Total number of wins from all recorded 'Best Finishes' matches"
+            ),
+            "Losses": st.column_config.NumberColumn(
+                "Losses",
+                help="Total number of losses from all recorded 'Best Finishes' matches"
+            ),
+            "Ties": st.column_config.NumberColumn(
+                "Ties",
+                help="Total number of ties from all recorded 'Best Finishes' matches"
             )
         },
         hide_index=True
     )
     
-    # Add explanation
+    # Add a small footnote about data source instead of the full explanation
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
-    
-    st.markdown(f"""
-    ##### Understanding the Metrics
-
-    **Rank**: Rank based on Power Index
-
-    **Power Index**: Our key performance metric calculated as (Wins + 0.75×Ties - Losses) ÷ √(Total Games). Higher values indicate stronger performance.
-
-    **Meta Share %**: Percentage representation of this deck in the overall competitive metagame.
-
-    **Best Finish Entries**: Number of tournament entries in the "Best Finishes" section.
-    
-    **Win %**: Percentage of matches won out of total matches played.
-    
-    **Wins, Losses, Ties**: Total wins, losses, and ties from all recorded "Best Finishes" matches.
-    
-    *Data is based on tournament results from up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.*
-    """)
+    st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.")
     
 # Modify the display_related_decks_tab function in display_tabs.py:
-
 def display_related_decks_tab(deck_info, results):
     """Display the Related Decks tab with banner images and simple buttons"""
     st.subheader("Related Decks")
