@@ -161,15 +161,84 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
         render_sample_deck(energy_types, is_typical)
         return
     
-    # Display the original sample deck in an expander
+    # Get the variant Pokémon names
+    variant_pokemon_names = set(different_pokemon['card_name'].str.lower())
+    
+    # Display the original sample deck (without variants) in an expander
     with st.expander("### Original Sample Deck", expanded=True):
-        render_sample_deck(energy_types, is_typical)
+        render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical)
     
     # For each different Pokemon, show a variant deck in an expander
     for _, pokemon in different_pokemon.iterrows():
         pokemon_name = pokemon['card_name']
         with st.expander(f"##### {pokemon_name} Variant", expanded=False):
             render_variant_deck(pokemon, energy_types, is_typical)
+
+def render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical):
+    """Render a sample deck that doesn't contain any of the variant Pokémon"""
+    if 'analyze' not in st.session_state:
+        st.info("Select a deck to view a sample")
+        return
+        
+    deck_name = st.session_state.analyze.get('deck_name', '')
+    set_name = st.session_state.analyze.get('set_name', '')
+    deck_key = f"{deck_name}_{set_name}"
+    
+    # First, try to find a deck without any variant Pokémon
+    clean_deck = None
+    
+    # Check if we have collected decks
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        collected_data = st.session_state.collected_decks[deck_key]
+        all_decks = collected_data['decks']
+        
+        # Try to find a deck without any variant Pokémon
+        for deck in all_decks:
+            has_variant = False
+            
+            # Check if any variant Pokémon are in this deck
+            for card in deck['cards']:
+                if card['type'] == 'Pokemon' and card['card_name'].lower() in variant_pokemon_names:
+                    has_variant = True
+                    break
+            
+            # If no variant Pokémon found, use this deck
+            if not has_variant:
+                clean_deck = deck
+                break
+    
+    # If we found a clean deck, display it
+    if clean_deck:
+        # Prepare cards for rendering
+        pokemon_cards = []
+        trainer_cards = []
+        
+        for card in clean_deck['cards']:
+            if card['type'] == 'Pokemon':
+                pokemon_cards.append(card)
+            else:
+                trainer_cards.append(card)
+        
+        # Display energy types if available
+        if energy_types:
+            from energy_utils import render_energy_icons
+            energy_html = render_energy_icons(energy_types, is_typical)
+            st.markdown(energy_html, unsafe_allow_html=True)
+        
+        # Display a caption noting this is a clean deck
+        st.caption(f"Deck without any variant Pokémon")
+        
+        # Render the clean deck
+        from card_renderer import render_sidebar_deck
+        deck_html = render_sidebar_deck(
+            pokemon_cards, 
+            trainer_cards,
+            card_width=70
+        )
+        st.markdown(deck_html, unsafe_allow_html=True)
+    else:
+        # Fall back to the standard sample deck
+        render_sample_deck(energy_types, is_typical)
 
 def ensure_collected_decks(deck_name, set_name):
     """Make sure we have collected decks for this archetype"""
@@ -237,7 +306,7 @@ def render_variant_deck(variant_pokemon, energy_types, is_typical):
         st.markdown(energy_html, unsafe_allow_html=True)
     
     # Display a caption with deck info
-    st.caption(f"Deck containing {pokemon_name}")
+    #st.caption(f"Deck containing {pokemon_name}")
     
     # Render the deck using CardGrid
     from card_renderer import render_sidebar_deck
