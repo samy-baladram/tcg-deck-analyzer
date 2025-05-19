@@ -132,13 +132,18 @@ def display_deck_template_tab(results):
     
     # Left column: Sample Deck(s)
     with outer_col1:
-        # Always display standard sample deck
+        # Display standard sample deck
         st.write("### Sample Deck")
         render_sample_deck(energy_types, is_typical)
+        
+        # Now debug flexible Pokemon decks
+        debug_flexible_pokemon_decks(results, options)
     
     # Right column: Core Cards and Flexible Slots in vertical layout
     with outer_col2:
         display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
+
+        
 def debug_flexible_pokemon_decks(results, options):
     """Debug function to find decks containing flexible Pokemon"""
     # Get Pokemon options 
