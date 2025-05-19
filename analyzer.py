@@ -1,5 +1,12 @@
 # analyzer.py
-"""Analysis functions for deck data"""
+
+"""
+This module contains functions for analyzing deck data, including:
+1. Card usage analysis
+2. Performance metrics calculation
+3. Variant analysis
+4. Dynamic updating with new tournament data
+"""
 
 import pandas as pd
 import time
@@ -9,7 +16,7 @@ from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD
 from utils import is_flexible_core, calculate_display_usage, format_card_display
 from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
-
+import math
 
 def analyze_recent_performance(raw_performance_data=None):
     """
@@ -34,8 +41,14 @@ def analyze_recent_performance(raw_performance_data=None):
         total_ties = performance['ties'].sum()
         tournaments_played = len(performance['tournament_id'])
         
-        # Calculate Power Index and other metrics
-        # [Current implementation]
+        # Calculate total games
+        total_games = total_wins + total_losses + total_ties
+        
+        if total_games > 0:
+            # Calculate Power Index
+            power_index = ((total_wins + (0.75*total_ties) - total_losses) / math.sqrt(total_games))
+        else:
+            power_index = 0.0
         
         results.append({
             'deck_name': deck_data['deck_name'],
@@ -59,8 +72,9 @@ def analyze_recent_performance(raw_performance_data=None):
 # In analyzer.py - Modify analyze_deck function
 def collect_decks(deck_name, set_name="A3"):
     """Collect all decks for an archetype and store their data"""
-    # Get all decklist URLs
-    urls = get_deck_urls(deck_name, set_name)
+    # Get all player-tournament pairs instead of just URLs
+    from scraper import get_player_tournament_pairs, extract_cards
+    pairs = get_player_tournament_pairs(deck_name, set_name)
     
     # Show progress
     progress_bar = st.progress(0)
@@ -70,11 +84,17 @@ def collect_decks(deck_name, set_name="A3"):
     all_decks = []
     all_energy_types = set()
     
-    for i, url in enumerate(urls):
-        progress_bar.progress((i + 1) / len(urls))
-        #status_text.text(f"Processing deck {i+1}/{len(urls)}...")
+    # Handle the case of no pairs found
+    if not pairs:
+        progress_bar.empty()
+        status_text.empty()
+        return all_decks, list(all_energy_types), 0
+    
+    for i, pair in enumerate(pairs):
+        progress_bar.progress((i + 1) / len(pairs))
         
-        # Get cards and energy types
+        # Get cards and energy types using the URL from the pair
+        url = pair['url']
         cards_result = extract_cards(url)
         
         # Handle both formats
@@ -93,12 +113,14 @@ def collect_decks(deck_name, set_name="A3"):
             from energy_utils import track_per_deck_energy
             track_per_deck_energy(deck_name, i, energy_types)
         
-        # Create deck entry
+        # Create deck entry with player and tournament IDs
         deck_data = {
             'deck_num': i,
             'cards': cards,
             'energy_types': energy_types,
-            'url': url
+            'url': url,
+            'player_id': pair['player_id'],
+            'tournament_id': pair['tournament_id']
         }
         
         # Add to collection
@@ -113,15 +135,175 @@ def collect_decks(deck_name, set_name="A3"):
     if 'collected_decks' not in st.session_state:
         st.session_state.collected_decks = {}
     
+    total_decks = len(pairs)  # Use the number of pairs instead of urls
+    
     deck_key = f"{deck_name}_{set_name}"
     st.session_state.collected_decks[deck_key] = {
         'decks': all_decks,
         'all_energy_types': list(all_energy_types),
-        'total_decks': len(urls)
+        'total_decks': total_decks
     }
     
     # Return collected data
-    return all_decks, list(all_energy_types), len(urls)
+    return all_decks, list(all_energy_types), total_decks
+
+def collect_decks_by_tournaments(deck_name, set_name, tournament_ids):
+    """
+    Collect only decks from specific tournaments for an archetype
+    
+    Args:
+        deck_name: Name of the deck archetype
+        set_name: Set code (e.g., "A3")
+        tournament_ids: List of tournament IDs to collect from
+        
+    Returns:
+        Same as collect_decks but only includes decks from the specified tournaments
+    """
+    from scraper import get_player_tournament_pairs, extract_cards
+    
+    # Get all player-tournament pairs
+    pairs = get_player_tournament_pairs(deck_name, set_name)
+    
+    # Filter pairs to only include specified tournaments
+    tournament_id_set = set(tournament_ids)
+    filtered_pairs = [pair for pair in pairs if pair['tournament_id'] in tournament_id_set]
+    
+    # Show progress
+    progress_bar = st.progress(0)
+    
+    # Initialize collection
+    all_decks = []
+    all_energy_types = set()
+    
+    # Handle the case of no pairs found
+    if not filtered_pairs:
+        progress_bar.empty()
+        return all_decks, list(all_energy_types), 0
+    
+    # Process filtered pairs
+    for i, pair in enumerate(filtered_pairs):
+        progress_bar.progress((i + 1) / len(filtered_pairs))
+        
+        # Get cards and energy types
+        url = pair['url']  # Define url from the pair
+        cards_result = extract_cards(url)
+        
+        # Rest of processing similar to collect_decks
+        # Handle both formats
+        if isinstance(cards_result, tuple) and len(cards_result) == 2:
+            cards, energy_types = cards_result
+        else:
+            # Old format or no energy types
+            cards = cards_result
+            energy_types = []
+        
+        # Add energy types to the global set
+        if energy_types:
+            all_energy_types.update(energy_types)
+            
+            # Track per-deck energy
+            from energy_utils import track_per_deck_energy
+            track_per_deck_energy(deck_name, i, energy_types)
+        
+        # Create deck entry with player and tournament IDs
+        deck_data = {
+            'deck_num': i,
+            'cards': cards,
+            'energy_types': energy_types,
+            'url': url,
+            'player_id': pair['player_id'],
+            'tournament_id': pair['tournament_id']
+        }
+        
+        # Add to collection
+        all_decks.append(deck_data)
+        
+        time.sleep(0.3)  # Be nice to the server
+    
+    progress_bar.empty()
+        
+    # Return in the same format as collect_decks
+    return all_decks, list(all_energy_types), len(filtered_pairs)
+
+def create_tournament_deck_mapping(decks_data):
+    """
+    Create a mapping of tournament IDs to deck archetypes
+    
+    Args:
+        decks_data: Dictionary mapping deck_name to collected deck data
+        
+    Returns:
+        Dictionary mapping tournament_id to set of deck_names that use it
+    """
+    tournament_map = {}
+    
+    for deck_name, data in decks_data.items():
+        for deck in data['decks']:
+            if 'tournament_id' in deck:
+                tournament_id = deck['tournament_id']
+                if tournament_id not in tournament_map:
+                    tournament_map[tournament_id] = set()
+                tournament_map[tournament_id].add(deck_name)
+    
+    return tournament_map
+
+def update_deck_analysis(deck_name, set_name, new_tournament_ids):
+    """
+    Update deck analysis by incorporating data from new tournaments
+    
+    Args:
+        deck_name: Name of the deck archetype
+        set_name: Set code (e.g., "A3")
+        new_tournament_ids: List of new tournament IDs to analyze
+        
+    Returns:
+        Boolean indicating success
+    """
+    # Check if decks have already been collected
+    deck_key = f"{deck_name}_{set_name}"
+    
+    if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
+        # If no existing data, just do a full analysis
+        analyze_deck(deck_name, set_name)
+        return True
+    
+    # Get existing collected data
+    collected_data = st.session_state.collected_decks[deck_key]
+    existing_decks = collected_data['decks']
+    existing_energy_types = set(collected_data['all_energy_types'])
+    
+    # Get new decks from specified tournaments
+    new_decks, new_energy_types, new_total = collect_decks_by_tournaments(
+        deck_name, set_name, new_tournament_ids
+    )
+    
+    if not new_decks:
+        # No new data to add
+        return False
+    
+    # Merge energy types
+    all_energy_types = existing_energy_types.union(new_energy_types)
+    
+    # Assign new deck numbers to avoid conflicts
+    start_num = len(existing_decks)
+    for i, deck in enumerate(new_decks):
+        deck['deck_num'] = start_num + i
+    
+    # Combine existing and new decks
+    all_decks = existing_decks + new_decks
+    total_decks = len(all_decks)
+    
+    # Update session state
+    st.session_state.collected_decks[deck_key] = {
+        'decks': all_decks,
+        'all_energy_types': list(all_energy_types),
+        'total_decks': total_decks
+    }
+    
+    # Rerun analysis with the combined dataset
+    # This will reuse the stored decks rather than fetching again
+    analyze_deck(deck_name, set_name)
+    return True
 
 def analyze_deck(deck_name, set_name="A3"):
     """Main analysis function for a deck archetype"""
@@ -336,3 +518,76 @@ def analyze_variants(result_df, all_cards_df):
     
     variant_df = pd.DataFrame(variant_summaries)
     return variant_df.sort_values('Total Decks', ascending=False)
+
+def update_deck_analysis(deck_name, set_name, new_tournament_ids):
+    """
+    Update deck analysis by incorporating data from new tournaments
+    
+    Args:
+        deck_name: Name of the deck archetype
+        set_name: Set code (e.g., "A3")
+        new_tournament_ids: List of new tournament IDs to analyze
+        
+    Returns:
+        Boolean indicating success
+    """
+    # Check if decks have already been collected
+    deck_key = f"{deck_name}_{set_name}"
+    
+    # Show status
+    status = st.empty()
+    status.text(f"Updating analysis for {deck_name}...")
+    
+    if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
+        # If no existing data, just do a full analysis
+        status.text(f"No existing data for {deck_name}, performing full analysis...")
+        analyze_deck(deck_name, set_name)
+        status.empty()
+        return True
+    
+    # Get existing collected data
+    collected_data = st.session_state.collected_decks[deck_key]
+    existing_decks = collected_data['decks']
+    existing_energy_types = set(collected_data['all_energy_types'])
+    
+    # Get new decks from specified tournaments
+    status.text(f"Fetching new data for {deck_name} from {len(new_tournament_ids)} tournaments...")
+    new_decks, new_energy_types, new_total = collect_decks_by_tournaments(
+        deck_name, set_name, new_tournament_ids
+    )
+    
+    if not new_decks:
+        # No new data to add
+        status.text(f"No new data found for {deck_name}")
+        status.empty()
+        return False
+    
+    # Show updating status
+    status.text(f"Updating {deck_name} with {len(new_decks)} new decks...")
+    
+    # Merge energy types
+    all_energy_types = existing_energy_types.union(new_energy_types)
+    
+    # Assign new deck numbers to avoid conflicts
+    start_num = len(existing_decks)
+    for i, deck in enumerate(new_decks):
+        deck['deck_num'] = start_num + i
+    
+    # Combine existing and new decks
+    all_decks = existing_decks + new_decks
+    total_decks = len(all_decks)
+    
+    # Update session state
+    st.session_state.collected_decks[deck_key] = {
+        'decks': all_decks,
+        'all_energy_types': list(all_energy_types),
+        'total_decks': total_decks
+    }
+    
+    # Rerun analysis with the combined dataset
+    # This will reuse the stored decks rather than fetching again
+    status.text(f"Running analysis on combined data for {deck_name}...")
+    analyze_deck(deck_name, set_name)
+    
+    status.empty()
+    return True
