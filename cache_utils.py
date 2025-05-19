@@ -342,3 +342,72 @@ def clear_deck_cache(deck_name, set_name):
     if 'analyzed_deck_cache' in st.session_state and cache_key in st.session_state.analyzed_deck_cache:
         del st.session_state.analyzed_deck_cache[cache_key]
         logger.info(f"Cleared {deck_name} from session cache")
+
+
+# Add these functions to cache_utils.py
+
+# Define paths for collected decks
+COLLECTED_DECKS_PATH = os.path.join(CACHE_DIR, "collected_decks")
+
+def save_collected_decks(deck_name, set_name, all_decks, all_energy_types, total_decks):
+    """Save collected decks to disk"""
+    try:
+        # Ensure directory exists
+        os.makedirs(COLLECTED_DECKS_PATH, exist_ok=True)
+        
+        # Create a safe filename base
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        file_path = os.path.join(COLLECTED_DECKS_PATH, f"{safe_name}_{set_name}_collected.json")
+        
+        # Create serializable version of all_decks
+        # (The cards list might be too large, so we'll just save metadata)
+        serializable_decks = []
+        for deck in all_decks:
+            # Save key metadata but not full card lists
+            serializable_deck = {
+                'deck_num': deck.get('deck_num', 0),
+                'energy_types': deck.get('energy_types', []),
+                'url': deck.get('url', ''),
+                'player_id': deck.get('player_id', ''),
+                'tournament_id': deck.get('tournament_id', '')
+            }
+            serializable_decks.append(serializable_deck)
+        
+        # Create data to save
+        data = {
+            'decks': serializable_decks,
+            'all_energy_types': all_energy_types,
+            'total_decks': total_decks,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        # Save to file
+        with open(file_path, 'w') as f:
+            json.dump(data, f)
+            
+        logger.info(f"Saved collected deck metadata for {deck_name} to {file_path}")
+        return True
+    except Exception as e:
+        logger.error(f"Error saving collected decks: {e}")
+        return False
+
+def load_collected_decks(deck_name, set_name):
+    """Load collected deck metadata from disk"""
+    try:
+        # Create a safe filename base
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        file_path = os.path.join(COLLECTED_DECKS_PATH, f"{safe_name}_{set_name}_collected.json")
+        
+        if not os.path.exists(file_path):
+            logger.info(f"No collected deck file found at {file_path}")
+            return None
+        
+        # Load from file
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        
+        logger.info(f"Loaded collected deck metadata for {deck_name}")
+        return data
+    except Exception as e:
+        logger.error(f"Error loading collected decks: {e}")
+        return None
