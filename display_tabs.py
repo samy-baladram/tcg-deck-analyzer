@@ -138,41 +138,65 @@ def display_deck_template_tab(results):
     with outer_col2:
         display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
 
-def display_variant_decks(results, deck_info, energy_types, is_typical, options):
-    """Display the main sample deck and any variant decks containing other Pokémon options"""
-    # Get Pokemon options that have different names from core Pokemon
-    pokemon_options = options[options['type'] == 'Pokemon'].copy()
+def render_variant_deck(results, deck_name, set_name, variant_pokemon, energy_types, is_typical):
+    """Find and render a deck containing the variant Pokemon directly from results DataFrame"""
+    from card_renderer import render_sidebar_deck
     
-    # Get core Pokemon names for comparison
-    core_pokemon_names = set()
-    for card in deck_info['Pokemon']:
-        core_pokemon_names.add(card['name'].lower())
+    # Find the Pokemon in results
+    pokemon_name = variant_pokemon['card_name']
     
-    # Filter options to only include Pokemon with different names
-    different_pokemon = pokemon_options[~pokemon_options['card_name'].str.lower().isin(core_pokemon_names)]
+    # We're going to try a different approach - directly use the original data
+    # Get all unique deck numbers from the results
+    all_deck_nums = results['deck_num'].unique()
     
-    # If no different Pokemon in options, just show the standard sample deck
-    if different_pokemon.empty:
-        st.write("### Sample Deck")
-        render_sample_deck(energy_types, is_typical)
-        return
+    # For each deck, check if it contains our variant Pokemon
+    for deck_num in all_deck_nums:
+        # Get all cards from this deck
+        deck_cards = results[results['deck_num'] == deck_num]
         
-    # Display the original sample deck in an expander
-    with st.expander("### Original Sample Deck", expanded=True):
-        render_sample_deck(energy_types, is_typical)
+        # Check if this deck contains our variant Pokemon
+        if any((deck_cards['card_name'] == pokemon_name) & (deck_cards['type'] == 'Pokemon')):
+            # We found a deck with our Pokemon - now build the card lists
+            pokemon_cards = []
+            trainer_cards = []
+            
+            for _, card in deck_cards.iterrows():
+                # Create a card dictionary in the format expected by render_sidebar_deck
+                card_dict = {
+                    'type': card['type'],
+                    'card_name': card['card_name'],
+                    'amount': card['amount'],  # Use the actual amount from the original deck
+                    'set': card['set'],
+                    'num': card['num']
+                }
+                
+                # Add to the appropriate list
+                if card['type'] == 'Pokemon':
+                    pokemon_cards.append(card_dict)
+                else:
+                    trainer_cards.append(card_dict)
+            
+            # Display energy types if available
+            if energy_types:
+                from energy_utils import render_energy_icons
+                energy_html = render_energy_icons(energy_types, is_typical)
+                st.markdown(energy_html, unsafe_allow_html=True)
+            
+            # Show deck info
+            st.caption(f"Deck containing {pokemon_name}")
+            
+            # Render the deck
+            deck_html = render_sidebar_deck(
+                pokemon_cards, 
+                trainer_cards,
+                card_width=70
+            )
+            st.markdown(deck_html, unsafe_allow_html=True)
+            return
     
-    # Get deck name and set name
-    if 'analyze' not in st.session_state:
-        return
-        
-    deck_name = st.session_state.analyze.get('deck_name', '')
-    set_name = st.session_state.analyze.get('set_name', '')
-    
-    # Display a variant deck for each different Pokemon option
-    for _, pokemon in different_pokemon.iterrows():
-        pokemon_name = pokemon['card_name']
-        with st.expander(f"##### {pokemon_name} Variant", expanded=False):
-            render_variant_deck(results, deck_name, set_name, pokemon, energy_types, is_typical)
+    # This section should never be reached if the data is consistent,
+    # but we'll keep it as a fallback just in case something unexpected happens
+    st.warning(f"Could not find a deck with {pokemon_name}. This is unexpected since the Pokemon is in the flexible slots.")
 
 def render_sample_deck(energy_types, is_typical):
     """Render the standard sample deck for the current archetype"""
