@@ -173,8 +173,9 @@ if 'analyze' in st.session_state and selected_option:
             original_deck_info['deck_name'], 
             original_deck_info['set_name']
         )
+        display_tabs.display_energy_debug_tab(original_deck_info)
         if last_update:
-            st.caption(last_update)
+            st.caption(last_update)           
     
     with tab2:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
