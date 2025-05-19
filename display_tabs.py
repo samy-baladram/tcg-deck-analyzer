@@ -131,7 +131,7 @@ def display_deck_template_tab(results):
         ensure_collected_decks(deck_name, set_name)
     
     # Create outer columns: Sample Deck (2) and Template (3) - switched order and ratio
-    outer_col1, outer_col2 = st.columns([1,2])
+    outer_col1, outer_col2 = st.columns([6,1,12])
     
     # Left column: Sample Deck(s)
     with outer_col1:
