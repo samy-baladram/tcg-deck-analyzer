@@ -1397,7 +1397,7 @@ def display_matchup_tab(deck_info=None):
             use_container_width=True,
             height=600,
             column_config={
-                "Rank": st.column_config.ImageColumn(
+                "Rank": st.column_config.NumberColumn(
                     "Rank",
                     help="Rank of Favorable-ness in Matchups",
                     width="20px",  # Set width to 40px as requested
