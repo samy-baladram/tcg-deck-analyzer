@@ -250,3 +250,95 @@ def load_card_usage_data():
     
     # Return empty dataframe and old timestamp if loading fails
     return pd.DataFrame(), datetime.now() - timedelta(days=1)
+    
+######################################################################################################################################################
+
+# Add these new functions to cache_utils.py
+
+# Constants for tournament ID tracking
+TOURNAMENT_IDS_PATH = os.path.join(CACHE_DIR, "tournament_ids.json")
+PLAYER_TOURNAMENT_MAPPING_PATH = os.path.join(CACHE_DIR, "player_tournament_mapping.json")
+
+def save_tournament_ids(tournament_ids):
+    """Save the list of known tournament IDs"""
+    try:
+        ensure_cache_dirs()
+        with open(TOURNAMENT_IDS_PATH, 'w') as f:
+            json.dump(tournament_ids, f)
+        logger.info(f"Saved {len(tournament_ids)} tournament IDs")
+        return True
+    except Exception as e:
+        logger.error(f"Error saving tournament IDs: {e}")
+        return False
+
+def load_tournament_ids():
+    """Load the list of known tournament IDs"""
+    try:
+        if os.path.exists(TOURNAMENT_IDS_PATH):
+            with open(TOURNAMENT_IDS_PATH, 'r') as f:
+                tournament_ids = json.load(f)
+            logger.info(f"Loaded {len(tournament_ids)} tournament IDs")
+            return tournament_ids
+        else:
+            logger.info("No tournament IDs file found")
+            return []
+    except Exception as e:
+        logger.error(f"Error loading tournament IDs: {e}")
+        return []
+
+def save_player_tournament_mapping(mapping):
+    """Save the mapping of player-tournament pairs to deck archetypes"""
+    try:
+        ensure_cache_dirs()
+        with open(PLAYER_TOURNAMENT_MAPPING_PATH, 'w') as f:
+            # Convert any set values to lists for JSON serialization
+            serializable_mapping = {}
+            for key, value in mapping.items():
+                if isinstance(value, set):
+                    serializable_mapping[key] = list(value)
+                else:
+                    serializable_mapping[key] = value
+            json.dump(serializable_mapping, f)
+        logger.info(f"Saved player-tournament mapping with {len(mapping)} entries")
+        return True
+    except Exception as e:
+        logger.error(f"Error saving player-tournament mapping: {e}")
+        return False
+
+def load_player_tournament_mapping():
+    """Load the mapping of player-tournament pairs to deck archetypes"""
+    try:
+        if os.path.exists(PLAYER_TOURNAMENT_MAPPING_PATH):
+            with open(PLAYER_TOURNAMENT_MAPPING_PATH, 'r') as f:
+                mapping = json.load(f)
+            logger.info(f"Loaded player-tournament mapping with {len(mapping)} entries")
+            return mapping
+        else:
+            logger.info("No player-tournament mapping file found")
+            return {}
+    except Exception as e:
+        logger.error(f"Error loading player-tournament mapping: {e}")
+        return {}
+
+def clear_deck_cache(deck_name, set_name):
+    """Clear disk and memory cache for a specific deck"""
+    # Create a safe filename base
+    safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+    base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}")
+    
+    # Try to remove all files
+    try:
+        extensions = ["_results.csv", "_total_decks.txt", "_variants.csv", "_energy.json", "_timestamp.txt"]
+        for ext in extensions:
+            file_path = f"{base_path}{ext}"
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                logger.info(f"Removed {file_path}")
+    except Exception as e:
+        logger.error(f"Error clearing disk cache for {deck_name}: {e}")
+    
+    # Clear from session state too
+    cache_key = f"full_deck_{deck_name}_{set_name}"
+    if 'analyzed_deck_cache' in st.session_state and cache_key in st.session_state.analyzed_deck_cache:
+        del st.session_state.analyzed_deck_cache[cache_key]
+        logger.info(f"Cleared {deck_name} from session cache")
