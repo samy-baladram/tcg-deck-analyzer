@@ -126,6 +126,9 @@ def display_deck_template_tab(results):
         
         # Get the most common energy combination
         energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
+        
+        # Ensure we have collected decks
+        ensure_collected_decks(deck_name, set_name)
     
     # Create outer columns: Sample Deck (2) and Template (3) - switched order and ratio
     outer_col1, _, outer_col2 = st.columns([5, 1, 10])
@@ -138,14 +141,37 @@ def display_deck_template_tab(results):
         
         # Display debug info for flexible Pokemon
         if 'analyze' in st.session_state:
-            debug_flexible_pokemon(deck_name, set_name, options)
+            debug_flexible_pokemon(options)
     
     # Right column: Core Cards and Flexible Slots in vertical layout
     with outer_col2:
         display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
 
-def debug_flexible_pokemon(deck_name, set_name, options):
+def ensure_collected_decks(deck_name, set_name):
+    """Make sure we have collected decks for this archetype"""
+    from analyzer import collect_decks
+    
+    # Check if we already have collected decks
+    deck_key = f"{deck_name}_{set_name}"
+    if 'collected_decks' not in st.session_state:
+        st.session_state.collected_decks = {}
+    
+    if deck_key not in st.session_state.collected_decks:
+        # Collect decks since we don't have them yet
+        st.write("Collecting decks...")
+        collect_decks(deck_name, set_name)
+        st.write("Done collecting decks")
+
+def debug_flexible_pokemon(options):
     """Debug function to examine flexible Pokemon and find decks containing them"""
+    # Make sure we have deck_name and set_name
+    if 'analyze' not in st.session_state:
+        return
+        
+    deck_name = st.session_state.analyze.get('deck_name', '')
+    set_name = st.session_state.analyze.get('set_name', '')
+    deck_key = f"{deck_name}_{set_name}"
+    
     # Get Pokemon options from flexible slots
     pokemon_options = options[options['type'] == 'Pokemon']
     
@@ -155,7 +181,6 @@ def debug_flexible_pokemon(deck_name, set_name, options):
     st.write("### Debug: Flexible Pokemon")
     
     # Check if we have collected decks in session state
-    deck_key = f"{deck_name}_{set_name}"
     if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
         st.info("No collected decks available in session state")
         return
@@ -187,7 +212,7 @@ def debug_flexible_pokemon(deck_name, set_name, options):
         # If we found decks, show details of the first one
         if decks_with_pokemon:
             deck = decks_with_pokemon[0]
-            st.write(f"Deck #{deck['deck_num']} details:")
+            st.write(f"Deck #{deck['deck_num'] + 1} details:")
             
             # Count cards
             pokemon_cards = [card for card in deck['cards'] if card['type'] == 'Pokemon']
