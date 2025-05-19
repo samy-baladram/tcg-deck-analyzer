@@ -249,7 +249,7 @@ def ensure_deck_collection_data(deck_name, set_name):
                     }
     else:
         # We already have collected data
-        st.caption(f"Using {len(st.session_state.collected_decks[deck_key]['decks'])} collected decks")
+        #st.caption(f"Using {len(st.session_state.collected_decks[deck_key]['decks'])} collected decks")
     
     # Final check - do we have the data now?
     has_data = deck_key in st.session_state.collected_decks and st.session_state.collected_decks[deck_key]['decks']
@@ -281,7 +281,7 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     
     # Get the name of the variant Pokemon we're looking for
     pokemon_name = variant_pokemon['card_name']
-    st.caption(f"Searching for {pokemon_name}...")
+    #st.caption(f"Searching for {pokemon_name}...")
     
     # Variables to track the best deck
     best_deck = None
@@ -330,7 +330,7 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             best_score = score
     
     # Show how many decks we found with the variant
-    st.caption(f"Found {variant_count} decks with {pokemon_name}")
+    #st.caption(f"Found {variant_count} decks with {pokemon_name}")
     
     # If we found a deck, render it
     if best_deck:
@@ -363,11 +363,11 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
         return best_deck_num
     else:
         # No suitable deck found
-        st.info(f"No deck containing {pokemon_name} found in collected data")
+        #st.info(f"No deck containing {pokemon_name} found in collected data")
         
         # As a fallback, try to use sample deck
         import cache_manager
-        st.caption("Trying sample deck as fallback...")
+        #st.caption("Trying sample deck as fallback...")
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
         
         if sample_deck:
@@ -385,7 +385,7 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
                 card_width=70
             )
             st.markdown(deck_html, unsafe_allow_html=True)
-            st.caption("Showing sample deck (variant not found)")
+            #st.caption("Showing sample deck (variant not found)")
         
         return None
 
