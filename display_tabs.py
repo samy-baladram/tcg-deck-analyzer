@@ -1189,7 +1189,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
         for row in table.find_all('tr')[1:]:  # Skip header row
             cells = row.find_all(['td'])
             
-            if not cells:
+            if not cells or len(cells) < 4:  # Ensure we have at least 4 cells
                 continue
                 
             # Extract the opponent deck name
@@ -1200,17 +1200,14 @@ def fetch_matchup_data(deck_name, set_name="A3"):
             opponent_deck_name = ""
             if opponent_link and 'href' in opponent_link.attrs:
                 href = opponent_link['href']
-                # Extract deck name from URL pattern /decks/deck-name/?
+                # Extract deck name from URL pattern /decks/deck-name/
                 import re
-                match = re.search(r'/decks/([^/]+)/?', href)
+                match = re.search(r'/decks/([^/]+)/', href)
                 if match:
                     opponent_deck_name = match.group(1)
             
-            # Extract win-loss record and win percentage
-            record_text = cells[1].text.strip() if len(cells) > 1 else ""
-            win_pct_text = cells[2].text.strip() if len(cells) > 2 else ""
-            
-            # Parse record (format: "W-L-T")
+            # Extract win-loss record (format: "W-L-T")
+            record_text = cells[1].text.strip()
             wins, losses, ties = 0, 0, 0
             if record_text:
                 record_parts = record_text.split('-')
@@ -1218,16 +1215,17 @@ def fetch_matchup_data(deck_name, set_name="A3"):
                 losses = int(record_parts[1]) if len(record_parts) > 1 and record_parts[1].isdigit() else 0
                 ties = int(record_parts[2]) if len(record_parts) > 2 and record_parts[2].isdigit() else 0
             
-            # Parse win percentage (remove % sign)
+            # Extract win percentage (remove % sign)
+            win_pct_text = cells[2].text.strip()
             win_pct = 0.0
             if win_pct_text:
                 win_pct = float(win_pct_text.rstrip('%')) if win_pct_text.rstrip('%').replace('.', '', 1).isdigit() else 0.0
             
-            # Extract data for any additional columns (games played, etc.)
-            additional_data = {}
-            for i, cell in enumerate(cells[3:], 3):
-                if i < len(headers):
-                    additional_data[headers[i]] = cell.text.strip()
+            # Extract games played
+            games_played = 0
+            if len(cells) > 3:
+                games_text = cells[3].text.strip()
+                games_played = int(games_text) if games_text.isdigit() else 0
             
             # Create row data
             row_data = {
@@ -1236,14 +1234,18 @@ def fetch_matchup_data(deck_name, set_name="A3"):
                 'wins': wins,
                 'losses': losses,
                 'ties': ties,
-                'win_pct': win_pct
+                'win_pct': win_pct,
+                'games_played': games_played
             }
-            row_data.update(additional_data)
             
             rows.append(row_data)
         
         # Create DataFrame
         df = pd.DataFrame(rows)
+        
+        # Sort by win percentage (descending)
+        if not df.empty and 'win_pct' in df.columns:
+            df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
         
         return df
         
@@ -1295,7 +1297,7 @@ def display_matchup_tab(deck_info=None):
         # Split by spaces and slashes
         parts = re.split(r'[\s/]+', clean_name)
         
-        # Filter out suffixes
+        # Filter out common suffixes that aren't Pokémon names
         suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
         pokemon_names = []
         
@@ -1342,9 +1344,12 @@ def display_matchup_tab(deck_info=None):
     final_df['Record'] = display_df.apply(
         lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
     )
+    final_df['Games'] = display_df['games_played']
     
-    # Sort by win percentage (descending)
-    final_df = final_df.sort_values('Win %', ascending=False).reset_index(drop=True)
+    # Add a "Favorable" column to indicate matchup favorability
+    final_df['Matchup'] = display_df['win_pct'].apply(
+        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
+    )
     
     # Display dataframe with column configuration
     st.dataframe(
@@ -1355,6 +1360,7 @@ def display_matchup_tab(deck_info=None):
             "Win %": st.column_config.NumberColumn(
                 "Win %",
                 format="%.1f%%",
+                width="small",
             ),
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
@@ -1380,19 +1386,50 @@ def display_matchup_tab(deck_info=None):
                 help="Win-Loss-Tie record",
                 width="small",
             ),
+            "Games": st.column_config.NumberColumn(
+                "Games",
+                help="Total games played",
+                width="small",
+            ),
+            "Matchup": st.column_config.Column(
+                "Matchup",
+                help="Matchup favorability",
+                width="small",
+            ),
         },
         hide_index=True
     )
     
+    # Calculate overall statistics
+    if not matchup_df.empty:
+        total_wins = matchup_df['wins'].sum()
+        total_losses = matchup_df['losses'].sum()
+        total_ties = matchup_df['ties'].sum()
+        total_games = matchup_df['games_played'].sum()
+        overall_win_pct = round((total_wins / total_games * 100), 1) if total_games > 0 else 0
+        
+        # Display overall statistics
+        st.metric(
+            label="Overall Matchup Record", 
+            value=f"{total_wins}-{total_losses}-{total_ties} ({overall_win_pct}%)"
+        )
+    
     # Add explanation
+    from formatters import format_deck_name
+    formatted_deck_name = format_deck_name(deck_name)
+    
     st.markdown(f"""
     ##### Understanding Matchups
     
-    This table shows how {deck_name} performs against other popular decks in the meta.
+    This table shows how {formatted_deck_name} performs against other popular decks in the meta.
     
     **Win %**: Percentage of matches won against this deck.
     
     **Record**: Win-Loss-Tie record against this deck.
+    
+    **Games**: Total number of games played against this deck.
+    
+    **Matchup**: Categorization of the matchup (Favorable: ≥60%, Unfavorable: <40%, Even: 40-59%).
     
     *Data is based on reported tournament results from Limitless TCG.*
     """)
