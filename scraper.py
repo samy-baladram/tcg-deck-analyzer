@@ -337,7 +337,44 @@ def get_affected_decks(new_tournament_ids, player_tournament_mapping):
     return affected_decks
 
 
-
+def get_deck_performance_data():
+    """
+    Get raw performance data for all popular decks
+    Returns raw data for analysis in analyzer.py
+    """
+    # Get popular decks above threshold
+    popular_decks = get_popular_decks_with_performance(share_threshold=MIN_META_SHARE)
+    
+    # Get recent tournament IDs
+    recent_tournament_ids = set(get_all_recent_tournaments())
+    
+    # Get performance data for each deck
+    deck_data = []
+    for _, deck in popular_decks.iterrows():
+        deck_name = deck['deck_name']
+        displayed_name = deck['displayed_name']
+        share = deck['share']
+        set_name = deck['set']
+        
+        # Get performance data
+        performance = get_deck_performance(deck_name, set_name)
+        
+        # Filter for only recent tournaments
+        recent_performance = performance[performance['tournament_id'].isin(recent_tournament_ids)]
+        
+        # Skip if no recent data
+        if recent_performance.empty:
+            continue
+            
+        deck_data.append({
+            'deck_name': deck_name,
+            'displayed_name': displayed_name,
+            'share': share,
+            'set': set_name,
+            'performance': recent_performance  # Raw performance data
+        })
+    
+    return deck_data
 
 
 ## -- DEPRECATED -- ##
