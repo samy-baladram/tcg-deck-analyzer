@@ -153,6 +153,14 @@ if 'analyze' in st.session_state and selected_option:
     # Display deck header
     display_tabs.display_deck_header(original_deck_info, results)
     
+    # ADD THIS: Display last update time for the current deck
+    last_update = ui_helpers.display_deck_update_info(
+        original_deck_info['deck_name'], 
+        original_deck_info['set_name']
+    )
+    if last_update:
+        st.caption(last_update)
+    
     # Display tabs
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template"," Card Usage", "Metagame Overview", "Related Decks",  "Raw Data", "Energy Debug"])
     
