@@ -338,7 +338,7 @@ def render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical):
             st.markdown(energy_html, unsafe_allow_html=True)
         
         # Display a caption noting this is a clean deck
-        st.caption(f"Deck without any variant Pokémon")
+        #st.caption(f"Deck without any variant Pokémon")
         
         # Render the clean deck
         from card_renderer import render_sidebar_deck
