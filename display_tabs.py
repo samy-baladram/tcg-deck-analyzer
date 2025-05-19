@@ -247,7 +247,7 @@ def ensure_deck_collection_data(deck_name, set_name):
                         'all_energy_types': all_energy_types,
                         'total_decks': total_decks
                     }
-    else:
+    #else:
         # We already have collected data
         #st.caption(f"Using {len(st.session_state.collected_decks[deck_key]['decks'])} collected decks")
     
