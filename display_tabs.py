@@ -127,8 +127,8 @@ def display_deck_template_tab(results):
         # Get the most common energy combination
         energy_types, is_typical = get_energy_types_for_deck(deck_name, [])
         
-        # Ensure we have collected decks
-        ensure_collected_decks(deck_name, set_name)
+        # No need to ensure collected decks since we're now caching everything
+        # The data should already be in st.session_state.collected_decks if needed
     
     # Create outer columns: Sample Deck (2) and Template (3) - switched order and ratio
     outer_col1, _, outer_col2 = st.columns([6,1,10])
@@ -201,9 +201,10 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     set_name = st.session_state.analyze.get('set_name', '')
     deck_key = f"{deck_name}_{set_name}"
     
-    # Check if we have collected decks
+    # Check if we have collected decks - but don't force collection
     if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
-        st.info("No collected deck data available")
+        # Just show a message instead of trying to collect
+        st.info("Loading variant deck data... This may take a moment.")
         return None
     
     collected_data = st.session_state.collected_decks[deck_key]
@@ -302,6 +303,14 @@ def render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical):
     set_name = st.session_state.analyze.get('set_name', '')
     deck_key = f"{deck_name}_{set_name}"
     
+    # Check if we have collected decks - but don't force collection
+    if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
+        # If no collected decks, fall back to standard sample deck
+        render_sample_deck(energy_types, is_typical)
+        return
+    
+    # Rest of the function remains the same...
+    
     # First, try to find a deck without any variant Pokémon
     clean_deck = None
     
@@ -358,19 +367,19 @@ def render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical):
         # Fall back to the standard sample deck
         render_sample_deck(energy_types, is_typical)
 
-def ensure_collected_decks(deck_name, set_name):
-    """Make sure we have collected decks for this archetype"""
-    from analyzer import collect_decks
+# def ensure_collected_decks(deck_name, set_name):
+#     """Make sure we have collected decks for this archetype"""
+#     from analyzer import collect_decks
     
-    # Check if we already have collected decks
-    deck_key = f"{deck_name}_{set_name}"
-    if 'collected_decks' not in st.session_state:
-        st.session_state.collected_decks = {}
+#     # Check if we already have collected decks
+#     deck_key = f"{deck_name}_{set_name}"
+#     if 'collected_decks' not in st.session_state:
+#         st.session_state.collected_decks = {}
     
-    if deck_key not in st.session_state.collected_decks:
-        # Collect decks since we don't have them yet
-        with st.spinner("Collecting deck data..."):
-            collect_decks(deck_name, set_name)
+#     if deck_key not in st.session_state.collected_decks:
+#         # Collect decks since we don't have them yet
+#         with st.spinner("Collecting deck data..."):
+#             collect_decks(deck_name, set_name)
 
 def render_variant_deck(variant_pokemon, energy_types, is_typical):
     """Find and render a deck containing the variant Pokemon"""
