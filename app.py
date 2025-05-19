@@ -123,33 +123,27 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 ui_helpers.display_banner("title_banner.png")
 
 # ========= FIRST APP RUN HANDLING =========
-# Initialize a session state flag to track if initial loading is complete
-if 'initial_load_complete' not in st.session_state:
-    st.session_state.initial_load_complete = False
-
-# Only do the heavy loading on first run
-if not st.session_state.initial_load_complete:
-    # Show loading spinner for entire app initialization
+# First-time initialization - only do heavy loading once
+if not st.session_state.app_state['initial_data_loaded']:
     with st.spinner("Loading app data..."):
-        # Load initial data - this is where the heavy lifting happens
         ui_helpers.load_initial_data()
-        # Add this line to preload Pokémon info for all decks
         from image_processor import preload_all_deck_pokemon_info
         preload_all_deck_pokemon_info()
-    
-    # Create sidebar
-    with st.spinner("Loading sidebar data..."):
-        ui_helpers.render_sidebar()
-    
-    # Mark initial loading as complete
-    st.session_state.initial_load_complete = True
-else:
-    # On subsequent reruns, just render the sidebar with existing data
-    # No spinners or heavy loading
-    ui_helpers.render_sidebar()
+        st.session_state.app_state['initial_data_loaded'] = True
 
-# ========= DECK SELECTION (happens on every run) =========
-# Create deck selector
+# Sidebar handling - only create fully on first load
+with st.sidebar:
+    # Always show the sidebar container, but only populate it once
+    if not st.session_state.app_state['sidebar_loaded']:
+        with st.spinner("Loading sidebar data..."):
+            ui_helpers.render_sidebar()
+            st.session_state.app_state['sidebar_loaded'] = True
+    else:
+        # On subsequent runs, use the cached sidebar content
+        # The sidebar will still be visible but won't be rerendered
+        pass
+
+# Create deck selector - this runs on every interaction
 selected_option = ui_helpers.create_deck_selector()
 
 # Main content area
