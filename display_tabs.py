@@ -1392,50 +1392,50 @@ def display_matchup_tab(deck_info=None):
         # First try with styled dataframe and images
         styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
         
-    st.dataframe(
-        styled_df,
-        use_container_width=True,
-        height=600,
-        column_config={
-            "Rank": st.column_config.NumberColumn(
-                "Rank",
-                help="Position in the list sorted by Win %",
-                width="20px",
-            ),
-            "Icon1": st.column_config.ImageColumn(
-                "Icon 1",
-                help="First Pokémon in the deck",
-                width="20px",
-            ),
-            "Icon2": st.column_config.ImageColumn(
-                "Icon 2", 
-                help="Second Pokémon in the deck",
-                width="20px",
-            ),
-            "Deck": st.column_config.TextColumn(
-                "Deck",
-                help="Opponent deck archetype"
-            ),
-            "Win %": st.column_config.NumberColumn(
-                "Win %",
-                help="Percentage of matches won against this deck",
-                format="%.1f%%",
-            ),
-            "Record": st.column_config.TextColumn(
-                "Record",
-                help="Win-Loss-Tie record against this deck"
-            ),
-            "Matches": st.column_config.NumberColumn(
-                "Matches",
-                help="Total number of matches played against this deck"
-            ),
-            "Matchup": st.column_config.TextColumn(
-                "Matchup",
-                help="Favorable: ≥60%, Unfavorable: <40%, Even: 40-59%"
-            )
-        },
-        hide_index=True
-    )
+        st.dataframe(
+            styled_df,
+            use_container_width=True,
+            height=600,
+            column_config={
+                "Rank": st.column_config.NumberColumn(
+                    "Rank",
+                    help="Position in the list sorted by Win %",
+                    width="20px",
+                ),
+                "Icon1": st.column_config.ImageColumn(
+                    "Icon 1",
+                    help="First Pokémon in the deck",
+                    width="20px",
+                ),
+                "Icon2": st.column_config.ImageColumn(
+                    "Icon 2", 
+                    help="Second Pokémon in the deck",
+                    width="20px",
+                ),
+                "Deck": st.column_config.TextColumn(
+                    "Deck",
+                    help="Opponent deck archetype"
+                ),
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    help="Percentage of matches won against this deck",
+                    format="%.1f%%",
+                ),
+                "Record": st.column_config.TextColumn(
+                    "Record",
+                    help="Win-Loss-Tie record against this deck"
+                ),
+                "Matches": st.column_config.NumberColumn(
+                    "Matches",
+                    help="Total number of matches played against this deck"
+                ),
+                "Matchup": st.column_config.TextColumn(
+                    "Matchup",
+                    help="Favorable: ≥60%, Unfavorable: <40%, Even: 40-59%"
+                )
+            },
+            hide_index=True
+        )
     except Exception as e:
         # Fallback to simpler version if there's an issue
         st.error(f"Error displaying styled dataframe with images: {str(e)}")
