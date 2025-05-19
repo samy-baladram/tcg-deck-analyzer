@@ -207,107 +207,123 @@ def render_sample_deck(energy_types, is_typical):
     else:
         st.info("No sample deck available")
 
-def render_variant_deck(deck_name, set_name, variant_pokemon, energy_types, is_typical):
-    """Find and render a deck containing the variant Pokemon or create a modified version"""
-    # Check if we have collected decks in session state
-    deck_key = f"{deck_name}_{set_name}"
+def render_variant_deck(results, deck_name, set_name, variant_pokemon, energy_types, is_typical):
+    """Find and render a deck containing the variant Pokemon directly from results DataFrame"""
+    from card_renderer import render_sidebar_deck
     
-    # Try to find a real deck with this Pokemon
-    found_real_deck = False
-    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
-        collected_data = st.session_state.collected_decks[deck_key]
+    # First, check if this Pokemon appears in the results
+    if 'card_name' not in results.columns:
+        st.warning("Results DataFrame does not contain card information")
+        return
+    
+    # Find the Pokemon in results
+    pokemon_name = variant_pokemon['card_name']
+    pokemon_rows = results[(results['card_name'] == pokemon_name) & (results['type'] == 'Pokemon')]
+    
+    if pokemon_rows.empty:
+        st.info(f"No decks found with {pokemon_name}")
+        return
+    
+    # Now we know this Pokemon appears in the dataset, find a specific deck with it
+    if 'deck_num' in results.columns:
+        # First, directly find a deck containing this Pokemon
+        decks_with_pokemon = results[
+            (results['card_name'] == pokemon_name) & 
+            (results['type'] == 'Pokemon')
+        ]['deck_num'].unique()
         
-        # Look for decks containing this Pokemon
-        for deck in collected_data['decks']:
-            # Check if deck contains this Pokemon
-            pokemon_in_deck = any(
-                card['card_name'].lower() == variant_pokemon['card_name'].lower() and 
-                card['type'] == 'Pokemon'
-                for card in deck['cards']
-            )
+        if len(decks_with_pokemon) > 0:
+            # Get the first deck with this Pokemon
+            sample_deck_num = decks_with_pokemon[0]
             
-            if pokemon_in_deck:
-                # Found a deck with this Pokemon - separate Pokemon and Trainer cards
-                pokemon_cards = []
-                trainer_cards = []
+            # Get all cards from this deck
+            deck_cards = results[results['deck_num'] == sample_deck_num]
+            
+            # Prepare the lists of Pokemon and Trainer cards
+            pokemon_cards = []
+            trainer_cards = []
+            
+            for _, card in deck_cards.iterrows():
+                card_dict = {
+                    'type': card['type'],
+                    'card_name': card['card_name'],
+                    'amount': int(card['majority']),  # Use majority count
+                    'set': card['set'],
+                    'num': card['num']
+                }
                 
-                for card in deck['cards']:
-                    card_copy = card.copy()  # Make a copy to avoid modifying the original
-                    if card['type'] == 'Pokemon':
-                        pokemon_cards.append(card_copy)
-                    else:
-                        trainer_cards.append(card_copy)
-                
-                # Display energy types if available
-                if energy_types:
-                    from energy_utils import render_energy_icons
-                    energy_html = render_energy_icons(energy_types, is_typical)
-                    st.markdown(energy_html, unsafe_allow_html=True)
-                
-                # Display a note about the actual deck
-                st.caption(f"Actual deck (#{deck['deck_num']+1}) containing {variant_pokemon['card_name']}")
-                
-                # Render the deck
-                from card_renderer import render_sidebar_deck
-                deck_html = render_sidebar_deck(
-                    pokemon_cards, 
-                    trainer_cards,
-                    card_width=70
-                )
-                st.markdown(deck_html, unsafe_allow_html=True)
-                
-                found_real_deck = True
-                break
-    
-    # If no real deck found, create a modified variant
-    if not found_real_deck:
-        # Get the sample deck
-        import cache_manager
-        from card_renderer import render_sidebar_deck
-        
-        sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
-        
-        if not sample_deck:
-            st.info("No sample deck available")
+                if card['type'] == 'Pokemon':
+                    pokemon_cards.append(card_dict)
+                else:
+                    trainer_cards.append(card_dict)
+            
+            # Display energy types if available
+            if energy_types:
+                from energy_utils import render_energy_icons
+                energy_html = render_energy_icons(energy_types, is_typical)
+                st.markdown(energy_html, unsafe_allow_html=True)
+            
+            # Show a note about this deck
+            st.caption(f"Actual deck (#{sample_deck_num+1}) containing {pokemon_name}")
+            
+            # Render the deck
+            deck_html = render_sidebar_deck(
+                pokemon_cards, 
+                trainer_cards,
+                card_width=70
+            )
+            st.markdown(deck_html, unsafe_allow_html=True)
             return
-        
-        # Create copies of the card lists to modify
-        pokemon_cards = sample_deck['pokemon_cards'].copy()
-        trainer_cards = sample_deck['trainer_cards'].copy()
-        
-        # Create variant card
-        variant_card = {
-            'type': 'Pokemon',
-            'card_name': variant_pokemon['card_name'],
-            'amount': 1,  # Assume 1 copy for sample
-            'set': variant_pokemon['set'],
-            'num': variant_pokemon['num']
-        }
-        
-        # Add the variant Pokemon to the deck (replace the least important Pokemon)
-        if len(pokemon_cards) > 0:
-            # Replace the last Pokemon (assuming it's the least important)
-            replaced_pokemon = pokemon_cards[-1]['card_name']
-            pokemon_cards[-1] = variant_card
-            st.caption(f"Modified sample with {variant_pokemon['card_name']} replacing {replaced_pokemon}")
-        else:
-            # Just add the Pokemon if there are none
-            pokemon_cards.append(variant_card)
-            st.caption(f"Added {variant_pokemon['card_name']} to the deck")
-        
-        # Display energy types if available
-        if energy_types:
-            from energy_utils import render_energy_icons
-            energy_html = render_energy_icons(energy_types, is_typical)
-            st.markdown(energy_html, unsafe_allow_html=True)
-        
-        # Render the modified deck
-        deck_html = render_sidebar_deck(
-            pokemon_cards, 
-            trainer_cards,
-            card_width=70
-        )
-        st.markdown(deck_html, unsafe_allow_html=True)
+    
+    # If we couldn't find a deck or the data structure is unexpected,
+    # fall back to the sample deck with the variant added
+    st.info(f"Could not find a complete deck with {pokemon_name}. Showing modified sample deck.")
+    
+    # Get the sample deck
+    import cache_manager
+    sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+    
+    if not sample_deck:
+        st.info("No sample deck available")
+        return
+    
+    # Create copies of the card lists to modify
+    pokemon_cards = sample_deck['pokemon_cards'].copy()
+    trainer_cards = sample_deck['trainer_cards'].copy()
+    
+    # Create variant card
+    variant_card = {
+        'type': 'Pokemon',
+        'card_name': pokemon_name,
+        'amount': 1,  # Assume 1 copy for sample
+        'set': variant_pokemon['set'],
+        'num': variant_pokemon['num']
+    }
+    
+    # Add the variant Pokemon to the deck (replace the least important Pokemon)
+    if len(pokemon_cards) > 0:
+        # Replace the last Pokemon (assuming it's the least important)
+        replaced_pokemon = pokemon_cards[-1]['card_name']
+        pokemon_cards[-1] = variant_card
+        st.caption(f"Modified sample with {pokemon_name} replacing {replaced_pokemon}")
+    else:
+        # Just add the Pokemon if there are none
+        pokemon_cards.append(variant_card)
+        st.caption(f"Added {pokemon_name} to the deck")
+    
+    # Display energy types if available
+    if energy_types:
+        from energy_utils import render_energy_icons
+        energy_html = render_energy_icons(energy_types, is_typical)
+        st.markdown(energy_html, unsafe_allow_html=True)
+    
+    # Render the modified deck
+    deck_html = render_sidebar_deck(
+        pokemon_cards, 
+        trainer_cards,
+        card_width=70
+    )
+    st.markdown(deck_html, unsafe_allow_html=True)
 
 def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options):
     """Display the deck composition section"""
