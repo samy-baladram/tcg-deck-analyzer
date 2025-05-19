@@ -1416,8 +1416,8 @@ def display_matchup_tab(deck_info=None):
             use_container_width=True,
             height=600,
             column_config={
-                "#": st.column_config.NumberColumn(
-                    "Rank",
+                "Rank": st.column_config.NumberColumn(
+                    "#",
                     help="Position in the list sorted by Win %",
                     width="20px",
                 ),
