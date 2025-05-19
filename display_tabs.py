@@ -1159,6 +1159,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     from bs4 import BeautifulSoup
     import pandas as pd
     from config import BASE_URL
+    import streamlit as st
     
     # Construct the URL for matchups
     url = f"{BASE_URL}/decks/{deck_name}/matchups/?game=POCKET&format=standard&set={set_name}"
@@ -1166,16 +1167,20 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     try:
         # Fetch the webpage
         response = requests.get(url)
-        response.raise_for_status()  # Raise exception for HTTP errors
+        
+        # Check if request was successful
+        if response.status_code != 200:
+            st.warning(f"Failed to fetch matchup data for {deck_name}: HTTP {response.status_code}")
+            return pd.DataFrame()
         
         # Parse the HTML
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Find the matchup table
+        # Find the matchup table - similar to how other tables are found in the codebase
         table = soup.find('table', class_='striped')
         
         if not table:
-            st.warning(f"No matchup data found for {deck_name}")
+            st.warning(f"No matchup table found for {deck_name}")
             return pd.DataFrame()
         
         # Extract table headers
@@ -1184,48 +1189,68 @@ def fetch_matchup_data(deck_name, set_name="A3"):
         if header_row:
             headers = [th.text.strip() for th in header_row.find_all(['th'])]
         
-        # Extract table data
+        # Process each data row
         rows = []
         for row in table.find_all('tr')[1:]:  # Skip header row
             cells = row.find_all(['td'])
             
-            if not cells or len(cells) < 4:  # Ensure we have at least 4 cells
+            # Skip rows with insufficient cells
+            if len(cells) < 4:  
                 continue
-                
-            # Extract the opponent deck name
-            opponent_link = cells[0].find('a')
-            opponent_name = opponent_link.text.strip() if opponent_link else cells[0].text.strip()
             
-            # Extract raw deck name from URL if available
+            # Extract opponent deck name (first column)
+            opponent_cell = cells[0]
+            opponent_link = opponent_cell.find('a')
+            opponent_name = opponent_link.text.strip() if opponent_link else opponent_cell.text.strip()
+            
+            # Extract raw deck name from URL
             opponent_deck_name = ""
             if opponent_link and 'href' in opponent_link.attrs:
                 href = opponent_link['href']
-                # Extract deck name from URL pattern /decks/deck-name/
                 import re
                 match = re.search(r'/decks/([^/]+)/', href)
                 if match:
                     opponent_deck_name = match.group(1)
             
-            # Extract win-loss record (format: "W-L-T")
-            record_text = cells[1].text.strip()
+            # Extract record (second column) - format: W-L-T
+            record_cell = cells[1]
+            record_text = record_cell.text.strip()
             wins, losses, ties = 0, 0, 0
-            if record_text:
-                record_parts = record_text.split('-')
-                wins = int(record_parts[0]) if len(record_parts) > 0 and record_parts[0].isdigit() else 0
-                losses = int(record_parts[1]) if len(record_parts) > 1 and record_parts[1].isdigit() else 0
-                ties = int(record_parts[2]) if len(record_parts) > 2 and record_parts[2].isdigit() else 0
             
-            # Extract win percentage (remove % sign)
-            win_pct_text = cells[2].text.strip()
+            if record_text and '-' in record_text:
+                parts = record_text.split('-')
+                if len(parts) >= 3:
+                    try:
+                        wins = int(parts[0])
+                        losses = int(parts[1])
+                        ties = int(parts[2])
+                    except ValueError:
+                        # Handle non-numeric values
+                        pass
+            
+            # Extract win percentage (third column)
+            win_pct_cell = cells[2]
+            win_pct_text = win_pct_cell.text.strip()
             win_pct = 0.0
-            if win_pct_text:
-                win_pct = float(win_pct_text.rstrip('%')) if win_pct_text.rstrip('%').replace('.', '', 1).isdigit() else 0.0
             
-            # Extract games played
+            if win_pct_text and '%' in win_pct_text:
+                try:
+                    win_pct = float(win_pct_text.replace('%', ''))
+                except ValueError:
+                    # Handle non-numeric values
+                    pass
+            
+            # Extract games played (fourth column)
+            games_cell = cells[3]
+            games_text = games_cell.text.strip()
             games_played = 0
-            if len(cells) > 3:
-                games_text = cells[3].text.strip()
-                games_played = int(games_text) if games_text.isdigit() else 0
+            
+            if games_text:
+                try:
+                    games_played = int(games_text)
+                except ValueError:
+                    # Handle non-numeric values
+                    pass
             
             # Create row data
             row_data = {
@@ -1240,17 +1265,22 @@ def fetch_matchup_data(deck_name, set_name="A3"):
             
             rows.append(row_data)
         
-        # Create DataFrame
+        # Create DataFrame from all row data
         df = pd.DataFrame(rows)
         
+        if df.empty:
+            st.info(f"No matchup data found for {deck_name}")
+            return df
+        
         # Sort by win percentage (descending)
-        if not df.empty and 'win_pct' in df.columns:
-            df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
+        df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
         
         return df
         
     except Exception as e:
         st.error(f"Error fetching matchup data for {deck_name}: {str(e)}")
+        import traceback
+        st.error(traceback.format_exc())
         return pd.DataFrame()
 
 def display_matchup_tab(deck_info=None):
