@@ -11,8 +11,8 @@ from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
 
 # In analyzer.py - Modify analyze_deck function
-def analyze_deck(deck_name, set_name="A3"):
-    """Main analysis function for a deck archetype"""
+def collect_decks(deck_name, set_name="A3"):
+    """Collect all decks for an archetype and store their data"""
     # Get all decklist URLs
     urls = get_deck_urls(deck_name, set_name)
     
@@ -20,10 +20,9 @@ def analyze_deck(deck_name, set_name="A3"):
     progress_bar = st.progress(0)
     status_text = st.empty()
     
-    # Extract cards from all decks
-    all_cards = []
-    all_energy_types = set()  # We'll collect energy types here
-    deck_energy_data = []     # Track energy types per deck
+    # Initialize collection for all decks
+    all_decks = []
+    all_energy_types = set()
     
     for i, url in enumerate(urls):
         progress_bar.progress((i + 1) / len(urls))
@@ -32,37 +31,84 @@ def analyze_deck(deck_name, set_name="A3"):
         # Get cards and energy types
         cards_result = extract_cards(url)
         
-        # Handle both the old format (just cards) and new format (cards, energy_types)
+        # Handle both formats
         if isinstance(cards_result, tuple) and len(cards_result) == 2:
             cards, energy_types = cards_result
-            # Add energy types to the set
-            if energy_types:
-                #all_energy_types.update(energy_types)
-                st.session_state.deck_num = i  # Add this line
-        
-                # Track this specific deck's energy types
-                from energy_utils import track_per_deck_energy
-                track_per_deck_energy(deck_name, i, energy_types)
-                
-                # Also save for display
-                deck_energy_data.append({
-                    'deck_num': i,
-                    'energy_types': sorted(energy_types)
-                })
         else:
             # Old format or no energy types
             cards = cards_result
+            energy_types = []
         
-        # Add deck_num to each card
-        for card in cards:
-            card['deck_num'] = i
+        # Add energy types to the global set
+        if energy_types:
+            all_energy_types.update(energy_types)
+            
+            # Track per-deck energy
+            from energy_utils import track_per_deck_energy
+            track_per_deck_energy(deck_name, i, energy_types)
         
-        all_cards.extend(cards)
+        # Create deck entry
+        deck_data = {
+            'deck_num': i,
+            'cards': cards,
+            'energy_types': energy_types,
+            'url': url
+        }
+        
+        # Add to collection
+        all_decks.append(deck_data)
         
         time.sleep(0.3)  # Be nice to the server
     
     progress_bar.empty()
     status_text.empty()
+    
+    # Store collected decks in session state for future use
+    if 'collected_decks' not in st.session_state:
+        st.session_state.collected_decks = {}
+    
+    deck_key = f"{deck_name}_{set_name}"
+    st.session_state.collected_decks[deck_key] = {
+        'decks': all_decks,
+        'all_energy_types': list(all_energy_types),
+        'total_decks': len(urls)
+    }
+    
+    # Return collected data
+    return all_decks, list(all_energy_types), len(urls)
+
+def analyze_deck(deck_name, set_name="A3"):
+    """Main analysis function for a deck archetype"""
+    # Check if decks have already been collected
+    deck_key = f"{deck_name}_{set_name}"
+    
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        # Use existing collected data
+        collected_data = st.session_state.collected_decks[deck_key]
+        all_decks = collected_data['decks']
+        all_energy_types = collected_data['all_energy_types']
+        total_decks = collected_data['total_decks']
+    else:
+        # Collect decks if not already done
+        all_decks, all_energy_types, total_decks = collect_decks(deck_name, set_name)
+    
+    # Prepare all cards for analysis
+    all_cards = []
+    deck_energy_data = []
+    
+    for deck in all_decks:
+        # Add deck_num to cards
+        for card in deck['cards']:
+            card['deck_num'] = deck['deck_num']
+        
+        all_cards.extend(deck['cards'])
+        
+        # Add energy data for display
+        if deck['energy_types']:
+            deck_energy_data.append({
+                'deck_num': deck['deck_num'],
+                'energy_types': sorted(deck['energy_types'])
+            })
     
     # Create dataframe and analyze
     df = pd.DataFrame(all_cards)
@@ -74,7 +120,6 @@ def analyze_deck(deck_name, set_name="A3"):
     ).reset_index()
     
     # Calculate percentages
-    total_decks = len(urls)
     grouped['pct_1'] = (grouped['count_1'] / total_decks * 100).astype(int)
     grouped['pct_2'] = (grouped['count_2'] / total_decks * 100).astype(int)
     grouped['pct_total'] = grouped['pct_1'] + grouped['pct_2']
@@ -98,21 +143,19 @@ def analyze_deck(deck_name, set_name="A3"):
     # Analyze variants
     variant_df = analyze_variants(grouped, df)
     
-    # Convert energy types to a list if not empty
-    energy_types_list = list(all_energy_types) if all_energy_types else []
-    
     # Store energy types in session state for the archetype
-    if energy_types_list:
+    if all_energy_types:
         from energy_utils import store_energy_types
-        store_energy_types(deck_name, energy_types_list)
+        store_energy_types(deck_name, all_energy_types)
     
-    # Use only the parameters that the original function expects
+    # Save to disk cache
     save_analyzed_deck_components(
-        deck_name, 
-        set_name, 
-        grouped, 
-        total_decks, 
-        variant_df
+        deck_name,
+        set_name,
+        grouped,
+        total_decks,
+        variant_df,
+        all_energy_types
     )
     
     # Store the deck energy data in session state for debugging
@@ -122,8 +165,7 @@ def analyze_deck(deck_name, set_name="A3"):
         st.session_state.deck_energy_data[deck_name] = deck_energy_data
     
     # Return the traditional tuple format for backward compatibility
-    #return grouped, total_decks, variant_df
-    return grouped, total_decks, variant_df, list(all_energy_types) if all_energy_types else []
+    return grouped, total_decks, variant_df, all_energy_types
     
 
 def build_deck_template(analysis_df):
