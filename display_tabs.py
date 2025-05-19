@@ -172,6 +172,80 @@ def render_sample_deck(energy_types, is_typical):
         st.markdown(deck_html, unsafe_allow_html=True)
     else:
         st.info("No sample deck available")
+
+def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options):
+    """Display the deck composition section"""
+    # Create header
+    st.write("### Deck Composition", unsafe_allow_html=True)
+    if energy_types:
+        # Render energy icons for header
+        energy_html = ""
+        for energy in energy_types:
+            energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+            energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
+        
+        # Create header with energy types
+        archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
+        core_cards_header = f"""##### Core Cards <span style="font-size: 1rem; font-weight: normal;">(Energy: {energy_html}{archetype_note})</span>"""
+    else:
+        # Just "Core Cards" if no energy found
+        core_cards_header = "##### Core Cards"
+    
+    # Display the header
+    st.write(core_cards_header, unsafe_allow_html=True)
+    
+    # Create single column card grid renderer with larger card size
+    from card_renderer import CardGrid
+    
+    # Core Cards: Pokemon and Trainer in columns with 1:2 ratio
+    core_col1, core_col2 = st.columns([1, 2])
+    
+    with core_col1:
+        # Pokemon cards section
+        st.write("###### Pokémon")
+        pokemon_grid = CardGrid(card_width=65, gap=4)
+        pokemon_grid.add_cards_from_dict(deck_info['Pokemon'], repeat_by_count=True)
+        pokemon_grid.display()
+    
+    with core_col2:
+        # Trainer cards section
+        st.write("###### Trainer")
+        trainer_grid = CardGrid(card_width=65, gap=4)
+        trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
+        trainer_grid.display()
+    
+    # Flexible slots section
+    remaining = 20 - total_cards
+    st.write("<br>", unsafe_allow_html=True)
+    st.write(f"##### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+    
+    # Sort options by usage percentage (descending) and split by type
+    pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
+    trainer_options = options[options['type'] == 'Trainer'].sort_values(by='display_usage', ascending=False)
+    
+    # Flexible Slots: Pokemon and Trainer options in columns with 1:2 ratio
+    flex_options_available = not pokemon_options.empty or not trainer_options.empty
+    
+    if flex_options_available:
+        flex_col1, flex_col2 = st.columns([1, 2])
+        
+        with flex_col1:
+            # Only show Pokemon options if there are any
+            if not pokemon_options.empty:
+                st.write("###### Pokémon Options")
+                pokemon_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
+                pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
+                pokemon_options_grid.display()
+        
+        with flex_col2:
+            # Only show Trainer options if there are any
+            if not trainer_options.empty:
+                st.write("###### Trainer Options")
+                trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
+                trainer_options_grid.add_cards_from_dataframe(trainer_options)
+                trainer_options_grid.display()
+    else:
+        st.info("No flexible options available for this deck.")
         
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
