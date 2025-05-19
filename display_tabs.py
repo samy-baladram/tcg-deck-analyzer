@@ -1143,121 +1143,8 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     return table_html
 
 # Add these functions to display_tabs.py
-def fetch_matchup_data(deck_name, set_name="A3"):
-    """
-    Fetch matchup data for a specific deck from Limitless TCG.
-    
-    Args:
-        deck_name: The name of the deck (e.g., "giratina-ex-a2b-greninja-a1")
-        set_name: The set name (default: "A3")
-        
-    Returns:
-        DataFrame containing matchup data or empty DataFrame if not found
-    """
-    import requests
-    from bs4 import BeautifulSoup
-    import pandas as pd
-    import re
-    from config import BASE_URL
-    import streamlit as st
-    
-    # Construct the URL for matchups
-    url = f"{BASE_URL}/decks/{deck_name}/matchups/?game=POCKET&format=standard&set={set_name}"
-    
-    try:
-        # Fetch the webpage
-        response = requests.get(url)
-        if response.status_code != 200:
-            return pd.DataFrame()
-        
-        # Parse the HTML
-        soup = BeautifulSoup(response.text, 'html.parser')
-        table = soup.find('table', class_='striped')
-        
-        if not table:
-            return pd.DataFrame()
-        
-        # Process each data row
-        rows = []
-        for row in table.find_all('tr')[1:]:  # Skip header row
-            cells = row.find_all(['td'])
-            if len(cells) < 5:
-                continue
-            
-            # Extract opponent deck display name
-            opponent_display_name = cells[1].text.strip()
-            
-            # Extract opponent deck raw name from URL
-            opponent_deck_name = ""
-            opponent_link = cells[1].find('a')
-            
-            if opponent_link and 'href' in opponent_link.attrs:
-                href = opponent_link['href']
-                match = re.search(r'/matchups/([^/?]+)', href)
-                if match:
-                    opponent_deck_name = match.group(1)
-                else:
-                    match = re.search(r'/decks/([^/?]+)', href)
-                    if match:
-                        opponent_deck_name = match.group(1)
-            
-            # Extract matches played
-            matches_played = 0
-            try:
-                matches_played = int(cells[2].text.strip())
-            except ValueError:
-                pass
-            
-            # Extract record
-            record_text = cells[3].text.strip()
-            wins, losses, ties = 0, 0, 0
-            
-            win_match = re.search(r'^(\d+)', record_text)
-            loss_match = re.search(r'-\s*(\d+)\s*-', record_text)
-            tie_match = re.search(r'-\s*(\d+)$', record_text)
-            
-            if win_match: wins = int(win_match.group(1))
-            if loss_match: losses = int(loss_match.group(1))
-            if tie_match: ties = int(tie_match.group(1))
-            
-            # Extract win percentage
-            win_pct = 0.0
-            try:
-                win_pct = float(cells[4].text.strip().replace('%', ''))
-            except ValueError:
-                pass
-            
-            # Create row data
-            row_data = {
-                'opponent_name': opponent_display_name,
-                'opponent_deck_name': opponent_deck_name,
-                'wins': wins,
-                'losses': losses,
-                'ties': ties,
-                'win_pct': win_pct,
-                'matches_played': matches_played
-            }
-            
-            rows.append(row_data)
-        
-        # Create DataFrame from all row data
-        df = pd.DataFrame(rows)
-        
-        if not df.empty:
-            df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
-        
-        return df
-        
-    except Exception as e:
-        return pd.DataFrame()
-
 def display_matchup_tab(deck_info=None):
-    """
-    Display the Matchup tab with detailed matchup data.
-    
-    Args:
-        deck_info: Dictionary containing deck information (optional)
-    """
+    """Display the Matchup tab with detailed matchup data."""
     st.subheader("Matchup Analysis")
     import pandas as pd
     import re
@@ -1274,9 +1161,9 @@ def display_matchup_tab(deck_info=None):
         return
     
     # Fetch matchup data
-    original_matchup_df = fetch_matchup_data(deck_name, set_name)
+    matchup_df = fetch_matchup_data(deck_name, set_name)
     
-    if original_matchup_df.empty:
+    if matchup_df.empty:
         st.info(f"No matchup data available for {deck_name}.")
         return
     
@@ -1288,107 +1175,55 @@ def display_matchup_tab(deck_info=None):
     # Show filter option
     show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
     
-    # Create a working copy
-    working_df = original_matchup_df.copy()
-    
     # Only apply filtering if we have meta decks and user wants filtering
     if meta_decks and not show_all:
         # Add lowercase versions for better matching
-        working_df['deck_name_lower'] = working_df['opponent_deck_name'].str.lower()
+        matchup_df['deck_name_lower'] = matchup_df['opponent_deck_name'].str.lower()
         meta_decks_lower = [d.lower() for d in meta_decks]
         
         # Apply filter
-        filtered_df = working_df[working_df['deck_name_lower'].isin(meta_decks_lower)]
+        filtered_df = matchup_df[matchup_df['deck_name_lower'].isin(meta_decks_lower)]
         
         # Use filtered data if we found matches
         if not filtered_df.empty:
-            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {len(working_df)} total matchups)")
-            working_df = filtered_df.drop(columns=['deck_name_lower'])
+            st.success(f"Filtered to show {len(filtered_df)} meta decks (out of {len(matchup_df)} total matchups)")
+            matchup_df = filtered_df
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
-            working_df = working_df.drop(columns=['deck_name_lower'])
     
-    # Define the exceptions dictionary for special Pokémon names
-    pokemon_exceptions = {
-        'oricorio': 'oricorio-pom-pom'
-    }
-    
-    # Function to extract Pokémon names and create image URLs
-    def extract_pokemon_urls(displayed_name):
-        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        parts = re.split(r'[\s/]+', clean_name)
-        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-        pokemon_names = []
-        
-        for part in parts:
-            part = part.lower()
-            if part and part not in suffixes:
-                if part in pokemon_exceptions:
-                    part = pokemon_exceptions[part]
-                pokemon_names.append(part)
-                if len(pokemon_names) >= 2:
-                    break
-        
-        urls = []
-        for name in pokemon_names:
-            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-        
-        # Ensure we have exactly 2 elements
-        while len(urls) < 2:
-            urls.append(None)
-            
-        return urls[0], urls[1]
-    
-    # Apply the function to extract Pokémon image URLs
-    working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
-        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
-        axis=1
-    )
+    # Drop the working column if it exists
+    if 'deck_name_lower' in matchup_df.columns:
+        matchup_df = matchup_df.drop(columns=['deck_name_lower'])
     
     # Create display DataFrame
     final_df = pd.DataFrame()
-    final_df['Rank'] = range(1, len(working_df) + 1)
-    final_df['Icon1'] = working_df['pokemon_url1']
-    final_df['Icon2'] = working_df['pokemon_url2']
-    final_df['Deck'] = working_df['opponent_name']
-    final_df['Win %'] = working_df['win_pct']
-    final_df['Record'] = working_df.apply(
+    final_df['Rank'] = range(1, len(matchup_df) + 1)
+    final_df['Deck'] = matchup_df['opponent_name']
+    final_df['Win %'] = matchup_df['win_pct']
+    final_df['Record'] = matchup_df.apply(
         lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
     )
-    final_df['Matches'] = working_df['matches_played']
-    
-    # Add a "Matchup" column to indicate favorability
-    final_df['Matchup'] = working_df['win_pct'].apply(
+    final_df['Matches'] = matchup_df['matches_played']
+    final_df['Matchup'] = matchup_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Display dataframe with proper column configuration for icons
+    # Display dataframe
     st.dataframe(
         final_df,
         use_container_width=True,
         height=600,
         column_config={
-            "Win %": st.column_config.NumberColumn(
-                "Win %",
-                format="%.1f%%",
-            ),
-            "Icon1": st.column_config.ImageColumn(
-                "Icon 1",
-                help="First Pokémon in the deck",
-            ),
-            "Icon2": st.column_config.ImageColumn(
-                "Icon 2",
-                help="Second Pokémon in the deck",
-            ),
+            "Win %": st.column_config.NumberColumn("Win %", format="%.1f%%"),
         },
         hide_index=True
     )
     
     # Calculate overall statistics
-    if not working_df.empty:
-        total_wins = working_df['wins'].sum()
-        total_losses = working_df['losses'].sum()
-        total_ties = working_df['ties'].sum()
+    if not matchup_df.empty:
+        total_wins = matchup_df['wins'].sum()
+        total_losses = matchup_df['losses'].sum()
+        total_ties = matchup_df['ties'].sum()
         total_games = total_wins + total_losses + total_ties
         overall_win_pct = round((total_wins / total_games * 100), 1) if total_games > 0 else 0
         
