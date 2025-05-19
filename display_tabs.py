@@ -1254,15 +1254,12 @@ def fetch_matchup_data(deck_name, set_name="A3"):
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
-    
-    Args:
-        deck_info: Dictionary containing deck information (optional)
     """
     st.subheader("Matchup Analysis")
     import pandas as pd
     import re
     
-    # Use current deck if none provided
+    # Get deck information
     if not deck_info and 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
         set_name = st.session_state.analyze.get('set_name', 'A3')
@@ -1307,25 +1304,57 @@ def display_matchup_tab(deck_info=None):
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
+    elif 'deck_name_lower' in working_df.columns:
+        # Ensure deck_name_lower is dropped even if not filtering
+        working_df = working_df.drop(columns=['deck_name_lower'])
     
-    # Create completely new display DataFrame with simple types only
-    simple_df = pd.DataFrame()
-    simple_df['Rank'] = range(1, len(working_df) + 1)
-    simple_df['Deck'] = working_df['opponent_name']
-    simple_df['Win_Pct'] = working_df['win_pct'].round(1).astype(str) + '%'
-    simple_df['Record'] = working_df.apply(
+    # Process data for display
+    # Create display DataFrame
+    final_df = pd.DataFrame()
+    final_df['Rank'] = range(1, len(working_df) + 1)
+    
+    # Add Pokémon icons
+    final_df['Icon1'] = working_df['pokemon_url1']
+    final_df['Icon2'] = working_df['pokemon_url2']
+    
+    final_df['Deck'] = working_df['opponent_name']
+    final_df['Win %'] = working_df['win_pct']
+    final_df['Record'] = working_df.apply(
         lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
     )
-    simple_df['Matches'] = working_df['matches_played']
+    final_df['Matches'] = working_df['matches_played']
     
-    # Add a simple text version of matchup favorability
-    simple_df['Matchup'] = working_df['win_pct'].apply(
+    # Add a "Matchup" column to indicate favorability
+    final_df['Matchup'] = working_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Use the most basic display method
+    # Display the dataframe with column configuration
     st.write("Matchup Data:")
-    st.write(simple_df)
+    st.dataframe(
+        final_df,
+        use_container_width=True,
+        height=600,
+        column_config={
+            "Win %": st.column_config.NumberColumn(format="%.1f%%"),
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1", 
+                help="First Pokémon in the deck",
+                width="20px",
+            ),
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2",
+                help="Second Pokémon in the deck",
+                width="20px",
+            ),
+            "Matchup": st.column_config.SelectboxColumn(
+                help="Favorability of the matchup",
+                options=["Favorable", "Even", "Unfavorable"],
+                required=True,
+            )
+        },
+        hide_index=True
+    )
     
     # Calculate overall statistics
     if not working_df.empty:
