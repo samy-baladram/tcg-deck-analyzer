@@ -2,7 +2,7 @@
 """Main Streamlit application for TCG Deck Analyzer"""
 
 import streamlit as st
-
+import os
 # Import helper modules
 import ui_helpers
 import cache_manager
