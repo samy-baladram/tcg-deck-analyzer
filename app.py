@@ -135,10 +135,7 @@ if not st.session_state.app_state['initial_data_loaded']:
         from image_processor import preload_all_deck_pokemon_info
         preload_all_deck_pokemon_info()
         st.session_state.app_state['initial_data_loaded'] = True
-
-# Always render the sidebar, but content is cached after first load
-with st.spinner("Loading sidebar data..."):
-    ui_helpers.render_sidebar()
+        ui_helpers.render_sidebar()
 
 # Create deck selector
 selected_option = ui_helpers.create_deck_selector()
