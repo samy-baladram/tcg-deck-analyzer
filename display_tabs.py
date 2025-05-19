@@ -661,72 +661,65 @@ def display_metagame_tab():
     # Create a cleaned, displayable version of the data
     display_df = performance_df.copy()
     
-    # Calculate win rate for easier understanding
+    # Calculate win rate
     display_df['win_rate'] = round((display_df['total_wins'] / (display_df['total_wins'] + display_df['total_losses'] + display_df['total_ties'])) * 100, 1)
     
-    # Format columns for display
+    # Format numerical columns
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
     
+    # Add an indicator emoji for the current deck
+    display_df['displayed_name'] = display_df.apply(
+        lambda row: f"➡️ {row['displayed_name']}" if row['deck_name'] == current_deck_name else row['displayed_name'], 
+        axis=1
+    )
+
     # Define the exceptions dictionary for special Pokémon names
     pokemon_exceptions = {
         'oricorio': 'oricorio-pom-pom'
     }
     
-    # Function to extract Pokémon names and generate image URLs
-    def get_pokemon_image_urls(deck_name, displayed_name):
-        # Extract Pokémon names from displayed_name
+    # Extract Pokémon names and create image URLs
+    def extract_pokemon_urls(displayed_name):
+        # Remove content in parentheses and clean
         clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        pokemon_parts = re.split(r'[\s/]+', clean_name)
         
-        # Filter out common suffixes that aren't Pokémon names
-        suffixes_to_remove = ['ex', 'v', 'vmax', 'vstar', 'gx']
+        # Split by spaces and slashes
+        parts = re.split(r'[\s/]+', clean_name)
+        
+        # Filter out suffixes
+        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
         pokemon_names = []
         
-        i = 0
-        while i < len(pokemon_parts):
-            if not pokemon_parts[i]:
-                i += 1
-                continue
+        for part in parts:
+            part = part.lower()
+            if part and part not in suffixes:
+                # Apply exceptions
+                if part in pokemon_exceptions:
+                    part = pokemon_exceptions[part]
                 
-            if pokemon_parts[i].lower() not in suffixes_to_remove:
-                pokemon_name = pokemon_parts[i].lower()
-                
-                # Apply exceptions if needed
-                if pokemon_name in pokemon_exceptions:
-                    pokemon_name = pokemon_exceptions[pokemon_name]
-                    
-                pokemon_names.append(pokemon_name)
+                pokemon_names.append(part)
                 
                 # Limit to 2 Pokémon
                 if len(pokemon_names) >= 2:
                     break
-                    
-            i += 1
         
-        # Generate URLs for up to 2 Pokémon
+        # Create URLs
         urls = []
-        for pokemon in pokemon_names:
-            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{pokemon}.png")
+        for name in pokemon_names:
+            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
             
-        # Ensure we return a list of exactly 2 elements (with None for missing Pokémon)
+        # Ensure we have exactly 2 elements
         while len(urls) < 2:
             urls.append(None)
             
-        return urls
+        return urls[0], urls[1]  # Return as separate values
     
-    # Generate Pokémon image URLs
-    display_df['pokemon_images'] = display_df.apply(
-        lambda row: get_pokemon_image_urls(row['deck_name'], row['displayed_name']), 
+    # Apply the function to extract Pokémon image URLs
+    display_df[['pokemon_url1', 'pokemon_url2']] = display_df.apply(
+        lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
         axis=1
     )
-    
-    # Extract the first and second Pokémon image URLs
-    display_df['pokemon_image1'] = display_df['pokemon_images'].apply(lambda x: x[0] if x else None)
-    display_df['pokemon_image2'] = display_df['pokemon_images'].apply(lambda x: x[1] if len(x) > 1 else None)
-    
-    # Create indicator for highlighting
-    display_df['is_current'] = display_df['deck_name'] == current_deck_name
     
     # Select and rename columns for display
     display_cols = {
@@ -743,43 +736,14 @@ def display_metagame_tab():
     # Create final display dataframe
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
     
-    # Add Rank column based on the index
+    # Add Rank column
     final_df.insert(0, 'Rank', range(1, len(final_df) + 1))
     
-    # Add the two Pokémon image columns after Rank
-    final_df.insert(1, 'Icon1', display_df['pokemon_image1'])
-    final_df.insert(2, 'Icon2', display_df['pokemon_image2'])
+    # Add Pokémon image columns
+    final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
+    final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
     
-    # For styling, we need to ensure the image columns won't be colored
-    # Create a copy of the dataframe for styling
-    styling_df = final_df.copy()
-    styling_df['Icon1'] = None  # Replace with None to not affect styling
-    styling_df['Icon2'] = None  # Replace with None to not affect styling
-    
-    # Create a styling function that works with DataFrame.style
-    def highlight_current_deck(df):
-        # Create an empty styles DataFrame with same shape as input
-        styles = pd.DataFrame('', index=df.index, columns=df.columns)
-        
-        # Find the rows where deck_name matches current_deck_name
-        is_current = display_df['is_current']
-        
-        # Apply background color to all cells in the matching rows
-        for col in styles.columns:
-            styles.loc[is_current, col] = 'background-color: rgba(0, 208, 255, 0.15)'
-            
-        return styles
-    
-    # Apply styling to the copy
-    styled_df = styling_df.style.apply(highlight_current_deck, axis=None)
-    
-    # Now transfer the styling to the original dataframe with image columns
-    # (This is a workaround since we're not directly styling the image columns)
-    final_df = styled_df.data  # Get the data back
-    final_df['Icon1'] = display_df['pokemon_image1']  # Restore image columns
-    final_df['Icon2'] = display_df['pokemon_image2']
-    
-    # Display the dataframe with custom column config
+    # Display dataframe with column configuration
     st.dataframe(
         final_df,
         use_container_width=True,
