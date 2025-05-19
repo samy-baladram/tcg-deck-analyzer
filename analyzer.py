@@ -4,12 +4,58 @@
 import pandas as pd
 import time
 import streamlit as st
-from scraper import get_deck_urls, extract_cards
+from scraper import get_deck_urls, extract_cards, get_deck_performance_data
 from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD
 from utils import is_flexible_core, calculate_display_usage, format_card_display
 from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
 
+
+def analyze_recent_performance(raw_performance_data=None):
+    """
+    Analyze the recent performance of popular decks
+    Can either fetch new data or use provided raw_performance_data
+    """
+    if raw_performance_data is None:
+        # Import from scraper if not provided
+        from scraper import get_deck_performance_data
+        raw_performance_data = get_deck_performance_data()
+    
+    # Process the raw data (analysis logic stays here)
+    results = []
+    
+    for deck_data in raw_performance_data:
+        # Extract performance data
+        performance = deck_data['performance']
+        
+        # Calculate totals
+        total_wins = performance['wins'].sum()
+        total_losses = performance['losses'].sum()
+        total_ties = performance['ties'].sum()
+        tournaments_played = len(performance['tournament_id'])
+        
+        # Calculate Power Index and other metrics
+        # [Current implementation]
+        
+        results.append({
+            'deck_name': deck_data['deck_name'],
+            'displayed_name': deck_data['displayed_name'],
+            'share': deck_data['share'],
+            'set': deck_data['set'],
+            'total_wins': total_wins,
+            'total_losses': total_losses,
+            'total_ties': total_ties,
+            'tournaments_played': tournaments_played,
+            'power_index': power_index
+        })
+    
+    # Convert to DataFrame and sort
+    results_df = pd.DataFrame(results)
+    if not results_df.empty:
+        results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
+    
+    return results_df
+    
 # In analyzer.py - Modify analyze_deck function
 def collect_decks(deck_name, set_name="A3"):
     """Collect all decks for an archetype and store their data"""
