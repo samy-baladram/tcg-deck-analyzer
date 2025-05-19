@@ -130,11 +130,10 @@ ui_helpers.display_banner("title_banner.png")
 
 # First-time initialization - only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
-    with st.spinner("Loading app data..."):
-        ui_helpers.load_initial_data()
-        from image_processor import preload_all_deck_pokemon_info
-        preload_all_deck_pokemon_info()
-        st.session_state.app_state['initial_data_loaded'] = True
+    ui_helpers.load_initial_data()
+    from image_processor import preload_all_deck_pokemon_info
+    preload_all_deck_pokemon_info()
+    st.session_state.app_state['initial_data_loaded'] = True
 
 ui_helpers.render_sidebar()
 
