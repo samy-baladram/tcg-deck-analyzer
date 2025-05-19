@@ -1419,7 +1419,7 @@ def display_matchup_tab(deck_info=None):
                 "Rank": st.column_config.NumberColumn(
                     "#",
                     help="Position in the list sorted by Win %",
-                    width="20px",
+                    width="8px",
                 ),
                 "Icon1": st.column_config.ImageColumn(
                     "Icon 1",
