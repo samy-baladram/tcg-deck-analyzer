@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 import math
-from config import BASE_URL, TOURNAMENT_COUNT
+from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE
+
 
 def get_deck_list():
     """Get all available decks with their share percentages"""
@@ -312,6 +313,7 @@ def get_new_tournament_ids(previous_ids):
     new_ids = [id for id in current_ids if id not in prev_id_set]
     return new_ids
 
+# For the get_affected_decks function
 def get_affected_decks(new_tournament_ids, player_tournament_mapping):
     """
     Find decks affected by new tournaments
@@ -326,15 +328,21 @@ def get_affected_decks(new_tournament_ids, player_tournament_mapping):
     affected_decks = set()
     new_id_set = set(new_tournament_ids)
     
+    # Add comment explaining the expected key format
+    # player_tournament_mapping keys should be formatted as "player_id:tournament_id"
     for key, deck_name in player_tournament_mapping.items():
-        # Key format is "player_id:tournament_id"
         parts = key.split(':')
         if len(parts) == 2:
-            tournament_id = parts[1]
+            player_id, tournament_id = parts
             if tournament_id in new_id_set:
                 affected_decks.add(deck_name)
     
     return affected_decks
+
+# Helper function to create consistent mapping keys
+def create_mapping_key(player_id, tournament_id):
+    """Create a consistent key for player-tournament mappings"""
+    return f"{player_id}:{tournament_id}"
 
 
 def get_deck_performance_data():
