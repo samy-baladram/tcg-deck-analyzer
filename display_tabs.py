@@ -1398,11 +1398,11 @@ def display_matchup_tab(deck_info=None):
     def highlight_matchups(val):
         """Apply colors to matchup column values"""
         if val == "Favorable":
-            return 'background-color: rgba(0, 100, 0, 0.4)'  # Light green
+            return 'background-color: rgba(100, 200, 100, 0.4)'  # Light green
         elif val == "Unfavorable":
-            return 'background-color: rgba(125, 0, 0, 0.4)'  # Light red
+            return 'background-color: rgba(255, 100, 100, 0.4)'  # Light red
         else:
-            return 'background-color: rgba(125, 125, 0, 0.2)'  # Light yellow
+            return 'background-color: rgba(255, 255, 100, 0.2)'  # Light yellow
     
     # Display the enhanced data table with all rows
     st.write("### Matchup Data")
