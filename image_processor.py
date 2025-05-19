@@ -137,7 +137,6 @@ def apply_diagonal_cut(image, cut_type):
         # Import ImageOps for flipping
         # Flip the image vertically (mirror)
         image = ImageOps.mirror(image)
-        image = ImageOps.mirror(image)
         
     # Get image dimensions
     width, height = image.size
