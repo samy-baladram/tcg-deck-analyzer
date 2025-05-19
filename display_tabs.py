@@ -1308,6 +1308,43 @@ def display_matchup_tab(deck_info=None):
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
     
+    # Define the exceptions dictionary for special Pokémon names
+    pokemon_exceptions = {
+        'oricorio': 'oricorio-pom-pom'
+    }
+    
+    # Function to extract Pokémon names and create image URLs
+    def extract_pokemon_urls(displayed_name):
+        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+        parts = re.split(r'[\s/]+', clean_name)
+        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+        pokemon_names = []
+        
+        for part in parts:
+            part = part.lower()
+            if part and part not in suffixes:
+                if part in pokemon_exceptions:
+                    part = pokemon_exceptions[part]
+                pokemon_names.append(part)
+                if len(pokemon_names) >= 2:
+                    break
+        
+        urls = []
+        for name in pokemon_names:
+            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+        
+        # Ensure we have exactly 2 elements
+        while len(urls) < 2:
+            urls.append(None)
+            
+        return urls[0], urls[1]
+    
+    # Apply the function to extract Pokémon image URLs
+    working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
+        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
+        axis=1
+    )
+    
     # Create a better formatted display version
     display_df = working_df.copy()
     
@@ -1324,9 +1361,11 @@ def display_matchup_tab(deck_info=None):
         lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
     )
     
-    # Select and rename columns for display
+    # Select and rename columns for display - now including the icon columns
     formatted_df = pd.DataFrame({
         'Rank': display_df['Rank'],
+        'Icon1': display_df['pokemon_url1'],
+        'Icon2': display_df['pokemon_url2'],
         'Deck': display_df['opponent_name'],
         'Win %': display_df['win_pct'],
         'Record': display_df['Record'],
@@ -1334,20 +1373,64 @@ def display_matchup_tab(deck_info=None):
         'Matchup': display_df['Matchup']
     })
     
+    # Apply styling for matchups
+    def highlight_matchups(val):
+        """Apply colors to matchup column values"""
+        if val == "Favorable":
+            return 'background-color: rgba(0, 200, 0, 0.2)'  # Light green
+        elif val == "Unfavorable":
+            return 'background-color: rgba(255, 0, 0, 0.2)'  # Light red
+        else:
+            return 'background-color: rgba(255, 255, 0, 0.1)'  # Light yellow
+    
     # Display the enhanced data table with all rows
     st.write("### Matchup Data")
-    st.dataframe(
-        formatted_df,
-        use_container_width=True,
-        height=600,
-        column_config={
-            "Win %": st.column_config.NumberColumn(
-                "Win %",
-                format="%.1f%%",
-            ),
-        },
-        hide_index=True
-    )
+    
+    try:
+        # First try with styled dataframe and images
+        styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
+        
+        st.dataframe(
+            styled_df,
+            use_container_width=True,
+            height=600,
+            column_config={
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    format="%.1f%%",
+                ),
+                "Icon1": st.column_config.ImageColumn(
+                    "Icon 1",
+                    help="First Pokémon in the deck",
+                    width="small",
+                ),
+                "Icon2": st.column_config.ImageColumn(
+                    "Icon 2", 
+                    help="Second Pokémon in the deck",
+                    width="small",
+                ),
+            },
+            hide_index=True
+        )
+    except Exception as e:
+        # Fallback to simpler version if there's an issue
+        st.error(f"Error displaying styled dataframe with images: {str(e)}")
+        st.write("Showing basic version without styling and images:")
+        
+        # Remove image columns for fallback
+        basic_df = formatted_df.drop(columns=['Icon1', 'Icon2'])
+        st.dataframe(
+            basic_df,
+            use_container_width=True,
+            height=600,
+            column_config={
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    format="%.1f%%",
+                ),
+            },
+            hide_index=True
+        )
     
     # Calculate overall statistics
     if not working_df.empty:
