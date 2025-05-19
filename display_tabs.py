@@ -1254,12 +1254,15 @@ def fetch_matchup_data(deck_name, set_name="A3"):
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
+    
+    Args:
+        deck_info: Dictionary containing deck information (optional)
     """
     st.subheader("Matchup Analysis")
     import pandas as pd
     import re
     
-    # Get deck information
+    # Use current deck if none provided
     if not deck_info and 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', '')
         set_name = st.session_state.analyze.get('set_name', 'A3')
@@ -1304,18 +1307,51 @@ def display_matchup_tab(deck_info=None):
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
-    elif 'deck_name_lower' in working_df.columns:
-        # Ensure deck_name_lower is dropped even if not filtering
-        working_df = working_df.drop(columns=['deck_name_lower'])
     
-    # Process data for display
+    # Define the exceptions dictionary for special Pokémon names
+    pokemon_exceptions = {
+        'oricorio': 'oricorio-pom-pom'
+    }
+    
+    # Function to extract Pokémon names and create image URLs
+    def extract_pokemon_urls(displayed_name):
+        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+        parts = re.split(r'[\s/]+', clean_name)
+        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+        pokemon_names = []
+        
+        for part in parts:
+            part = part.lower()
+            if part and part not in suffixes:
+                if part in pokemon_exceptions:
+                    part = pokemon_exceptions[part]
+                pokemon_names.append(part)
+                if len(pokemon_names) >= 2:
+                    break
+        
+        urls = []
+        for name in pokemon_names:
+            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+        
+        # Ensure we have exactly 2 elements
+        while len(urls) < 2:
+            urls.append(None)
+            
+        return urls[0], urls[1]
+    
+    # Apply the function to extract Pokémon image URLs
+    working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
+        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
+        axis=1
+    )
+    
     # Create display DataFrame
     final_df = pd.DataFrame()
     final_df['Rank'] = range(1, len(working_df) + 1)
     
-    # Add Pokémon icons
-    final_df['Icon1'] = working_df['pokemon_url1']
-    final_df['Icon2'] = working_df['pokemon_url2']
+    # Skip the image columns for now to ensure the table displays
+    # final_df['Icon1'] = working_df['pokemon_url1']
+    # final_df['Icon2'] = working_df['pokemon_url2']
     
     final_df['Deck'] = working_df['opponent_name']
     final_df['Win %'] = working_df['win_pct']
@@ -1329,31 +1365,12 @@ def display_matchup_tab(deck_info=None):
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Display the dataframe with column configuration
+    # Display the dataframe without the image columns first
     st.write("Matchup Data:")
     st.dataframe(
         final_df,
         use_container_width=True,
         height=600,
-        column_config={
-            "Win %": st.column_config.NumberColumn(format="%.1f%%"),
-            "Icon1": st.column_config.ImageColumn(
-                "Icon 1", 
-                help="First Pokémon in the deck",
-                width="20px",
-            ),
-            "Icon2": st.column_config.ImageColumn(
-                "Icon 2",
-                help="Second Pokémon in the deck",
-                width="20px",
-            ),
-            "Matchup": st.column_config.SelectboxColumn(
-                help="Favorability of the matchup",
-                options=["Favorable", "Even", "Unfavorable"],
-                required=True,
-            )
-        },
-        hide_index=True
     )
     
     # Calculate overall statistics
