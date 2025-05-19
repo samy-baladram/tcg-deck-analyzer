@@ -1374,7 +1374,7 @@ def display_matchup_tab(deck_info=None):
     
     # Add matchup column 
     display_df['Matchup'] = display_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
+        lambda wp: "Favorable" if wp >= 55 else ("Unfavorable" if wp < 45 else "Even")
     )
     
     # Format the record column
@@ -1450,7 +1450,7 @@ def display_matchup_tab(deck_info=None):
                 ),
                 "Matchup": st.column_config.TextColumn(
                     "Matchup",
-                    help="Favorable: ≥60%, Unfavorable: <40%, Even: 40-59%"
+                    help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
                 )
             },
             hide_index=True
