@@ -91,23 +91,78 @@ def get_popular_decks_with_performance(share_threshold=0.6):
     
     return pd.DataFrame(decks)
 
-def get_deck_urls(deck_name, set_name="A3"):
-    """Get URLs for all decklists of a specific archetype"""
-    url = f"{BASE_URL}/decks/{deck_name}/?game=POCKET&format=standard&set={set_name}"
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+def get_all_recent_tournaments():
+    """Get IDs of all tournaments completed recently."""
+    tournament_id_set = set()
+    tournament_ids = []
     
-    urls = []
-    table = soup.find('table', class_='striped')
+    # Get current year and month
+    from datetime import datetime
+    current_date = datetime.now()
+    current_year_month = current_date.strftime("%Y-%m")  # Format: YYYY-MM
     
-    if table:
-        for row in table.find_all('tr')[1:]:  # Skip header
-            last_cell = row.find_all('td')[-1]
-            link = last_cell.find('a')
-            if link and 'href' in link.attrs:
-                urls.append(f"{BASE_URL}{link['href']}")
+    # Build URL with current year and month
+    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show={TOURNAMENT_COUNT}"
     
-    return urls
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Look for tournament links in anchor tags
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            if '/tournament/' in href:
+                match = re.search(r'/tournament/([a-zA-Z0-9-_]+)', href)
+                if match and match.group(1) not in tournament_id_set:
+                    tournament_slug = match.group(1)
+                    
+                    # Check if it's a standard tournament ID format (24 character hexadecimal)
+                    is_standard_id = bool(re.match(r'^[0-9a-f]{24}$', tournament_slug))
+                    
+                    if is_standard_id:
+                        # If it's already in standard format, use it directly
+                        tournament_id = tournament_slug
+                    else:
+                        # If not standard format, scrape the tournament page to find the actual ID
+                        tournament_id = get_tournament_id_from_page(tournament_slug)
+                    
+                    if tournament_id and tournament_id not in tournament_id_set:
+                        tournament_id_set.add(tournament_id)
+                        tournament_ids.append(tournament_id)
+        
+    except Exception as e:
+        print(f"Error fetching tournaments: {e}")
+    
+    return tournament_ids
+
+def get_tournament_id_from_page(tournament_slug):
+    """Extract actual tournament ID from the tournament page JavaScript."""
+    try:
+        # Build the URL for the tournament standings page
+        url = f"https://play.limitlesstcg.com/tournament/{tournament_slug}/standings"
+        
+        # Fetch the page
+        response = requests.get(url)
+        
+        # Extract tournament ID from JavaScript variable
+        # Look for pattern: var tournamentId = 'XXXX'
+        id_match = re.search(r"var\s+tournamentId\s*=\s*['\"]([0-9a-f]{24})['\"]", response.text)
+        
+        if id_match:
+            return id_match.group(1)
+        
+        # Alternative approach: Look for tournament ID in other potential locations
+        # For example, in JSON data or other script tags
+        alt_match = re.search(r'"tournamentId":\s*"([0-9a-f]{24})"', response.text)
+        if alt_match:
+            return alt_match.group(1)
+            
+        # If ID not found, return None
+        return None
+        
+    except Exception as e:
+        print(f"Error fetching tournament page for {tournament_slug}: {e}")
+        return None
 
 def extract_cards(url):
     """Extract cards and energy types from a single decklist"""
@@ -194,78 +249,137 @@ def extract_cards(url):
     
     return cards, energy_types
 
-def get_all_recent_tournaments():
-    """Get IDs of all tournaments completed recently."""
-    tournament_id_set = set()
-    tournament_ids = []
+# New functions for player-tournament relationship
+def get_player_tournament_pairs(deck_name, set_name="A3"):
+    """
+    Extract player_id and tournament_id pairs for a deck archetype
     
-    # Get current year and month
-    from datetime import datetime
-    current_date = datetime.now()
-    current_year_month = current_date.strftime("%Y-%m")  # Format: YYYY-MM
+    Returns:
+        List of dicts with:
+        - player_id: Player identifier
+        - tournament_id: Tournament identifier
+        - url: Full URL to the decklist
+    """
+    pairs = []
+    deck_url = f"{BASE_URL}/decks/{deck_name}/?game=POCKET&format=standard&set={set_name}"
+    response = requests.get(deck_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
     
-    # Build URL with current year and month
-    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show={TOURNAMENT_COUNT}"
-    
-    try:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Look for tournament links in anchor tags
-        for link in soup.find_all('a', href=True):
-            href = link['href']
-            if '/tournament/' in href:
-                match = re.search(r'/tournament/([a-zA-Z0-9-_]+)', href)
-                if match and match.group(1) not in tournament_id_set:
-                    tournament_slug = match.group(1)
-                    
-                    # Check if it's a standard tournament ID format (24 character hexadecimal)
-                    is_standard_id = bool(re.match(r'^[0-9a-f]{24}$', tournament_slug))
-                    
-                    if is_standard_id:
-                        # If it's already in standard format, use it directly
-                        tournament_id = tournament_slug
-                    else:
-                        # If not standard format, scrape the tournament page to find the actual ID
-                        tournament_id = get_tournament_id_from_page(tournament_slug)
-                    
-                    if tournament_id and tournament_id not in tournament_id_set:
-                        tournament_id_set.add(tournament_id)
-                        tournament_ids.append(tournament_id)
-        
-    except Exception as e:
-        print(f"Error fetching tournaments: {e}")
-    
-    return tournament_ids
+    table = soup.find('table', class_='striped')
+    if table:
+        for row in table.find_all('tr')[1:]:  # Skip header
+            last_cell = row.find_all('td')[-1]
+            link = last_cell.find('a')
+            if link and 'href' in link.attrs:
+                url = f"{BASE_URL}{link['href']}"
+                # Extract player_id and tournament_id from URL
+                match = re.search(r'/tournament/([^/]+)/player/([^/]+)', link['href'])
+                if match:
+                    tournament_id = match.group(1)
+                    player_id = match.group(2)
+                    pairs.append({
+                        'tournament_id': tournament_id,
+                        'player_id': player_id,
+                        'url': url
+                    })
+    return pairs
 
-def get_tournament_id_from_page(tournament_slug):
-    """Extract actual tournament ID from the tournament page JavaScript."""
-    try:
-        # Build the URL for the tournament standings page
-        url = f"https://play.limitlesstcg.com/tournament/{tournament_slug}/standings"
+def get_deck_by_player_tournament(tournament_id, player_id):
+    """
+    Get deck using player_id and tournament_id directly
+    
+    Returns:
+        Tuple of (cards, energy_types)
+    """
+    url = f"{BASE_URL}/tournament/{tournament_id}/player/{player_id}/decklist"
+    return extract_cards(url)
+
+# Tournament tracking functions
+def get_new_tournament_ids(previous_ids):
+    """
+    Compare current tournament IDs against previous ones to find new tournaments
+    
+    Args:
+        previous_ids: Set or list of previously known tournament IDs
         
-        # Fetch the page
-        response = requests.get(url)
+    Returns:
+        List of new tournament IDs not in previous_ids
+    """
+    current_ids = get_all_recent_tournaments()
+    # Convert previous_ids to set for efficient lookup
+    prev_id_set = set(previous_ids)
+    # Find new IDs
+    new_ids = [id for id in current_ids if id not in prev_id_set]
+    return new_ids
+
+def get_affected_decks(new_tournament_ids, player_tournament_mapping):
+    """
+    Find decks affected by new tournaments
+    
+    Args:
+        new_tournament_ids: List of new tournament IDs
+        player_tournament_mapping: Dict mapping (player_id, tournament_id) to deck_name
         
-        # Extract tournament ID from JavaScript variable
-        # Look for pattern: var tournamentId = 'XXXX'
-        id_match = re.search(r"var\s+tournamentId\s*=\s*['\"]([0-9a-f]{24})['\"]", response.text)
-        
-        if id_match:
-            return id_match.group(1)
-        
-        # Alternative approach: Look for tournament ID in other potential locations
-        # For example, in JSON data or other script tags
-        alt_match = re.search(r'"tournamentId":\s*"([0-9a-f]{24})"', response.text)
-        if alt_match:
-            return alt_match.group(1)
-            
-        # If ID not found, return None
-        return None
-        
-    except Exception as e:
-        print(f"Error fetching tournament page for {tournament_slug}: {e}")
-        return None
+    Returns:
+        Set of deck names affected by the new tournaments
+    """
+    affected_decks = set()
+    new_id_set = set(new_tournament_ids)
+    
+    for key, deck_name in player_tournament_mapping.items():
+        # Key format is "player_id:tournament_id"
+        parts = key.split(':')
+        if len(parts) == 2:
+            tournament_id = parts[1]
+            if tournament_id in new_id_set:
+                affected_decks.add(deck_name)
+    
+    return affected_decks
+
+
+
+
+
+## -- DEPRECATED -- ##
+
+def get_deck_urls(deck_name, set_name="A3"):
+    """Get URLs for all decklists of a specific archetype"""
+    url = f"{BASE_URL}/decks/{deck_name}/?game=POCKET&format=standard&set={set_name}"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    urls = []
+    table = soup.find('table', class_='striped')
+    
+    if table:
+        for row in table.find_all('tr')[1:]:  # Skip header
+            last_cell = row.find_all('td')[-1]
+            link = last_cell.find('a')
+            if link and 'href' in link.attrs:
+                urls.append(f"{BASE_URL}{link['href']}")
+    
+    return urls
+
+def get_sample_deck_for_archetype(deck_name, set_name="A3"):
+    """Get a sample deck list for a specific archetype from the first available tournament result."""
+    # Get the URLs for this deck archetype
+    urls = get_deck_urls(deck_name, set_name)
+    
+    # If there are no decks available, return empty lists
+    if not urls:
+        return [], [], []
+    
+    # Extract cards from the first decklist (most recent/representative)
+    cards, energy_types = extract_cards(urls[0])
+    
+    # Separate Pokemon and Trainer cards
+    pokemon_cards = [card for card in cards if card['type'] == 'Pokemon']
+    trainer_cards = [card for card in cards if card['type'] == 'Trainer']
+    
+    return pokemon_cards, trainer_cards, energy_types
+
+
+## -- TO BE MOVED -- ##
 
 def get_deck_performance(deck_name, set_code="A3"):
     """Get performance data for a specific deck."""
@@ -391,21 +505,3 @@ def analyze_recent_performance(share_threshold=0.6):
         results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
 
     return results_df
-
-def get_sample_deck_for_archetype(deck_name, set_name="A3"):
-    """Get a sample deck list for a specific archetype from the first available tournament result."""
-    # Get the URLs for this deck archetype
-    urls = get_deck_urls(deck_name, set_name)
-    
-    # If there are no decks available, return empty lists
-    if not urls:
-        return [], [], []
-    
-    # Extract cards from the first decklist (most recent/representative)
-    cards, energy_types = extract_cards(urls[0])
-    
-    # Separate Pokemon and Trainer cards
-    pokemon_cards = [card for card in cards if card['type'] == 'Pokemon']
-    trainer_cards = [card for card in cards if card['type'] == 'Trainer']
-    
-    return pokemon_cards, trainer_cards, energy_types
