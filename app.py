@@ -147,44 +147,39 @@ if 'analyze' in st.session_state and selected_option:
     display_tabs.display_deck_header(original_deck_info, results)
     
     # Create tab container
-    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-        "Deck Template", 
-        "Card Usage",  
-        "Energy Data", 
-        "Related Decks",  
-        "Metagame Overview", 
-        "Raw Data", 
-        "Meta Matchups"
-    ])
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
+                                                        "Card Usage",  
+                                                        "Meta Matchups",
+                                                        "Metagame Overview",
+                                                        "Related Decks",
+                                                        "Raw Data", 
+                                                        ])
     
-    # Display each tab - IMPORTANT: All tabs must be populated at the same time
     with tab1:
         display_tabs.display_deck_template_tab(results)
-        # ADD THIS: Display last update time
+         # ADD THIS: Display last update time for the current deck
         last_update = ui_helpers.display_deck_update_info(
             original_deck_info['deck_name'], 
             original_deck_info['set_name']
         )
+        display_tabs.display_energy_debug_tab(original_deck_info)
         if last_update:
-            st.caption(last_update)
+            st.caption(last_update)           
     
     with tab2:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
         
     with tab3:
-        display_tabs.display_energy_debug_tab(original_deck_info)
-    
+        display_tabs.display_matchup_tab()
+        
     with tab4:
-        display_tabs.display_related_decks_tab(original_deck_info, results)
+        display_tabs.display_metagame_tab() 
         
     with tab5:
-        display_tabs.display_metagame_tab()
-        
+        display_tabs.display_related_decks_tab(original_deck_info, results)
+    
     with tab6:
         display_tabs.display_raw_data_tab(results, variant_df)
-
-    with tab7:
-        display_tabs.display_matchup_tab()
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
