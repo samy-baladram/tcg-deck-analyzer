@@ -16,78 +16,78 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # Add this at the top level (outside any function) in ui_helpers.py
 # Add this at the top level of ui_helpers.py
-def check_and_update_tournament_data():
-    """
-    Checks if tournament data needs updating, and performs update in background if needed
-    """
-    # Check if enough time has passed since last update (e.g., 1 hour)
-    if 'performance_fetch_time' in st.session_state:
-        time_since_update = datetime.now() - st.session_state.performance_fetch_time
-        if time_since_update > timedelta(hours=1):
-            # Perform a quick check for new tournaments
-            try:
-                import cache_manager
-                # Only check if anything needs updating, don't do full update
-                with st.spinner("Checking for new tournaments..."):
-                    # Load previous tournament IDs
-                    previous_ids = cache_manager.cache_utils.load_tournament_ids()
-                    
-                    # Check if there are new tournaments
-                    from scraper import get_all_recent_tournaments, get_new_tournament_ids
-                    current_ids = get_all_recent_tournaments()
-                    new_ids = get_new_tournament_ids(previous_ids)
-                    
-                    # If there are new tournaments, update the session state flag
-                    if new_ids:
-                        if 'new_tournaments_available' not in st.session_state:
-                            st.session_state.new_tournaments_available = True
-            except Exception as e:
-                # Silently fail on any exception - this is just a background check
-                pass
 # def check_and_update_tournament_data():
-#     """Check if tournament data needs updating and start background update if needed"""
-#     # Import necessary modules
-#     import threading
-#     from datetime import datetime, timedelta
-#     from config import CACHE_TTL
-    
-#     # Only proceed if not already updating
-#     if st.session_state.get('update_running', False):
-#         return
-        
-#     # Check if data is stale
+#     """
+#     Checks if tournament data needs updating, and performs update in background if needed
+#     """
+#     # Check if enough time has passed since last update (e.g., 1 hour)
 #     if 'performance_fetch_time' in st.session_state:
 #         time_since_update = datetime.now() - st.session_state.performance_fetch_time
+#         if time_since_update > timedelta(hours=1):
+#             # Perform a quick check for new tournaments
+#             try:
+#                 import cache_manager
+#                 # Only check if anything needs updating, don't do full update
+#                 with st.spinner("Checking for new tournaments..."):
+#                     # Load previous tournament IDs
+#                     previous_ids = cache_manager.cache_utils.load_tournament_ids()
+                    
+#                     # Check if there are new tournaments
+#                     from scraper import get_all_recent_tournaments, get_new_tournament_ids
+#                     current_ids = get_all_recent_tournaments()
+#                     new_ids = get_new_tournament_ids(previous_ids)
+                    
+#                     # If there are new tournaments, update the session state flag
+#                     if new_ids:
+#                         if 'new_tournaments_available' not in st.session_state:
+#                             st.session_state.new_tournaments_available = True
+#             except Exception as e:
+#                 # Silently fail on any exception - this is just a background check
+#                 pass
+def check_and_update_tournament_data():
+    """Check if tournament data needs updating and start background update if needed"""
+    # Import necessary modules
+    import threading
+    from datetime import datetime, timedelta
+    from config import CACHE_TTL
+    
+    # Only proceed if not already updating
+    if st.session_state.get('update_running', False):
+        return
         
-#         # Update if older than cache TTL
-#         if time_since_update.total_seconds() > CACHE_TTL:
-#             # Set flag to prevent multiple updates
-#             st.session_state.update_running = True
+    # Check if data is stale
+    if 'performance_fetch_time' in st.session_state:
+        time_since_update = datetime.now() - st.session_state.performance_fetch_time
+        
+        # Update if older than cache TTL
+        if time_since_update.total_seconds() > CACHE_TTL:
+            # Set flag to prevent multiple updates
+            st.session_state.update_running = True
             
-#             def background_update():
-#                 try:
-#                     # Update tournament data without spinner
-#                     performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+            def background_update():
+                try:
+                    # Update tournament data without spinner
+                    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
                     
-#                     # Update session state
-#                     st.session_state.performance_data = performance_df
-#                     st.session_state.performance_fetch_time = performance_timestamp
+                    # Update session state
+                    st.session_state.performance_data = performance_df
+                    st.session_state.performance_fetch_time = performance_timestamp
                     
-#                     # Update card usage data
-#                     card_usage_df = cache_manager.aggregate_card_usage()
-#                     st.session_state.card_usage_data = card_usage_df
+                    # Update card usage data
+                    card_usage_df = cache_manager.aggregate_card_usage()
+                    st.session_state.card_usage_data = card_usage_df
                     
-#                     print("Background update completed successfully")
-#                 except Exception as e:
-#                     print(f"Background update error: {e}")
-#                 finally:
-#                     st.session_state.update_running = False
+                    print("Background update completed successfully")
+                except Exception as e:
+                    print(f"Background update error: {e}")
+                finally:
+                    st.session_state.update_running = False
             
-#             # Start update in background
-#             thread = threading.Thread(target=background_update)
-#             thread.daemon = True
-#             thread.start()
-#             print("Background update started")
+            # Start update in background
+            thread = threading.Thread(target=background_update)
+            thread.daemon = True
+            thread.start()
+            print("Background update started")
             
 # Replace the existing get_energy_types_for_deck function with this one
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
