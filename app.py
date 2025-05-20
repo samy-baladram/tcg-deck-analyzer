@@ -221,7 +221,7 @@ if 'analyze' in st.session_state and selected_option:
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
-display_tabs.display_counter_picker()
+#display_tabs.display_counter_picker()
 
 # Load sidebar AFTER main content to ensure main interface loads first
 #ui_helpers.render_sidebar()
