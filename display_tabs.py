@@ -1426,29 +1426,20 @@ def display_matchup_summary(deck_name, set_name, working_df):
     even_share = working_df[working_df['matchup_type'] == 'Even']['meta_share'].sum()
     unfavorable_share = working_df[working_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
     
-    # Calculate total share covered by matchup data
-    covered_share = favorable_share + even_share + unfavorable_share
+    # Calculate total share of just these three categories
+    total_known_share = favorable_share + even_share + unfavorable_share
     
-    # Calculate unknown share (portion of meta not in matchup data)
-    total_meta = 100.0  # Assuming meta shares sum to 100%
-    unknown_share = total_meta - covered_share
-    
-    # Normalize values to sum to 100%
-    if covered_share > 0:  # Avoid division by zero
-        # Calculate normalized values (including unknown)
-        total_with_unknown = favorable_share + even_share + unfavorable_share + unknown_share
-        
+    # Normalize values to sum to 100% (just the three known categories)
+    if total_known_share > 0:  # Avoid division by zero
         # Normalize each value
-        favorable_share_norm = (favorable_share / total_with_unknown) * 100
-        even_share_norm = (even_share / total_with_unknown) * 100
-        unfavorable_share_norm = (unfavorable_share / total_with_unknown) * 100
-        unknown_share_norm = (unknown_share / total_with_unknown) * 100
+        favorable_share_norm = (favorable_share / total_known_share) * 100
+        even_share_norm = (even_share / total_known_share) * 100
+        unfavorable_share_norm = (unfavorable_share / total_known_share) * 100
     else:
-        # If no data, set all to 0 except unknown
+        # If no data, set all to 0
         favorable_share_norm = 0
         even_share_norm = 0
         unfavorable_share_norm = 0
-        unknown_share_norm = 100  # All unknown if no data
     
     # Columns
     col1, col2, col3 = st.columns(3)
@@ -1457,9 +1448,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col1:
         st.markdown(f"""
         <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
-            <div style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">Favorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; margin: 5px 0;">{favorable_share_norm:.1f}%</div>
-            <div style="font-size: 0.8rem; color: #666;">of meta</div>
+            <div style="font-size: 1.2rem; font-weight: bold; margin: -5px 0;">Favorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; margin: -15px 0;">{favorable_share_norm:.1f}%</div>
+            <div style="font-size: 1rem; margin: -15px 0;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1467,9 +1458,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col2:
         st.markdown(f"""
         <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
-            <div style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">Even</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; margin: 5px 0;">{even_share_norm:.1f}%</div>
-            <div style="font-size: 0.8rem; color: #666;">of meta</div>
+            <div style="font-size: 1.2rem; font-weight: bold; margin: -5px 0;">Even</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; margin: -15px 0;">{even_share_norm:.1f}%</div>
+            <div style="font-size: 1rem; margin: -15px 0;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
