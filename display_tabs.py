@@ -1596,6 +1596,7 @@ def display_matchup_tab(deck_info=None):
         'Win %': display_df['win_pct'],
         'Record': display_df['Record'],
         'Matches': display_df['matches_played'],
+        'Meta Share%": display_df['meta_share']
     })
     
     # Apply styling for matchups
