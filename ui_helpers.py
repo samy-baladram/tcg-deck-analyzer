@@ -436,6 +436,7 @@ def render_sidebar_from_cache():
         
         
         # Add expandable methodology section
+        st.write("")
         with st.expander("🔍 About the Power Index"):
             st.markdown(f"""
             #### Power Index: How We Rank the Best Decks
@@ -468,7 +469,7 @@ def render_sidebar_from_cache():
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
         
         display_counter_picker_sidebar()
-        st.markdown("<div style='margin-top: 300px;'></div>", unsafe_allow_html=True)
+        st.markdown("<hr style='margin-top: 300px; margin-bottom: 100px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
             
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
