@@ -751,11 +751,6 @@ def display_metagame_tab():
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
 
-    # Define the exceptions dictionary for special Pokémon names
-    pokemon_exceptions = {
-        'oricorio': 'oricorio-pom-pom'
-    }
-    
     # Extract Pokémon names and create image URLs
     def extract_pokemon_urls(displayed_name):
         # Remove content in parentheses and clean
@@ -1444,12 +1439,7 @@ def display_matchup_tab(deck_info=None):
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
-    
-    # Define the exceptions dictionary for special Pokémon names
-    pokemon_exceptions = {
-        'oricorio': 'oricorio-pom-pom'
-    }
-    
+       
     # Function to extract Pokémon names and create image URLs
     def extract_pokemon_urls(displayed_name):
         clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
