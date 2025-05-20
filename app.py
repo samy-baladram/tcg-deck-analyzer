@@ -165,6 +165,7 @@ if 'analyze' in st.session_state and selected_option:
                                                         "Metagame Overview",
                                                         "Related Decks",
                                                         "Raw Data", 
+                                                        "Meta Counter Picker"
                                                         ])
     
     with tab1:
@@ -190,9 +191,12 @@ if 'analyze' in st.session_state and selected_option:
         
     with tab5:
         display_tabs.display_related_decks_tab(original_deck_info, results)
-    
+        
     with tab6:
         display_tabs.display_raw_data_tab(results, variant_df)
+
+    with tab7:
+        display_tabs.display_counter_picker()
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
