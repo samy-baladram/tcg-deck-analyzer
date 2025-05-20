@@ -16,15 +16,27 @@ st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="
 # Add background from repository
 background.add_app_background()
 
-# First-time initialization - ensure state variables exist
+# In app.py - before using any session state variables
+# Initialize app state tracking and load initial data
 if 'app_state' not in st.session_state:
     st.session_state.app_state = {
         'initial_data_loaded': False
     }
-if 'selected_deck_index' not in st.session_state:
-    st.session_state.selected_deck_index = None
-if 'deck_to_analyze' not in st.session_state:
-    st.session_state.deck_to_analyze = None
+
+# Early initialization - Only do heavy loading once
+if not st.session_state.app_state['initial_data_loaded']:
+    ui_helpers.load_initial_data()  # This loads essential data like deck_list
+    st.session_state.app_state['initial_data_loaded'] = True
+
+
+# Display banner
+ui_helpers.display_banner("title_banner.png")
+
+# Render sidebar AFTER initialization
+ui_helpers.render_sidebar()
+
+# Create deck selector AFTER initialization
+selected_option = ui_helpers.create_deck_selector()
 
 # Apply custom styles - IMPORTANT: Put CSS before any components render
 st.markdown("""
@@ -118,17 +130,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize caches if not already done
-if not st.session_state.app_state['initial_data_loaded']:
-    # Only initialize minimal caches for faster startup
-    cache_manager.init_caches()
-    st.session_state.app_state['initial_data_loaded'] = True
-
-# Display banner
-ui_helpers.display_banner("title_banner.png")
-
-# Create deck selector
-selected_option = ui_helpers.create_deck_selector()
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
