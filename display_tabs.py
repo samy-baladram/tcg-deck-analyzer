@@ -214,45 +214,54 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
                 shown_deck_nums.add(deck_num)
 
 def ensure_deck_collection_data(deck_name, set_name):
-    """Ensure deck collection data is available, forcing collection if needed"""
-    # Using the debug function to show status
-    # debug_deck_collection(deck_name, set_name)
-    
+    """Ensure deck collection data is available, efficiently using cache"""
     deck_key = f"{deck_name}_{set_name}"
     
-    # Check if we have collected decks
-    if 'collected_decks' not in st.session_state:
-        st.session_state.collected_decks = {}
+    # Check if we already have collected decks in session state
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        # Data already in session, no need to do anything
+        return True
     
-    if deck_key not in st.session_state.collected_decks:
-        # Try to get data from cache_manager
-        import cache_manager
-        with st.spinner("Loading deck data..."):
-            # Try to load full deck from cache
-            analyzed_data = cache_manager.get_or_analyze_full_deck(deck_name, set_name)
+    # Try to load from cache_manager
+    import cache_manager
+    
+    # Try to load collected deck metadata directly
+    metadata_loaded = cache_manager.load_collected_decks_metadata(deck_name, set_name)
+    if metadata_loaded:
+        # Successfully loaded from disk cache
+        return True
+    
+    # If metadata loading failed, check if we have analyzed data
+    try:
+        # First check if deck is in analyzed cache
+        cache_key = f"full_deck_{deck_name}_{set_name}"
+        if 'analyzed_deck_cache' in st.session_state and cache_key in st.session_state.analyzed_deck_cache:
+            # We have analyzed data but no collected decks - trigger a collection
+            # Generate metadata from analyzed data if possible
+            cache_manager.ensure_analyzed_deck_consistency(deck_name, set_name)
             
-            # If we still don't have collected data, we need to collect directly
-            if deck_key not in st.session_state.collected_decks:
-                # Force collection of decks
-                from analyzer import collect_decks
-                all_decks, all_energy_types, total_decks = collect_decks(deck_name, set_name)
-                
-                # Log what we found
-                st.info(f"Found {len(all_decks)} decks from direct collection")
-                
-                # Store in session state if not already there
-                if deck_key not in st.session_state.collected_decks:
-                    st.session_state.collected_decks[deck_key] = {
-                        'decks': all_decks,
-                        'all_energy_types': all_energy_types,
-                        'total_decks': total_decks
-                    }
-    #else:
-        # We already have collected data
-        #st.caption(f"Using {len(st.session_state.collected_decks[deck_key]['decks'])} collected decks")
+            # Check if that populated the collected_decks
+            if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+                return True
+    except Exception as e:
+        # Log error but continue to direct collection
+        print(f"Error ensuring analyzed deck consistency: {e}")
     
-    # Final check - do we have the data now?
-    has_data = deck_key in st.session_state.collected_decks and st.session_state.collected_decks[deck_key]['decks']
+    # If we still don't have collected data, we need to collect directly
+    with st.spinner("Loading deck data..."):
+        from analyzer import collect_decks
+        all_decks, all_energy_types, total_decks = collect_decks(deck_name, set_name)
+        
+        # Store in session state if not already there
+        if deck_key not in st.session_state.collected_decks:
+            st.session_state.collected_decks[deck_key] = {
+                'decks': all_decks,
+                'all_energy_types': all_energy_types,
+                'total_decks': total_decks
+            }
+    
+    # Final check
+    has_data = 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks and st.session_state.collected_decks[deck_key]['decks']
     return has_data
     
 def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums, energy_types, is_typical):
