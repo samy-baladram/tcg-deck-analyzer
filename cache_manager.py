@@ -300,32 +300,27 @@ def aggregate_card_usage(force_update=False):
         
         return card_usage_summary
 
-def load_or_update_tournament_data():
+def load_or_update_tournament_data(force_update=False):
     """Load tournament data from cache or update if stale"""
     # Try to load tournament data from cache first
     performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
 
-    # Check if data needs to be updated (if it's older than 1 hour)
-    if performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(hours=1):
-        with st.spinner("Updating tournament performance data..."):
-            # First check for new tournaments and update affected decks
-            update_stats = update_tournament_tracking()
+    # Only update if forced or data is older than 1 hour
+    if force_update or performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(hours=1):
+        # Skip the spinner to avoid blocking the UI
+        # First check for new tournaments and update affected decks
+        update_stats = update_tournament_tracking()
+        
+        # Only reanalyze performance if there are new tournaments or no existing data
+        if update_stats['new_tournaments'] > 0 or performance_df.empty:
+            # Then update performance metrics
+            performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
             
-            # Only reanalyze performance if there are new tournaments or no existing data
-            if update_stats['new_tournaments'] > 0 or performance_df.empty:
-                # Then update performance metrics
-                performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-                
-                # Save to cache
-                cache_utils.save_tournament_performance_data(performance_df)
-                
-                # Update timestamp
-                performance_timestamp = datetime.now()
-                
-                # Show update stats if there were any updates
-                if update_stats['new_tournaments'] > 0:
-                    st.success(f"Found {update_stats['new_tournaments']} new tournaments. "
-                              f"Updated {update_stats['updated_decks']} affected decks.")
+            # Save to cache
+            cache_utils.save_tournament_performance_data(performance_df)
+            
+            # Update timestamp
+            performance_timestamp = datetime.now()
 
     # Return the loaded or updated data with timestamp
     return performance_df, performance_timestamp
