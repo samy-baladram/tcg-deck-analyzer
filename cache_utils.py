@@ -360,16 +360,17 @@ def save_collected_decks(deck_name, set_name, all_decks, all_energy_types, total
         file_path = os.path.join(COLLECTED_DECKS_PATH, f"{safe_name}_{set_name}_collected.json")
         
         # Create serializable version of all_decks
-        # (The cards list might be too large, so we'll just save metadata)
+        # Keep the card data but remove any non-serializable elements
         serializable_decks = []
         for deck in all_decks:
-            # Save key metadata but not full card lists
+            # Preserve the cards data
             serializable_deck = {
                 'deck_num': deck.get('deck_num', 0),
                 'energy_types': deck.get('energy_types', []),
                 'url': deck.get('url', ''),
                 'player_id': deck.get('player_id', ''),
-                'tournament_id': deck.get('tournament_id', '')
+                'tournament_id': deck.get('tournament_id', ''),
+                'cards': deck.get('cards', [])  # Keep the cards data!
             }
             serializable_decks.append(serializable_deck)
         
@@ -385,7 +386,7 @@ def save_collected_decks(deck_name, set_name, all_decks, all_energy_types, total
         with open(file_path, 'w') as f:
             json.dump(data, f)
             
-        logger.info(f"Saved collected deck metadata for {deck_name} to {file_path}")
+        logger.info(f"Saved collected deck data for {deck_name} to {file_path}")
         return True
     except Exception as e:
         logger.error(f"Error saving collected decks: {e}")
