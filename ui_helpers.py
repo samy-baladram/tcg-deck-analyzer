@@ -252,6 +252,10 @@ def on_deck_change():
 
 def create_deck_selector():
     """Create and display the deck selector dropdown with minimal loading"""
+    # Initialize session state variables if they don't exist
+    if 'selected_deck_index' not in st.session_state:
+        st.session_state.selected_deck_index = None
+        
     # Only compute dropdown options if not already cached
     if 'deck_display_names' not in st.session_state:
         # Get deck options
@@ -276,7 +280,7 @@ def create_deck_selector():
         current_set = deck_info['set'].upper()
     
     # Handle deck_to_analyze if set (e.g., from sidebar selection)
-    if st.session_state.get('deck_to_analyze'):
+    if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
         # Find the matching display name and index
         for i, display_name in enumerate(deck_display_names):
             deck_info = deck_name_mapping[display_name]
