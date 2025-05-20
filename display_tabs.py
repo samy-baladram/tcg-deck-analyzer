@@ -1450,7 +1450,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
             <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Favorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; margin: -15px 0;">{favorable_share_norm:.1f}%</div>
-            <div style="font-size: 1rem; margin: -15px 0;">of meta</div>
+            <div style="font-size: 1rem; margin: -15px -20px;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1460,7 +1460,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
             <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Even</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; margin: -15px 0;">{even_share_norm:.1f}%</div>
-            <div style="font-size: 1rem; margin: -15px 0;">of meta</div>
+            <div style="font-size: 1rem; margin: -15px -20px;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1470,7 +1470,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
             <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Unfavorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; margin: -15px 0;">{unfavorable_share_norm:.1f}%</div>
-            <div style="font-size: 1rem; margin: -15px 0;">of meta</div>
+            <div style="font-size: 1rem; margin: -15px -20px;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
