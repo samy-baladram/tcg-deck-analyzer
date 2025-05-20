@@ -1674,6 +1674,14 @@ def display_counter_picker():
                 counter_df = pd.DataFrame(counter_data)
                 counter_df = counter_df.sort_values('average_win_rate', ascending=False)
                 
+                # Add type conversion here
+                counter_df = counter_df.copy()
+                for col in counter_df.columns:
+                    if counter_df[col].dtype == 'int64':
+                        counter_df[col] = counter_df[col].astype(int)
+                    elif counter_df[col].dtype == 'float64':
+                        counter_df[col] = counter_df[col].astype(float)
+                
                 # Display results
                 st.subheader("Best Counter Decks")
                 
@@ -1710,12 +1718,12 @@ def display_counter_picker():
                             format="%.2f"
                         ),
                         "matched_decks": st.column_config.ProgressColumn(
-                            "Matchups Found",
-                            help="Number of selected decks with matchup data",
-                            format="%d",
-                            min_value=0,
-                            max_value=counter_df['total_selected'].max()
-                        )
+                        "Matchups Found",
+                        help="Number of selected decks with matchup data",
+                        format="%d",
+                        min_value=0,
+                        max_value=int(counter_df['total_selected'].max())  # Convert to int here
+                    )
                     },
                     hide_index=True,
                     use_container_width=True
