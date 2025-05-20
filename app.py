@@ -12,13 +12,14 @@ import background
 import base64
 import os
 
-# Get absolute path to favicon
-favicon_path = os.path.join(os.path.dirname(__file__), "favicon.png")
+from PIL import Image
+import streamlit as st
 
-# Set page config with favicon path
+favicon = Image.open("favicon.png")  # PNG format
+
 st.set_page_config(
-    page_title="TCG Deck Analyzer", 
-    page_icon=favicon_path,
+    page_title="PTCGP Deck Analyzer",
+    page_icon=favicon,
     layout="wide"
 )
 
