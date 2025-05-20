@@ -1315,6 +1315,12 @@ def fetch_matchup_data(deck_name, set_name="A3"):
         if not table:
             return pd.DataFrame()
         
+        # Get meta share data for opponent decks
+        meta_share_map = {}
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+            performance_data = st.session_state.performance_data
+            meta_share_map = {deck['deck_name']: deck['share'] for _, deck in performance_data.iterrows()}
+        
         # Process each data row
         rows = []
         for row in table.find_all('tr')[1:]:  # Skip header row
@@ -1365,6 +1371,9 @@ def fetch_matchup_data(deck_name, set_name="A3"):
             except ValueError:
                 pass
             
+            # Add meta share for this opponent deck
+            meta_share = meta_share_map.get(opponent_deck_name, 0.0)
+            
             # Create row data
             row_data = {
                 'opponent_name': opponent_display_name,
@@ -1373,7 +1382,8 @@ def fetch_matchup_data(deck_name, set_name="A3"):
                 'losses': losses,
                 'ties': ties,
                 'win_pct': win_pct,
-                'matches_played': matches_played
+                'matches_played': matches_played,
+                'meta_share': meta_share
             }
             
             rows.append(row_data)
@@ -1400,21 +1410,10 @@ def display_matchup_summary(deck_name, set_name, working_df):
     """
     st.write("###### Meta Matchup Distribution")
     
-    # Make sure we have performance data to get meta shares
-    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-        st.info("No meta share data available to calculate matchup distribution.")
+    # Check if we have matchup data with meta share
+    if working_df.empty or 'meta_share' not in working_df.columns:
+        st.info("No matchup data with meta share available.")
         return
-        
-    # Get the meta share information for each opponent deck
-    performance_data = st.session_state.performance_data
-    
-    # Create a mapping from deck_name to meta_share
-    meta_share_map = {deck['deck_name']: deck['share'] for _, deck in performance_data.iterrows()}
-    
-    # Add meta share to working dataframe
-    working_df['meta_share'] = working_df['opponent_deck_name'].apply(
-        lambda x: meta_share_map.get(x, 0)
-    )
     
     # Classify each matchup
     working_df['matchup_type'] = working_df['win_pct'].apply(
@@ -1476,8 +1475,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     
     # Add a more detailed note about the data
     st.write("")
-    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")
-        
+    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
