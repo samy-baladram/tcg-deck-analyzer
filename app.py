@@ -13,6 +13,16 @@ import background
 # Set up page
 st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
 
+# Set favicon
+st.markdown(
+    """
+    <link rel="shortcut icon" href="data:image/png;base64,{}">
+    """.format(
+        open("favicon.png", "rb").read().decode("latin1")
+    ),
+    unsafe_allow_html=True,
+)
+
 # Add background from repository
 background.add_app_background()
 
