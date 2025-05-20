@@ -1878,7 +1878,7 @@ def display_counter_picker():
                     with col2:
                         # Display deck name with smaller font
                         rank_num = f"#{i+1}"
-                        st.markdown(f"##### {rank_num} {deck['displayed_name']}")
+                        st.markdown(f"#### {rank_num} {deck['displayed_name']}")
                     
                     with col3:
                         # Display win rate as a smaller percentage without "win rate" text
