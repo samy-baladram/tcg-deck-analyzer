@@ -12,14 +12,7 @@ from config import MIN_META_SHARE
 
 def init_caches():
     """
-    Initialize all necessary caches in session state.
-    
-    This function sets up:
-    - analyzed_deck_cache: Dictionary mapping keys to analyzed deck data
-    - sample_deck_cache: Dictionary mapping keys to sample deck data
-    - known_tournament_ids: List of known tournament IDs
-    - fetch_time: Timestamp of last data fetch
-    - performance_fetch_time: Timestamp of last performance data update
+    Initialize all necessary caches in session state without network calls.
     """
     # Deck analysis cache
     if 'analyzed_deck_cache' not in st.session_state:
@@ -40,10 +33,23 @@ def init_caches():
     
     if 'performance_fetch_time' not in st.session_state:
         st.session_state.performance_fetch_time = datetime.now()
+    
+    # Initialize update_running flag
+    if 'update_running' not in st.session_state:
+        st.session_state.update_running = False
         
-    # Ensure initial data is loaded
+    # Load cached data without network calls on first load
     if 'first_load' not in st.session_state:
-        update_all_caches()
+        # Load tournament data directly from disk
+        performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
+        st.session_state.performance_data = performance_df
+        st.session_state.performance_fetch_time = performance_timestamp
+        
+        # Load card usage data from disk
+        card_usage_df, _ = cache_utils.load_card_usage_data()
+        st.session_state.card_usage_data = card_usage_df
+        
+        # Mark as loaded
         st.session_state.first_load = True
 
 def get_or_analyze_full_deck(deck_name, set_name):
