@@ -1,6 +1,6 @@
 # ui_helpers.py
 """UI helper functions for TCG Deck Analyzer"""
-import time
+
 import streamlit as st
 from datetime import datetime
 from formatters import format_deck_name, format_deck_option
@@ -16,91 +16,50 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # Add this at the top level (outside any function) in ui_helpers.py
 # Add this at the top level of ui_helpers.py
-# Add this at the top of ui_helpers.py if not already there
-import threading
-from datetime import datetime, timedelta
-from config import CACHE_TTL
-
-# Set to True for debug features, False for production
-DEBUG_MODE = True
-
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
-    # Check if this is the first load of the app in this session
-    if 'app_first_load' not in st.session_state:
-        # Mark as no longer first load
-        st.session_state.app_first_load = False
-        
-        # Initialize timestamp if needed
-        if 'performance_fetch_time' not in st.session_state:
-            st.session_state.performance_fetch_time = datetime.now()
-            
-        # Always skip updates on first load of app
+    # Import necessary modules
+    import threading
+    from datetime import datetime, timedelta
+    from config import CACHE_TTL
+    
+    # Only proceed if not already updating
+    if st.session_state.get('update_running', False):
         return
-    
-    # Calculate time until next update
-    current_time = datetime.now()
-    time_since_update = current_time - st.session_state.performance_fetch_time
-    seconds_remaining = max(0, CACHE_TTL - time_since_update.total_seconds())
-    
-    # Check if an update is currently running
-    update_running = st.session_state.get('update_running', False)
-    
-    # Debug mode features
-    if DEBUG_MODE:
-        # Show countdown and manual update button
-        st.sidebar.text(f"Next update in: {int(seconds_remaining)} seconds")
         
-        # Add more debug info in an expander
-        with st.sidebar.expander("Debug Info"):
-            st.write(f"Last update: {st.session_state.performance_fetch_time}")
-            st.write(f"Current time: {current_time}")
-            st.write(f"Seconds since update: {time_since_update.total_seconds()}")
-            st.write(f"Update threshold (TTL): {CACHE_TTL}")
-            st.write(f"Update running: {update_running}")
+    # Check if data is stale
+    if 'performance_fetch_time' in st.session_state:
+        time_since_update = datetime.now() - st.session_state.performance_fetch_time
         
-        # Manual update button
-        if st.sidebar.button("Force Update Now"):
-            perform_update()
-            return
-    
-    # Automatic updates (uncomment for production)
-    if not update_running and seconds_remaining <= 0:
-        perform_update()
-
-    
-def perform_update():
-    """Perform the actual update"""
-    with st.sidebar:
-        with st.spinner("Updating data..."):
-            try:
-                # Set update flag
-                st.session_state.update_running = True
-                
-                # Perform update
-                performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
-                
-                # Update session state with CURRENT time
-                st.session_state.performance_fetch_time = datetime.now()
-                st.session_state.performance_data = performance_df
-                
-                # Update card usage data
-                card_usage_df = cache_manager.aggregate_card_usage()
-                st.session_state.card_usage_data = card_usage_df
-                
-                # Success message
-                st.success("✅ Data updated successfully!")
-                
-                # Trigger page refresh after a brief pause
-                time.sleep(1)
-                st.rerun()
-                
-            except Exception as e:
-                st.error(f"Update error: {str(e)}")
-                print(f"Update error: {e}")
-            finally:
-                # Always reset flag
-                st.session_state.update_running = False
+        # Update if older than cache TTL
+        if time_since_update.total_seconds() > CACHE_TTL:
+            # Set flag to prevent multiple updates
+            st.session_state.update_running = True
+            
+            def background_update():
+                try:
+                    # Update tournament data without spinner
+                    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+                    
+                    # Update session state
+                    st.session_state.performance_data = performance_df
+                    st.session_state.performance_fetch_time = performance_timestamp
+                    
+                    # Update card usage data
+                    card_usage_df = cache_manager.aggregate_card_usage()
+                    st.session_state.card_usage_data = card_usage_df
+                    
+                    print("Background update completed successfully")
+                except Exception as e:
+                    print(f"Background update error: {e}")
+                finally:
+                    st.session_state.update_running = False
+            
+            # Start update in background
+            thread = threading.Thread(target=background_update)
+            thread.daemon = True
+            thread.start()
+            print("Background update started")
             
 # Replace the existing get_energy_types_for_deck function with this one
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
@@ -555,5 +514,3 @@ def update_energy_cache(deck_name, energy_types):
         st.session_state.energy_combinations[deck_name][combo_key] += 1
     else:
         st.session_state.energy_combinations[deck_name][combo_key] = 1
-
-
