@@ -97,9 +97,11 @@ def display_card_usage_tab(results, total_decks, variant_df):
                         display_chart(fig_var) 
         
         # Add Energy Table at the bottom of column 1
-        #st.write("##### Energy Analysis")
-        # Call the energy table generation - pass the deck_info
-        generate_energy_analysis(deck_info)
+        st.write("##### Energy Analysis")
+        # Import the energy table display function directly
+        from display_tabs import display_energy_debug_tab
+        # Call it with the deck info
+        display_energy_debug_tab(deck_info)
     
     with col2:
         st.write("##### Trainer")
@@ -929,185 +931,185 @@ def debug_deck_collection(deck_name, set_name):
         st.sidebar.write(f"- Collected Decks: {decks_count}")
 
 
-# def display_energy_debug_tab(deck_info):
-#     """Display the Energy Debug tab with detailed analysis and diagnostic information"""
+def display_energy_debug_tab(deck_info):
+    """Display the Energy Debug tab with detailed analysis and diagnostic information"""
     
-#     deck_name = deck_info['deck_name']
-#     set_name = deck_info.get('set_name', 'A3')
+    deck_name = deck_info['deck_name']
+    set_name = deck_info.get('set_name', 'A3')
 
-#     # st.write("### Energy Type Analysis")
+    # st.write("### Energy Type Analysis")
     
-#     # # Create columns for different data sources
-#     # col1, col2 = st.columns(2)
+    # # Create columns for different data sources
+    # col1, col2 = st.columns(2)
     
-#     # with col1:
-#     #     st.subheader("Cached Energy Data")
+    # with col1:
+    #     st.subheader("Cached Energy Data")
         
-#     #     # Check all possible sources of energy data
+    #     # Check all possible sources of energy data
         
-#     #     # 1. Session energy cache (if it exists)
-#     #     if 'energy_cache' in st.session_state:
-#     #         cache_key = f"{deck_name}_{set_name}_energy"
-#     #         st.write("**Dedicated Energy Cache:**")
-#     #         if cache_key in st.session_state.energy_cache:
-#     #             energy = st.session_state.energy_cache[cache_key]
-#     #             st.write(f"Found: {energy}")
+    #     # 1. Session energy cache (if it exists)
+    #     if 'energy_cache' in st.session_state:
+    #         cache_key = f"{deck_name}_{set_name}_energy"
+    #         st.write("**Dedicated Energy Cache:**")
+    #         if cache_key in st.session_state.energy_cache:
+    #             energy = st.session_state.energy_cache[cache_key]
+    #             st.write(f"Found: {energy}")
                 
-#     #             # Show icons for this energy
-#     #             from ui_helpers import render_energy_icons
-#     #             energy_html = render_energy_icons(energy, True)
-#     #             st.markdown(energy_html, unsafe_allow_html=True)
-#     #         else:
-#     #             st.write("Not found in dedicated cache")
+    #             # Show icons for this energy
+    #             from ui_helpers import render_energy_icons
+    #             energy_html = render_energy_icons(energy, True)
+    #             st.markdown(energy_html, unsafe_allow_html=True)
+    #         else:
+    #             st.write("Not found in dedicated cache")
         
-#     #     # 2. Analyzed deck cache
-#     #     st.write("**Analyzed Deck Cache:**")
-#     #     analyzed_key = f"full_deck_{deck_name}_{set_name}"
-#     #     if 'analyzed_deck_cache' in st.session_state and analyzed_key in st.session_state.analyzed_deck_cache:
-#     #         analyzed_data = st.session_state.analyzed_deck_cache[analyzed_key]
+    #     # 2. Analyzed deck cache
+    #     st.write("**Analyzed Deck Cache:**")
+    #     analyzed_key = f"full_deck_{deck_name}_{set_name}"
+    #     if 'analyzed_deck_cache' in st.session_state and analyzed_key in st.session_state.analyzed_deck_cache:
+    #         analyzed_data = st.session_state.analyzed_deck_cache[analyzed_key]
             
-#     #         # Check for both fields
-#     #         energy_types = analyzed_data.get('energy_types', [])
-#     #         most_common = analyzed_data.get('most_common_energy', [])
+    #         # Check for both fields
+    #         energy_types = analyzed_data.get('energy_types', [])
+    #         most_common = analyzed_data.get('most_common_energy', [])
             
-#     #         st.write(f"All energy types: {energy_types}")
-#     #         st.write(f"Most common energy: {most_common}")
+    #         st.write(f"All energy types: {energy_types}")
+    #         st.write(f"Most common energy: {most_common}")
             
-#     #         # Show icons for this energy
-#     #         from ui_helpers import render_energy_icons
-#     #         if most_common:
-#     #             st.markdown("Most common energy icons:")
-#     #             energy_html = render_energy_icons(most_common, True)
-#     #             st.markdown(energy_html, unsafe_allow_html=True)
-#     #     else:
-#     #         st.write("Not found in analyzed deck cache")
+    #         # Show icons for this energy
+    #         from ui_helpers import render_energy_icons
+    #         if most_common:
+    #             st.markdown("Most common energy icons:")
+    #             energy_html = render_energy_icons(most_common, True)
+    #             st.markdown(energy_html, unsafe_allow_html=True)
+    #     else:
+    #         st.write("Not found in analyzed deck cache")
         
-#     #     # 3. Sample deck cache
-#     #     st.write("**Sample Deck Cache:**")
-#     #     sample_key = f"sample_deck_{deck_name}_{set_name}"
-#     #     if 'sample_deck_cache' in st.session_state and sample_key in st.session_state.sample_deck_cache:
-#     #         sample_data = st.session_state.sample_deck_cache[sample_key]
+    #     # 3. Sample deck cache
+    #     st.write("**Sample Deck Cache:**")
+    #     sample_key = f"sample_deck_{deck_name}_{set_name}"
+    #     if 'sample_deck_cache' in st.session_state and sample_key in st.session_state.sample_deck_cache:
+    #         sample_data = st.session_state.sample_deck_cache[sample_key]
             
-#     #         # Check for both fields
-#     #         energy_types = sample_data.get('energy_types', [])
-#     #         most_common = sample_data.get('most_common_energy', [])
+    #         # Check for both fields
+    #         energy_types = sample_data.get('energy_types', [])
+    #         most_common = sample_data.get('most_common_energy', [])
             
-#     #         st.write(f"All energy types: {energy_types}")
-#     #         st.write(f"Most common energy: {most_common}")
-#     #     else:
-#     #         st.write("Not found in sample deck cache")
+    #         st.write(f"All energy types: {energy_types}")
+    #         st.write(f"Most common energy: {most_common}")
+    #     else:
+    #         st.write("Not found in sample deck cache")
     
-#     # with col2:
-#     #     st.subheader("Calculated Energy Data")
+    # with col2:
+    #     st.subheader("Calculated Energy Data")
         
-#     #     # 4. Try to calculate from collected decks
-#     #     st.write("**From Collected Decks:**")
-#     #     deck_key = f"{deck_name}_{set_name}"
-#     #     if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
-#     #         collected_data = st.session_state.collected_decks[deck_key]
+    #     # 4. Try to calculate from collected decks
+    #     st.write("**From Collected Decks:**")
+    #     deck_key = f"{deck_name}_{set_name}"
+    #     if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+    #         collected_data = st.session_state.collected_decks[deck_key]
             
-#     #         if 'decks' in collected_data and collected_data['decks']:
-#     #             # Calculate combinations for display
-#     #             combinations = {}
-#     #             total_decks = 0
+    #         if 'decks' in collected_data and collected_data['decks']:
+    #             # Calculate combinations for display
+    #             combinations = {}
+    #             total_decks = 0
                 
-#     #             for deck in collected_data['decks']:
-#     #                 if 'energy_types' in deck and deck['energy_types']:
-#     #                     total_decks += 1
-#     #                     combo = tuple(sorted(deck['energy_types']))
-#     #                     combinations[combo] = combinations.get(combo, 0) + 1
+    #             for deck in collected_data['decks']:
+    #                 if 'energy_types' in deck and deck['energy_types']:
+    #                     total_decks += 1
+    #                     combo = tuple(sorted(deck['energy_types']))
+    #                     combinations[combo] = combinations.get(combo, 0) + 1
                 
-#     #             # Display the combinations
-#     #             st.write(f"Total decks with energy: {total_decks}")
+    #             # Display the combinations
+    #             st.write(f"Total decks with energy: {total_decks}")
                 
-#     #             if combinations:
-#     #                 # Find most common
-#     #                 most_common_combo = max(combinations.items(), key=lambda x: x[1])[0]
-#     #                 most_common_count = combinations[most_common_combo]
-#     #                 most_common_pct = (most_common_count / total_decks * 100) if total_decks > 0 else 0
+    #             if combinations:
+    #                 # Find most common
+    #                 most_common_combo = max(combinations.items(), key=lambda x: x[1])[0]
+    #                 most_common_count = combinations[most_common_combo]
+    #                 most_common_pct = (most_common_count / total_decks * 100) if total_decks > 0 else 0
                     
-#     #                 st.write(f"Most common: {list(most_common_combo)} ({most_common_count} decks, {most_common_pct:.1f}%)")
+    #                 st.write(f"Most common: {list(most_common_combo)} ({most_common_count} decks, {most_common_pct:.1f}%)")
                     
-#     #                 # Show it with icons
-#     #                 from ui_helpers import render_energy_icons
-#     #                 st.markdown("Most common (calculated):")
-#     #                 energy_html = render_energy_icons(list(most_common_combo), True)
-#     #                 st.markdown(energy_html, unsafe_allow_html=True)
+    #                 # Show it with icons
+    #                 from ui_helpers import render_energy_icons
+    #                 st.markdown("Most common (calculated):")
+    #                 energy_html = render_energy_icons(list(most_common_combo), True)
+    #                 st.markdown(energy_html, unsafe_allow_html=True)
                     
-#     #                 # Show all combinations
-#     #                 st.write("All combinations:")
-#     #                 for combo, count in sorted(combinations.items(), key=lambda x: x[1], reverse=True):
-#     #                     pct = (count / total_decks * 100) if total_decks > 0 else 0
-#     #                     st.write(f"- {list(combo)}: {count} decks ({pct:.1f}%)")
-#     #             else:
-#     #                 st.write("No energy combinations found")
-#     #         else:
-#     #             st.write("No decks with energy data")
-#     #     else:
-#     #         st.write("No collected decks found")
+    #                 # Show all combinations
+    #                 st.write("All combinations:")
+    #                 for combo, count in sorted(combinations.items(), key=lambda x: x[1], reverse=True):
+    #                     pct = (count / total_decks * 100) if total_decks > 0 else 0
+    #                     st.write(f"- {list(combo)}: {count} decks ({pct:.1f}%)")
+    #             else:
+    #                 st.write("No energy combinations found")
+    #         else:
+    #             st.write("No decks with energy data")
+    #     else:
+    #         st.write("No collected decks found")
         
-#     #     # 5. Energy from Energy Utils (for comparison/debugging)
-#     #     st.write("**From Energy Utils (Legacy):**")
-#     #     if 'archetype_energy_types' in st.session_state and deck_name in st.session_state.archetype_energy_types:
-#     #         st.write(f"All types: {list(st.session_state.archetype_energy_types[deck_name])}")
-#     #     else:
-#     #         st.write("Not found in archetype_energy_types")
+    #     # 5. Energy from Energy Utils (for comparison/debugging)
+    #     st.write("**From Energy Utils (Legacy):**")
+    #     if 'archetype_energy_types' in st.session_state and deck_name in st.session_state.archetype_energy_types:
+    #         st.write(f"All types: {list(st.session_state.archetype_energy_types[deck_name])}")
+    #     else:
+    #         st.write("Not found in archetype_energy_types")
             
-#     #     if 'archetype_energy_combos' in st.session_state and deck_name in st.session_state.archetype_energy_combos:
-#     #         combos = st.session_state.archetype_energy_combos[deck_name]
-#     #         if combos:
-#     #             most_common = max(combos.items(), key=lambda x: x[1])[0]
-#     #             st.write(f"Most common combo: {list(most_common)}")
+    #     if 'archetype_energy_combos' in st.session_state and deck_name in st.session_state.archetype_energy_combos:
+    #         combos = st.session_state.archetype_energy_combos[deck_name]
+    #         if combos:
+    #             most_common = max(combos.items(), key=lambda x: x[1])[0]
+    #             st.write(f"Most common combo: {list(most_common)}")
                 
-#     #             # Show with icons
-#     #             from ui_helpers import render_energy_icons
-#     #             st.markdown("Most common (from energy_utils):")
-#     #             energy_html = render_energy_icons(list(most_common), True)
-#     #             st.markdown(energy_html, unsafe_allow_html=True)
-#     #         else:
-#     #             st.write("No combinations found")
-#     #     else:
-#     #         st.write("Not found in archetype_energy_combos")
+    #             # Show with icons
+    #             from ui_helpers import render_energy_icons
+    #             st.markdown("Most common (from energy_utils):")
+    #             energy_html = render_energy_icons(list(most_common), True)
+    #             st.markdown(energy_html, unsafe_allow_html=True)
+    #         else:
+    #             st.write("No combinations found")
+    #     else:
+    #         st.write("Not found in archetype_energy_combos")
     
-#     # Add the detailed energy table at the bottom
-#     #st.write("##### Detailed Energy Data")
+    # Add the detailed energy table at the bottom
+    #st.write("##### Detailed Energy Data")
     
-#     # First check if we have per-deck energy data
-#     if 'per_deck_energy' in st.session_state and deck_name in st.session_state.per_deck_energy:
-#         # We can still use the existing detailed energy table
-#         from energy_utils import display_detailed_energy_table
-#         st.markdown(display_detailed_energy_table(deck_name), unsafe_allow_html=True)
-#     else:
-#         # Create a simplified version that works directly with collected decks
-#         deck_key = f"{deck_name}_{set_name}"
-#         if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
-#             collected_data = st.session_state.collected_decks[deck_key]
+    # First check if we have per-deck energy data
+    if 'per_deck_energy' in st.session_state and deck_name in st.session_state.per_deck_energy:
+        # We can still use the existing detailed energy table
+        from energy_utils import display_detailed_energy_table
+        st.markdown(display_detailed_energy_table(deck_name), unsafe_allow_html=True)
+    else:
+        # Create a simplified version that works directly with collected decks
+        deck_key = f"{deck_name}_{set_name}"
+        if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+            collected_data = st.session_state.collected_decks[deck_key]
             
-#             if 'decks' in collected_data and collected_data['decks']:
-#                 # Get all unique energy types
-#                 all_energies = set()
-#                 energy_by_deck = {}
+            if 'decks' in collected_data and collected_data['decks']:
+                # Get all unique energy types
+                all_energies = set()
+                energy_by_deck = {}
                 
-#                 for deck in collected_data['decks']:
-#                     if 'energy_types' in deck and deck['energy_types'] and 'deck_num' in deck:
-#                         deck_num = deck['deck_num']
-#                         energy_types = sorted(deck['energy_types'])
-#                         energy_by_deck[deck_num] = energy_types
-#                         all_energies.update(energy_types)
+                for deck in collected_data['decks']:
+                    if 'energy_types' in deck and deck['energy_types'] and 'deck_num' in deck:
+                        deck_num = deck['deck_num']
+                        energy_types = sorted(deck['energy_types'])
+                        energy_by_deck[deck_num] = energy_types
+                        all_energies.update(energy_types)
                 
-#                 # Create table directly if we have data
-#                 if energy_by_deck and all_energies:
-#                     all_energies = sorted(all_energies)
+                # Create table directly if we have data
+                if energy_by_deck and all_energies:
+                    all_energies = sorted(all_energies)
                     
-#                     # Create table HTML directly
-#                     table_html = generate_energy_table_html(all_energies, energy_by_deck)
-#                     st.markdown(table_html, unsafe_allow_html=True)
-#                 else:
-#                     st.info("No energy data found in collected decks")
-#             else:
-#                 st.info("No decks found in collected data")
-#         else:
-#             st.info("No collected decks found")
+                    # Create table HTML directly
+                    table_html = generate_energy_table_html(all_energies, energy_by_deck)
+                    st.markdown(table_html, unsafe_allow_html=True)
+                else:
+                    st.info("No energy data found in collected decks")
+            else:
+                st.info("No decks found in collected data")
+        else:
+            st.info("No collected decks found")
 
 def generate_energy_analysis(deck_info):
     """Generate the energy analysis table for the Card Usage tab"""
