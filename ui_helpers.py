@@ -434,8 +434,6 @@ def render_sidebar_from_cache():
         </div>
         """, unsafe_allow_html=True)
         
-        # Add a divider
-        st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
         
         # Add expandable methodology section
         with st.expander("🔍 About the Power Index"):
@@ -466,6 +464,9 @@ def render_sidebar_from_cache():
             * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
             * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
             """)
+        # Add a divider
+        st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
+        
         display_counter_picker_sidebar()
             
     else:
@@ -526,7 +527,7 @@ def display_counter_picker_sidebar():
         with open(banner_path, "rb") as f:
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
-        <div style="width:100%; text-align:left; margin:0px 0 0px 0;">
+        <div style="width:100%; text-align:center; margin:0px 0 0px 0;">
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
         """, unsafe_allow_html=True)
