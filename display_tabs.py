@@ -26,7 +26,7 @@ def display_deck_header(deck_info, results):
         st.markdown("""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         """, unsafe_allow_html=True)
-        st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
+        st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
 
 # In display_card_usage_tab function in display_tabs.py
 def display_card_usage_tab(results, total_decks, variant_df):
