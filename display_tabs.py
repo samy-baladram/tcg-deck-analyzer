@@ -1110,6 +1110,7 @@ def display_energy_debug_tab(deck_info):
                 st.info("No decks found in collected data")
         else:
             st.info("No collected decks found")
+            
 def generate_energy_table_html(all_energies, energy_by_deck):
     """Generate HTML for energy table from collected decks data in two columns"""
     # Create the overall container with columns
