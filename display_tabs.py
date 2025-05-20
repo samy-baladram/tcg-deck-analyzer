@@ -1592,3 +1592,136 @@ def display_matchup_tab(deck_info=None):
     # Add explanation
     from formatters import format_deck_name
     formatted_deck_name = format_deck_name(deck_name)
+
+def display_counter_picker():
+    st.subheader("Meta Counter Picker")
+    
+    # Get list of top meta decks to choose from
+    meta_decks = []
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Use displayed_name for better user experience
+        meta_decks = st.session_state.performance_data['displayed_name'].tolist()[:20]  # Limit to top 20
+    
+    if not meta_decks:
+        st.warning("No meta deck data available")
+        return
+    
+    # Multi-select for decks to counter
+    selected_decks = st.multiselect(
+        "Select decks you want to counter:",
+        options=meta_decks,
+        default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
+        help="Choose the decks you want to counter in the meta"
+    )
+    
+    # Only proceed if decks are selected
+    if not selected_decks:
+        st.info("Please select at least one deck to find counters")
+        return
+    
+    # Button to trigger analysis
+    if st.button("Find Best Counter Deck"):
+        with st.spinner("Analyzing counters..."):
+            # This collects all matchup data for each meta deck
+            counter_data = []
+            
+            # For each possible counter deck in the meta
+            for _, deck in st.session_state.performance_data.iterrows():
+                deck_name = deck['deck_name']
+                set_name = deck['set']
+                displayed_name = deck['displayed_name']
+                
+                # Get this deck's matchups
+                matchups = fetch_matchup_data(deck_name, set_name)
+                
+                if matchups.empty:
+                    continue
+                
+                # Calculate average win rate against selected decks
+                avg_win_rate = 0
+                matched_decks = 0
+                
+                # Convert from displayed names to internal deck names for matching
+                selected_internal_names = []
+                for displayed in selected_decks:
+                    for _, meta_deck in st.session_state.performance_data.iterrows():
+                        if meta_deck['displayed_name'] == displayed:
+                            selected_internal_names.append(meta_deck['deck_name'])
+                
+                # Look for matchups against selected decks
+                for _, matchup in matchups.iterrows():
+                    if matchup['opponent_deck_name'] in selected_internal_names:
+                        avg_win_rate += matchup['win_pct']
+                        matched_decks += 1
+                
+                # Only include if we found matchups against at least half the selected decks
+                if matched_decks >= len(selected_decks) / 2:
+                    avg_win_rate = avg_win_rate / matched_decks if matched_decks > 0 else 0
+                    
+                    counter_data.append({
+                        'deck_name': deck_name,
+                        'displayed_name': displayed_name,
+                        'average_win_rate': avg_win_rate,
+                        'meta_share': deck['share'],
+                        'power_index': deck['power_index'],
+                        'matched_decks': matched_decks,
+                        'total_selected': len(selected_decks)
+                    })
+            
+            # Create DataFrame and sort by average win rate
+            if counter_data:
+                counter_df = pd.DataFrame(counter_data)
+                counter_df = counter_df.sort_values('average_win_rate', ascending=False)
+                
+                # Display results
+                st.subheader("Best Counter Decks")
+                
+                # Create metrics for top result
+                if not counter_df.empty:
+                    top_counter = counter_df.iloc[0]
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Best Counter Deck", top_counter['displayed_name'])
+                    with col2:
+                        st.metric("Average Win Rate", f"{top_counter['average_win_rate']:.1f}%")
+                    with col3:
+                        st.metric("Matchups Found", f"{top_counter['matched_decks']}/{top_counter['total_selected']}")
+                
+                # Display table of all counters
+                st.dataframe(
+                    counter_df,
+                    column_config={
+                        "displayed_name": st.column_config.TextColumn("Deck"),
+                        "average_win_rate": st.column_config.NumberColumn(
+                            "Avg Win %",
+                            help="Average win percentage against selected decks",
+                            format="%.1f%%"
+                        ),
+                        "meta_share": st.column_config.NumberColumn(
+                            "Meta Share",
+                            help="Percentage of the current meta",
+                            format="%.2f%%"
+                        ),
+                        "power_index": st.column_config.NumberColumn(
+                            "Power Index",
+                            help="Overall performance in the meta",
+                            format="%.2f"
+                        ),
+                        "matched_decks": st.column_config.ProgressColumn(
+                            "Matchups Found",
+                            help="Number of selected decks with matchup data",
+                            format="%d",
+                            min_value=0,
+                            max_value=counter_df['total_selected'].max()
+                        )
+                    },
+                    hide_index=True,
+                    use_container_width=True
+                )
+                
+                # Add explanation text 
+                st.caption("Higher average win rate indicates better performance against your selected decks.")
+                st.caption("Note: Some decks may not have matchup data against all selected decks.")
+            else:
+                st.warning("No counter data found for the selected decks")
