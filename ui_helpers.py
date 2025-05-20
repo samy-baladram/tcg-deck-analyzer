@@ -126,8 +126,8 @@ def display_banner(img_path, max_width=900):
     """, unsafe_allow_html=True)
 
 def load_initial_data():
-    """Load initial data required for the app"""
-    # Initialize caches - this now handles comprehensive updates
+    """Load initial data required for the app with minimal blocking"""
+    # Initialize caches
     cache_manager.init_caches()
     
     # Initialize deck list if not already loaded
@@ -135,16 +135,17 @@ def load_initial_data():
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
     
-    # Get the performance data from session state (already loaded by init_caches)
+    # For tournament data, only load from cache first without network calls
     if 'performance_data' not in st.session_state:
-        # Only load if not already in session state
-        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
+        # Load directly from cache - skip update check
+        performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
         st.session_state.performance_data = performance_df
         st.session_state.performance_fetch_time = performance_timestamp
     
-    # Initialize card usage data if not already loaded (similar approach)
+    # Similarly for card usage data
     if 'card_usage_data' not in st.session_state:
-        st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
+        card_usage_df, _ = cache_utils.load_card_usage_data()
+        st.session_state.card_usage_data = card_usage_df
     
     # Initialize selected deck if not exists
     if 'selected_deck_index' not in st.session_state:
@@ -313,8 +314,37 @@ def render_sidebar():
     # Show loading spinner while sidebar initializes
     with st.spinner("Loading sidebar data..."):
         with st.sidebar:
+            # Add background update check here
+            # Check if tournament data needs updating (older than 1 hour)
+            if 'performance_fetch_time' in st.session_state:
+                time_since_update = datetime.now() - st.session_state.performance_fetch_time
+                if time_since_update > timedelta(hours=1):
+                    # Start a background task to update data
+                    if st.session_state.get('update_running', False) is False:
+                        st.session_state.update_running = True
+                        
+                        # Use a separate thread for updating
+                        import threading
+                        def background_update():
+                            try:
+                                # Update tournament data
+                                performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+                                # Update session state
+                                st.session_state.performance_data = performance_df
+                                st.session_state.performance_fetch_time = performance_timestamp
+                                # Update card usage data
+                                st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
+                            finally:
+                                st.session_state.update_running = False
+                                
+                        # Start update in background
+                        thread = threading.Thread(target=background_update)
+                        thread.daemon = True
+                        thread.start()
+            
             # Load and encode the banner image if it exists
             banner_path = "sidebar_banner.png"
+            # ... rest of the existing sidebar rendering code ...
             if os.path.exists(banner_path):
                 with open(banner_path, "rb") as f:
                     banner_base64 = base64.b64encode(f.read()).decode()
