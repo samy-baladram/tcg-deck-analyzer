@@ -1508,7 +1508,7 @@ def display_matchup_tab(deck_info=None):
         elif val == "Unfavorable":
             return 'background-color: rgba(255, 100, 100, 0.4)'  # Light red
         else:
-            return 'background-color: rgba(255, 237, 50, 0.2)'  # Light yellow
+            return 'background-color: rgba(255, 237, 50, 0.4)'  # Light yellow
     
     # Display the enhanced data table with all rows
     st.write("#### Matchup Data")
