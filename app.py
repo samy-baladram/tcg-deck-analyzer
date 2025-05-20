@@ -29,6 +29,10 @@ if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
     st.session_state.app_state['initial_data_loaded'] = True
 
+# Initialize app_first_load flag to control update behavior
+if 'app_first_load' not in st.session_state:
+    st.session_state.app_first_load = True
+    
 # Apply custom styles - IMPORTANT: Put CSS before any components render
 st.markdown("""
 <style>
