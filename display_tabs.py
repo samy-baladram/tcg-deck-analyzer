@@ -1621,9 +1621,8 @@ def display_counter_picker():
     with col2:
         # Add some vertical space to align with the dropdown
         st.write("")
-        st.write("")
         # Button to trigger analysis
-        find_button = st.button("Find Counters", type="secondary", use_container_width=True)
+        find_button = st.button("Find\nCounters", type="secondary", use_container_width=True)
     
     # Only proceed if decks are selected and button clicked
     if selected_decks and find_button:
