@@ -140,7 +140,7 @@ class CardGrid:
     def _generate_percentage_html(self, usage_pct):
         """Generate HTML for usage percentage display"""
         return (f"<div class=\"card-percentage\" "
-                f"style=\"text-align: center; margin-top: 4px; "
+                f"style=\"text-align: center; margin-top: 3px; "
                 f"font-size: {self.percentage_font_size}px; font-weight: 500;\">"
                 f"{usage_pct}%</div>")
     
@@ -188,7 +188,7 @@ class CardRenderer:
             card_width=95,
             margin_bottom=12,
             show_percentage=True,
-            percentage_font_size=14
+            percentage_font_size=15
         )
         
         grid.add_cards_from_dataframe(cards_df).display()
