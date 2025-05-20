@@ -466,10 +466,10 @@ def render_sidebar_from_cache():
             * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
             """)
         # Add a divider
-        st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
         
         display_counter_picker_sidebar()
-        st.markdown("<hr style='margin-top: 300px; margin-bottom: 100px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='margin-top: 500px; margin-bottom: 200px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
             
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
