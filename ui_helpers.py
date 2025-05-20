@@ -21,34 +21,52 @@ import threading
 from datetime import datetime, timedelta
 from config import CACHE_TTL
 
+# Set to True for debug features, False for production
+DEBUG_MODE = True
+
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
-    # Initialize last update time if not set
-    if 'performance_fetch_time' not in st.session_state:
-        # Set to current time to prevent immediate update on first load
-        st.session_state.performance_fetch_time = datetime.now()
+    # Check if this is the first load of the app in this session
+    if 'app_first_load' not in st.session_state:
+        # Mark as no longer first load
+        st.session_state.app_first_load = False
+        
+        # Initialize timestamp if needed
+        if 'performance_fetch_time' not in st.session_state:
+            st.session_state.performance_fetch_time = datetime.now()
+            
+        # Always skip updates on first load of app
+        return
     
     # Calculate time until next update
     current_time = datetime.now()
     time_since_update = current_time - st.session_state.performance_fetch_time
     seconds_remaining = max(0, CACHE_TTL - time_since_update.total_seconds())
     
-    # Display time until next update
-    #st.text(f"Next update in: {int(seconds_remaining)} seconds")
-    
-    # Add a manual update button for testing
-    # if st.sidebar.button("Force Update Now"):
-    #     perform_update()
-    #     return
-    
-    # Only proceed with automatic update if data is stale and not currently updating
+    # Check if an update is currently running
     update_running = st.session_state.get('update_running', False)
     
-    # Uncomment this for production to enable automatic updates
-    # For initial testing, rely only on the manual button
-
-    if (not update_running and seconds_remaining <= 0):
-        perform_update()
+    # Debug mode features
+    if DEBUG_MODE:
+        # Show countdown and manual update button
+        st.sidebar.text(f"Next update in: {int(seconds_remaining)} seconds")
+        
+        # Add more debug info in an expander
+        with st.sidebar.expander("Debug Info"):
+            st.write(f"Last update: {st.session_state.performance_fetch_time}")
+            st.write(f"Current time: {current_time}")
+            st.write(f"Seconds since update: {time_since_update.total_seconds()}")
+            st.write(f"Update threshold (TTL): {CACHE_TTL}")
+            st.write(f"Update running: {update_running}")
+        
+        # Manual update button
+        if st.sidebar.button("Force Update Now"):
+            perform_update()
+            return
+    
+    # Automatic updates (uncomment for production)
+    # if not update_running and seconds_remaining <= 0:
+    #     perform_update()
 
     
 def perform_update():
