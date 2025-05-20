@@ -681,7 +681,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
     # Flexible slots section
     remaining = 20 - total_cards
     st.write("<br>", unsafe_allow_html=True)
-    st.write(f"##### Flexible Slots ({remaining} cards)", unsafe_allow_html=True)
+    st.write(f"##### Remaining {remaining} Slots:", unsafe_allow_html=True)
     
     # Sort options by usage percentage (descending) and split by type
     pokemon_options = options[options['type'] == 'Pokemon'].sort_values(by='display_usage', ascending=False)
