@@ -814,8 +814,8 @@ def display_counter_picker_sidebar():
                 if i < min(4, len(counter_df) - 1):
                     # Top 3 get normal divider, 4-5 get thinner divider
                     divider_margin = 0.3rem#"1rem" if i < 3 else "0.6rem"
-                    divider_style = "solid 0.25px" if i < 3 else "solid 1px"
-                    divider_color = "#ddd" if i < 3 else "#eee"
+                    divider_style = "solid 0.5px"# if i < 3 else "solid 1px"
+                    divider_color = "#ddd"# if i < 3 else "#eee"
                     st.markdown(f"<hr style='margin: {divider_margin} 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
             # Display table with all results including icons
