@@ -16,12 +16,16 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # Add this at the top level (outside any function) in ui_helpers.py
 # Add this at the top level of ui_helpers.py
+# Add this at the top of ui_helpers.py if not already there
+import threading
+from datetime import datetime, timedelta
+from config import CACHE_TTL
+
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
-    # Import necessary modules
-    import threading
-    from datetime import datetime, timedelta
-    from config import CACHE_TTL
+    # Display update indicator if update is running
+    if st.session_state.get('update_running', False):
+        st.sidebar.markdown("🔄 **Updating data in background...**")
     
     # Only proceed if not already updating
     if st.session_state.get('update_running', False):
@@ -49,6 +53,9 @@ def check_and_update_tournament_data():
                     card_usage_df = cache_manager.aggregate_card_usage()
                     st.session_state.card_usage_data = card_usage_df
                     
+                    # Set flag for completed update to trigger refresh
+                    st.session_state.update_just_completed = True
+                    
                     print("Background update completed successfully")
                 except Exception as e:
                     print(f"Background update error: {e}")
@@ -60,6 +67,21 @@ def check_and_update_tournament_data():
             thread.daemon = True
             thread.start()
             print("Background update started")
+    
+    # Check if we need to refresh the page after update
+    if st.session_state.get('update_just_completed', False):
+        st.session_state.update_just_completed = False
+        # Add JavaScript for delayed refresh
+        st.markdown("""
+        <script>
+        setTimeout(function() {
+            window.location.reload();
+        }, 3000);  // 3 second delay
+        </script>
+        """, unsafe_allow_html=True)
+        
+        # Show a temporary message to user
+        st.sidebar.success("✅ Data updated! Refreshing page...")
             
 # Replace the existing get_energy_types_for_deck function with this one
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
