@@ -142,12 +142,6 @@ def display_deck_template_tab(results):
 
 def display_variant_decks(deck_info, energy_types, is_typical, options):
     """Display the main sample deck and any variant decks containing other Pokémon options"""
-    # Add debug logging
-    deck_name = deck_info.get('deck_name', '')
-    set_name = deck_info.get('set', '')
-    log_cache_status(deck_name, set_name)
-    
-   
     # Check if options is empty or None
     if options is None or options.empty:
         st.write("#### Sample Deck")
@@ -287,9 +281,7 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     target_num = variant_pokemon.get('num', '')
     
     # Call the ensure function to make sure we have collected decks
-    # Use with a spinner to indicate background loading
-    with st.spinner("Finding variant deck data..."):
-        has_data = ensure_deck_collection_data(deck_name, set_name)
+    has_data = ensure_deck_collection_data(deck_name, set_name)
     
     # Exit if we couldn't get any deck data
     if not has_data:
@@ -301,9 +293,6 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     collected_data = st.session_state.collected_decks[deck_key]
     all_decks = collected_data['decks']
     
-    # Log what we're searching for
-    print(f"Searching for variant {target_name} ({target_set}-{target_num}) among {len(all_decks)} decks")
-    
     # Find decks with the target card
     exact_matches = []
     
@@ -314,8 +303,29 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             
         # Skip if deck has no cards
         if 'cards' not in deck or not deck['cards']:
-            # Don't try to retrieve cards - skip this deck
-            continue
+            # If cards missing, try to retrieve them
+            try:
+                from scraper import get_deck_by_player_tournament
+                if 'tournament_id' in deck and 'player_id' in deck:
+                    cards, deck_energy_types = get_deck_by_player_tournament(
+                        deck['tournament_id'], 
+                        deck['player_id']
+                    )
+                    deck['cards'] = cards
+                    
+                    # Also set energy types if needed
+                    if not deck.get('energy_types') and deck_energy_types:
+                        deck['energy_types'] = deck_energy_types
+                        
+                    # Save the updated deck back to session state
+                    st.session_state.collected_decks[deck_key]['decks'][deck_index] = deck
+            except Exception as e:
+                # Couldn't retrieve cards, skip this deck
+                continue
+            
+            # Double-check if cards retrieved successfully
+            if 'cards' not in deck or not deck['cards']:
+                continue
         
         # Check each card in this deck
         has_exact_match = False
@@ -351,9 +361,6 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
         # Sort by score and take best
         best_match = sorted(exact_matches, key=lambda x: x[1], reverse=True)[0]
         best_deck, _, best_deck_num = best_match
-        print(f"Found best match for {target_name}: deck #{best_deck_num} with score {best_match[1]}")
-    else:
-        print(f"No exact matches found for {target_name}")
     
     # Render the chosen deck
     if best_deck:
@@ -404,7 +411,6 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
                 card_width=70
             )
             st.markdown(deck_html, unsafe_allow_html=True)
-            st.caption("Sample deck shown (no specific variant deck found)")
         
         return None
 
@@ -1497,20 +1503,3 @@ def display_matchup_tab(deck_info=None):
     # Add explanation
     from formatters import format_deck_name
     formatted_deck_name = format_deck_name(deck_name)
-
-def log_cache_status(deck_name, set_name):
-    """Log cache status to help debug caching issues"""
-    # Don't show to user, only print to console
-    deck_key = f"{deck_name}_{set_name}"
-    cache_key = f"full_deck_{deck_name}_{set_name}"
-    
-    has_collected = 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks
-    has_analyzed = 'analyzed_deck_cache' in st.session_state and cache_key in st.session_state.analyzed_deck_cache
-    
-    print(f"[DEBUG] Cache status for {deck_name}:")
-    print(f"  - Collected decks cache: {'✓' if has_collected else '✗'}")
-    print(f"  - Analyzed deck cache: {'✓' if has_analyzed else '✗'}")
-    
-    if has_collected:
-        num_decks = len(st.session_state.collected_decks[deck_key].get('decks', []))
-        print(f"  - Number of collected decks: {num_decks}")
