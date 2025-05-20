@@ -23,8 +23,11 @@ from config import CACHE_TTL
 
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
-    # Display state in sidebar for debugging
-    update_running = st.session_state.get('update_running', False)
+    # Skip completely if we just refreshed after an update
+    if st.session_state.get('just_refreshed', False):
+        # Clear the flag and stop
+        st.session_state.just_refreshed = False
+        return
     
     # Show next update time
     if 'performance_fetch_time' in st.session_state:
@@ -34,6 +37,8 @@ def check_and_update_tournament_data():
         st.sidebar.text(f"Next update in: {int(seconds_remaining)} seconds")
     
     # Only proceed with update if not already updating and data is stale
+    update_running = st.session_state.get('update_running', False)
+    
     if (not update_running and 
         'performance_fetch_time' in st.session_state and 
         (datetime.now() - st.session_state.performance_fetch_time).total_seconds() > CACHE_TTL):
@@ -47,9 +52,10 @@ def check_and_update_tournament_data():
                     # Perform update
                     performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
                     
-                    # Update session state
+                    # IMPORTANT: Make sure timestamp is future-dated enough
+                    # This ensures we don't immediately need another update
+                    st.session_state.performance_fetch_time = datetime.now()
                     st.session_state.performance_data = performance_df
-                    st.session_state.performance_fetch_time = performance_timestamp
                     
                     # Update card usage data
                     card_usage_df = cache_manager.aggregate_card_usage()
@@ -57,6 +63,9 @@ def check_and_update_tournament_data():
                     
                     # Success message
                     st.success("✅ Data updated successfully!")
+                    
+                    # Set refresh flag to prevent update loop
+                    st.session_state.just_refreshed = True
                     
                     # Trigger page refresh after a brief pause
                     time.sleep(1)
