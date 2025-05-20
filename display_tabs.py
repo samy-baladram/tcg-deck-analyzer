@@ -1724,10 +1724,10 @@ def display_counter_picker():
                         counter_df[col] = counter_df[col].astype(float)
                 
                 # Display results
-                st.subheader("Best Counter Decks")
+                #st.subheader("Best Counter Decks")
                 
                 # Display top 3 counter decks with images and metrics
-                st.write("### Top Counters to Selected Decks")
+                st.write("##### Top Counters to Selected Decks")
                 
                 # Display top 3 counter decks
                 for i in range(min(3, len(counter_df))):
@@ -1783,7 +1783,7 @@ def display_counter_picker():
                         st.markdown("<hr style='margin: 1rem 0;'>", unsafe_allow_html=True)
                 
                 # Display table with all results including icons
-                st.write("### All Counter Options")
+                st.write("###### All Counter Options")
                 
                 # Create a DataFrame with the ordered columns including icons
                 display_df = pd.DataFrame({
