@@ -708,8 +708,9 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 trainer_options_grid.add_cards_from_dataframe(trainer_options)
                 trainer_options_grid.display()
+        st.caption("Percentages show how often each card appears in top competitive decks. Higher values indicate more popular choices for your remaining slots.")
     else:
-        st.info("No flexible options available for this deck.")
+        st.info("No remaining slots available for this deck.")
         
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
