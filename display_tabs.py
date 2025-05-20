@@ -1427,7 +1427,10 @@ def display_matchup_tab(deck_info=None):
     
     # Create a copy to work with
     working_df = matchup_df.copy()
-    
+
+    # Filter out current deck from matchups (ADD THIS LINE)
+    working_df = working_df[working_df['opponent_deck_name'] != deck_name]
+
     # Only apply filtering if we have meta decks and user wants filtering
     if meta_decks and not show_all:
         # Add lowercase versions for better matching
