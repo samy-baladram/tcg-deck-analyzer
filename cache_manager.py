@@ -334,9 +334,14 @@ def load_or_update_tournament_data(force_update=False):
             
             # Save to cache
             cache_utils.save_tournament_performance_data(performance_df)
-            
-            # Update timestamp
-            performance_timestamp = datetime.now()
+        
+        # Update timestamp regardless of whether we found new data
+        # This ensures "Updated just now" even when no new data exists
+        performance_timestamp = datetime.now()
+        
+        # Save the updated timestamp to disk
+        with open(cache_utils.TOURNAMENT_TIMESTAMP_PATH, 'w') as f:
+            f.write(performance_timestamp.isoformat())
 
     # Return the loaded or updated data with timestamp
     return performance_df, performance_timestamp
