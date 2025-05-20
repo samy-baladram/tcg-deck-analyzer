@@ -202,16 +202,19 @@ if 'analyze' in st.session_state and selected_option:
     with tab2:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
         st.caption(f"Data of 20 collected decks (with partial energy info). {last_update}")
-        #st.caption(last_update)
+        st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
         
     with tab3:
         display_tabs.display_matchup_tab()
+        st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
         
     with tab4:
         display_tabs.display_metagame_tab() 
+        st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
         
     with tab5:
         display_tabs.display_related_decks_tab(original_deck_info, results)
+        st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
         
     with tab6:
         display_tabs.display_raw_data_tab(results, variant_df)
