@@ -1448,8 +1448,8 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col1:
         st.markdown(f"""
        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Favorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; line-height: 0.9;">{favorable_share_norm:.1f}%</div>
+            <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; line-height: 1;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1459,7 +1459,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold;">Even</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; line-height: 0.9;">{even_share_norm:.1f}%</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; line-height: 1;">{even_share_norm:.1f}%</div>
             <div style="font-size: 1rem;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1468,8 +1468,8 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col3:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Unfavorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.9;">{unfavorable_share_norm:.1f}%</div>
+            <div style="font-size: 1.1rem; font-weight: bold; ">Unfavorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; line-height: 1;">{unfavorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
