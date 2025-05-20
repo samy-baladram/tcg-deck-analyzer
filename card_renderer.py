@@ -140,7 +140,7 @@ class CardGrid:
     def _generate_percentage_html(self, usage_pct):
         """Generate HTML for usage percentage display"""
         return (f"<div class=\"card-percentage\" "
-                f"style=\"text-align: center; margin-top: 3px; "
+                f"style=\"text-align: center; margin-top: 2px; "
                 f"font-size: {self.percentage_font_size}px; font-weight: 500;\">"
                 f"{usage_pct}%</div>")
     
