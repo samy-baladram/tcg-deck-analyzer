@@ -191,13 +191,14 @@ def load_initial_data():
 
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
+    # Initialize deck display names and mapping
+    deck_display_names = []
+    deck_name_mapping = {}
+    
+    # First try to use performance data
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Get top 30 decks from performance data
         top_performing_decks = st.session_state.performance_data.head(30)
-        
-        # Create dropdown options with the same format as sidebar
-        deck_display_names = []
-        deck_name_mapping = {}  # Maps display name to original name
         
         for _, deck in top_performing_decks.iterrows():
             power_index = round(deck['power_index'], 2)
@@ -208,20 +209,36 @@ def create_deck_options():
                 'deck_name': deck['deck_name'],
                 'set': deck['set']
             }
+    # If no performance data, use deck list
     else:
-        # Fallback to original method if performance data isn't available
-        popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
-        
-        # Create deck options with formatted names and store mapping
-        deck_display_names = []
-        deck_name_mapping = {}  # Maps display name to original name
-        
-        for _, row in popular_decks.iterrows():
-            display_name = format_deck_option(row['deck_name'], row['share'])
+        # Ensure deck_list exists in session state
+        if 'deck_list' not in st.session_state:
+            # Load deck list with spinner
+            with st.spinner("Loading deck list..."):
+                from scraper import get_deck_list
+                st.session_state.deck_list = get_deck_list()
+                st.session_state.fetch_time = datetime.now()
+                
+        # Now we're sure deck_list exists, use it
+        try:
+            from config import MIN_META_SHARE
+            popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
+            
+            for _, row in popular_decks.iterrows():
+                display_name = format_deck_option(row['deck_name'], row['share'])
+                deck_display_names.append(display_name)
+                deck_name_mapping[display_name] = {
+                    'deck_name': row['deck_name'],
+                    'set': row['set']
+                }
+        except Exception as e:
+            # If anything goes wrong, provide default options
+            print(f"Error creating deck options: {e}")
+            display_name = "Example Deck (1.0)"
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
-                'deck_name': row['deck_name'],
-                'set': row['set']
+                'deck_name': 'example-deck',
+                'set': 'A3'
             }
     
     # Store mapping in session state
