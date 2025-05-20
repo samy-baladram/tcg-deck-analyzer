@@ -1595,7 +1595,7 @@ def display_matchup_tab(deck_info=None):
     formatted_deck_name = format_deck_name(deck_name)
 
 def display_counter_picker():
-    st.subheader("##### Meta Counter Picker")
+    st.write("##### Meta Counter Picker")
     # Get list of top meta decks to choose from
     meta_decks = []
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
