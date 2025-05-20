@@ -1154,7 +1154,7 @@ def generate_energy_table_html(all_energies, energy_by_deck):
         <div style="flex: 1;">"""
     
     # First column: Energy by Deck table
-    table_html += """<h6>Energy by Deck</h6>
+    table_html += """<h6 style="margin-bottom: 10px;>Energy by Deck</h6>
             <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid #ddd;">
                     <th style="text-align: left; padding: 4px; font-size: 1rem;">Deck #</th>"""
