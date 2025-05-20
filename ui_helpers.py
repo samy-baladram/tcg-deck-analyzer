@@ -1,6 +1,6 @@
 # ui_helpers.py
 """UI helper functions for TCG Deck Analyzer"""
-
+import time
 import streamlit as st
 from datetime import datetime
 from formatters import format_deck_name, format_deck_option
