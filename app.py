@@ -227,7 +227,7 @@ else:
 
 st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
 st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
-display_tabs.display_counter_picker()
+#display_tabs.display_counter_picker()
 
 # Load sidebar AFTER main content to ensure main interface loads first
 #ui_helpers.render_sidebar()
