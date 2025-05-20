@@ -284,57 +284,8 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     collected_data = st.session_state.collected_decks[deck_key]
     all_decks = collected_data['decks']
     
-    # Check if cards are missing from decks and retrieve them if needed
-    missing_cards = False
-    for deck in all_decks:
-        if 'cards' not in deck:
-            missing_cards = True
-            break
-    
-    if missing_cards:
-        #st.caption("Retrieving card data for decks...")
-        
-        # We need to retrieve card data for each deck
-        from scraper import get_deck_by_player_tournament
-        
-        # Track which decks have cards now
-        decks_with_cards = []
-        
-        for deck in all_decks:
-            if 'tournament_id' in deck and 'player_id' in deck:
-                try:
-                    # Get cards and energy types for this deck
-                    cards, energy_types_deck = get_deck_by_player_tournament(
-                        deck['tournament_id'], 
-                        deck['player_id']
-                    )
-                    
-                    # Add cards to the deck
-                    deck['cards'] = cards
-                    
-                    # Update deck energy types if needed
-                    if energy_types_deck and not deck.get('energy_types'):
-                        deck['energy_types'] = energy_types_deck
-                        
-                    # Add this deck to our new list
-                    decks_with_cards.append(deck)
-                except Exception as e:
-                    st.caption(f"Error retrieving cards for deck: {e}")
-        
-        # If we found some decks with cards, use them
-        if decks_with_cards:
-            all_decks = decks_with_cards
-            
-            # Update the session state
-            st.session_state.collected_decks[deck_key]['decks'] = all_decks
-            
-            #st.caption(f"Retrieved card data for {len(decks_with_cards)} decks")
-        else:
-            st.caption("Couldn't retrieve card data for any decks")
-    
-    # Now find decks with the target card
+    # Find decks with the target card
     exact_matches = []
-    name_matches = []
     
     for deck_index, deck in enumerate(all_decks):
         # Skip if deck number already shown
@@ -343,12 +294,34 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             
         # Skip if deck has no cards
         if 'cards' not in deck or not deck['cards']:
-            continue
+            # If cards missing, try to retrieve them
+            try:
+                from scraper import get_deck_by_player_tournament
+                if 'tournament_id' in deck and 'player_id' in deck:
+                    cards, deck_energy_types = get_deck_by_player_tournament(
+                        deck['tournament_id'], 
+                        deck['player_id']
+                    )
+                    deck['cards'] = cards
+                    
+                    # Also set energy types if needed
+                    if not deck.get('energy_types') and deck_energy_types:
+                        deck['energy_types'] = deck_energy_types
+                        
+                    # Save the updated deck back to session state
+                    st.session_state.collected_decks[deck_key]['decks'][deck_index] = deck
+            except Exception as e:
+                # Couldn't retrieve cards, skip this deck
+                continue
+            
+            # Double-check if cards retrieved successfully
+            if 'cards' not in deck or not deck['cards']:
+                continue
         
         # Check each card in this deck
         has_exact_match = False
         has_name_match = False
-        other_variants_count = 0
+        other_variant_count = 0
         
         for card in deck['cards']:
             # Only check Pokémon cards
@@ -361,35 +334,23 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
                 str(card.get('num', '')) == str(target_num)):
                 has_exact_match = True
                 
-            # Check for just name match
-            elif card['card_name'] == target_name:
-                has_name_match = True
-            
             # Count other variants
             for other in other_variants:
                 if other.lower() == card['card_name'].lower():
-                    other_variants_count += 1
+                    other_variant_count += 1
         
         # If we found a match in this deck, track it
         if has_exact_match:
-            score = 10 - other_variants_count
+            score = 10 - other_variant_count
             exact_matches.append((deck, score, deck.get('deck_num', deck_index)))
-        elif has_name_match:
-            score = 5 - other_variants_count
-            name_matches.append((deck, score, deck.get('deck_num', deck_index)))
     
     # Choose best match
-    best_match = None
     best_deck = None
     best_deck_num = None
     
     if exact_matches:
         # Sort by score and take best
         best_match = sorted(exact_matches, key=lambda x: x[1], reverse=True)[0]
-        best_deck, _, best_deck_num = best_match
-    elif name_matches:
-        # Sort by score and take best
-        best_match = sorted(name_matches, key=lambda x: x[1], reverse=True)[0]
         best_deck, _, best_deck_num = best_match
     
     # Render the chosen deck
