@@ -80,7 +80,8 @@ def format_card_style(count, pct):
     """Format card count with custom styling"""
     if pct <= 0:
         return ""
-    return f" {pct}%  <span style='font-family:Nunito,sans-serif;font-weight:700;font-size:22px'>{count}×</span>"    
+    return f""" {pct}%  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
+                        <span style='font-family:Nunito,sans-serif;font-weight:700;font-size:22px'>{count}×</span>"""    
 
 def create_usage_bar_chart(type_cards, card_type, energy_type=None):
     """Create horizontal stacked bar chart for card usage with energy-based colors"""
