@@ -23,10 +23,6 @@ if 'app_state' not in st.session_state:
         'initial_data_loaded': False
     }
     
-# Add sidebar container to session state (NEW CODE)
-if 'sidebar_container' not in st.session_state:
-    st.session_state.sidebar_container = st.sidebar.empty()
-    st.session_state.sidebar_content_loaded = False
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
@@ -132,14 +128,9 @@ ui_helpers.display_banner("title_banner.png")
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
 
-# NEW SIDEBAR RENDERING APPROACH
-if not st.session_state.sidebar_content_loaded:
-    with st.session_state.sidebar_container.container():
-        ui_helpers.render_sidebar()
-    st.session_state.sidebar_content_loaded = True
-else:
-    # Just check for updates without reloading everything
-    ui_helpers.check_and_update_tournament_data()
+# Simple, direct sidebar rendering - ALWAYS runs but uses cached data
+with st.sidebar:
+    ui_helpers.render_sidebar_from_cache()  # You'll need to create this function
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
