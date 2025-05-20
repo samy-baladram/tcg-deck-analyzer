@@ -1086,7 +1086,7 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     
     # First column: Energy by Deck table
     table_html += """<h6 style="margin-bottom: 10px;">Energy by Deck</h6>
-            <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+            <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid #ddd;">
                     <th style="text-align: left; padding: 4px;">Deck #</th>"""
     
@@ -1128,7 +1128,7 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     
     # Add combo statistics
     table_html += """<h6 style="margin-bottom: 10px;">Energy Combinations</h6>
-            <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+            <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid #ddd;">
                     <th style="text-align: left; padding: 4px;">Energy Combination</th>
                     <th style="text-align: right; padding: 4px; width: 80px;">Count</th>
