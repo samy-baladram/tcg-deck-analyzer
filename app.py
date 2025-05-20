@@ -22,6 +22,10 @@ if 'app_state' not in st.session_state:
     st.session_state.app_state = {
         'initial_data_loaded': False
     }
+    
+# Add sidebar tracking
+if 'sidebar_rendered' not in st.session_state:
+    st.session_state.sidebar_rendered = False
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
@@ -121,12 +125,16 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 """, unsafe_allow_html=True)
 
 
-
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
+
+# Render sidebar only on first run
+if not st.session_state.sidebar_rendered:
+    ui_helpers.render_sidebar()
+    st.session_state.sidebar_rendered = True
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
