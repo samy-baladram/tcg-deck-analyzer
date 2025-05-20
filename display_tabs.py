@@ -1595,7 +1595,17 @@ def display_matchup_tab(deck_info=None):
     formatted_deck_name = format_deck_name(deck_name)
 
 def display_counter_picker():
-    st.subheader("Meta Counter Picker")
+    banner_path = "picker_banner.png"
+    if os.path.exists(banner_path):
+        with open(banner_path, "rb") as f:
+            banner_base64 = base64.b64encode(f.read()).decode()
+        st.markdown(f"""
+        <div style="width:100%; text-align:left; margin:0px 0 0px 0;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:300px; margin-bottom:10px;">
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.subheader("Meta Counter Picker")
     
     # Get list of top meta decks to choose from
     meta_decks = []
