@@ -30,6 +30,8 @@ def check_and_update_tournament_data():
     # Check if data is stale
     if 'performance_fetch_time' in st.session_state:
         time_since_update = datetime.now() - st.session_state.performance_fetch_time
+        seconds_until_update = CACHE_TTL - time_since_update.total_seconds()
+        print(f"Seconds until update: {seconds_until_update:.1f}")
         
         # Update if older than cache TTL
         if time_since_update.total_seconds() > CACHE_TTL:
