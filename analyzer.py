@@ -449,6 +449,7 @@ def build_deck_template(analysis_df):
     # Get options (standard + flexible core)
     options = pd.concat([
         analysis_df[analysis_df['category'] == 'Standard'],
+        analysis_df[analysis_df['category'] == 'Tech'],
         analysis_df[(analysis_df['category'] == 'Core') & 
                    (((analysis_df['pct_1'] >= FLEXIBLE_CORE_THRESHOLD) & (analysis_df['majority'] == 2)) |
                     ((analysis_df['pct_2'] >= FLEXIBLE_CORE_THRESHOLD) & (analysis_df['majority'] == 1)))]
