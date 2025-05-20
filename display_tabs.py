@@ -657,7 +657,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
     
     # Display the header
     st.write(core_cards_header, unsafe_allow_html=True)
-    st.write(f"""<span style="font-size: 1rem; font-weight: normal;">Energy: {energy_html}{archetype_note}</span>""")
+    st.write(f"""<span style="font-size: 1rem; font-weight: normal;">Energy: {energy_html}{archetype_note}</span>""", unsafe_allow_html=True)
     
     # Create single column card grid renderer with larger card size
     from card_renderer import CardGrid
