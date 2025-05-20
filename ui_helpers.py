@@ -739,7 +739,7 @@ def display_counter_picker_sidebar():
                 # Adjust column widths and styling based on ranking
                 if is_top_three:
                     # Top 3 decks get normal layout
-                    col1, col2 = st.columns([2.5, 1.2])
+                    col1, col2 = st.columns([3, 1])
                     
                     with col1:
                         # Display the banner image
@@ -776,7 +776,7 @@ def display_counter_picker_sidebar():
                         """, unsafe_allow_html=True)
                 else:
                     # 4th and 5th place get smaller layout
-                    col1, col2 = st.columns([2.5, 1.2])
+                    col1, col2 = st.columns([3, 1])
                     
                     with col1:
                         # Display smaller banner image
@@ -815,7 +815,7 @@ def display_counter_picker_sidebar():
                     # Top 3 get normal divider, 4-5 get thinner divider
                     divider_style = "solid 0.5px"
                     divider_color = "#ddd"
-                    st.markdown(f"<hr style='margin: 10px 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+                    st.markdown(f"<hr style='margin: 0px 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
             # Display table with all results including icons
             # st.write("")
