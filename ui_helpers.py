@@ -415,12 +415,12 @@ def render_sidebar():
         </div>
         """, unsafe_allow_html=True)
             
-        # Add a divider
-        st.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
+        # Add a divider - FIX: Changed to st.sidebar
+        st.sidebar.markdown("<hr style='margin-top: 25px; margin-bottom: 15px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
         
-        # Add expandable methodology section
-        with st.expander("🔍 About the Power Index"):
-            st.markdown(f"""
+        # Add expandable methodology section - FIX: Changed to st.sidebar
+        with st.sidebar.expander("🔍 About the Power Index"):
+            st.sidebar.markdown(f"""
             #### Power Index: How We Rank the Best Decks
             
             **Where the Data Comes From**  
@@ -430,9 +430,9 @@ def render_sidebar():
             The Power Index is calculated as:
             """)
             
-            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
+            st.sidebar.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
             
-            st.markdown("""
+            st.sidebar.markdown("""
             This formula captures three key things:
             * How many more wins than losses a deck achieves
             * The value of ties (counted as 75% of a win)
@@ -449,38 +449,38 @@ def render_sidebar():
             * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
             """)
             
-        # Add cache statistics at the bottom (optional, could be in a collapsed expander)
-        with st.expander("🔧 Cache Statistics", expanded=False):
+        # Add cache statistics at the bottom - FIX: Changed to st.sidebar
+        with st.sidebar.expander("🔧 Cache Statistics", expanded=False):
             cache_stats = cache_manager.get_cache_statistics()
-            st.markdown(f"""
+            st.sidebar.markdown(f"""
             - **Decks Cached**: {cache_stats['decks_cached']}
             - **Sample Decks**: {cache_stats['sample_decks_cached']}
             - **Tournaments Tracked**: {cache_stats['tournaments_tracked']}
             - **Last Updated**: {cache_stats['last_update']}
             """)
-        # Add a button to force update cache data
-        st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
+        # Add a button to force update cache data - FIX: Changed to st.sidebar
+        st.sidebar.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
+        col1, col2 = st.sidebar.columns(2)
         
         with col1:
-            if st.button("🔄 Force Update Data", help="Force refresh all tournament data"):
-                with st.spinner("Updating tournament data..."):
+            if st.sidebar.button("🔄 Force Update Data", help="Force refresh all tournament data"):
+                with st.sidebar.spinner("Updating tournament data..."):
                     stats = cache_manager.update_all_caches()
-                    st.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
+                    st.sidebar.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
                     # Instead add a button that says "Apply Updates":
-                    if st.button("Apply Updates"):
+                    if st.sidebar.button("Apply Updates"):
                         st.rerun()
         
         with col2:
-            if st.button("📊 Update Card Stats", help="Refresh card usage statistics"):
-                with st.spinner("Updating card statistics..."):
+            if st.sidebar.button("📊 Update Card Stats", help="Refresh card usage statistics"):
+                with st.sidebar.spinner("Updating card statistics..."):
                     cache_manager.aggregate_card_usage(force_update=True)
-                    st.success("Card statistics updated")
+                    st.sidebar.success("Card statistics updated")
                     # Instead add a button that says "Apply Updates":
-                    if st.button("Apply Updates"):
+                    if st.sidebar.button("Apply Updates"):
                         st.rerun()
     else:
-        st.info(f"No tournament performance data available for {current_month_year}")
+        st.sidebar.info(f"No tournament performance data available for {current_month_year}")
 
 def display_deck_update_info(deck_name, set_name):
     """Display when the deck was last updated"""
