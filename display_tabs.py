@@ -1474,7 +1474,7 @@ def display_matchup_tab(deck_info=None):
             },
             hide_index=True
         )
-    
+    st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
     # Add explanation
     from formatters import format_deck_name
     formatted_deck_name = format_deck_name(deck_name)
