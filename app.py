@@ -29,14 +29,6 @@ if not st.session_state.app_state['initial_data_loaded']:
     st.session_state.app_state['initial_data_loaded'] = True
 
 
-# Display banner
-ui_helpers.display_banner("title_banner.png")
-
-# Render sidebar AFTER initialization
-ui_helpers.render_sidebar()
-
-# Create deck selector AFTER initialization
-selected_option = ui_helpers.create_deck_selector()
 
 # Apply custom styles - IMPORTANT: Put CSS before any components render
 st.markdown("""
@@ -130,6 +122,15 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 </style>
 """, unsafe_allow_html=True)
 
+
+# Display banner
+ui_helpers.display_banner("title_banner.png")
+
+# Render sidebar AFTER initialization
+ui_helpers.render_sidebar()
+
+# Create deck selector AFTER initialization
+selected_option = ui_helpers.create_deck_selector()
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
