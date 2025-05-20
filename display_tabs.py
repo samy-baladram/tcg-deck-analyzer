@@ -1863,7 +1863,7 @@ def display_counter_picker():
                         if header_image:
                             st.markdown(f"""
                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 75%; height: auto; border-radius: 8px; float: right;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 75%; height: auto; border-radius: 8px;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
