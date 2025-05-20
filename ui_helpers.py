@@ -770,13 +770,13 @@ def display_counter_picker_sidebar():
                         win_color = "#84cc15" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
                         <div style="text-align: right; margin-top:0.5em;">
-                            <span style="font-size: 1.2rem; width:100%; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <span style="font-size: 1.4rem; width:100%; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
                             <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
                         </div>
                         """, unsafe_allow_html=True)
                 else:
                     # 4th and 5th place get smaller layout
-                    col1, col2 = st.columns([3, 1])
+                    col1, col2 = st.columns([3.5, 1])
                     
                     with col1:
                         # Display smaller banner image
@@ -806,7 +806,7 @@ def display_counter_picker_sidebar():
                         win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
                         <div style="text-align: right; width:100%; margin-top:0.5em;">
-                            <span style="font-size: 0.9rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
                         </div>
                         """, unsafe_allow_html=True)
                 
