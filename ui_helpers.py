@@ -466,7 +466,7 @@ def render_sidebar_from_cache():
             * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
             * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
             """)
-        display_counter_picker()
+        display_counter_picker_sidebar()
             
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
@@ -519,3 +519,354 @@ def update_energy_cache(deck_name, energy_types):
         st.session_state.energy_combinations[deck_name][combo_key] += 1
     else:
         st.session_state.energy_combinations[deck_name][combo_key] = 1
+
+def display_counter_picker_sidebar():
+    banner_path = "picker_banner.png"
+    if os.path.exists(banner_path):
+        with open(banner_path, "rb") as f:
+            banner_base64 = base64.b64encode(f.read()).decode()
+        st.markdown(f"""
+        <div style="width:100%; text-align:left; margin:0px 0 0px 0;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.subheader("Meta Counter Picker")
+    
+    # Get list of top meta decks to choose from
+    meta_decks = []
+    meta_deck_info = {}  # Add this dictionary to store deck info
+    
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Use displayed_name for better user experience
+        performance_data = st.session_state.performance_data
+        
+        # Store deck info for each deck
+        for _, deck in performance_data.iterrows():
+            meta_decks.append(deck['displayed_name'])
+            # Store deck info for image generation
+            meta_deck_info[deck['displayed_name']] = {
+                'deck_name': deck['deck_name'],
+                'set': deck['set']
+            }
+        
+        # Limit to top 20 decks
+        meta_decks = meta_decks[:20]
+    
+    if not meta_decks:
+        st.warning("No meta deck data available")
+        return
+    
+    # Multi-select for decks to counter
+    selected_decks = st.multiselect(
+        "Select decks you want to counter:",
+        options=meta_decks,
+        default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
+        help="Choose the decks you want to counter in the meta"
+    )
+    #st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)  # Exactly 50px space
+    # Button to trigger analysis
+    find_button = st.button("Find Counters", type="secondary", use_container_width=True)
+    
+    # Only proceed if decks are selected
+    if not selected_decks:
+        st.info("Please select at least one deck to find counters")
+        return
+    
+    # Only proceed if button clicked
+    if not find_button:
+        return
+        
+    with st.spinner("Analyzing counters..."):
+        # This collects all matchup data for each meta deck
+        counter_data = []
+        
+        # For each possible counter deck in the meta
+        for _, deck in st.session_state.performance_data.iterrows():
+            deck_name = deck['deck_name']
+            set_name = deck['set']
+            displayed_name = deck['displayed_name']
+            
+            # Get this deck's matchups
+            matchups = fetch_matchup_data(deck_name, set_name)
+            
+            if matchups.empty:
+                continue
+            
+            # Calculate average win rate against selected decks
+            avg_win_rate = 0
+            matched_decks = 0
+            
+            # Convert from displayed names to internal deck names for matching
+            selected_internal_names = []
+            for displayed in selected_decks:
+                for _, meta_deck in st.session_state.performance_data.iterrows():
+                    if meta_deck['displayed_name'] == displayed:
+                        selected_internal_names.append(meta_deck['deck_name'])
+            
+            # Look for matchups against selected decks
+            for _, matchup in matchups.iterrows():
+                if matchup['opponent_deck_name'] in selected_internal_names:
+                    avg_win_rate += matchup['win_pct']
+                    matched_decks += 1
+            
+            # Only include if we found matchups against at least half the selected decks
+            if matched_decks >= len(selected_decks) / 2:
+                avg_win_rate = avg_win_rate / matched_decks if matched_decks > 0 else 0
+                
+                counter_data.append({
+                    'deck_name': deck_name,
+                    'displayed_name': displayed_name,
+                    'set': set_name,
+                    'average_win_rate': avg_win_rate,
+                    'meta_share': deck['share'],
+                    'power_index': deck['power_index'],
+                    'matched_decks': matched_decks,
+                    'total_selected': len(selected_decks)
+                })
+        
+        # Create DataFrame and sort by average win rate
+        if counter_data:
+            counter_df = pd.DataFrame(counter_data)
+            counter_df = counter_df.sort_values('average_win_rate', ascending=False)
+            
+            # Add Pokemon icon URLs
+            # Define Pokemon exceptions dictionary (for special cases)
+            POKEMON_EXCEPTIONS = {
+                'oricorio': 'oricorio-pom-pom',
+                # Add other exceptions as needed
+            }
+            
+            # Function to extract Pokemon names and create image URLs
+            def extract_pokemon_urls(displayed_name):
+                import re
+                clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+                parts = re.split(r'[\s/]+', clean_name)
+                suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+                pokemon_names = []
+                
+                for part in parts:
+                    part = part.lower()
+                    if part and part not in suffixes:
+                        if part in POKEMON_EXCEPTIONS:
+                            part = POKEMON_EXCEPTIONS[part]
+                        pokemon_names.append(part)
+                        if len(pokemon_names) >= 2:
+                            break
+                
+                urls = []
+                for name in pokemon_names:
+                    urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+                
+                # Ensure we have exactly 2 elements
+                while len(urls) < 2:
+                    urls.append(None)
+                    
+                return urls[0], urls[1]
+            
+            # Apply the function to extract Pokemon image URLs
+            counter_df[['pokemon_url1', 'pokemon_url2']] = counter_df.apply(
+                lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
+                axis=1
+            )
+            
+            # Convert numpy types to Python native types
+            counter_df = counter_df.copy()
+            for col in counter_df.columns:
+                if counter_df[col].dtype == 'int64':
+                    counter_df[col] = counter_df[col].astype(int)
+                elif counter_df[col].dtype == 'float64':
+                    counter_df[col] = counter_df[col].astype(float)
+            
+            # Display results
+            #st.subheader("Best Counter Decks")
+            
+            # Display top 5 counter decks with images and metrics
+            st.write("#### Top Counters to Selected Decks")
+            
+            # Display top 5 counter decks
+            for i in range(min(5, len(counter_df))):
+                deck = counter_df.iloc[i]
+                
+                # Create deck_info object needed for create_deck_header_images
+                deck_info = {
+                    'deck_name': deck['deck_name'],
+                    'set': deck['set']
+                }
+                
+                # Preload Pokemon info into session state to help with image generation
+                import cache_manager
+                if 'deck_pokemon_info' not in st.session_state:
+                    st.session_state.deck_pokemon_info = {}
+                
+                if deck['deck_name'] not in st.session_state.deck_pokemon_info:
+                    # Try to get sample deck to extract Pokemon info
+                    sample_deck = cache_manager.get_or_load_sample_deck(deck['deck_name'], deck['set'])
+                    
+                    # This helps create_deck_header_images find the Pokemon
+                    if 'pokemon_cards' in sample_deck:
+                        from image_processor import extract_pokemon_from_deck_name
+                        pokemon_names = extract_pokemon_from_deck_name(deck['deck_name'])
+                        
+                        if pokemon_names:
+                            st.session_state.deck_pokemon_info[deck['deck_name']] = []
+                            
+                            for pokemon_name in pokemon_names[:2]:
+                                # Find matching card in sample deck
+                                for card in sample_deck['pokemon_cards']:
+                                    # Normalize names for comparison
+                                    card_name_norm = card['card_name'].lower().replace(' ', '-')
+                                    pokemon_name_norm = pokemon_name.lower()
+                                    
+                                    if card_name_norm == pokemon_name_norm:
+                                        st.session_state.deck_pokemon_info[deck['deck_name']].append({
+                                            'name': pokemon_name,
+                                            'card_name': card['card_name'],
+                                            'set': card.get('set', ''),
+                                            'num': card.get('num', '')
+                                        })
+                                        break
+                
+                # Generate header image - passing empty results since we've preloaded info
+                header_image = create_deck_header_images(deck_info, None)
+                
+                # Check if this is a top 3 or lower ranked deck
+                is_top_three = i < 3
+                
+                # Adjust column widths and styling based on ranking
+                if is_top_three:
+                    # Top 3 decks get normal layout
+                    col1, col2, col3 = st.columns([3, 2, 0.5])
+                    
+                    with col1:
+                        # Display the banner image
+                        if header_image:
+                            st.markdown(f"""
+                            <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
+                            </div>
+
+                            """, unsafe_allow_html=True)
+                        else:
+                            # Placeholder if no image
+                            st.markdown("""
+                            <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
+                                display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #888;">No image</span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        # Display deck name with ranking
+                        rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
+                        st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
+                    
+                    with col3:
+                        # Display win rate as a big percentage
+                        win_rate = deck['average_win_rate']
+                        win_color = "#84cc15" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
+                        st.markdown(f"""
+                        <div style="text-align: center;">
+                            <span style="font-size: 1rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <div style="font-size: 0.3rem; margin-top: -0.5rem;">win rate</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    # 4th and 5th place get smaller layout
+                    col1, col2, col3 = st.columns([3, 2, 0.5])
+                    
+                    with col1:
+                        # Display smaller banner image
+                        if header_image:
+                            st.markdown(f"""
+                            <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 90%; height: auto; border-radius: 8px;">
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            # Smaller placeholder
+                            st.markdown("""
+                            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
+                                display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #888; font-size: 0.8rem;">No image</span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        # Display deck name with smaller font
+                        rank_num = f"#{i+1}"
+                        st.markdown(f"#### {rank_num} {deck['displayed_name']}")
+                    
+                    with col3:
+                        # Display win rate as a smaller percentage without "win rate" text
+                        win_rate = deck['average_win_rate']
+                        win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
+                        st.markdown(f"""
+                        <div style="text-align: center;">
+                            <span style="font-size: 0.75rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                
+                # Add a horizontal line between decks
+                if i < min(4, len(counter_df) - 1):
+                    # Top 3 get normal divider, 4-5 get thinner divider
+                    divider_margin = "1rem" if i < 3 else "0.6rem"
+                    divider_style = "solid 1px" if i < 3 else "solid 1px"
+                    divider_color = "#ddd" if i < 3 else "#eee"
+                    st.markdown(f"<hr style='margin: {divider_margin} 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+            
+            # Display table with all results including icons
+            # st.write("")
+            # st.write("##### All Counter Options")
+            
+            # # Create a DataFrame with the ordered columns including icons
+            # display_df = pd.DataFrame({
+            #     'Icon1': counter_df['pokemon_url1'],
+            #     'Icon2': counter_df['pokemon_url2'],
+            #     'Deck': counter_df['displayed_name'],
+            #     'Win %': counter_df['average_win_rate'],
+            #     'Meta Share': counter_df['meta_share'],
+            #     'Power Index': counter_df['power_index']
+            # })
+            
+            # st.dataframe(
+            #     display_df,
+            #     column_config={
+            #         "Icon1": st.column_config.ImageColumn(
+            #             "Icon 1",
+            #             help="First Pokémon in the deck",
+            #             width="20px",
+            #         ),
+            #         "Icon2": st.column_config.ImageColumn(
+            #             "Icon 2", 
+            #             help="Second Pokémon in the deck",
+            #             width="20px",
+            #         ),
+            #         "Deck": st.column_config.TextColumn(
+            #             "Deck",
+            #             help="Deck archetype name"
+            #         ),
+            #         "Win %": st.column_config.NumberColumn(
+            #             "Avg Win %",
+            #             help="Average win percentage against selected decks",
+            #             format="%.1f%%"
+            #         ),
+            #         # "Meta Share": st.column_config.NumberColumn(
+            #         #     "Meta Share",
+            #         #     help="Percentage of the current meta",
+            #         #     format="%.2f%%"
+            #         # ),
+            #         # "Power Index": st.column_config.NumberColumn(
+            #         #     "Power Index",
+            #         #     help="Overall performance in the meta",
+            #         #     format="%.2f"
+            #         # )
+            #     },
+            #     hide_index=True,
+            #     use_container_width=True
+            # )
+            
+            # Add explanation text 
+            st.caption("Higher average win rate indicates better performance against your selected decks. Data is from the current aggregated tournament result in [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+        else:
+            st.warning("No counter data found for the selected decks")
