@@ -65,8 +65,8 @@ def check_and_update_tournament_data():
             return
     
     # Automatic updates (uncomment for production)
-    # if not update_running and seconds_remaining <= 0:
-    #     perform_update()
+    if not update_running and seconds_remaining <= 0:
+        perform_update()
 
     
 def perform_update():
