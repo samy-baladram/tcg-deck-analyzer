@@ -1039,7 +1039,7 @@ def display_energy_debug_tab(deck_info):
     #         st.write("Not found in archetype_energy_combos")
     
     # Add the detailed energy table at the bottom
-    st.write("##### Detailed Energy Data")
+    #st.write("##### Detailed Energy Data")
     
     # First check if we have per-deck energy data
     if 'per_deck_energy' in st.session_state and deck_name in st.session_state.per_deck_energy:
