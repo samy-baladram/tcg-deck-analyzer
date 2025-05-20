@@ -197,7 +197,8 @@ if 'analyze' in st.session_state and selected_option:
             original_deck_info['set_name']
         )
         if last_update:
-            st.caption(last_update)           
+            st.caption(last_update)
+        st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)    
     
     with tab2:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
