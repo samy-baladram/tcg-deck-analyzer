@@ -1662,6 +1662,7 @@ def display_counter_picker():
                     counter_data.append({
                         'deck_name': deck_name,
                         'displayed_name': displayed_name,
+                        'set': set_name,
                         'average_win_rate': avg_win_rate,
                         'meta_share': deck['share'],
                         'power_index': deck['power_index'],
@@ -1674,7 +1675,7 @@ def display_counter_picker():
                 counter_df = pd.DataFrame(counter_data)
                 counter_df = counter_df.sort_values('average_win_rate', ascending=False)
                 
-                # Add type conversion here
+                # Convert numpy types to Python native types
                 counter_df = counter_df.copy()
                 for col in counter_df.columns:
                     if counter_df[col].dtype == 'int64':
@@ -1685,21 +1686,66 @@ def display_counter_picker():
                 # Display results
                 st.subheader("Best Counter Decks")
                 
-                # Create metrics for top result
-                if not counter_df.empty:
-                    top_counter = counter_df.iloc[0]
-                    
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Best Counter Deck", top_counter['displayed_name'])
-                    with col2:
-                        st.metric("Average Win Rate", f"{top_counter['average_win_rate']:.1f}%")
-                    with col3:
-                        st.metric("Matchups Found", f"{top_counter['matched_decks']}/{top_counter['total_selected']}")
+                # Display top 3 counter decks with images and metrics
+                st.write("### Top Counters to Selected Decks")
                 
-                # Display table of all counters
+                # Display top 3 counter decks
+                for i in range(min(3, len(counter_df))):
+                    deck = counter_df.iloc[i]
+                    
+                    # Create deck_info object needed for create_deck_header_images
+                    deck_info = {
+                        'deck_name': deck['deck_name'],
+                        'set': deck['set']
+                    }
+                    
+                    # Generate header image
+                    header_image = create_deck_header_images(deck_info, None)
+                    
+                    # Create metrics layout
+                    col1, col2, col3 = st.columns([1.5, 2, 1])
+                    
+                    with col1:
+                        # Display the banner image
+                        if header_image:
+                            st.markdown(f"""
+                            <div style="margin-right: 1rem;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            # Placeholder if no image
+                            st.markdown("""
+                            <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
+                                display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #888;">No image</span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        # Display deck name with ranking
+                        rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
+                        st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
+                    
+                    with col3:
+                        # Display win rate as a big percentage
+                        win_rate = deck['average_win_rate']
+                        win_color = "green" if win_rate >= 55 else "red" if win_rate < 45 else "orange"
+                        st.markdown(f"""
+                        <div style="text-align: center;">
+                            <span style="font-size: 2.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    # Add a horizontal line between decks
+                    if i < min(2, len(counter_df) - 1):
+                        st.markdown("<hr style='margin: 1rem 0;'>", unsafe_allow_html=True)
+                
+                # Display table with all results
+                st.write("### All Counter Options")
                 st.dataframe(
-                    counter_df,
+                    counter_df[['displayed_name', 'average_win_rate', 'meta_share', 'power_index']],
                     column_config={
                         "displayed_name": st.column_config.TextColumn("Deck"),
                         "average_win_rate": st.column_config.NumberColumn(
@@ -1716,14 +1762,7 @@ def display_counter_picker():
                             "Power Index",
                             help="Overall performance in the meta",
                             format="%.2f"
-                        ),
-                        "matched_decks": st.column_config.ProgressColumn(
-                        "Matchups Found",
-                        help="Number of selected decks with matchup data",
-                        format="%d",
-                        min_value=0,
-                        max_value=int(counter_df['total_selected'].max())  # Convert to int here
-                    )
+                        )
                     },
                     hide_index=True,
                     use_container_width=True
@@ -1731,6 +1770,5 @@ def display_counter_picker():
                 
                 # Add explanation text 
                 st.caption("Higher average win rate indicates better performance against your selected decks.")
-                st.caption("Note: Some decks may not have matchup data against all selected decks.")
             else:
                 st.warning("No counter data found for the selected decks")
