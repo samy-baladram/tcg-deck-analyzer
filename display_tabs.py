@@ -1448,7 +1448,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.markdown(f"""
        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1947,7 +1947,7 @@ def display_counter_picker():
                     with col3:
                         # Display win rate as a big percentage
                         win_rate = deck['average_win_rate']
-                        win_color = "#84cc15" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
+                        win_color = "#4FCC20" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
                         <div style="text-align: center;">
                             <span style="font-size: 2.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
@@ -1983,7 +1983,7 @@ def display_counter_picker():
                     with col3:
                         # Display win rate as a smaller percentage without "win rate" text
                         win_rate = deck['average_win_rate']
-                        win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
+                        win_color = "#4FCC20" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
                         <div style="text-align: center;">
                             <span style="font-size: 1.5rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
