@@ -312,6 +312,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
     # Show loading spinner while sidebar initializes
+    from datetime import datetime, timedelta  # Add this import
     with st.spinner("Loading sidebar data..."):
         with st.sidebar:
             # Add background update check here
