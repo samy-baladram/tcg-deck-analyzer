@@ -736,7 +736,7 @@ def display_counter_picker_sidebar():
                 # Adjust column widths and styling based on ranking
                 if is_top_three:
                     # Top 3 decks get normal layout
-                    col1, col2, col3 = st.columns([2.5, 1.5, 0.5])
+                    col1, col2, col3 = st.columns([2, 1.5, 1])
                     
                     with col1:
                         # Display the banner image
@@ -766,9 +766,9 @@ def display_counter_picker_sidebar():
                         win_rate = deck['average_win_rate']
                         win_color = "#84cc15" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
-                        <div style="text-align: right;">
-                            <span style="font-size: 1.5rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                            <div style="font-size: 0.75rem; margin-top: -0.5rem;">win rate</div>
+                        <div style="text-align: right; margin-top:0.5em;">
+                            <span style="font-size: 1.2rem; width:100%; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
                         </div>
                         """, unsafe_allow_html=True)
                 else:
@@ -802,8 +802,8 @@ def display_counter_picker_sidebar():
                         win_rate = deck['average_win_rate']
                         win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
-                        <div style="text-align: right;">
-                            <span style="font-size: 1rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                        <div style="text-align: right; width:100%; margin-top:0.5em;">
+                            <span style="font-size: 0.8rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
                         </div>
                         """, unsafe_allow_html=True)
                 
