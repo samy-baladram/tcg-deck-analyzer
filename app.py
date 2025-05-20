@@ -10,6 +10,7 @@ import display_tabs
 from config import MIN_META_SHARE
 import background
 import base64
+import os
 
 # Set page title and favicon
 def set_page_config():
