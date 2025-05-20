@@ -19,7 +19,7 @@ def display_deck_header(deck_info, results):
         st.markdown(f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 0.5rem; margin-top:0.5rem">
-            <div style="margin-right: 1rem; margin-bottom: 0.5rem;">
+            <div style="margin-right: 1rem; margin-bottom: 0.1rem;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; border-radius: 10px;">
             </div>
             <div style="flex: 1; min-width: 200px;">
