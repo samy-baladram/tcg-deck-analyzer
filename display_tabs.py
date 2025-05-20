@@ -97,7 +97,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
                         display_chart(fig_var) 
         
         # Add Energy Table at the bottom of column 1
-        st.write("##### Energy Analysis")
+        # st.write("##### Energy Analysis")
         # Call the energy table generation - pass the deck_info
         generate_energy_analysis(deck_info)
     
