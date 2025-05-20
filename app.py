@@ -128,9 +128,6 @@ ui_helpers.display_banner("title_banner.png")
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
 
-# Load sidebar AFTER main content to ensure main interface loads first
-ui_helpers.render_sidebar()
-
 # Main content area
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
@@ -186,6 +183,9 @@ if 'analyze' in st.session_state and selected_option:
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
+
+# Load sidebar AFTER main content to ensure main interface loads first
+ui_helpers.render_sidebar()
 
 
 # Footer
