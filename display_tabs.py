@@ -1398,7 +1398,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         set_name: Current deck set
         working_df: DataFrame with matchup data already processed
     """
-    st.write("#### Meta Matchup Distribution")
+    st.write("###### Meta Matchup Distribution")
     
     # Make sure we have performance data to get meta shares
     if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
@@ -1434,7 +1434,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     unknown_share = total_meta - covered_share
     
     # Create a 3-column layout
-    col1, col2, col3 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
     
     # Display favorable matchups
     with col1:
