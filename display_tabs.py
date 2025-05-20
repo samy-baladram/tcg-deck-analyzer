@@ -292,7 +292,7 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             break
     
     if missing_cards:
-        st.caption("Retrieving card data for decks...")
+        #st.caption("Retrieving card data for decks...")
         
         # We need to retrieve card data for each deck
         from scraper import get_deck_by_player_tournament
@@ -328,7 +328,7 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             # Update the session state
             st.session_state.collected_decks[deck_key]['decks'] = all_decks
             
-            st.caption(f"Retrieved card data for {len(decks_with_cards)} decks")
+            #st.caption(f"Retrieved card data for {len(decks_with_cards)} decks")
         else:
             st.caption("Couldn't retrieve card data for any decks")
     
