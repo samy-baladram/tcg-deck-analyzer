@@ -1418,7 +1418,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     
     # Classify each matchup
     working_df['matchup_type'] = working_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 55 else ("Unfavorable" if wp < 45 else "Even")
+        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
     # Calculate total meta share in each category
@@ -1476,7 +1476,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     
     # Add a more detailed note about the data
     st.write("")
-    st.caption(f"This shows how much of the current meta has favorable, even, or unfavorable matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")
+    st.caption(f"This shows how much of the current meta has favorable , even, or unfavorable matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")
         
 def display_matchup_tab(deck_info=None):
     """
@@ -1580,7 +1580,7 @@ def display_matchup_tab(deck_info=None):
     
     # Add matchup column 
     display_df['Matchup'] = display_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 55 else ("Unfavorable" if wp < 45 else "Even")
+        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
     # Format the record column
