@@ -92,10 +92,6 @@ def collect_decks(deck_name, set_name="A3"):
         status_text.empty()
         return all_decks, list(all_energy_types), 0
     
-    # Debug - let's check what we're getting from the scraper
-    if len(pairs) > 0:
-        st.caption(f"Debug: First pair = {pairs[0]}")
-    
     for i, pair in enumerate(pairs):
         progress_bar.progress((i + 1) / len(pairs))
         status_text.text(f"Loading deck {i+1} of {len(pairs)}...")
@@ -115,26 +111,15 @@ def collect_decks(deck_name, set_name="A3"):
                 cards = cards_result
                 energy_types = []
                 
-            # Debug - check what cards we got
-            if i == 0:  # Just for the first deck
-                pokemon_count = sum(1 for card in cards if card.get('type') == 'Pokemon')
-                st.caption(f"Debug: Extracted {len(cards)} cards, including {pokemon_count} Pokemon")
-                if pokemon_count > 0:
-                    first_pokemon = next((card for card in cards if card.get('type') == 'Pokemon'), None)
-                    if first_pokemon:
-                        st.caption(f"Debug: First Pokemon: {first_pokemon}")
-                
         except Exception as e:
             # If extraction fails, try the alternative method
-            st.caption(f"Debug: Extract cards error for {url}: {str(e)}")
             try:
                 # Try alternative direct method using player and tournament IDs
                 cards, energy_types = get_deck_by_player_tournament(
                     pair['tournament_id'], 
                     pair['player_id']
                 )
-            except Exception as e2:
-                st.caption(f"Debug: Alternative extraction failed: {str(e2)}")
+            except Exception:
                 # Skip this deck if both methods fail
                 continue
         
@@ -159,23 +144,10 @@ def collect_decks(deck_name, set_name="A3"):
         # Add to collection
         all_decks.append(deck_data)
         
-        # Limit how many we collect if needed
-        if i >= 10:  # Limit to 10 decks during debugging
-            st.caption("Debug: Limited to first 10 decks for testing")
-            break
-            
         time.sleep(0.3)  # Be nice to the server
     
     progress_bar.empty()
     status_text.empty()
-    
-    # Debug results
-    if all_decks:
-        first_deck = all_decks[0]
-        pokemon_cards = [card for card in first_deck.get('cards', []) if card.get('type') == 'Pokemon']
-        st.caption(f"Debug: Collected {len(all_decks)} decks. First deck has {len(pokemon_cards)} Pokemon cards.")
-    else:
-        st.caption("Debug: No decks were collected!")
     
     # Store collected decks in session state for future use
     if 'collected_decks' not in st.session_state:
