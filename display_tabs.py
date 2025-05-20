@@ -1201,7 +1201,7 @@ def generate_energy_table_html(all_energies, energy_by_deck):
                 <tr style="border-bottom: 1px solid #ddd;">
                     <th style="text-align: left; padding: 4px; font-size: 1rem;">Energy</th>
                     <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Count</th>
-                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Percentage</th>
+                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Ratio</th>
                 </tr>"""
     
     total_decks = len(energy_by_deck)
