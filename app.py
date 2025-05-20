@@ -11,33 +11,44 @@ from config import MIN_META_SHARE
 import background
 import base64
 
-# Set up page
-st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="wide")
-
-# Set favicon
-def add_favicon():
-    """Add favicon to the Streamlit app"""
-    try:
-        # Read binary data from favicon file
-        with open("favicon.png", "rb") as f:
-            img_data = f.read()
+# Set page title and favicon
+def set_page_config():
+    # Get the absolute path for the favicon
+    favicon_path = os.path.join(os.path.dirname(__file__), "favicon.png")
+    
+    # Check if favicon exists
+    if os.path.exists(favicon_path):
+        # Read and encode favicon
+        with open(favicon_path, "rb") as f:
+            favicon = base64.b64encode(f.read()).decode()
             
-        # Convert to base64 string
-        b64_encoded = base64.b64encode(img_data).decode()
-        
-        # Add favicon HTML to page
-        st.markdown(
-            f"""
-            <link rel="icon" href="data:image/png;base64,{b64_encoded}">
-            """,
-            unsafe_allow_html=True
-        )
-        print("Favicon added successfully")
-    except Exception as e:
-        print(f"Error adding favicon: {e}")
-        
+        # Update the template in index.html
+        index_path = os.path.join(os.path.dirname(__file__), ".streamlit", "index.html")
+        if os.path.exists(index_path):
+            with open(index_path, "r") as f:
+                index_html = f.read()
+                
+            # Replace placeholder with actual favicon
+            index_html = index_html.replace("{favicon}", favicon)
+            
+            # Write back the updated HTML
+            with open(index_path, "w") as f:
+                f.write(index_html)
+            
+            print("Favicon configured successfully")
+        else:
+            print(f"index.html not found at {index_path}")
+    else:
+        print(f"Favicon not found at {favicon_path}")
+
 # Call the function
-add_favicon()
+set_page_config()
+
+# Set page title and layout
+st.set_page_config(
+    page_title="Pokémon TCG Pocket Meta Deck Analyzer",
+    layout="wide"
+)
 
 # Add background from repository
 background.add_app_background()
