@@ -2,7 +2,7 @@
 """UI helper functions for TCG Deck Analyzer"""
 
 import streamlit as st
-from datetime import datetime, timedelta
+from datetime import datetime
 from formatters import format_deck_name, format_deck_option
 from utils import calculate_time_ago
 from scraper import get_deck_list
@@ -16,34 +16,6 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # Add this at the top level (outside any function) in ui_helpers.py
 # Add this at the top level of ui_helpers.py
-# def check_and_update_tournament_data():
-#     """
-#     Checks if tournament data needs updating, and performs update in background if needed
-#     """
-#     # Check if enough time has passed since last update (e.g., 1 hour)
-#     if 'performance_fetch_time' in st.session_state:
-#         time_since_update = datetime.now() - st.session_state.performance_fetch_time
-#         if time_since_update > timedelta(hours=1):
-#             # Perform a quick check for new tournaments
-#             try:
-#                 import cache_manager
-#                 # Only check if anything needs updating, don't do full update
-#                 with st.spinner("Checking for new tournaments..."):
-#                     # Load previous tournament IDs
-#                     previous_ids = cache_manager.cache_utils.load_tournament_ids()
-                    
-#                     # Check if there are new tournaments
-#                     from scraper import get_all_recent_tournaments, get_new_tournament_ids
-#                     current_ids = get_all_recent_tournaments()
-#                     new_ids = get_new_tournament_ids(previous_ids)
-                    
-#                     # If there are new tournaments, update the session state flag
-#                     if new_ids:
-#                         if 'new_tournaments_available' not in st.session_state:
-#                             st.session_state.new_tournaments_available = True
-#             except Exception as e:
-#                 # Silently fail on any exception - this is just a background check
-#                 pass
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
     # Import necessary modules
@@ -201,47 +173,22 @@ def display_banner(img_path, max_width=900):
     """, unsafe_allow_html=True)
 
 def load_initial_data():
-    """Load initial data required for the app"""
-    # Initialize caches - this now handles comprehensive updates
+    """Load only essential initial data for fast app startup"""
+    # Initialize session state variables
+    if 'selected_deck_index' not in st.session_state:
+        st.session_state.selected_deck_index = None
+        
+    if 'deck_to_analyze' not in st.session_state:
+        st.session_state.deck_to_analyze = None
+    
+    # Initialize minimal caches first
     cache_manager.init_caches()
     
     # Initialize deck list if not already loaded
     if 'deck_list' not in st.session_state:
-        # Show loading status
-        with st.spinner("Loading deck list..."):
-            st.session_state.deck_list = get_deck_list()
-            st.session_state.fetch_time = datetime.now()
-    
-    # Get the performance data from session state (already loaded by init_caches)
-    if 'performance_data' not in st.session_state:
-        # Only load if not already in session state
-        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
-        st.session_state.performance_data = performance_df
-        st.session_state.performance_fetch_time = performance_timestamp
-    
-    # Initialize card usage data if not already loaded (similar approach)
-    if 'card_usage_data' not in st.session_state:
-        st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
-    
-    # Initialize selected deck if not exists
-    if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = None
-        
-    # Initialize deck_to_analyze if not exists
-    if 'deck_to_analyze' not in st.session_state:
-        st.session_state.deck_to_analyze = None
-        
-    # Ensure other required session state variables exist
-    if 'analyzed_deck_cache' not in st.session_state:
-        st.session_state.analyzed_deck_cache = {}
-        
-    if 'sample_deck_cache' not in st.session_state:
-        st.session_state.sample_deck_cache = {}
-        
-    if 'collected_decks' not in st.session_state:
-        st.session_state.collected_decks = {}
+        st.session_state.deck_list = get_deck_list()
+        st.session_state.fetch_time = datetime.now()
 
-# Modify ui_helpers.py - create_deck_options function
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
@@ -262,13 +209,7 @@ def create_deck_options():
                 'set': deck['set']
             }
     else:
-        # Check if deck_list exists in session state, if not, create it
-        if 'deck_list' not in st.session_state:
-            # Load deck list
-            from scraper import get_deck_list
-            st.session_state.deck_list = get_deck_list()
-            
-        # Now use deck_list for fallback
+        # Fallback to original method if performance data isn't available
         popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
         
         # Create deck options with formatted names and store mapping
