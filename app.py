@@ -84,10 +84,11 @@ div[data-baseweb="tag"] div[role="button"] svg {
 div[data-baseweb="select"] li[aria-selected="true"] {
     background-color: rgba(0, 160, 255, 0.2) !important;
 }
-/* Change primary color to blue */
-div[data-baseweb="select"] > div {
-    border-color: #00A0FF !important;
-}
+
+# /* Change primary color to blue */
+# div[data-baseweb="select"] > div {
+#     border-color: #00A0FF !important;
+# }
 
 /* Selected option */
 div[data-baseweb="select"] [aria-selected="true"] {
