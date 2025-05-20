@@ -1450,6 +1450,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
         unfavorable_share_norm = 0
         unknown_share_norm = 100  # All unknown if no data
     
+    # Columns
+    col1, col2, col3 = st.columns(3)
+    
     # Display favorable matchups
     with col1:
         st.markdown(f"""
