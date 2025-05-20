@@ -98,10 +98,8 @@ def display_card_usage_tab(results, total_decks, variant_df):
         
         # Add Energy Table at the bottom of column 1
         st.write("##### Energy Analysis")
-        # Import the energy table display function directly
-        from display_tabs import display_energy_debug_tab
-        # Call it with the deck info
-        display_energy_debug_tab(deck_info)
+        # Call the energy table generation - pass the deck_info
+        generate_energy_analysis(deck_info)
     
     with col2:
         st.write("##### Trainer")
@@ -113,6 +111,49 @@ def display_card_usage_tab(results, total_decks, variant_df):
             display_chart(fig)
         else:
             st.info("No Trainer cards found")
+
+# Simplified energy analysis function that calls the parts from display_energy_debug_tab
+def generate_energy_analysis(deck_info):
+    """Generate the energy analysis table for the Card Usage tab"""
+    deck_name = deck_info['deck_name']
+    set_name = deck_info.get('set_name', 'A3')
+    
+    # First check if we have per-deck energy data
+    if 'per_deck_energy' in st.session_state and deck_name in st.session_state.per_deck_energy:
+        # We can still use the existing detailed energy table
+        from energy_utils import display_detailed_energy_table
+        st.markdown(display_detailed_energy_table(deck_name), unsafe_allow_html=True)
+    else:
+        # Create a simplified version that works directly with collected decks
+        deck_key = f"{deck_name}_{set_name}"
+        if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+            collected_data = st.session_state.collected_decks[deck_key]
+            
+            if 'decks' in collected_data and collected_data['decks']:
+                # Get all unique energy types
+                all_energies = set()
+                energy_by_deck = {}
+                
+                for deck in collected_data['decks']:
+                    if 'energy_types' in deck and deck['energy_types'] and 'deck_num' in deck:
+                        deck_num = deck['deck_num']
+                        energy_types = sorted(deck['energy_types'])
+                        energy_by_deck[deck_num] = energy_types
+                        all_energies.update(energy_types)
+                
+                # Create table directly if we have data
+                if energy_by_deck and all_energies:
+                    all_energies = sorted(all_energies)
+                    
+                    # Create table HTML directly
+                    table_html = generate_energy_table_html(all_energies, energy_by_deck)
+                    st.markdown(table_html, unsafe_allow_html=True)
+                else:
+                    st.info("No energy data found in collected decks")
+            else:
+                st.info("No decks found in collected data")
+        else:
+            st.info("No collected decks found")
 
 def display_deck_template_tab(results):
     """Display the Deck Template tab with revised layout and two-column card sections"""
