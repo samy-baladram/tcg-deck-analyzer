@@ -168,7 +168,9 @@ if 'analyze' in st.session_state and selected_option:
     
     with tab2:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
-
+        display_tabs.display_energy_debug_tab(original_deck_info)
+        st.caption("Data of 20 collected decks")
+        st.caption(last_update)
         
     with tab3:
         display_tabs.display_matchup_tab()
