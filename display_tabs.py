@@ -43,12 +43,14 @@ def display_card_usage_tab(results, total_decks, variant_df):
     is_typical = False
     primary_energy = None
     
-    # Look for energy_types in the session state for this deck
+    # Get current deck info
+    deck_info = {'deck_name': '', 'set_name': 'A3'}
     if 'analyze' in st.session_state:
-        deck_name = st.session_state.analyze.get('deck_name', '')
+        deck_info['deck_name'] = st.session_state.analyze.get('deck_name', '')
+        deck_info['set_name'] = st.session_state.analyze.get('set_name', 'A3')
         
         # Get the most common energy combination
-        energy_types, is_typical = get_energy_types_for_deck(deck_name)
+        energy_types, is_typical = get_energy_types_for_deck(deck_info['deck_name'])
         
         # Get primary energy (first one in the list)
         primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
@@ -68,7 +70,6 @@ def display_card_usage_tab(results, total_decks, variant_df):
             # Import variant renderer
             from card_renderer import render_variant_cards
             
-            # st.markdown("<div style='margin-top: -40px;'></div>", unsafe_allow_html=True)
             # Display variant analysis
             for _, row in variant_df.iterrows():
                 with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
@@ -93,7 +94,12 @@ def display_card_usage_tab(results, total_decks, variant_df):
                     with var_col2:
                         # Create variant bar chart with primary energy type
                         fig_var = create_variant_bar_chart(row, primary_energy)
-                        display_chart(fig_var)                    
+                        display_chart(fig_var) 
+        
+        # Add Energy Table at the bottom of column 1
+        st.write("##### Energy Analysis")
+        # Call the energy table generation - pass the deck_info
+        generate_energy_analysis(deck_info)
     
     with col2:
         st.write("##### Trainer")
@@ -1103,88 +1109,47 @@ def display_energy_debug_tab(deck_info):
         else:
             st.info("No collected decks found")
 
-def generate_energy_table_html(all_energies, energy_by_deck):
-    """Generate HTML for energy table from collected decks data in two columns"""
-    # Create the overall container with columns
-    table_html = """<div style="margin-top: 15px; display: flex; gap: 20px;">
-        <div style="flex: 1;">"""
+def generate_energy_analysis(deck_info):
+    """Generate the energy analysis table for the Card Usage tab"""
+    deck_name = deck_info['deck_name']
+    set_name = deck_info.get('set_name', 'A3')
     
-    # First column: Energy by Deck table
-    table_html += """<h6 style="margin-bottom: 10px;">Energy by Deck</h6>
-            <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <th style="text-align: left; padding: 4px; font-size: 1rem;">Deck #</th>"""
-    
-    # Add energy type headers
-    for energy in all_energies:
-        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-        table_html += f'<th style="text-align: center; padding: 4px;"><img src="{energy_url}" alt="{energy}" style="height:20px;"></th>'
-    
-    table_html += "</tr>"
-    
-    # Add a row for each deck
-    for deck_num, energies in sorted(energy_by_deck.items()):
-        table_html += f"""<tr style="border-bottom: 1px solid #eee;"><td style="text-align: left; padding: 4px;">{deck_num}</td>"""
-        
-        # For each possible energy type, check if this deck has it
-        for energy in all_energies:
-            has_energy = energy in energies
-            check_mark = "✓" if has_energy else ""
-            bg_color = "rgba(0, 160, 255, 0.1)" if has_energy else "transparent"
+    # First check if we have per-deck energy data
+    if 'per_deck_energy' in st.session_state and deck_name in st.session_state.per_deck_energy:
+        # We can still use the existing detailed energy table
+        from energy_utils import display_detailed_energy_table
+        st.markdown(display_detailed_energy_table(deck_name), unsafe_allow_html=True)
+    else:
+        # Create a simplified version that works directly with collected decks
+        deck_key = f"{deck_name}_{set_name}"
+        if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+            collected_data = st.session_state.collected_decks[deck_key]
             
-            table_html += f'<td style="text-align: center; padding: 4px; background-color: {bg_color};">{check_mark}</td>'
-        
-        table_html += "</tr>"
-    
-    # Close the first table and column
-    table_html += """</table></div>"""
-        
-    # Second column: Energy Combinations
-    table_html += """<div style="flex: 1;">"""
-    
-    # Calculate combinations for the second table
-    combo_stats = {}
-    for energies in energy_by_deck.values():
-        combo = tuple(sorted(energies))
-        combo_stats[combo] = combo_stats.get(combo, 0) + 1
-    
-    # Sort combinations by frequency
-    sorted_combos = sorted(combo_stats.items(), key=lambda x: x[1], reverse=True)
-    
-    # Add combo statistics
-    table_html += """<h6 style="margin-bottom: 10px;">Energy Combinations</h6>
-            <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <th style="text-align: left; padding: 4px; font-size: 1rem;">Energy Combination</th>
-                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Count</th>
-                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Percentage</th>
-                </tr>"""
-    
-    total_decks = len(energy_by_deck)
-    
-    for combo, count in sorted_combos:
-        # Generate energy icons
-        energy_html = ""
-        for energy in combo:
-            energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-            energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:3px; vertical-align:middle;">'
-        
-        percentage = (count / total_decks * 100) if total_decks > 0 else 0
-        
-        table_html += f"""<tr style="border-bottom: 1px solid #eee;">
-                    <td style="text-align: left; padding: 4px;">{energy_html}</td>
-                    <td style="text-align: right; padding: 4px;">{count}</td>
-                    <td style="text-align: right; padding: 4px;">{percentage:.1f}%</td>
-                </tr>"""
-    
-    # Close the second table and both divs
-    table_html += """</table>
-        </div>
-    </div>"""
-    
-    return table_html
-    
-    return table_html
+            if 'decks' in collected_data and collected_data['decks']:
+                # Get all unique energy types
+                all_energies = set()
+                energy_by_deck = {}
+                
+                for deck in collected_data['decks']:
+                    if 'energy_types' in deck and deck['energy_types'] and 'deck_num' in deck:
+                        deck_num = deck['deck_num']
+                        energy_types = sorted(deck['energy_types'])
+                        energy_by_deck[deck_num] = energy_types
+                        all_energies.update(energy_types)
+                
+                # Create table directly if we have data
+                if energy_by_deck and all_energies:
+                    all_energies = sorted(all_energies)
+                    
+                    # Create table HTML directly
+                    table_html = generate_energy_table_html(all_energies, energy_by_deck)
+                    st.markdown(table_html, unsafe_allow_html=True)
+                else:
+                    st.info("No energy data found in collected decks")
+            else:
+                st.info("No decks found in collected data")
+        else:
+            st.info("No collected decks found")
 
 # Add these functions to display_tabs.py
 def fetch_matchup_data(deck_name, set_name="A3"):
