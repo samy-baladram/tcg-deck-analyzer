@@ -314,15 +314,18 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
                 if card['card_name'].lower() == pokemon_name.lower():
                     has_our_variant = True
                     variant_count += 1
-                    score += 3
+                    target_variant_count += card.get('amount', 1)  # Count copies
                 elif card['card_name'].lower() in other_variants:
-                    other_variant_count += 1
-                    score -= 1
+                    other_variant_count += card.get('amount', 1)  # Count copies
+ 
         
         # Skip if it doesn't contain our variant
         if not has_our_variant:
             continue
-            
+
+        # Improved scoring: prioritize decks with more of our variant and fewer others
+        score = (target_variant_count * 5) - (other_variant_count * 2)
+
         # If this is the best deck so far, remember it
         if score > best_score:
             best_deck = deck
