@@ -466,7 +466,7 @@ def render_sidebar_from_cache():
             * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
             """)
         # Add a divider
-        st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 1px solid;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
         display_counter_picker_sidebar()
         st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
@@ -739,7 +739,7 @@ def display_counter_picker_sidebar():
                 # Adjust column widths and styling based on ranking
                 if is_top_three:
                     # Top 3 decks get normal layout
-                    col1, col2, col3 = st.columns([2.5, 1.2, 1])
+                    col1, col2 = st.columns([2.5, 1.2])
                     
                     with col1:
                         # Display the banner image
@@ -759,12 +759,12 @@ def display_counter_picker_sidebar():
                             </div>
                             """, unsafe_allow_html=True)
                     
-                    with col2:
+                    #with col2:
                         # Display deck name with ranking
                         rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
                         st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
                     
-                    with col3:
+                    with col2:
                         # Display win rate as a big percentage
                         win_rate = deck['average_win_rate']
                         win_color = "#84cc15" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
@@ -776,14 +776,14 @@ def display_counter_picker_sidebar():
                         """, unsafe_allow_html=True)
                 else:
                     # 4th and 5th place get smaller layout
-                    col1, col2, col3 = st.columns([2.5, 1.2, 1])
+                    col1, col2 = st.columns([2.5, 1.2])
                     
                     with col1:
                         # Display smaller banner image
                         if header_image:
                             st.markdown(f"""
                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 80%; height: auto; border-radius: 8px;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 8px;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
@@ -795,12 +795,12 @@ def display_counter_picker_sidebar():
                             </div>
                             """, unsafe_allow_html=True)
                     
-                    with col2:
+                    #with col2:
                         # Display deck name with smaller font
                         rank_num = f"#{i+1}"
                         st.markdown(f"#### {rank_num} {deck['displayed_name']}")
                     
-                    with col3:
+                    with col2:
                         # Display win rate as a smaller percentage without "win rate" text
                         win_rate = deck['average_win_rate']
                         win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
