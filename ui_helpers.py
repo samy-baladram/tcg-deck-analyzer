@@ -2,7 +2,7 @@
 """UI helper functions for TCG Deck Analyzer"""
 
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, timedelta
 from formatters import format_deck_name, format_deck_option
 from utils import calculate_time_ago
 from scraper import get_deck_list
