@@ -1825,7 +1825,7 @@ def display_counter_picker():
                         # Display the banner image
                         if header_image:
                             st.markdown(f"""
-                            <div style="margin-right: 1rem;">
+                            <div style="margin-right: 1rem;style="width: 100%; max-width: 260px;">
                                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
                             </div>
                             """, unsafe_allow_html=True)
@@ -1861,7 +1861,7 @@ def display_counter_picker():
                         # Display smaller banner image
                         if header_image:
                             st.markdown(f"""
-                            <div style="margin-right: 0.75rem;">
+                            <div style="margin-right: 1rem; style="width: 100%; max-width: 260px;">
                                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 180px; height: auto; border-radius: 8px;">
                             </div>
                             """, unsafe_allow_html=True)
