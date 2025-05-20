@@ -37,6 +37,18 @@ if not st.session_state.app_state['initial_data_loaded']:
     cache_manager.init_caches()
     st.session_state.app_state['initial_data_loaded'] = True
 
+# At the very beginning, make sure all session state variables are initialized
+if 'app_state' not in st.session_state:
+    st.session_state.app_state = {
+        'initial_data_loaded': False
+    }
+
+if 'selected_deck_index' not in st.session_state:
+    st.session_state.selected_deck_index = None
+    
+if 'deck_to_analyze' not in st.session_state:
+    st.session_state.deck_to_analyze = None
+
 # IMPORTANT: Load main interface first
 # Create deck selector
 selected_option = ui_helpers.create_deck_selector()
