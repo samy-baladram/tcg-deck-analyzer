@@ -736,7 +736,7 @@ def display_counter_picker_sidebar():
                 # Adjust column widths and styling based on ranking
                 if is_top_three:
                     # Top 3 decks get normal layout
-                    col1, col2, col3 = st.columns([3, 1.5, 0.5])
+                    col1, col2, col3 = st.columns([2.5, 1.5, 0.5])
                     
                     with col1:
                         # Display the banner image
@@ -773,14 +773,14 @@ def display_counter_picker_sidebar():
                         """, unsafe_allow_html=True)
                 else:
                     # 4th and 5th place get smaller layout
-                    col1, col2, col3 = st.columns([3, 1.5, 0.5])
+                    col1, col2, col3 = st.columns([2.5, 1.5, 0.5])
                     
                     with col1:
                         # Display smaller banner image
                         if header_image:
                             st.markdown(f"""
                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 90%; height: auto; border-radius: 8px;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 80%; height: auto; border-radius: 8px;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
