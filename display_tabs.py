@@ -1606,21 +1606,26 @@ def display_counter_picker():
         st.warning("No meta deck data available")
         return
     
-    # Multi-select for decks to counter
-    selected_decks = st.multiselect(
-        "Select decks you want to counter:",
-        options=meta_decks,
-        default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
-        help="Choose the decks you want to counter in the meta"
-    )
+    # Replace your current multi-select and button section with this:
+    col1, col2 = st.columns([3, 1])  # 3:1 ratio gives more space to dropdown
     
-    # Only proceed if decks are selected
-    if not selected_decks:
-        st.info("Please select at least one deck to find counters")
-        return
+    with col1:
+        # Multi-select for decks to counter
+        selected_decks = st.multiselect(
+            "Select decks you want to counter:",
+            options=meta_decks,
+            default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
+            help="Choose the decks you want to counter in the meta"
+        )
     
-    # Button to trigger analysis
-    if st.button("Find Best Counter Deck"):
+    with col2:
+        # Add some vertical space to align with the dropdown
+        st.write("")
+        # Button to trigger analysis
+        find_button = st.button("Find Counters", type="primary", use_container_width=True)
+    
+    # Only proceed if decks are selected and button clicked
+    if selected_decks and find_button:
         with st.spinner("Analyzing counters..."):
             # This collects all matchup data for each meta deck
             counter_data = []
