@@ -193,7 +193,7 @@ else:
 
 
 # Load sidebar AFTER main content to ensure main interface loads first
-ui_helpers.render_sidebar()
+#ui_helpers.render_sidebar()
 
 
 # Footer
