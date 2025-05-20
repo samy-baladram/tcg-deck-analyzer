@@ -34,22 +34,22 @@ def check_and_update_tournament_data():
     seconds_remaining = max(0, CACHE_TTL - time_since_update.total_seconds())
     
     # Display time until next update
-    st.sidebar.text(f"Next update in: {int(seconds_remaining)} seconds")
+    st.text(f"Next update in: {int(seconds_remaining)} seconds")
     
     # Add a manual update button for testing
-    if st.sidebar.button("Force Update Now"):
-        perform_update()
-        return
+    # if st.sidebar.button("Force Update Now"):
+    #     perform_update()
+    #     return
     
     # Only proceed with automatic update if data is stale and not currently updating
     update_running = st.session_state.get('update_running', False)
     
     # Uncomment this for production to enable automatic updates
     # For initial testing, rely only on the manual button
-    """
+
     if (not update_running and seconds_remaining <= 0):
         perform_update()
-    """
+
     
 def perform_update():
     """Perform the actual update"""
