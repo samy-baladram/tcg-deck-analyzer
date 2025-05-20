@@ -216,12 +216,12 @@ if 'analyze' in st.session_state and selected_option:
     with tab6:
         display_tabs.display_raw_data_tab(results, variant_df)
 
-    with tab7:
-        display_tabs.display_counter_picker()
+    #with tab7:
+     #   display_tabs.display_counter_picker()
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
-#display_tabs.display_counter_picker()
+display_tabs.display_counter_picker()
 
 # Load sidebar AFTER main content to ensure main interface loads first
 #ui_helpers.render_sidebar()
