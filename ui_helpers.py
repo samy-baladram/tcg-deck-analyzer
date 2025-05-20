@@ -446,8 +446,7 @@ def render_sidebar():
                 
                 **Reading the Numbers**
                 * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
-                * **Positive vs Negative**: Positive numbers mean winning more than losing
-                * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
+                * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
                 """)
                 
             # # Add cache statistics at the bottom (optional, could be in a collapsed expander)
