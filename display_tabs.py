@@ -1603,7 +1603,7 @@ def display_counter_picker():
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
         <div style="width:100%; text-align:left; margin:0px 0 0px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:300px; margin-bottom:10px;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
         """, unsafe_allow_html=True)
     else:
