@@ -1475,7 +1475,8 @@ def display_matchup_summary(deck_name, set_name, working_df):
         """, unsafe_allow_html=True)
     
     # Add a more detailed note about the data
-    st.caption(f"This shows how much of the current meta has favorable, even, or unfavorable matchups against your deck. 'Unknown' represents decks without matchup data. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")
+    st.write("")
+    st.caption(f"This shows how much of the current meta has favorable, even, or unfavorable matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")
         
 def display_matchup_tab(deck_info=None):
     """
