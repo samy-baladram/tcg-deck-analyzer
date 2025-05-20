@@ -1447,7 +1447,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display favorable matchups
     with col1:
         st.markdown(f"""
-        <div style="text-align: center; padding: 10px; background-color: rgba(125, 255, 255, 0.15); border-radius: 8px; height: 100px;">
+        <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.5); border-radius: 8px; height: 120px;">
             <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Favorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; margin: -15px 0;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; margin: -15px -20px;">of meta</div>
@@ -1457,7 +1457,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display even matchups
     with col2:
         st.markdown(f"""
-        <div style="text-align: center; padding: 10px; background-color: rgba(255, 125, 255, 0.15); border-radius: 8px; height: 100px;">
+        <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.5); border-radius: 8px; height: 120px;">
             <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Even</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; margin: -15px 0;">{even_share_norm:.1f}%</div>
             <div style="font-size: 1rem; margin: -15px -20px;">of meta</div>
@@ -1467,7 +1467,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display unfavorable matchups
     with col3:
         st.markdown(f"""
-        <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 125, 0.15); border-radius: 8px; height: 100px; ">
+        <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.5); border-radius: 8px; height: 120px; ">
             <div style="font-size: 1.1rem; font-weight: bold; margin: -5px 0;">Unfavorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; margin: -15px 0;">{unfavorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; margin: -15px -20px;">of meta</div>
