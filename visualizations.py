@@ -76,6 +76,12 @@ def get_energy_colors(energy_type=None):
         'secondary': CHART_COLORS['pokemon_1']
     }
 
+def format_card_style(count, pct):
+    """Format card count with custom styling"""
+    if pct <= 0:
+        return ""
+    return f" {pct}%  <span style='font-family:Nunito,sans-serif;font-weight:700;font-size:22px'>{count}</span>"    
+
 def create_usage_bar_chart(type_cards, card_type, energy_type=None):
     """Create horizontal stacked bar chart for card usage with energy-based colors"""
     if type_cards.empty:
@@ -119,7 +125,7 @@ def create_usage_bar_chart(type_cards, card_type, energy_type=None):
         orientation='h',
         marker_color=bar_colors[f'{card_type.lower()}_1'],
         text=plot_df['1 Copy'].apply(
-            lambda x: f" {format_percentage(x)}   <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 20px;'>1×</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
+            lambda x: format_card_style(1, x) if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
         textposition='inside',
         textfont=dict(size=CHART_FONT_SIZE),
@@ -133,7 +139,7 @@ def create_usage_bar_chart(type_cards, card_type, energy_type=None):
         orientation='h',
         marker_color=bar_colors[f'{card_type.lower()}_2'],
         text=plot_df['2 Copies'].apply(
-            lambda x: f" {format_percentage(x)}   <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 20px;'>2×</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
+            lambda x: format_card_style(2, x) if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
         textposition='inside',
         textfont=dict(size=CHART_FONT_SIZE),
