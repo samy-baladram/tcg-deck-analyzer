@@ -813,10 +813,9 @@ def display_counter_picker_sidebar():
                 # Add a horizontal line between decks
                 if i < min(4, len(counter_df) - 1):
                     # Top 3 get normal divider, 4-5 get thinner divider
-                    divider_margin = 0.5rem
                     divider_style = "solid 0.5px"
                     divider_color = "#ddd"
-                    st.markdown(f"<hr style='margin: {divider_margin} 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+                    st.markdown(f"<hr style='margin: 10px 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
             # Display table with all results including icons
             # st.write("")
