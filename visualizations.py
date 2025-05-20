@@ -80,7 +80,7 @@ def format_card_style(count, pct):
     """Format card count with custom styling"""
     if pct <= 0:
         return ""
-    return f" {pct}%  <span style='font-family:Nunito,sans-serif;font-weight:700;font-size:22px'>{count}</span>"    
+    return f" {pct}%  <span style='font-family:Nunito,sans-serif;font-weight:700;font-size:22px'>{count}×</span>"    
 
 def create_usage_bar_chart(type_cards, card_type, energy_type=None):
     """Create horizontal stacked bar chart for card usage with energy-based colors"""
@@ -219,14 +219,14 @@ def create_variant_bar_chart(variant_data, energy_type=None):
     # Add var2 data
     single_data.append(var2_single_pct)
     double_data.append(var2_double_pct)
-    text_single.append(f" {var2_single_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 20px;'>1×</span></b>" if var2_single_pct > 0 else "")
-    text_double.append(f" {var2_double_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 20px;'>2×</span></b>" if var2_double_pct > 0 else "")
+    text_single.append(format_card_style(1,var2_single_pct) if var2_single_pct > 0 else "")
+    text_double.append(format_card_style(2,var2_double_pct) if var2_double_pct > 0 else "")
     
     # Add var1 data
     single_data.append(var1_single_pct)
     double_data.append(var1_double_pct)
-    text_single.append(f" {var1_single_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 20px;'>1×</span></b>" if var1_single_pct > 0 else "")
-    text_double.append(f" {var1_double_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 20px;'>2×</span></b>" if var1_double_pct > 0 else "")
+    text_single.append(format_card_style(1,var1_single_pct) if var1_single_pct > 0 else "")
+    text_double.append(format_card_style(2,var1_single_pct) if var1_double_pct > 0 else "")
     
     # Get colors based on energy type
     bar_colors = CHART_COLORS.copy()
