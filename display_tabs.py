@@ -18,11 +18,11 @@ def display_deck_header(deck_info, results):
     if header_image:
         st.markdown(f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 0.5rem; margin-top:0.5rem">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; margin-top:0.5rem">
             <div style="margin-right: 1rem; margin-bottom: -0.5rem;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; border-radius: 10px;">
             </div>
-            <div style="flex: 1; min-width: 200px;">
+            <div style="flex: 1; min-width: 200px; margin-bottom: -0.5rem;">
                 <h2 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
             </div>
         </div>
