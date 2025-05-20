@@ -466,6 +466,8 @@ def render_sidebar_from_cache():
             * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
             * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
             """)
+        display_counter_picker()
+            
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
 
