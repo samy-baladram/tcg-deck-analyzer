@@ -256,7 +256,7 @@ def ensure_deck_collection_data(deck_name, set_name):
     return has_data
     
 def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums, energy_types, is_typical):
-    """Find and render the best deck for this variant Pokémon"""
+    """Find and render the best deck for this variant Pokémon with efficient caching"""
     # Early exit if no analyzed deck
     if 'analyze' not in st.session_state:
         st.info("Select a deck to view a sample")
@@ -271,117 +271,45 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     target_set = variant_pokemon.get('set', '')
     target_num = variant_pokemon.get('num', '')
     
-    # Call the ensure function to make sure we have collected decks
+    # Check for cached data first - most efficient path
+    deck_key = f"{deck_name}_{set_name}"
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        # We already have collected data, use it directly
+        collected_data = st.session_state.collected_decks[deck_key]
+        all_decks = collected_data['decks']
+        
+        # Quick check if first deck has cards
+        if all_decks and 'cards' in all_decks[0] and all_decks[0]['cards']:
+            # Great! We have complete data with cards, proceed to find variant deck
+            exact_match_deck = find_exact_variant_match(
+                all_decks, target_name, target_set, target_num, shown_deck_nums
+            )
+            
+            if exact_match_deck:
+                # Render the matching deck
+                return render_deck(exact_match_deck, energy_types, is_typical)
+    
+    # If we get here, either no cached data or no exact match in cached data
+    # Only now do we ensure deck collection
     has_data = ensure_deck_collection_data(deck_name, set_name)
     
-    # Exit if we couldn't get any deck data
     if not has_data:
+        # Still couldn't get deck data
         st.warning("Unable to load variant deck data")
         return None
     
-    # Get collected data
-    deck_key = f"{deck_name}_{set_name}"
+    # Now we should have deck data, try again
     collected_data = st.session_state.collected_decks[deck_key]
     all_decks = collected_data['decks']
     
-    # Find decks with the target card
-    exact_matches = []
+    # Find an exact match
+    exact_match_deck = find_exact_variant_match(
+        all_decks, target_name, target_set, target_num, shown_deck_nums
+    )
     
-    for deck_index, deck in enumerate(all_decks):
-        # Skip if deck number already shown
-        if 'deck_num' in deck and deck['deck_num'] in shown_deck_nums:
-            continue
-            
-        # Skip if deck has no cards
-        if 'cards' not in deck or not deck['cards']:
-            # If cards missing, try to retrieve them
-            try:
-                from scraper import get_deck_by_player_tournament
-                if 'tournament_id' in deck and 'player_id' in deck:
-                    cards, deck_energy_types = get_deck_by_player_tournament(
-                        deck['tournament_id'], 
-                        deck['player_id']
-                    )
-                    deck['cards'] = cards
-                    
-                    # Also set energy types if needed
-                    if not deck.get('energy_types') and deck_energy_types:
-                        deck['energy_types'] = deck_energy_types
-                        
-                    # Save the updated deck back to session state
-                    st.session_state.collected_decks[deck_key]['decks'][deck_index] = deck
-            except Exception as e:
-                # Couldn't retrieve cards, skip this deck
-                continue
-            
-            # Double-check if cards retrieved successfully
-            if 'cards' not in deck or not deck['cards']:
-                continue
-        
-        # Check each card in this deck
-        has_exact_match = False
-        has_name_match = False
-        other_variant_count = 0
-        
-        for card in deck['cards']:
-            # Only check Pokémon cards
-            if card.get('type') != 'Pokemon' or 'card_name' not in card:
-                continue
-                
-            # Check for exact match on name, set, and number
-            if (card['card_name'] == target_name and 
-                card.get('set', '') == target_set and 
-                str(card.get('num', '')) == str(target_num)):
-                has_exact_match = True
-                
-            # Count other variants
-            for other in other_variants:
-                if other.lower() == card['card_name'].lower():
-                    other_variant_count += 1
-        
-        # If we found a match in this deck, track it
-        if has_exact_match:
-            score = 10 - other_variant_count
-            exact_matches.append((deck, score, deck.get('deck_num', deck_index)))
-    
-    # Choose best match
-    best_deck = None
-    best_deck_num = None
-    
-    if exact_matches:
-        # Sort by score and take best
-        best_match = sorted(exact_matches, key=lambda x: x[1], reverse=True)[0]
-        best_deck, _, best_deck_num = best_match
-    
-    # Render the chosen deck
-    if best_deck:
-        # Prepare cards for rendering
-        pokemon_cards = []
-        trainer_cards = []
-        
-        for card in best_deck['cards']:
-            if card['type'] == 'Pokemon':
-                pokemon_cards.append(card)
-            else:
-                trainer_cards.append(card)
-        
-        # Display energy types if available
-        if energy_types:
-            from energy_utils import render_energy_icons
-            energy_html = render_energy_icons(energy_types, is_typical)
-            st.markdown(energy_html, unsafe_allow_html=True)
-        
-        # Render the deck
-        from card_renderer import render_sidebar_deck
-        deck_html = render_sidebar_deck(
-            pokemon_cards, 
-            trainer_cards,
-            card_width=70
-        )
-        st.markdown(deck_html, unsafe_allow_html=True)
-        
-        # Return the deck number so we can track that we've shown it
-        return best_deck_num
+    if exact_match_deck:
+        # Render the matching deck
+        return render_deck(exact_match_deck, energy_types, is_typical)
     else:
         # No suitable deck found - use fallback
         import cache_manager
@@ -404,6 +332,55 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             st.markdown(deck_html, unsafe_allow_html=True)
         
         return None
+
+def find_exact_variant_match(decks, target_name, target_set, target_num, shown_deck_nums):
+    """Find a deck with an exact match for the target card - simplified and fast"""
+    for deck in decks:
+        # Skip already shown decks or decks without cards
+        if ('deck_num' in deck and deck['deck_num'] in shown_deck_nums) or 'cards' not in deck or not deck['cards']:
+            continue
+            
+        # Check for exact match
+        for card in deck['cards']:
+            if (card.get('type') == 'Pokemon' and 
+                card.get('card_name') == target_name and
+                card.get('set', '') == target_set and
+                str(card.get('num', '')) == str(target_num)):
+                # Found exact match, return this deck
+                return deck
+    
+    # No match found
+    return None
+
+def render_deck(deck, energy_types, is_typical):
+    """Render a deck and return its deck_num"""
+    # Prepare cards for rendering
+    pokemon_cards = []
+    trainer_cards = []
+    
+    for card in deck['cards']:
+        if card['type'] == 'Pokemon':
+            pokemon_cards.append(card)
+        else:
+            trainer_cards.append(card)
+    
+    # Display energy types if available
+    if energy_types:
+        from energy_utils import render_energy_icons
+        energy_html = render_energy_icons(energy_types, is_typical)
+        st.markdown(energy_html, unsafe_allow_html=True)
+    
+    # Render the deck
+    from card_renderer import render_sidebar_deck
+    deck_html = render_sidebar_deck(
+        pokemon_cards, 
+        trainer_cards,
+        card_width=70
+    )
+    st.markdown(deck_html, unsafe_allow_html=True)
+    
+    # Return the deck number
+    return deck.get('deck_num', 0)
 
 def render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical):
     """Render a sample deck that doesn't contain any of the variant Pokémon"""
