@@ -317,7 +317,7 @@ def render_sidebar():
     """Render the sidebar with tournament performance data"""
     # Import necessary modules
     import threading
-    from datetime import timedelta
+    from datetime import datetime, timedelta
     from config import CACHE_TTL
     
     # Check if tournament data needs updating and start background update if needed
