@@ -450,36 +450,36 @@ def render_sidebar():
                 * **Comparing Decks**: A deck with a Power Index of 2.0 is performing significantly better than one with 1.0
                 """)
                 
-            # Add cache statistics at the bottom (optional, could be in a collapsed expander)
-            with st.expander("🔧 Cache Statistics", expanded=False):
-                cache_stats = cache_manager.get_cache_statistics()
-                st.markdown(f"""
-                - **Decks Cached**: {cache_stats['decks_cached']}
-                - **Sample Decks**: {cache_stats['sample_decks_cached']}
-                - **Tournaments Tracked**: {cache_stats['tournaments_tracked']}
-                - **Last Updated**: {cache_stats['last_update']}
-                """)
-            # Add a button to force update cache data
-            st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
-            col1, col2 = st.columns(2)
+            # # Add cache statistics at the bottom (optional, could be in a collapsed expander)
+            # with st.expander("🔧 Cache Statistics", expanded=False):
+            #     cache_stats = cache_manager.get_cache_statistics()
+            #     st.markdown(f"""
+            #     - **Decks Cached**: {cache_stats['decks_cached']}
+            #     - **Sample Decks**: {cache_stats['sample_decks_cached']}
+            #     - **Tournaments Tracked**: {cache_stats['tournaments_tracked']}
+            #     - **Last Updated**: {cache_stats['last_update']}
+            #     """)
+            # # Add a button to force update cache data
+            # st.markdown("<hr style='margin-top: 15px; margin-bottom: 15px;'>", unsafe_allow_html=True)
+            # col1, col2 = st.columns(2)
             
-            with col1:
-                if st.button("🔄 Force Update Data", help="Force refresh all tournament data"):
-                    with st.spinner("Updating tournament data..."):
-                        stats = cache_manager.update_all_caches()
-                        st.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
-                        # Instead add a button that says "Apply Updates":
-                        if st.button("Apply Updates"):
-                            st.rerun()
+            # with col1:
+            #     if st.button("🔄 Force Update Data", help="Force refresh all tournament data"):
+            #         with st.spinner("Updating tournament data..."):
+            #             stats = cache_manager.update_all_caches()
+            #             st.success(f"Updated {stats['updated_decks']} decks from {stats['new_tournaments']} new tournaments")
+            #             # Instead add a button that says "Apply Updates":
+            #             if st.button("Apply Updates"):
+            #                 st.rerun()
             
-            with col2:
-                if st.button("📊 Update Card Stats", help="Refresh card usage statistics"):
-                    with st.spinner("Updating card statistics..."):
-                        cache_manager.aggregate_card_usage(force_update=True)
-                        st.success("Card statistics updated")
-                        # Instead add a button that says "Apply Updates":
-                        if st.button("Apply Updates"):
-                            st.rerun()
+            # with col2:
+            #     if st.button("📊 Update Card Stats", help="Refresh card usage statistics"):
+            #         with st.spinner("Updating card statistics..."):
+            #             cache_manager.aggregate_card_usage(force_update=True)
+            #             st.success("Card statistics updated")
+            #             # Instead add a button that says "Apply Updates":
+            #             if st.button("Apply Updates"):
+            #                 st.rerun()
         else:
             st.info(f"No tournament performance data available for {current_month_year}")
 
