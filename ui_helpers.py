@@ -173,6 +173,13 @@ def display_banner(img_path, max_width=900):
 
 def load_initial_data():
     """Load only essential initial data for fast app startup"""
+    # Initialize session state variables
+    if 'selected_deck_index' not in st.session_state:
+        st.session_state.selected_deck_index = None
+        
+    if 'deck_to_analyze' not in st.session_state:
+        st.session_state.deck_to_analyze = None
+    
     # Initialize minimal caches first
     cache_manager.init_caches()
     
@@ -180,14 +187,6 @@ def load_initial_data():
     if 'deck_list' not in st.session_state:
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
-    
-    # Initialize selected deck if not exists
-    if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = None
-        
-    # Initialize deck_to_analyze if not exists
-    if 'deck_to_analyze' not in st.session_state:
-        st.session_state.deck_to_analyze = None
 
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
@@ -231,22 +230,30 @@ def create_deck_options():
 
 def on_deck_change():
     """Handle deck dropdown selection change"""
+    if 'deck_select' not in st.session_state:
+        return
+        
     selection = st.session_state.deck_select
     if selection:
+        if 'deck_display_names' not in st.session_state:
+            # Skip if deck_display_names not loaded yet
+            return
+            
         st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
         
         # Set the deck to analyze
-        deck_info = st.session_state.deck_name_mapping[selection]
-        st.session_state.analyze = {
-            'deck_name': deck_info['deck_name'],
-            'set_name': deck_info['set'],
-        }
-        
-        # Track player-tournament mapping for this deck to enable efficient updates
-        cache_manager.track_player_tournament_mapping(
-            deck_info['deck_name'], 
-            deck_info['set']
-        )
+        if 'deck_name_mapping' in st.session_state:
+            deck_info = st.session_state.deck_name_mapping[selection]
+            st.session_state.analyze = {
+                'deck_name': deck_info['deck_name'],
+                'set_name': deck_info['set'],
+            }
+            
+            # Track player-tournament mapping for this deck to enable efficient updates
+            cache_manager.track_player_tournament_mapping(
+                deck_info['deck_name'], 
+                deck_info['set']
+            )
     else:
         st.session_state.selected_deck_index = None
 
