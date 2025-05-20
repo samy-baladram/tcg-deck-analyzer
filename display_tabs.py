@@ -9,7 +9,7 @@ from visualizations import create_usage_bar_chart, display_chart, create_variant
 from analyzer import build_deck_template
 from card_renderer import render_deck_section, render_option_section
 from energy_utils import get_archetype_from_deck_name, render_energy_icons
-from config import TOURNAMENT_COUNT
+from config import TOURNAMENT_COUNT, POKEMON_EXCEPTIONS
 
 def display_deck_header(deck_info, results):
     """Display the deck header with image"""
@@ -772,8 +772,8 @@ def display_metagame_tab():
             part = part.lower()
             if part and part not in suffixes:
                 # Apply exceptions
-                if part in pokemon_exceptions:
-                    part = pokemon_exceptions[part]
+                if part in POKEMON_EXCEPTIONS:
+                    part = POKEMON_EXCEPTIONS[part]
                 
                 pokemon_names.append(part)
                 
@@ -1460,8 +1460,8 @@ def display_matchup_tab(deck_info=None):
         for part in parts:
             part = part.lower()
             if part and part not in suffixes:
-                if part in pokemon_exceptions:
-                    part = pokemon_exceptions[part]
+                if part in POKEMON_EXCEPTIONS:
+                    part = POKEMON_EXCEPTIONS[part]
                 pokemon_names.append(part)
                 if len(pokemon_names) >= 2:
                     break
