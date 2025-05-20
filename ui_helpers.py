@@ -767,7 +767,7 @@ def display_counter_picker_sidebar():
                     with col2:
                         # Display win rate as a big percentage
                         win_rate = deck['average_win_rate']
-                        win_color = "#84cc15" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
+                        win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                         st.markdown(f"""
                         <div style="text-align: right; margin-top:0.5em;">
                             <span style="font-size: 1.4rem; width:100%; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
@@ -803,7 +803,7 @@ def display_counter_picker_sidebar():
                     with col2:
                         # Display win rate as a smaller percentage without "win rate" text
                         win_rate = deck['average_win_rate']
-                        win_color = "#84cc15" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
+                        win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                         st.markdown(f"""
                         <div style="text-align: right; width:100%; margin-top:0.5em;">
                             <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
