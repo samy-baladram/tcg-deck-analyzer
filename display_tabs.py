@@ -1389,6 +1389,83 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     except Exception as e:
         return pd.DataFrame()
 
+def display_matchup_summary(deck_name, set_name, working_df):
+    """
+    Display a summary of matchup distribution against the meta
+    
+    Args:
+        deck_name: Current deck name
+        set_name: Current deck set
+        working_df: DataFrame with matchup data already processed
+    """
+    st.write("#### Meta Matchup Distribution")
+    
+    # Make sure we have performance data to get meta shares
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+        st.info("No meta share data available to calculate matchup distribution.")
+        return
+        
+    # Get the meta share information for each opponent deck
+    performance_data = st.session_state.performance_data
+    
+    # Create a mapping from deck_name to meta_share
+    meta_share_map = {deck['deck_name']: deck['share'] for _, deck in performance_data.iterrows()}
+    
+    # Add meta share to working dataframe
+    working_df['meta_share'] = working_df['opponent_deck_name'].apply(
+        lambda x: meta_share_map.get(x, 0)
+    )
+    
+    # Classify each matchup
+    working_df['matchup_type'] = working_df['win_pct'].apply(
+        lambda wp: "Favorable" if wp >= 55 else ("Unfavorable" if wp < 45 else "Even")
+    )
+    
+    # Calculate total meta share in each category
+    favorable_share = working_df[working_df['matchup_type'] == 'Favorable']['meta_share'].sum()
+    even_share = working_df[working_df['matchup_type'] == 'Even']['meta_share'].sum()
+    unfavorable_share = working_df[working_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
+    
+    # Calculate total share covered by matchup data
+    covered_share = favorable_share + even_share + unfavorable_share
+    
+    # Calculate unknown share (portion of meta not in matchup data)
+    total_meta = 100.0  # Assuming meta shares sum to 100%
+    unknown_share = total_meta - covered_share
+    
+    # Create a 3-column layout
+    col1, col2, col3 = st.columns(4)
+    
+    # Display favorable matchups
+    with col1:
+        st.markdown(f"""
+        <div style="text-align: center; padding: 10px; background-color: rgba(132, 204, 21, 0.15); border-radius: 8px; height: 100px;">
+            <h4 style="margin: 0; color: #84cc15; font-size: 1.2rem;">Favorable</h4>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; margin: 5px 0;">{favorable_share:.1f}%</div>
+            <div style="font-size: 0.8rem; color: #666;">of meta</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Display even matchups
+    with col2:
+        st.markdown(f"""
+        <div style="text-align: center; padding: 10px; background-color: rgba(253, 197, 0, 0.15); border-radius: 8px; height: 100px;">
+            <h4 style="margin: 0; color: #fdc500; font-size: 1.2rem;">Even</h4>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; margin: 5px 0;">{even_share:.1f}%</div>
+            <div style="font-size: 0.8rem; color: #666;">of meta</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Display unfavorable matchups
+    with col3:
+        st.markdown(f"""
+        <div style="text-align: center; padding: 10px; background-color: rgba(253, 108, 108, 0.15); border-radius: 8px; height: 100px;">
+            <h4 style="margin: 0; color: #fd6c6c; font-size: 1.2rem;">Unfavorable</h4>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; margin: 5px 0;">{unfavorable_share:.1f}%</div>
+            <div style="font-size: 0.8rem; color: #666;">of meta</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
@@ -1591,6 +1668,12 @@ def display_matchup_tab(deck_info=None):
             },
             hide_index=True
         )
+    # After working_df is prepared, display the matchup summary
+    display_matchup_summary(deck_name, set_name, working_df)
+    
+    # Add some space between summary and table
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+    
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
     # Add explanation
     from formatters import format_deck_name
