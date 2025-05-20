@@ -305,10 +305,12 @@ def load_or_update_tournament_data(force_update=False):
     # Try to load tournament data from cache first
     performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
 
-    # Only update if forced or data is older than 1 hour
-    if force_update or performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(hours=1):
-        # Skip the spinner to avoid blocking the UI
-        # First check for new tournaments and update affected decks
+    # Import CACHE_TTL from config
+    from config import CACHE_TTL
+
+    # Check if data needs to be updated (if it's older than cache TTL or force update)
+    if force_update or performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(seconds=CACHE_TTL):
+        # Update only if needed
         update_stats = update_tournament_tracking()
         
         # Only reanalyze performance if there are new tournaments or no existing data
