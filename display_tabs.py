@@ -1088,12 +1088,12 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     table_html += """<h6 style="margin-bottom: 10px;">Energy by Deck</h6>
             <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid #ddd;">
-                    <th style="text-align: left; padding: 4px;">Deck #</th>"""
+                    <th style="text-align: left; padding: 4px; font-size: 1rem;">Deck #</th>"""
     
     # Add energy type headers
     for energy in all_energies:
         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-        table_html += f'<th style="text-align: center; padding: 4px;"><img src="{energy_url}" alt="{energy}" style="height:16px;"></th>'
+        table_html += f'<th style="text-align: center; padding: 4px;"><img src="{energy_url}" alt="{energy}" style="height:20px;"></th>'
     
     table_html += "</tr>"
     
@@ -1130,9 +1130,9 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     table_html += """<h6 style="margin-bottom: 10px;">Energy Combinations</h6>
             <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
                 <tr style="border-bottom: 1px solid #ddd;">
-                    <th style="text-align: left; padding: 4px;">Energy Combination</th>
-                    <th style="text-align: right; padding: 4px; width: 80px;">Count</th>
-                    <th style="text-align: right; padding: 4px; width: 80px;">Percentage</th>
+                    <th style="text-align: left; padding: 4px; font-size: 1rem;">Energy Combination</th>
+                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Count</th>
+                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Percentage</th>
                 </tr>"""
     
     total_decks = len(energy_by_deck)
