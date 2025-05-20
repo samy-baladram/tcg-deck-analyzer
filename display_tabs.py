@@ -1762,13 +1762,13 @@ def display_counter_picker():
                     counter_df[col] = counter_df[col].astype(float)
             
             # Display results
-            st.subheader("Best Counter Decks")
+            #st.subheader("Best Counter Decks")
             
-            # Display top 3 counter decks with images and metrics
-            st.write("### Top Counters to Selected Decks")
+            # Display top 5 counter decks with images and metrics
+            st.write("#### Top Counters to Selected Decks")
             
-            # Display top 3 counter decks
-            for i in range(min(3, len(counter_df))):
+            # Display top 5 counter decks
+            for i in range(min(5, len(counter_df))):
                 deck = counter_df.iloc[i]
                 
                 # Create deck_info object needed for create_deck_header_images
@@ -1813,97 +1813,142 @@ def display_counter_picker():
                 # Generate header image - passing empty results since we've preloaded info
                 header_image = create_deck_header_images(deck_info, None)
                 
-                # Create metrics layout
-                col1, col2, col3 = st.columns([1.5, 2, 1])
+                # Check if this is a top 3 or lower ranked deck
+                is_top_three = i < 3
                 
-                with col1:
-                    # Display the banner image
-                    if header_image:
+                # Adjust column widths and styling based on ranking
+                if is_top_three:
+                    # Top 3 decks get normal layout
+                    col1, col2, col3 = st.columns([1.5, 2, 1])
+                    
+                    with col1:
+                        # Display the banner image
+                        if header_image:
+                            st.markdown(f"""
+                            <div style="margin-right: 1rem;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            # Placeholder if no image
+                            st.markdown("""
+                            <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
+                                display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #888;">No image</span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        # Display deck name with ranking
+                        rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
+                        st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
+                    
+                    with col3:
+                        # Display win rate as a big percentage
+                        win_rate = deck['average_win_rate']
+                        win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
-                        <div style="margin-right: 1rem;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
+                        <div style="text-align: center;">
+                            <span style="font-size: 2.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
                         </div>
                         """, unsafe_allow_html=True)
-                    else:
-                        # Placeholder if no image
-                        st.markdown("""
-                        <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
-                            display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #888;">No image</span>
+                else:
+                    # 4th and 5th place get smaller layout
+                    col1, col2, col3 = st.columns([1, 2, 0.8])
+                    
+                    with col1:
+                        # Display smaller banner image
+                        if header_image:
+                            st.markdown(f"""
+                            <div style="margin-right: 0.75rem;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 180px; height: auto; border-radius: 8px;">
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            # Smaller placeholder
+                            st.markdown("""
+                            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
+                                display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #888; font-size: 0.8rem;">No image</span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        # Display deck name with smaller font
+                        rank_num = f"#{i+1}"
+                        st.markdown(f"##### {rank_num} {deck['displayed_name']}")
+                    
+                    with col3:
+                        # Display win rate as a smaller percentage without "win rate" text
+                        win_rate = deck['average_win_rate']
+                        win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
+                        st.markdown(f"""
+                        <div style="text-align: center;">
+                            <span style="font-size: 1.5rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
                         </div>
                         """, unsafe_allow_html=True)
-                
-                with col2:
-                    # Display deck name with ranking
-                    rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
-                    st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
-                
-                with col3:
-                    # Display win rate as a big percentage
-                    win_rate = deck['average_win_rate']
-                    win_color = "green" if win_rate >= 55 else "red" if win_rate < 45 else "orange"
-                    st.markdown(f"""
-                    <div style="text-align: center;">
-                        <span style="font-size: 2.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                        <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
-                    </div>
-                    """, unsafe_allow_html=True)
                 
                 # Add a horizontal line between decks
-                if i < min(2, len(counter_df) - 1):
-                    st.markdown("<hr style='margin: 1rem 0;'>", unsafe_allow_html=True)
+                if i < min(4, len(counter_df) - 1):
+                    # Top 3 get normal divider, 4-5 get thinner divider
+                    divider_margin = "1rem" if i < 3 else "0.6rem"
+                    divider_style = "solid 1px" if i < 3 else "solid 1px"
+                    divider_color = "#ddd" if i < 3 else "#eee"
+                    st.markdown(f"<hr style='margin: {divider_margin} 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
             # Display table with all results including icons
-            st.write("### All Counter Options")
+            # st.write("")
+            # st.write("##### All Counter Options")
             
-            # Create a DataFrame with the ordered columns including icons
-            display_df = pd.DataFrame({
-                'Icon1': counter_df['pokemon_url1'],
-                'Icon2': counter_df['pokemon_url2'],
-                'Deck': counter_df['displayed_name'],
-                'Win %': counter_df['average_win_rate'],
-                'Meta Share': counter_df['meta_share'],
-                'Power Index': counter_df['power_index']
-            })
+            # # Create a DataFrame with the ordered columns including icons
+            # display_df = pd.DataFrame({
+            #     'Icon1': counter_df['pokemon_url1'],
+            #     'Icon2': counter_df['pokemon_url2'],
+            #     'Deck': counter_df['displayed_name'],
+            #     'Win %': counter_df['average_win_rate'],
+            #     'Meta Share': counter_df['meta_share'],
+            #     'Power Index': counter_df['power_index']
+            # })
             
-            st.dataframe(
-                display_df,
-                column_config={
-                    "Icon1": st.column_config.ImageColumn(
-                        "Icon 1",
-                        help="First Pokémon in the deck",
-                        width="20px",
-                    ),
-                    "Icon2": st.column_config.ImageColumn(
-                        "Icon 2", 
-                        help="Second Pokémon in the deck",
-                        width="20px",
-                    ),
-                    "Deck": st.column_config.TextColumn(
-                        "Deck",
-                        help="Deck archetype name"
-                    ),
-                    "Win %": st.column_config.NumberColumn(
-                        "Avg Win %",
-                        help="Average win percentage against selected decks",
-                        format="%.1f%%"
-                    ),
-                    "Meta Share": st.column_config.NumberColumn(
-                        "Meta Share",
-                        help="Percentage of the current meta",
-                        format="%.2f%%"
-                    ),
-                    "Power Index": st.column_config.NumberColumn(
-                        "Power Index",
-                        help="Overall performance in the meta",
-                        format="%.2f"
-                    )
-                },
-                hide_index=True,
-                use_container_width=True
-            )
+            # st.dataframe(
+            #     display_df,
+            #     column_config={
+            #         "Icon1": st.column_config.ImageColumn(
+            #             "Icon 1",
+            #             help="First Pokémon in the deck",
+            #             width="20px",
+            #         ),
+            #         "Icon2": st.column_config.ImageColumn(
+            #             "Icon 2", 
+            #             help="Second Pokémon in the deck",
+            #             width="20px",
+            #         ),
+            #         "Deck": st.column_config.TextColumn(
+            #             "Deck",
+            #             help="Deck archetype name"
+            #         ),
+            #         "Win %": st.column_config.NumberColumn(
+            #             "Avg Win %",
+            #             help="Average win percentage against selected decks",
+            #             format="%.1f%%"
+            #         ),
+            #         # "Meta Share": st.column_config.NumberColumn(
+            #         #     "Meta Share",
+            #         #     help="Percentage of the current meta",
+            #         #     format="%.2f%%"
+            #         # ),
+            #         # "Power Index": st.column_config.NumberColumn(
+            #         #     "Power Index",
+            #         #     help="Overall performance in the meta",
+            #         #     format="%.2f"
+            #         # )
+            #     },
+            #     hide_index=True,
+            #     use_container_width=True
+            # )
             
             # Add explanation text 
-            st.caption("Higher average win rate indicates better performance against your selected decks.")
+            st.caption("Higher average win rate indicates better performance against your selected decks. Data is from the current aggregated tournament result in [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
         else:
             st.warning("No counter data found for the selected decks")
