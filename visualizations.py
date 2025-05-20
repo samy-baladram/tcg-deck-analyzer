@@ -119,7 +119,7 @@ def create_usage_bar_chart(type_cards, card_type, energy_type=None):
         orientation='h',
         marker_color=bar_colors[f'{card_type.lower()}_1'],
         text=plot_df['1 Copy'].apply(
-            lambda x: f" {format_percentage(x)}   <b><span style='font-size: 22px; '>🂠</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
+            lambda x: f" {format_percentage(x)}   <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 22px;'>1×</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
         textposition='inside',
         textfont=dict(size=CHART_FONT_SIZE),
@@ -133,7 +133,7 @@ def create_usage_bar_chart(type_cards, card_type, energy_type=None):
         orientation='h',
         marker_color=bar_colors[f'{card_type.lower()}_2'],
         text=plot_df['2 Copies'].apply(
-            lambda x: f" {format_percentage(x)}   <b><span style='font-size: 22px;'>🂠🂠</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
+            lambda x: f" {format_percentage(x)}   <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 22px;'>2×</span></b>" if x >= 25 else (f" {format_percentage(x)} " if x > CHART_TEXT_THRESHOLD else '')
         ),
         textposition='inside',
         textfont=dict(size=CHART_FONT_SIZE),
