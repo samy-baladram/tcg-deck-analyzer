@@ -1387,213 +1387,6 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     except Exception as e:
         return pd.DataFrame()
 
-def display_matchup_tab(deck_info=None):
-    """
-    Display the Matchup tab with detailed matchup data.
-    
-    Args:
-        deck_info: Dictionary containing deck information (optional)
-    """
-    #st.subheader("Matchup Analysis")
-    import pandas as pd
-    import re
-    
-    # Use current deck if none provided
-    if not deck_info and 'analyze' in st.session_state:
-        deck_name = st.session_state.analyze.get('deck_name', '')
-        set_name = st.session_state.analyze.get('set_name', 'A3')
-    elif deck_info:
-        deck_name = deck_info.get('deck_name', '')
-        set_name = deck_info.get('set', 'A3')
-    else:
-        st.warning("No deck selected for matchup analysis.")
-        return
-    
-    # Fetch matchup data
-    matchup_df = fetch_matchup_data(deck_name, set_name)
-    
-    if matchup_df.empty:
-        st.info(f"No matchup data available for {deck_name}.")
-        return
-    
-    # Get list of top meta decks to filter by
-    meta_decks = []
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        meta_decks = st.session_state.performance_data['deck_name'].tolist()
-    
-    # Show filter option - commented out as requested
-    # show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
-    # Always filter by default
-    show_all = False
-    
-    # Create a copy to work with
-    working_df = matchup_df.copy()
-
-    # Filter out current deck from matchups (ADD THIS LINE)
-    working_df = working_df[working_df['opponent_deck_name'] != deck_name]
-
-    # Only apply filtering if we have meta decks and user wants filtering
-    if meta_decks and not show_all:
-        # Add lowercase versions for better matching
-        working_df['deck_name_lower'] = working_df['opponent_deck_name'].str.lower()
-        meta_decks_lower = [d.lower() for d in meta_decks]
-        
-        # Apply filter
-        filtered_df = working_df[working_df['deck_name_lower'].isin(meta_decks_lower)]
-        
-        # Use filtered data if we found matches
-        if not filtered_df.empty:
-            #st.success(f"Showing {len(filtered_df)} meta deck matchups")
-            working_df = filtered_df.drop(columns=['deck_name_lower'])
-        else:
-            st.warning("No matches found with current meta decks. Showing all matchups instead.")
-            working_df = working_df.drop(columns=['deck_name_lower'])
-       
-    # Function to extract Pokémon names and create image URLs
-    def extract_pokemon_urls(displayed_name):
-        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        parts = re.split(r'[\s/]+', clean_name)
-        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-        pokemon_names = []
-        
-        for part in parts:
-            part = part.lower()
-            if part and part not in suffixes:
-                if part in POKEMON_EXCEPTIONS:
-                    part = POKEMON_EXCEPTIONS[part]
-                pokemon_names.append(part)
-                if len(pokemon_names) >= 2:
-                    break
-        
-        urls = []
-        for name in pokemon_names:
-            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-        
-        # Ensure we have exactly 2 elements
-        while len(urls) < 2:
-            urls.append(None)
-            
-        return urls[0], urls[1]
-    
-    # Apply the function to extract Pokémon image URLs
-    working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
-        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
-        axis=1
-    )
-    
-    # Create a better formatted display version
-    display_df = working_df.copy()
-    
-    # Add rank column
-    display_df.insert(0, 'Rank', range(1, len(display_df) + 1))
-    
-    # Add matchup column 
-    display_df['Matchup'] = display_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 55 else ("Unfavorable" if wp < 45 else "Even")
-    )
-    
-    # Format the record column
-    display_df['Record'] = display_df.apply(
-        lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
-    )
-    
-    # Select and rename columns for display - now including the icon columns
-    formatted_df = pd.DataFrame({
-       # 'Rank': display_df['Rank'],
-        'Icon1': display_df['pokemon_url1'],
-        'Icon2': display_df['pokemon_url2'],
-        'Deck': display_df['opponent_name'],
-        'Matchup': display_df['Matchup'],
-        'Win %': display_df['win_pct'],
-        'Record': display_df['Record'],
-        'Matches': display_df['matches_played'],
-    })
-    
-    # Apply styling for matchups
-    def highlight_matchups(val):
-        """Apply colors to matchup column values"""
-        if val == "Favorable":
-            return 'background-color: rgba(100, 200, 100, 0.4)'  # Light green
-        elif val == "Unfavorable":
-            return 'background-color: rgba(255, 100, 100, 0.4)'  # Light red
-        else:
-            return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
-    
-    # Display the enhanced data table with all rows
-    st.write("#### Matchup Data")
-    
-    try:
-        # First try with styled dataframe and images
-        styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
-        
-        st.dataframe(
-            styled_df,
-            use_container_width=True,
-            height=600,
-            column_config={
-                "Rank": st.column_config.NumberColumn(
-                    "#",
-                    help="Position in the list sorted by Win %",
-                    width="8px",
-                ),
-                "Icon1": st.column_config.ImageColumn(
-                    "Icon 1",
-                    help="First Pokémon in the deck",
-                    width="20px",
-                ),
-                "Icon2": st.column_config.ImageColumn(
-                    "Icon 2", 
-                    help="Second Pokémon in the deck",
-                    width="20px",
-                ),
-                "Deck": st.column_config.TextColumn(
-                    "Deck",
-                    help="Opponent deck archetype"
-                ),
-                "Win %": st.column_config.NumberColumn(
-                    "Win %",
-                    help="Percentage of matches won against this deck",
-                    format="%.1f%%",
-                ),
-                "Record": st.column_config.TextColumn(
-                    "Record",
-                    help="Win-Loss-Tie record against this deck"
-                ),
-                "Matches": st.column_config.NumberColumn(
-                    "Matches",
-                    help="Total number of matches played against this deck"
-                ),
-                "Matchup": st.column_config.TextColumn(
-                    "Matchup",
-                    help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
-                )
-            },
-            hide_index=True
-        )
-    except Exception as e:
-        # Fallback to simpler version if there's an issue
-        st.error(f"Error displaying styled dataframe with images: {str(e)}")
-        st.write("Showing basic version without styling and images:")
-        
-        # Remove image columns for fallback
-        basic_df = formatted_df.drop(columns=['Icon1', 'Icon2'])
-        st.dataframe(
-            basic_df,
-            use_container_width=True,
-            height=600,
-            column_config={
-                "Win %": st.column_config.NumberColumn(
-                    "Win %",
-                    format="%.1f%%",
-                ),
-            },
-            hide_index=True
-        )
-    st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
-    # Add explanation
-    from formatters import format_deck_name
-    formatted_deck_name = format_deck_name(deck_name)
-
 def display_counter_picker():
     st.subheader("Meta Counter Picker")
     
@@ -1675,6 +1468,46 @@ def display_counter_picker():
                 counter_df = pd.DataFrame(counter_data)
                 counter_df = counter_df.sort_values('average_win_rate', ascending=False)
                 
+                # Add Pokemon icon URLs
+                # Define Pokemon exceptions dictionary (for special cases)
+                POKEMON_EXCEPTIONS = {
+                    'oricorio': 'oricorio-pom-pom',
+                    # Add other exceptions as needed
+                }
+                
+                # Function to extract Pokemon names and create image URLs
+                def extract_pokemon_urls(displayed_name):
+                    import re
+                    clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+                    parts = re.split(r'[\s/]+', clean_name)
+                    suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+                    pokemon_names = []
+                    
+                    for part in parts:
+                        part = part.lower()
+                        if part and part not in suffixes:
+                            if part in POKEMON_EXCEPTIONS:
+                                part = POKEMON_EXCEPTIONS[part]
+                            pokemon_names.append(part)
+                            if len(pokemon_names) >= 2:
+                                break
+                    
+                    urls = []
+                    for name in pokemon_names:
+                        urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+                    
+                    # Ensure we have exactly 2 elements
+                    while len(urls) < 2:
+                        urls.append(None)
+                        
+                    return urls[0], urls[1]
+                
+                # Apply the function to extract Pokemon image URLs
+                counter_df[['pokemon_url1', 'pokemon_url2']] = counter_df.apply(
+                    lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
+                    axis=1
+                )
+                
                 # Convert numpy types to Python native types
                 counter_df = counter_df.copy()
                 for col in counter_df.columns:
@@ -1684,10 +1517,10 @@ def display_counter_picker():
                         counter_df[col] = counter_df[col].astype(float)
                 
                 # Display results
-                st.subheader("Best Counter Decks")
+                #st.subheader("Best Counter Decks")
                 
                 # Display top 3 counter decks with images and metrics
-                st.write("### Top Counters to Selected Decks")
+                st.write("##### Top Counters to Selected Decks")
                 
                 # Display top 3 counter decks
                 for i in range(min(3, len(counter_df))):
@@ -1742,23 +1575,47 @@ def display_counter_picker():
                     if i < min(2, len(counter_df) - 1):
                         st.markdown("<hr style='margin: 1rem 0;'>", unsafe_allow_html=True)
                 
-                # Display table with all results
-                st.write("### All Counter Options")
+                # Display table with all results including icons
+                st.write("###### All Counter Options")
+                
+                # Create a DataFrame with the ordered columns including icons
+                display_df = pd.DataFrame({
+                    'Icon1': counter_df['pokemon_url1'],
+                    'Icon2': counter_df['pokemon_url2'],
+                    'Deck': counter_df['displayed_name'],
+                    'Win %': counter_df['average_win_rate'],
+                    'Meta Share': counter_df['meta_share'],
+                    'Power Index': counter_df['power_index']
+                })
+                
                 st.dataframe(
-                    counter_df[['displayed_name', 'average_win_rate', 'meta_share', 'power_index']],
+                    display_df,
                     column_config={
-                        "displayed_name": st.column_config.TextColumn("Deck"),
-                        "average_win_rate": st.column_config.NumberColumn(
+                        "Icon1": st.column_config.ImageColumn(
+                            "Icon 1",
+                            help="First Pokémon in the deck",
+                            width="20px",
+                        ),
+                        "Icon2": st.column_config.ImageColumn(
+                            "Icon 2", 
+                            help="Second Pokémon in the deck",
+                            width="20px",
+                        ),
+                        "Deck": st.column_config.TextColumn(
+                            "Deck",
+                            help="Deck archetype name"
+                        ),
+                        "Win %": st.column_config.NumberColumn(
                             "Avg Win %",
                             help="Average win percentage against selected decks",
                             format="%.1f%%"
                         ),
-                        "meta_share": st.column_config.NumberColumn(
+                        "Meta Share": st.column_config.NumberColumn(
                             "Meta Share",
                             help="Percentage of the current meta",
                             format="%.2f%%"
                         ),
-                        "power_index": st.column_config.NumberColumn(
+                        "Power Index": st.column_config.NumberColumn(
                             "Power Index",
                             help="Overall performance in the meta",
                             format="%.2f"
