@@ -282,12 +282,25 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     # Get the name of the variant Pokemon we're looking for
     pokemon_name = variant_pokemon['card_name']
     
+    # Normalize the pokemon name to avoid case issues and additional suffixes
+    target_name_normalized = pokemon_name.lower().strip()
+    
+    # Also get the set and number for more precise matching
+    target_set = variant_pokemon.get('set', '')
+    target_num = variant_pokemon.get('num', '')
+    
     # Variables to track the best deck
     best_deck = None
     best_deck_num = None
     best_score = -1
     
-    # Find the best deck for this variant
+    # Track exact matches - decks where we find the exact card with matching set and number
+    exact_variant_matches = []
+    
+    # Track name-based matches - decks where we find a card with the same name
+    name_variant_matches = []
+    
+    # Find the best deck for this variant with stricter matching
     for deck in all_decks:
         # Skip if we've already shown this deck
         if 'deck_num' not in deck or deck['deck_num'] in shown_deck_nums:
@@ -297,47 +310,65 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
         if 'cards' not in deck or not deck['cards']:
             continue
             
-        score = 0
-        has_our_variant = False
+        # Initial deck score
+        deck_score = 0
+        
+        # Track if we found an exact match in this deck
+        found_exact_variant = False
+        
+        # Track if we found a name match in this deck
+        found_name_match = False
+        
+        # Count how many other variants this deck contains
         other_variant_count = 0
         
-        # Check cards in this deck
+        # Check each card in this deck
         for card in deck['cards']:
-            if 'type' not in card or 'card_name' not in card:
+            if card.get('type') != 'Pokemon' or 'card_name' not in card:
                 continue
                 
-            if card['type'] == 'Pokemon':
-                # Check for variant using multiple matching approaches
-                card_name = card['card_name']
-                
-                if (card_name.lower() == pokemon_name.lower() or  # Exact match
-                    pokemon_name.lower() in card_name.lower() or  # Substring
-                    any(part.lower() == pokemon_name.lower()      # Word match
-                        for part in card_name.split())):
-                    
-                    has_our_variant = True
-                    score += 5 * card.get('amount', 1)  # More points for multiple copies
-                
-                # Check for other variants we want to avoid
-                for other_variant in other_variants:
-                    if (other_variant in card_name.lower() or
-                        any(part.lower() == other_variant 
-                            for part in card_name.split())):
-                        
-                        other_variant_count += card.get('amount', 1)
-        
-        # Skip if it doesn't contain our variant
-        if not has_our_variant:
-            continue
+            # Normalize the card name
+            card_name_normalized = card['card_name'].lower().strip()
             
-        # Penalize for having other variants
-        score -= 2 * other_variant_count
+            # Check for exact set and number match - highest priority
+            if (target_set and target_num and 
+                card.get('set') == target_set and 
+                str(card.get('num', '')) == str(target_num)):
+                
+                found_exact_variant = True
+                deck_score += 10 * card.get('amount', 1)  # High score for exact match
+            
+            # Check for name match - secondary priority
+            elif card_name_normalized == target_name_normalized:
+                found_name_match = True
+                deck_score += 5 * card.get('amount', 1)
+            
+            # Check for other variant matches to penalize
+            for other_variant in other_variants:
+                other_normalized = other_variant.lower().strip()
+                if card_name_normalized == other_normalized:
+                    other_variant_count += card.get('amount', 1)
         
-        # If this is the best deck so far, remember it
-        if score > best_score:
-            best_deck = deck
-            best_deck_num = deck.get('deck_num', 0)
-            best_score = score
+        # Penalize for other variants
+        deck_score -= 2 * other_variant_count
+        
+        # Track decks with exact matches separately
+        if found_exact_variant:
+            exact_variant_matches.append((deck, deck_score, deck.get('deck_num', 0)))
+            
+        # Track decks with name matches separately
+        elif found_name_match:
+            name_variant_matches.append((deck, deck_score, deck.get('deck_num', 0)))
+    
+    # Prioritize exact matches, then name matches
+    if exact_variant_matches:
+        # Sort by score descending and take the best one
+        best_match = sorted(exact_variant_matches, key=lambda x: x[1], reverse=True)[0]
+        best_deck, best_score, best_deck_num = best_match
+    elif name_variant_matches:
+        # Sort by score descending and take the best one
+        best_match = sorted(name_variant_matches, key=lambda x: x[1], reverse=True)[0]
+        best_deck, best_score, best_deck_num = best_match
     
     # If we found a deck, render it
     if best_deck:
