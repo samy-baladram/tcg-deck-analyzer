@@ -475,45 +475,60 @@ def get_cache_statistics():
 
 def ensure_analyzed_deck_consistency(deck_name, set_name):
     """
-    Ensure analyzed deck and collected deck data are consistent
-    This is called when a deck is loaded or analyzed
+    Ensure analyzed deck and collected deck data are consistent by synchronizing caches
     """
     # Cache keys
     deck_key = f"{deck_name}_{set_name}"
     cache_key = f"full_deck_{deck_name}_{set_name}"
     
-    # Check if we have analyzed data but no collected data
+    # Initialize session state if needed
+    if 'collected_decks' not in st.session_state:
+        st.session_state.collected_decks = {}
+    
+    if 'analyzed_deck_cache' not in st.session_state:
+        st.session_state.analyzed_deck_cache = {}
+    
+    # Case 1: We have analyzed data but no collected data
     if (cache_key in st.session_state.analyzed_deck_cache and 
         (deck_key not in st.session_state.collected_decks or not st.session_state.collected_decks[deck_key].get('decks'))):
         
-        # Force collection to populate collected_decks
-        from analyzer import collect_decks
-        all_decks, all_energy_types, total_decks = collect_decks(deck_name, set_name)
+        print(f"Found analyzed data for {deck_name} but no collected decks - checking disk cache")
         
-        # The collect_decks function should update session state automatically,
-        # but let's check to make sure
-        if deck_key not in st.session_state.collected_decks:
-            st.session_state.collected_decks[deck_key] = {
-                'decks': all_decks,
-                'all_energy_types': all_energy_types,
-                'total_decks': total_decks
-            }
+        # First try to load collected decks from disk
+        metadata_loaded = load_collected_decks_metadata(deck_name, set_name)
+        
+        # If we still don't have collected decks, force collection
+        if not metadata_loaded:
+            print(f"Need to collect decks for {deck_name}")
+            from analyzer import collect_decks
+            all_decks, all_energy_types, total_decks = collect_decks(deck_name, set_name)
             
-    # Check if we have collected data but no analyzed data
+            # The collect_decks function should update session state automatically,
+            # but let's check to make sure
+            if deck_key not in st.session_state.collected_decks:
+                st.session_state.collected_decks[deck_key] = {
+                    'decks': all_decks,
+                    'all_energy_types': all_energy_types,
+                    'total_decks': total_decks
+                }
+                
+                print(f"Stored {len(all_decks)} collected decks for {deck_name}")
+    
+    # Case 2: We have collected data but no analyzed data
     elif (deck_key in st.session_state.collected_decks and 
           cache_key not in st.session_state.analyzed_deck_cache):
+        
+        print(f"Found collected decks for {deck_name} but no analyzed data - analyzing")
         
         # Collected data exists, so analyze using that
         from analyzer import analyze_deck
         from cache_utils import save_analyzed_deck_components
         
-        # Use the existing collected decks
-        collected_data = st.session_state.collected_decks[deck_key]
-        
         # Re-analyze (this will update the session state)
         results, total_decks, variant_df, energy_types = analyze_deck(deck_name, set_name)
         
         # Create and save analyzed data
+        from analyzer import build_deck_template
         deck_list, deck_info, total_cards, options = build_deck_template(results)
         
         analyzed_data = {
@@ -532,6 +547,12 @@ def ensure_analyzed_deck_consistency(deck_name, set_name):
         
         # Save to disk
         save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df, energy_types)
+        
+        print(f"Analyzed deck {deck_name} using existing collected data")
+    
+    else:
+        # Both caches are either populated or empty - no action needed
+        pass
 
 def ensure_deck_collected(deck_name, set_name):
     """Ensure deck is collected, analyzing if needed"""
