@@ -172,26 +172,14 @@ def display_banner(img_path, max_width=900):
     """, unsafe_allow_html=True)
 
 def load_initial_data():
-    """Load initial data required for the app"""
-    # Initialize caches - this now handles comprehensive updates
+    """Load only essential initial data for fast app startup"""
+    # Initialize minimal caches first
     cache_manager.init_caches()
     
     # Initialize deck list if not already loaded
     if 'deck_list' not in st.session_state:
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
-    
-    # For tournament data, only load from cache - don't update yet for faster initial load
-    if 'performance_data' not in st.session_state:
-        # Load directly from cache without any updates
-        performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
-        st.session_state.performance_data = performance_df
-        st.session_state.performance_fetch_time = performance_timestamp
-    
-    # Initialize card usage data in a similar way - no update yet
-    if 'card_usage_data' not in st.session_state:
-        card_usage_df, _ = cache_utils.load_card_usage_data()
-        st.session_state.card_usage_data = card_usage_df
     
     # Initialize selected deck if not exists
     if 'selected_deck_index' not in st.session_state:
@@ -200,10 +188,6 @@ def load_initial_data():
     # Initialize deck_to_analyze if not exists
     if 'deck_to_analyze' not in st.session_state:
         st.session_state.deck_to_analyze = None
-    
-    # Initialize update_running flag if not exists
-    if 'update_running' not in st.session_state:
-        st.session_state.update_running = False
 
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
@@ -267,12 +251,19 @@ def on_deck_change():
         st.session_state.selected_deck_index = None
 
 def create_deck_selector():
-    """Create and display the deck selector dropdown"""
-    # Get deck options
-    deck_display_names, deck_name_mapping = create_deck_options()
-    
-    # Store for use in callback
-    st.session_state.deck_display_names = deck_display_names
+    """Create and display the deck selector dropdown with minimal loading"""
+    # Only compute dropdown options if not already cached
+    if 'deck_display_names' not in st.session_state:
+        # Get deck options
+        deck_display_names, deck_name_mapping = create_deck_options()
+        
+        # Store for reuse
+        st.session_state.deck_display_names = deck_display_names
+        st.session_state.deck_name_mapping = deck_name_mapping
+    else:
+        # Use cached options
+        deck_display_names = st.session_state.deck_display_names
+        deck_name_mapping = st.session_state.deck_name_mapping
     
     # Calculate time ago
     time_str = calculate_time_ago(st.session_state.fetch_time)
@@ -361,14 +352,12 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         
 def render_sidebar():
     """Render the sidebar with tournament performance data"""
-    # Call update check without spinner
+    # Call update check function for background updates
     check_and_update_tournament_data()
     
-    # Show loading spinner only for sidebar content
     with st.sidebar:
         # Load and encode the banner image if it exists
         banner_path = "sidebar_banner.png"
-        # ... rest of the existing sidebar rendering code ...
         if os.path.exists(banner_path):
             with open(banner_path, "rb") as f:
                 banner_base64 = base64.b64encode(f.read()).decode()
@@ -389,7 +378,7 @@ def render_sidebar():
         current_month_year = datetime.now().strftime("%B %Y")  # Format: May 2025
         
         # Display performance data if it exists
-        if not st.session_state.performance_data.empty:
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
             # Get the top 10 performing decks
             top_decks = st.session_state.performance_data.head(10)
             
