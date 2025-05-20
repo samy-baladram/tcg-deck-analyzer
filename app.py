@@ -29,7 +29,6 @@ if not st.session_state.app_state['initial_data_loaded']:
     st.session_state.app_state['initial_data_loaded'] = True
 
 
-
 # Apply custom styles - IMPORTANT: Put CSS before any components render
 st.markdown("""
 <style>
@@ -125,9 +124,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 
 # Display banner
 ui_helpers.display_banner("title_banner.png")
-
-# Render sidebar AFTER initialization
-ui_helpers.render_sidebar()
 
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
