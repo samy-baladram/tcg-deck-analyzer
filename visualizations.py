@@ -207,20 +207,20 @@ def create_variant_bar_chart(variant_data, energy_type=None):
     if include_mixed:
         single_data.append(mixed_pct)
         double_data.append(0)  # Mixed has no "double" component
-        text_single.append(f" {mixed_pct}% <b><span style='font-size: 22px;'>🂠+🂠</span></b>" if mixed_pct > 0 else "")
+        text_single.append(f" {mixed_pct}% <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 22px;'>1+1</span></b>" if mixed_pct > 0 else "")
         text_double.append("")  # No double for mixed
     
     # Add var2 data
     single_data.append(var2_single_pct)
     double_data.append(var2_double_pct)
-    text_single.append(f" {var2_single_pct}%  <b><span style='font-size: 22px;'>🂠</span></b>" if var2_single_pct > 0 else "")
-    text_double.append(f" {var2_double_pct}%  <b><span style='font-size: 22px;'>🂠🂠</span></b>" if var2_double_pct > 0 else "")
+    text_single.append(f" {var2_single_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 22px;'>1×</span></b>" if var2_single_pct > 0 else "")
+    text_double.append(f" {var2_double_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 22px;'>2×</span></b>" if var2_double_pct > 0 else "")
     
     # Add var1 data
     single_data.append(var1_single_pct)
     double_data.append(var1_double_pct)
-    text_single.append(f" {var1_single_pct}%  <b><span style='font-size: 22px;'>🂠</span></b>" if var1_single_pct > 0 else "")
-    text_double.append(f" {var1_double_pct}%  <b><span style='font-size: 22px;'>🂠🂠</span></b>" if var1_double_pct > 0 else "")
+    text_single.append(f" {var1_single_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 22px;'>1×</span></b>" if var1_single_pct > 0 else "")
+    text_double.append(f" {var1_double_pct}%  <b><span style='font-family: Nunito, sans-serif; font-weight: 700; font-size: 22px;'>2×</span></b>" if var1_double_pct > 0 else "")
     
     # Get colors based on energy type
     bar_colors = CHART_COLORS.copy()
