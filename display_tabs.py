@@ -1635,9 +1635,9 @@ def display_counter_picker():
     
     with col2:
         # Add some vertical space to align with the dropdown
-        st.write("")
+        st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)  # Exactly 50px space
         # Button to trigger analysis
-        find_button = st.button("Find Counters", type="primary", use_container_width=True)
+        find_button = st.button("Find Counters", type="secondary", use_container_width=True)
     
     # Only proceed if decks are selected
     if not selected_decks:
