@@ -64,6 +64,26 @@ div[data-testid="stExpander"] details summary p{
     color: #00A0FF !important;
 }
 
+/* Make multiselect tag pills blue instead of red */
+div[data-baseweb="tag"] {
+    background-color: rgba(0, 160, 255, 0.1) !important;
+    border-color: #00A0FF !important;
+}
+
+/* Change tag text color */
+div[data-baseweb="tag"] span {
+    color: #00A0FF !important;
+}
+
+/* Change tag 'x' button color */
+div[data-baseweb="tag"] div[role="button"] svg {
+    fill: #00A0FF !important;
+}
+
+/* Change multiselect dropdown active option background */
+div[data-baseweb="select"] li[aria-selected="true"] {
+    background-color: rgba(0, 160, 255, 0.2) !important;
+}
 /* Change primary color to blue */
 div[data-baseweb="select"] > div {
     border-color: #00A0FF !important;
@@ -129,26 +149,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     padding: 8px 12px !important;
 }
 
-/* Make multiselect tag pills blue instead of red */
-div[data-baseweb="tag"] {
-    background-color: rgba(0, 160, 255, 0.1) !important;
-    border-color: #00A0FF !important;
-}
-
-/* Change tag text color */
-div[data-baseweb="tag"] span {
-    color: #00A0FF !important;
-}
-
-/* Change tag 'x' button color */
-div[data-baseweb="tag"] div[role="button"] svg {
-    fill: #00A0FF !important;
-}
-
-/* Change multiselect dropdown active option background */
-div[data-baseweb="select"] li[aria-selected="true"] {
-    background-color: rgba(0, 160, 255, 0.2) !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
