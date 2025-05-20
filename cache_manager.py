@@ -316,7 +316,7 @@ def load_or_update_tournament_data(force_update=False):
 
     # Check if data needs to be updated (if it's older than cache TTL or force update)
     if force_update or performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(seconds=CACHE_TTL):
-        # Update only if needed
+        # Update only if needed - without spinner
         update_stats = update_tournament_tracking()
         
         # Only reanalyze performance if there are new tournaments or no existing data
@@ -388,49 +388,45 @@ def update_tournament_tracking():
         'updated_decks': 0
     }
     
-    with st.spinner("Checking for new tournaments..."):
-        # Load previous tournament IDs
-        previous_ids = cache_utils.load_tournament_ids()
-        
-        # Get current tournament IDs
-        current_ids = get_all_recent_tournaments()
-        stats['current_tournaments'] = len(current_ids)
-        
-        # Find new tournament IDs
-        new_ids = get_new_tournament_ids(previous_ids)
-        stats['new_tournaments'] = len(new_ids)
-        
-        # If no new tournaments, nothing to do
-        if not new_ids:
-            return stats
-        
-        # Save updated tournament IDs
-        cache_utils.save_tournament_ids(current_ids)
-        
-        # Load player-tournament mapping
-        mapping = cache_utils.load_player_tournament_mapping()
-        
-        # Find affected deck archetypes
-        affected_decks = get_affected_decks(new_ids, mapping)
-        stats['affected_decks'] = len(affected_decks)
+    # Skip spinner for background updates
+    # Load previous tournament IDs
+    previous_ids = cache_utils.load_tournament_ids()
+    
+    # Get current tournament IDs
+    current_ids = get_all_recent_tournaments()
+    stats['current_tournaments'] = len(current_ids)
+    
+    # Find new tournament IDs
+    new_ids = get_new_tournament_ids(previous_ids)
+    stats['new_tournaments'] = len(new_ids)
+    
+    # If no new tournaments, nothing to do
+    if not new_ids:
+        return stats
+    
+    # Save updated tournament IDs
+    cache_utils.save_tournament_ids(current_ids)
+    
+    # Load player-tournament mapping
+    mapping = cache_utils.load_player_tournament_mapping()
+    
+    # Find affected deck archetypes
+    affected_decks = get_affected_decks(new_ids, mapping)
+    stats['affected_decks'] = len(affected_decks)
 
-        print(f"Found {len(new_ids)} new tournaments: {new_ids}")
-        print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
-      
-        # In update_tournament_tracking, add batch processing
-        if len(affected_decks) > 5:
-            st.info(f"Updating {len(affected_decks)} decks. This may take a while...")
-            
-        # Update each affected deck
-        for deck_name in affected_decks:
-            # For now, assume set_name is 'A3' - could be stored in mapping
-            set_name = 'A3'
-            
-            # Update the deck analysis
-            success = update_deck_analysis(deck_name, set_name, new_ids)
-            
-            if success:
-                stats['updated_decks'] += 1
+    print(f"Found {len(new_ids)} new tournaments: {new_ids}")
+    print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
+  
+    # Update each affected deck
+    for deck_name in affected_decks:
+        # For now, assume set_name is 'A3' - could be stored in mapping
+        set_name = 'A3'
+        
+        # Update the deck analysis
+        success = update_deck_analysis(deck_name, set_name, new_ids)
+        
+        if success:
+            stats['updated_decks'] += 1
     
     return stats
 
