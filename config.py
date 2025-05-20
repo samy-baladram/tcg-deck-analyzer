@@ -6,7 +6,7 @@ BASE_URL = "https://play.limitlesstcg.com"
 IMAGE_BASE_URL = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"
 
 # Cache settings
-CACHE_TTL = 10  # 1 hour in seconds
+CACHE_TTL = 30  # 1 hour in seconds
 
 # Tournament count
 TOURNAMENT_COUNT = 70
