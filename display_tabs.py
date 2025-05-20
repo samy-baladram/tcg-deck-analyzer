@@ -1398,7 +1398,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         set_name: Current deck set
         working_df: DataFrame with matchup data already processed
     """
-    st.write("###### Meta Matchup Distribution")
+    st.write("#### Meta Matchup Distribution")
     
     # Make sure we have performance data to get meta shares
     if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
@@ -1433,15 +1433,29 @@ def display_matchup_summary(deck_name, set_name, working_df):
     total_meta = 100.0  # Assuming meta shares sum to 100%
     unknown_share = total_meta - covered_share
     
-    # Create a 3-column layout
-    col1, col2, col3 = st.columns(3)
+    # Normalize values to sum to 100%
+    if covered_share > 0:  # Avoid division by zero
+        # Calculate normalized values (including unknown)
+        total_with_unknown = favorable_share + even_share + unfavorable_share + unknown_share
+        
+        # Normalize each value
+        favorable_share_norm = (favorable_share / total_with_unknown) * 100
+        even_share_norm = (even_share / total_with_unknown) * 100
+        unfavorable_share_norm = (unfavorable_share / total_with_unknown) * 100
+        unknown_share_norm = (unknown_share / total_with_unknown) * 100
+    else:
+        # If no data, set all to 0 except unknown
+        favorable_share_norm = 0
+        even_share_norm = 0
+        unfavorable_share_norm = 0
+        unknown_share_norm = 100  # All unknown if no data
     
     # Display favorable matchups
     with col1:
         st.markdown(f"""
-        <div style="text-align: center; padding: 10px; background-color: rgba(132, 204, 21, 0.15); border-radius: 8px; height: 100px;">
-            <h4 style="margin: 0; color: #84cc15; font-size: 1.2rem;">Favorable</h4>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; margin: 5px 0;">{favorable_share:.1f}%</div>
+        <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
+            <div style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">Favorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #84cc15; margin: 5px 0;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 0.8rem; color: #666;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1449,9 +1463,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display even matchups
     with col2:
         st.markdown(f"""
-        <div style="text-align: center; padding: 10px; background-color: rgba(253, 197, 0, 0.15); border-radius: 8px; height: 100px;">
-            <h4 style="margin: 0; color: #fdc500; font-size: 1.2rem;">Even</h4>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; margin: 5px 0;">{even_share:.1f}%</div>
+        <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
+            <div style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">Even</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fdc500; margin: 5px 0;">{even_share_norm:.1f}%</div>
             <div style="font-size: 0.8rem; color: #666;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1459,12 +1473,15 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display unfavorable matchups
     with col3:
         st.markdown(f"""
-        <div style="text-align: center; padding: 10px; background-color: rgba(253, 108, 108, 0.15); border-radius: 8px; height: 100px;">
-            <h4 style="margin: 0; color: #fd6c6c; font-size: 1.2rem;">Unfavorable</h4>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; margin: 5px 0;">{unfavorable_share:.1f}%</div>
+        <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
+            <div style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">Unfavorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; margin: 5px 0;">{unfavorable_share_norm:.1f}%</div>
             <div style="font-size: 0.8rem; color: #666;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
+    
+    # Add a more detailed note about the data
+    st.caption(f"This shows how much of the current meta has favorable, even, or unfavorable matchups against your deck. 'Unknown' represents decks without matchup data. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%, Unknown {unknown_share:.1f}%)")
         
 def display_matchup_tab(deck_info=None):
     """
