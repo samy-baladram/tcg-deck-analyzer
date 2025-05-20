@@ -279,9 +279,19 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     collected_data = st.session_state.collected_decks[deck_key]
     all_decks = collected_data['decks']
     
-    # Get the name of the variant Pokemon we're looking for
+    # Get the name of the variant Pokémon we're looking for
     pokemon_name = variant_pokemon['card_name']
-    #st.caption(f"Searching for {pokemon_name}...")
+    
+    # Add some debugging information
+    st.caption(f"Looking for decks with: {pokemon_name}")
+    
+    # DEBUGGING: Print the first few decks to see structure
+    if len(all_decks) > 0:
+        sample_deck = all_decks[0]
+        if 'cards' in sample_deck and sample_deck['cards']:
+            pokemon_cards = [card for card in sample_deck['cards'] 
+                             if card.get('type') == 'Pokemon']
+            st.caption(f"Sample deck has {len(pokemon_cards)} Pokémon cards. First few: {[card.get('card_name') for card in pokemon_cards[:3]]}")
     
     # Variables to track the best deck
     best_deck = None
@@ -290,8 +300,9 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
     
     # Count how many decks contain our variant
     variant_count = 0
+    all_found_variants = []
     
-    # Find the best deck for this variant
+    # Find the best deck for this variant with improved matching
     for deck in all_decks:
         # Skip if we've already shown this deck
         if 'deck_num' not in deck or deck['deck_num'] in shown_deck_nums:
@@ -303,37 +314,66 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
             
         score = 0
         has_our_variant = False
-        other_variant_count = 0
+        deck_variants = []
         
-        # Check cards in this deck
+        # Check cards in this deck - use more flexible matching
         for card in deck['cards']:
-            if 'type' not in card or 'card_name' not in card:
+            if 'type' not in card or card['type'] != 'Pokemon' or 'card_name' not in card:
                 continue
                 
-            if card['type'] == 'Pokemon':
-                if card['card_name'].lower() == pokemon_name.lower():
-                    has_our_variant = True
-                    variant_count += 1
-                    target_variant_count += card.get('amount', 1)  # Count copies
-                elif card['card_name'].lower() in other_variants:
-                    other_variant_count += card.get('amount', 1)  # Count copies
- 
+            card_name = card['card_name']
+            
+            # Try different matching approaches
+            exact_match = card_name == pokemon_name
+            case_insensitive = card_name.lower() == pokemon_name.lower()
+            name_in_card = pokemon_name.lower() in card_name.lower()
+            
+            if exact_match or case_insensitive or name_in_card:
+                has_our_variant = True
+                variant_count += 1
+                score += 5
+                deck_variants.append(f"{card_name} (score +5)")
+                
+                # Track all found variants for debugging
+                all_found_variants.append(card_name)
+            
+            # Check for other variants we want to avoid
+            for other_variant in other_variants:
+                if other_variant in card_name.lower():
+                    score -= 2
+                    deck_variants.append(f"{card_name} (avoid, score -2)")
         
         # Skip if it doesn't contain our variant
         if not has_our_variant:
             continue
-
-        # Improved scoring: prioritize decks with more of our variant and fewer others
-        score = (target_variant_count * 5) - (other_variant_count * 2)
-
+            
         # If this is the best deck so far, remember it
         if score > best_score:
             best_deck = deck
             best_deck_num = deck.get('deck_num', 0)
             best_score = score
     
-    # Show how many decks we found with the variant
-    #st.caption(f"Found {variant_count} decks with {pokemon_name}")
+    # Show debug information
+    st.caption(f"Found {variant_count} decks with {pokemon_name}. All variants found: {list(set(all_found_variants)) if all_found_variants else 'None'}")
+    
+    # If no decks found, try to fix the name
+    if variant_count == 0:
+        # Try alternative name formats (e.g., removing 'ex' suffix)
+        alt_pokemon_name = pokemon_name.lower().replace(' ex', '').replace('-ex', '')
+        st.caption(f"Trying alternative name: {alt_pokemon_name}")
+        
+        # Retry with alternative name
+        for deck in all_decks:
+            if 'cards' in deck and deck['cards']:
+                for card in deck['cards']:
+                    if card.get('type') == 'Pokemon' and 'card_name' in card:
+                        card_name = card['card_name'].lower().replace(' ex', '').replace('-ex', '')
+                        if alt_pokemon_name in card_name:
+                            st.caption(f"Found match with alternative name: {card['card_name']}")
+                            # Use this deck
+                            best_deck = deck
+                            best_deck_num = deck.get('deck_num', 0)
+                            break
     
     # If we found a deck, render it
     if best_deck:
@@ -346,6 +386,11 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
                 pokemon_cards.append(card)
             else:
                 trainer_cards.append(card)
+        
+        # Show which cards in this deck match our target
+        matching_cards = [card for card in pokemon_cards 
+                         if pokemon_name.lower() in card['card_name'].lower()]
+        st.caption(f"Found target cards in deck: {[card['card_name'] for card in matching_cards]}")
         
         # Display energy types if available
         if energy_types:
@@ -366,11 +411,10 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
         return best_deck_num
     else:
         # No suitable deck found
-        #st.info(f"No deck containing {pokemon_name} found in collected data")
+        st.info(f"No deck containing {pokemon_name} found in collected data")
         
         # As a fallback, try to use sample deck
         import cache_manager
-        #st.caption("Trying sample deck as fallback...")
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
         
         if sample_deck:
@@ -388,7 +432,7 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
                 card_width=70
             )
             st.markdown(deck_html, unsafe_allow_html=True)
-            #st.caption("Showing sample deck (variant not found)")
+            st.caption("Showing sample deck (variant not found)")
         
         return None
 
