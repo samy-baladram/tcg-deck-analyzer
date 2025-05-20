@@ -1398,7 +1398,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         set_name: Current deck set
         working_df: DataFrame with matchup data already processed
     """
-    st.write("#### Meta Matchup Distribution")
+    st.write("###### Meta Matchup Distribution")
     
     # Make sure we have performance data to get meta shares
     if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
@@ -1468,9 +1468,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col3:
         st.markdown(f"""
         <div style="text-align: center; padding: 10px; background-color: rgba(255, 255, 255, 0.15); border-radius: 8px; height: 150px;">
-            <div style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">Unfavorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; margin: 5px 0;">{unfavorable_share_norm:.1f}%</div>
-            <div style="font-size: 0.8rem; color: #666;">of meta</div>
+            <div style="font-size: 1.2rem; font-weight: bold; margin: -5px 0;">Unfavorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; margin: -15px 0;">{unfavorable_share_norm:.1f}%</div>
+            <div style="font-size: 1rem; margin: -15px 0;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
