@@ -767,7 +767,7 @@ def display_counter_picker_sidebar():
                     with col2:
                         # Display win rate as a big percentage
                         win_rate = deck['average_win_rate']
-                        win_color = "#84cc15" if win_rate >= 60 else "#fda700" if win_rate < 40 else "#fdc500"
+                        win_color = "#84cc15" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                         st.markdown(f"""
                         <div style="text-align: right; margin-top:0.5em;">
                             <span style="font-size: 1.4rem; width:100%; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
@@ -783,7 +783,7 @@ def display_counter_picker_sidebar():
                         if header_image:
                             st.markdown(f"""
                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 8px;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 90%; height: auto; border-radius: 8px;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
@@ -798,12 +798,12 @@ def display_counter_picker_sidebar():
                     #with col2:
                         # Display deck name with smaller font
                         rank_num = f"#{i+1}"
-                        st.markdown(f"#### {rank_num} {deck['displayed_name']}")
+                        st.markdown(f"##### {rank_num} {deck['displayed_name']}")
                     
                     with col2:
                         # Display win rate as a smaller percentage without "win rate" text
                         win_rate = deck['average_win_rate']
-                        win_color = "#84cc15" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#fdc500"
+                        win_color = "#84cc15" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                         st.markdown(f"""
                         <div style="text-align: right; width:100%; margin-top:0.5em;">
                             <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
