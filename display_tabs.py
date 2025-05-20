@@ -1825,9 +1825,10 @@ def display_counter_picker():
                         # Display the banner image
                         if header_image:
                             st.markdown(f"""
-                            <div style="margin-right: 1rem;style="width: 100%; max-width: 260px;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
+                            <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
                             </div>
+
                             """, unsafe_allow_html=True)
                         else:
                             # Placeholder if no image
@@ -1846,7 +1847,7 @@ def display_counter_picker():
                     with col3:
                         # Display win rate as a big percentage
                         win_rate = deck['average_win_rate']
-                        win_color = "#84cc15" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
+                        win_color = "#84cc15" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
                         st.markdown(f"""
                         <div style="text-align: center;">
                             <span style="font-size: 2.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
@@ -1861,8 +1862,8 @@ def display_counter_picker():
                         # Display smaller banner image
                         if header_image:
                             st.markdown(f"""
-                            <div style="margin-right: 1rem; style="width: 100%; max-width: 260px;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 180px; height: auto; border-radius: 8px;">
+                            <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 75%; height: auto; border-radius: 8px; float: right;">
                             </div>
                             """, unsafe_allow_html=True)
                         else:
