@@ -27,6 +27,14 @@ def init_caches():
         # Load from disk
         st.session_state.known_tournament_ids = cache_utils.load_tournament_ids()
     
+    # Initialize selected deck if not exists
+    if 'selected_deck_index' not in st.session_state:
+        st.session_state.selected_deck_index = None
+        
+    # Initialize deck_to_analyze if not exists
+    if 'deck_to_analyze' not in st.session_state:
+        st.session_state.deck_to_analyze = None
+    
     # Initialize cache timestamps
     if 'fetch_time' not in st.session_state:
         st.session_state.fetch_time = datetime.now()
