@@ -93,7 +93,10 @@ def display_card_usage_tab(results, total_decks, variant_df):
                     with var_col2:
                         # Create variant bar chart with primary energy type
                         fig_var = create_variant_bar_chart(row, primary_energy)
-                        display_chart(fig_var) 
+                        display_chart(fig_var)
+            display_energy_debug_tab(original_deck_info)
+            st.caption("Data of 20 collected decks")
+            st.caption(last_update)                        
     
     with col2:
         st.write("##### Trainer")
