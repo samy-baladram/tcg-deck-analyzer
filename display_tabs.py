@@ -1110,7 +1110,89 @@ def display_energy_debug_tab(deck_info):
                 st.info("No decks found in collected data")
         else:
             st.info("No collected decks found")
-
+def generate_energy_table_html(all_energies, energy_by_deck):
+    """Generate HTML for energy table from collected decks data in two columns"""
+    # Create the overall container with columns
+    table_html = """<div style="margin-top: 15px; display: flex; gap: 20px;">
+        <div style="flex: 1;">"""
+    
+    # First column: Energy by Deck table
+    table_html += """<h6 style="margin-bottom: 10px;">Energy by Deck</h6>
+            <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <th style="text-align: left; padding: 4px; font-size: 1rem;">Deck #</th>"""
+    
+    # Add energy type headers
+    for energy in all_energies:
+        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+        table_html += f'<th style="text-align: center; padding: 4px;"><img src="{energy_url}" alt="{energy}" style="height:20px;"></th>'
+    
+    table_html += "</tr>"
+    
+    # Add a row for each deck
+    for deck_num, energies in sorted(energy_by_deck.items()):
+        table_html += f"""<tr style="border-bottom: 1px solid #eee;"><td style="text-align: left; padding: 4px;">{deck_num}</td>"""
+        
+        # For each possible energy type, check if this deck has it
+        for energy in all_energies:
+            has_energy = energy in energies
+            check_mark = "✓" if has_energy else ""
+            bg_color = "rgba(0, 160, 255, 0.1)" if has_energy else "transparent"
+            
+            table_html += f'<td style="text-align: center; padding: 4px; background-color: {bg_color};">{check_mark}</td>'
+        
+        table_html += "</tr>"
+    
+    # Close the first table and column
+    table_html += """</table></div>"""
+        
+    # Second column: Energy Combinations
+    table_html += """<div style="flex: 1;">"""
+    
+    # Calculate combinations for the second table
+    combo_stats = {}
+    for energies in energy_by_deck.values():
+        combo = tuple(sorted(energies))
+        combo_stats[combo] = combo_stats.get(combo, 0) + 1
+    
+    # Sort combinations by frequency
+    sorted_combos = sorted(combo_stats.items(), key=lambda x: x[1], reverse=True)
+    
+    # Add combo statistics
+    table_html += """<h6 style="margin-bottom: 10px;">Energy Combinations</h6>
+            <table style="width: 100%; font-size: 1rem; margin-top:-15px; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <th style="text-align: left; padding: 4px; font-size: 1rem;">Energy Combination</th>
+                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Count</th>
+                    <th style="text-align: right; padding: 4px; width: 80px; font-size: 1rem;">Percentage</th>
+                </tr>"""
+    
+    total_decks = len(energy_by_deck)
+    
+    for combo, count in sorted_combos:
+        # Generate energy icons
+        energy_html = ""
+        for energy in combo:
+            energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+            energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:3px; vertical-align:middle;">'
+        
+        percentage = (count / total_decks * 100) if total_decks > 0 else 0
+        
+        table_html += f"""<tr style="border-bottom: 1px solid #eee;">
+                    <td style="text-align: left; padding: 4px;">{energy_html}</td>
+                    <td style="text-align: right; padding: 4px;">{count}</td>
+                    <td style="text-align: right; padding: 4px;">{percentage:.1f}%</td>
+                </tr>"""
+    
+    # Close the second table and both divs
+    table_html += """</table>
+        </div>
+    </div>"""
+    
+    return table_html
+    
+    return table_html
+    
 def generate_energy_analysis(deck_info):
     """Generate the energy analysis table for the Card Usage tab"""
     deck_name = deck_info['deck_name']
