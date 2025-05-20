@@ -23,26 +23,28 @@ from config import CACHE_TTL
 
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
-    # Display update indicator if update is running
-    if st.session_state.get('update_running', False):
-        st.sidebar.markdown("🔄 **Updating data in background...**")
+    # Display state in sidebar for debugging
+    update_running = st.session_state.get('update_running', False)
     
-    # Only proceed if not already updating
-    if st.session_state.get('update_running', False):
-        return
-        
-    # Check if data is stale
+    # Show next update time
     if 'performance_fetch_time' in st.session_state:
-        time_since_update = datetime.now() - st.session_state.performance_fetch_time
+        current_time = datetime.now()
+        time_since_update = current_time - st.session_state.performance_fetch_time
+        seconds_remaining = max(0, CACHE_TTL - time_since_update.total_seconds())
+        st.sidebar.text(f"Next update in: {int(seconds_remaining)} seconds")
+    
+    # Only proceed with update if not already updating and data is stale
+    if (not update_running and 
+        'performance_fetch_time' in st.session_state and 
+        (datetime.now() - st.session_state.performance_fetch_time).total_seconds() > CACHE_TTL):
         
-        # Update if older than cache TTL
-        if time_since_update.total_seconds() > CACHE_TTL:
-            # Set flag to prevent multiple updates
-            st.session_state.update_running = True
-            
-            def background_update():
+        with st.sidebar:
+            with st.spinner("Updating data..."):
                 try:
-                    # Update tournament data without spinner
+                    # Set update flag
+                    st.session_state.update_running = True
+                    
+                    # Perform update
                     performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
                     
                     # Update session state
@@ -53,35 +55,19 @@ def check_and_update_tournament_data():
                     card_usage_df = cache_manager.aggregate_card_usage()
                     st.session_state.card_usage_data = card_usage_df
                     
-                    # Set flag for completed update to trigger refresh
-                    st.session_state.update_just_completed = True
+                    # Success message
+                    st.success("✅ Data updated successfully!")
                     
-                    print("Background update completed successfully")
+                    # Trigger page refresh after a brief pause
+                    time.sleep(1)
+                    st.rerun()
+                    
                 except Exception as e:
-                    print(f"Background update error: {e}")
+                    st.error(f"Update error: {str(e)}")
+                    print(f"Update error: {e}")
                 finally:
+                    # Always reset flag
                     st.session_state.update_running = False
-            
-            # Start update in background
-            thread = threading.Thread(target=background_update)
-            thread.daemon = True
-            thread.start()
-            print("Background update started")
-    
-    # Check if we need to refresh the page after update
-    if st.session_state.get('update_just_completed', False):
-        st.session_state.update_just_completed = False
-        # Add JavaScript for delayed refresh
-        st.markdown("""
-        <script>
-        setTimeout(function() {
-            window.location.reload();
-        }, 3000);  // 3 second delay
-        </script>
-        """, unsafe_allow_html=True)
-        
-        # Show a temporary message to user
-        st.sidebar.success("✅ Data updated! Refreshing page...")
             
 # Replace the existing get_energy_types_for_deck function with this one
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
