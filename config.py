@@ -22,6 +22,12 @@ CHART_COLORS = {
     'mixed': '#bbb7bd'       # Medium blue
 }
 
+# Pokemon Exceptions
+POKEMON_EXCEPTIONS = {
+        'oricorio': 'oricorio-pom-pom',
+        'lycanroc': 'lycanroc-midnight'
+    }
+
 # Chart settings
 CHART_MIN_HEIGHT = 350
 CHART_ROW_HEIGHT = 45
