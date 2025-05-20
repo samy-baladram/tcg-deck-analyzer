@@ -1181,7 +1181,7 @@ def generate_energy_table_html(all_energies, energy_by_deck):
         table_html += "</tr>"
     
     # Close the first table and column
-    table_html += """</table></div><br>"""
+    table_html += """</table></div>"""
         
     # Second column: Energy Combinations
     table_html += """<div style="flex: 1;">"""
