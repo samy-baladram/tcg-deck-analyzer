@@ -12,42 +12,13 @@ import background
 import base64
 import os
 
-# Set page title and favicon
-def set_page_config():
-    # Get the absolute path for the favicon
-    favicon_path = os.path.join(os.path.dirname(__file__), "favicon.png")
-    
-    # Check if favicon exists
-    if os.path.exists(favicon_path):
-        # Read and encode favicon
-        with open(favicon_path, "rb") as f:
-            favicon = base64.b64encode(f.read()).decode()
-            
-        # Update the template in index.html
-        index_path = os.path.join(os.path.dirname(__file__), ".streamlit", "index.html")
-        if os.path.exists(index_path):
-            with open(index_path, "r") as f:
-                index_html = f.read()
-                
-            # Replace placeholder with actual favicon
-            index_html = index_html.replace("{favicon}", favicon)
-            
-            # Write back the updated HTML
-            with open(index_path, "w") as f:
-                f.write(index_html)
-            
-            print("Favicon configured successfully")
-        else:
-            print(f"index.html not found at {index_path}")
-    else:
-        print(f"Favicon not found at {favicon_path}")
+# Get absolute path to favicon
+favicon_path = os.path.join(os.path.dirname(__file__), "favicon.png")
 
-# Call the function
-set_page_config()
-
-# Set page title and layout
+# Set page config with favicon path
 st.set_page_config(
-    page_title="Pokémon TCG Pocket Meta Deck Analyzer",
+    page_title="TCG Deck Analyzer", 
+    page_icon=favicon_path,
     layout="wide"
 )
 
