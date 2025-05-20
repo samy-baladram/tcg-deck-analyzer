@@ -749,11 +749,12 @@ def load_collected_decks_metadata(deck_name, set_name):
     
     # Skip if we already have collected decks in session state
     if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        print(f"Using collected decks from session state for {deck_name}")
         return True
     
     # Try to load from disk
     data = cache_utils.load_collected_decks(deck_name, set_name)
-    if data and 'all_energy_types' in data:
+    if data and 'decks' in data and data['decks']:
         # Initialize if needed
         if 'collected_decks' not in st.session_state:
             st.session_state.collected_decks = {}
@@ -765,7 +766,7 @@ def load_collected_decks_metadata(deck_name, set_name):
             'total_decks': data.get('total_decks', 0)
         }
         
-        print(f"Loaded collected deck metadata for {deck_name} from disk")
+        print(f"Loaded collected deck metadata for {deck_name} from disk ({len(data.get('decks', []))} decks)")
         return True
     
     print(f"No collected deck metadata found for {deck_name}")
