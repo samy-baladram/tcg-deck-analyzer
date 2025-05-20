@@ -16,19 +16,26 @@ st.set_page_config(page_title="Pokémon TCG Pocket Meta Deck Analyzer", layout="
 
 # Set favicon
 def add_favicon():
-    # Read favicon file as binary
-    with open("favicon.png", "rb") as f:
-        favicon_data = f.read()
-    
-    # Convert to base64
-    favicon_base64 = base64.b64encode(favicon_data).decode("utf-8")
-    
-    # Create HTML for favicon
-    favicon_html = f'<link rel="shortcut icon" href="data:image/png;base64,{favicon_base64}">'
-    
-    # Inject HTML
-    st.markdown(favicon_html, unsafe_allow_html=True)
-
+    """Add favicon to the Streamlit app"""
+    try:
+        # Read binary data from favicon file
+        with open("favicon.png", "rb") as f:
+            img_data = f.read()
+            
+        # Convert to base64 string
+        b64_encoded = base64.b64encode(img_data).decode()
+        
+        # Add favicon HTML to page
+        st.markdown(
+            f"""
+            <link rel="icon" href="data:image/png;base64,{b64_encoded}">
+            """,
+            unsafe_allow_html=True
+        )
+        print("Favicon added successfully")
+    except Exception as e:
+        print(f"Error adding favicon: {e}")
+        
 # Call the function
 add_favicon()
 
