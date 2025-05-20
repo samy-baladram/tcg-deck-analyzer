@@ -10,6 +10,7 @@ from analyzer import build_deck_template
 from card_renderer import render_deck_section, render_option_section
 from energy_utils import get_archetype_from_deck_name, render_energy_icons
 from config import TOURNAMENT_COUNT, POKEMON_EXCEPTIONS
+import pandas as pd
 
 def display_deck_header(deck_info, results):
     """Display the deck header with image and text that wraps properly"""
