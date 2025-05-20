@@ -144,7 +144,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     """Display the main sample deck and any variant decks containing other Pokémon options"""
     # Check if options is empty or None
     if options is None or options.empty:
-        st.write("### Sample Deck")
+        st.write("#### Sample Deck")
         render_sample_deck(energy_types, is_typical)
         return
     
@@ -153,7 +153,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     
     # If no Pokemon options, just show the sample deck
     if pokemon_options.empty:
-        st.write("### Sample Deck")
+        st.write("#### Sample Deck")
         render_sample_deck(energy_types, is_typical)
         return
     
@@ -167,7 +167,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     
     # If no different Pokemon in options, just show the standard sample deck
     if different_pokemon.empty:
-        st.write("### Sample Deck")
+        st.write("#### Sample Deck")
         render_sample_deck(energy_types, is_typical)
         return
     
@@ -558,7 +558,7 @@ def render_sample_deck(energy_types, is_typical):
 def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options):
     """Display the deck composition section"""
     # Create header
-    st.write("### Deck Composition", unsafe_allow_html=True)
+    st.write("#### Deck Composition", unsafe_allow_html=True)
     if energy_types:
         # Render energy icons for header
         energy_html = ""
@@ -642,7 +642,7 @@ def display_raw_data_tab(results, variant_df):
 
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
-    st.subheader("Tournament Performance Data")
+    st.write("#### Tournament Performance Data")
     import pandas as pd
     import re
     
@@ -813,7 +813,7 @@ def display_metagame_tab():
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
     """Display the Related Decks tab with banner images and simple buttons"""
-    st.subheader("Related Decks")
+    st.write("#### Related Decks")
     
     # Get the current deck name
     current_deck_name = deck_info['deck_name']
@@ -1405,7 +1405,7 @@ def display_matchup_tab(deck_info=None):
             return 'background-color: rgba(255, 255, 100, 0.2)'  # Light yellow
     
     # Display the enhanced data table with all rows
-    st.write("### Matchup Data")
+    st.write("#### Matchup Data")
     
     try:
         # First try with styled dataframe and images
