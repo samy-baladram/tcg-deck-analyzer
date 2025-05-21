@@ -26,17 +26,20 @@ st.set_page_config(
 # Add background from repository
 background.add_app_background()
 
-# In app.py - before using any session state variables
 # Initialize app state tracking and load initial data
 if 'app_state' not in st.session_state:
     st.session_state.app_state = {
         'initial_data_loaded': False
     }
-    
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
+    
+    # Make sure meta-weighted win rate is calculated
+    import cache_manager
+    cache_manager.ensure_meta_weighted_winrate()
+    
     st.session_state.app_state['initial_data_loaded'] = True
 
 # Add this after loading initial data in app.py
