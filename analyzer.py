@@ -18,81 +18,81 @@ from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
 import math
 
-def analyze_recent_performance(raw_performance_data=None):
-    """
-    Analyze the recent performance of popular decks using Wilson Score Interval
-    Can either fetch new data or use provided raw_performance_data
-    """
-    import math
+# def analyze_recent_performance(raw_performance_data=None):
+#     """
+#     Analyze the recent performance of popular decks using Wilson Score Interval
+#     Can either fetch new data or use provided raw_performance_data
+#     """
+#     import math
     
-    if raw_performance_data is None:
-        # Import from scraper if not provided
-        from scraper import get_deck_performance_data
-        raw_performance_data = get_deck_performance_data()
+#     if raw_performance_data is None:
+#         # Import from scraper if not provided
+#         from scraper import get_deck_performance_data
+#         raw_performance_data = get_deck_performance_data()
     
-    # Process the raw data with Wilson Score Interval
-    results = []
+#     # Process the raw data with Wilson Score Interval
+#     results = []
     
-    for deck_data in raw_performance_data:
-        # Extract performance data
-        performance = deck_data['performance']
+#     for deck_data in raw_performance_data:
+#         # Extract performance data
+#         performance = deck_data['performance']
         
-        # Calculate totals
-        total_wins = performance['wins'].sum()
-        total_losses = performance['losses'].sum()
-        total_ties = performance['ties'].sum()
-        tournaments_played = len(performance['tournament_id'])
+#         # Calculate totals
+#         total_wins = performance['wins'].sum()
+#         total_losses = performance['losses'].sum()
+#         total_ties = performance['ties'].sum()
+#         tournaments_played = len(performance['tournament_id'])
         
-        # Calculate total games (including ties)
-        total_games = total_wins + total_losses + total_ties
+#         # Calculate total games (including ties)
+#         total_games = total_wins + total_losses + total_ties
         
-        if total_games > 0:
-            # Handle ties as half-wins (common in card games)
-            adjusted_wins = total_wins + (0.5 * total_ties)
+#         if total_games > 0:
+#             # Handle ties as half-wins (common in card games)
+#             adjusted_wins = total_wins + (0.5 * total_ties)
             
-            # Calculate win proportion
-            win_proportion = adjusted_wins / total_games
+#             # Calculate win proportion
+#             win_proportion = adjusted_wins / total_games
             
-            # Wilson Score Interval parameters
-            z = 1.96  # 95% confidence level
-            z_squared = z * z
+#             # Wilson Score Interval parameters
+#             z = 1.96  # 95% confidence level
+#             z_squared = z * z
             
-            # Calculate Wilson Score lower bound
-            numerator = (win_proportion + (z_squared / (2 * total_games)) - 
-                         z * math.sqrt((win_proportion * (1 - win_proportion) + 
-                                      (z_squared / (4 * total_games))) / total_games))
+#             # Calculate Wilson Score lower bound
+#             numerator = (win_proportion + (z_squared / (2 * total_games)) - 
+#                          z * math.sqrt((win_proportion * (1 - win_proportion) + 
+#                                       (z_squared / (4 * total_games))) / total_games))
             
-            denominator = 1 + (z_squared / total_games)
+#             denominator = 1 + (z_squared / total_games)
             
-            # Wilson Score lower bound (conservative estimate of true win rate)
-            wilson_score = numerator / denominator
+#             # Wilson Score lower bound (conservative estimate of true win rate)
+#             wilson_score = numerator / denominator
             
-            # Scale to make more intuitive (similar range to original power index)
-            # Transforming from 0-1 scale to -5 to +5 scale
-            #(wilson_score - 0.5) * 10
-            power_index = 0
-        else:
-            power_index = 0.0
+#             # Scale to make more intuitive (similar range to original power index)
+#             # Transforming from 0-1 scale to -5 to +5 scale
+#             #(wilson_score - 0.5) * 10
+#             power_index = 0
+#         else:
+#             power_index = 0.0
         
-        results.append({
-            'deck_name': deck_data['deck_name'],
-            'displayed_name': deck_data['displayed_name'],
-            'share': deck_data['share'],
-            'set': deck_data['set'],
-            'total_wins': total_wins,
-            'total_losses': total_losses,
-            'total_ties': total_ties,
-            'tournaments_played': tournaments_played,
-            'power_index': power_index,
-            'win_rate': (total_wins + (0.5 * total_ties)) / total_games if total_games > 0 else 0
-        })
+#         results.append({
+#             'deck_name': deck_data['deck_name'],
+#             'displayed_name': deck_data['displayed_name'],
+#             'share': deck_data['share'],
+#             'set': deck_data['set'],
+#             'total_wins': total_wins,
+#             'total_losses': total_losses,
+#             'total_ties': total_ties,
+#             'tournaments_played': tournaments_played,
+#             'power_index': power_index,
+#             'win_rate': (total_wins + (0.5 * total_ties)) / total_games if total_games > 0 else 0
+#         })
     
-    # Convert to DataFrame and sort
-    results_df = pd.DataFrame(results)
-    if not results_df.empty:
-        results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
+#     # Convert to DataFrame and sort
+#     results_df = pd.DataFrame(results)
+#     if not results_df.empty:
+#         results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
     
-    return results_df
+#     return results_df
     
 # In analyzer.py - Modify analyze_deck function
 # Modify the collect_decks function in analyzer.py to save to disk
