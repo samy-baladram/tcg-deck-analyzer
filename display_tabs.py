@@ -650,10 +650,10 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         
         # Create header with energy types
         archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
-        core_cards_header = f"""##### Common Inclusions ({total_cards} Cards):"""
+        core_cards_header = f"""##### Meta Essentials ({total_cards} Cards):"""
     else:
         # Just "Core Cards" if no energy found
-        core_cards_header = "##### Common Inclusions ({total_cards} Cards):"
+        core_cards_header = "##### Meta Essentials ({total_cards} Cards):"
     
     # Display the header
     st.write(core_cards_header, unsafe_allow_html=True)
