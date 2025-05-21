@@ -14,6 +14,16 @@ TOURNAMENT_COUNT = 70
 # Display settings
 MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
 
+# Meta-weighted win rate configuration
+MWWR_MIN_SHARE = 0.5          # Minimum meta share for inclusion (0.5%)
+MWWR_USE_SQUARED = True        # Whether to use squared meta share in weighting
+MWWR_FORMULA = "Meta-weighted win rate = Σ(win% against deck × deck's meta share²) ÷ Σ(deck's meta share²)"
+MWWR_DESCRIPTION = """
+This score weights each matchup by the square of the opponent's meta share percentage.
+This gives extra importance to matchups against the most common decks, accounting for
+their faster rate of prevalence in the metagame.
+"""
+
 CHART_COLORS = {
     'pokemon_1': '#81D4FA',  # Light blue
     'pokemon_2': '#0288D1',  # Darker blue
