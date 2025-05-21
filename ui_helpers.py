@@ -807,11 +807,13 @@ def display_counter_picker_sidebar():
                         
                         # Create a unique key for each button
                         button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
-                        
-                        # Create a button with the callback setting a switch flag
-                        if st.button(button_label, key=button_key, type="tertiary"):
-                            st.session_state.switch_to_deck = deck['deck_name']
-                            st.rerun()
+                        st.button(
+                            button_label, 
+                            key=button_key,
+                            type="tertiary",
+                            on_click=set_deck_to_analyze,
+                            args=(deck['deck_name'],)
+                        )
                     
                     with col2:
                         # Display win rate as a big percentage
@@ -850,11 +852,13 @@ def display_counter_picker_sidebar():
                         
                         # Create a unique key for each button
                         button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
-                        
-                        # Create a button with the callback setting a switch flag
-                        if st.button(button_label, key=button_key, type="tertiary"):
-                            st.session_state.switch_to_deck = deck['deck_name']
-                            st.rerun()
+                        st.button(
+                            button_label, 
+                            key=button_key,
+                            type="tertiary",
+                            on_click=set_deck_to_analyze,
+                            args=(deck['deck_name'],)
+                        )
                     
                     with col2:
                         # Display win rate as a smaller percentage without "win rate" text
@@ -877,3 +881,8 @@ def display_counter_picker_sidebar():
             st.caption("Higher average win rate indicates better performance against your selected decks. Data is from the current aggregated tournament result in [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
         else:
             st.warning("No counter data found for the selected decks")
+
+def set_deck_to_analyze(deck_name):
+    """Callback function when counter deck button is clicked"""
+    # Set the deck to analyze
+    st.session_state.deck_to_analyze = deck_name
