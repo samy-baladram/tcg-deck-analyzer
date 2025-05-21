@@ -500,7 +500,7 @@ def render_sidebar_from_cache():
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
         # Display counter picker directly (no container)
-        display_counter_picker_sidebar()
+        display_counter_picker()
         st.markdown("""
         <div style="height: 300px;"></div>
         """, unsafe_allow_html=True)  
