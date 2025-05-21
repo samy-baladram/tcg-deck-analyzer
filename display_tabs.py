@@ -719,25 +719,20 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         from card_renderer import render_variant_cards
         from visualizations import create_variant_bar_chart, display_chart
         
-        # Get energy types and primary energy for charts
+        # Add a subtitle for the variants section
+        st.write("##### Card Versions")
+        
+        # Get primary energy for charts
         primary_energy = None
-        if 'analyze' in st.session_state:
-            current_deck_name = st.session_state.analyze.get('deck_name', '')
-            current_set_name = st.session_state.analyze.get('set_name', 'A3')
-            
-            # Try to get energy from deck info directly instead of requesting it again
-            if energy_types and len(energy_types) > 0:
-                primary_energy = energy_types[0]
+        if energy_types and len(energy_types) > 0:
+            primary_energy = energy_types[0]
         
-        # st.write("##### Card Versions")  # UNCOMMENTED THIS LINE
-        
-        # Display variant analysis - without nested columns
-        # Replace it with this corrected code
-        for _, row in variant_df.iterrows():  # Change idx to _
+        # Display variant analysis in a single column layout
+        for i, row in variant_df.iterrows():
             # Create a unique expander key
-            expander_key = f"exp_template_{row['Card Name'].replace(' ', '_')}_{_}"  # Use DataFrame index directly
+            unique_key = f"template_variant_{row['Card Name'].replace(' ', '_')}_{i}"
             
-            with st.expander(f"{row['Card Name']} Versions", expanded=False, key=expander_key):
+            with st.expander(f"{row['Card Name']} Versions", expanded=False, key=unique_key):
                 # Extract set codes and numbers
                 var1 = row['Var1']
                 var2 = row['Var2']
@@ -751,10 +746,10 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
                 st.markdown(variant_html, unsafe_allow_html=True)
                 
-                # Display chart below without columns - with a unique key
+                # Display chart below without columns - with a unique key for the chart
                 fig_var = create_variant_bar_chart(row, primary_energy)
-                variant_key = f"chart_template_{row['Card Name'].replace(' ', '_')}_{_}"  # Use DataFrame index directly
-                display_chart(fig_var, key=variant_key)
+                chart_key = f"chart_template_{row['Card Name'].replace(' ', '_')}_{i}"
+                display_chart(fig_var, key=chart_key)
         
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
