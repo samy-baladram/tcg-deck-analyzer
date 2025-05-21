@@ -29,60 +29,7 @@ if 'app_state' not in st.session_state:
     st.session_state.app_state = {
         'initial_data_loaded': False
     }
-
-def purge_all_caches():
-    """Aggressively purge all caches to force formula recomputation"""
-    import os
-    import shutil
     
-    # 1. Clear all session state variables
-    for key in list(st.session_state.keys()):
-        if key != 'app_state':  # Keep minimal app state
-            del st.session_state[key]
-    
-    # 2. Delete entire cached_data directory
-    cache_dir = "cached_data"
-    if os.path.exists(cache_dir):
-        try:
-            shutil.rmtree(cache_dir)
-            os.makedirs(cache_dir)  # Recreate empty directory
-            print(f"Successfully deleted and recreated {cache_dir}")
-        except Exception as e:
-            print(f"Error deleting cache directory: {e}")
-    
-    # 3. Reset app state to force initialization
-    st.session_state.app_state['initial_data_loaded'] = False
-    
-    # 4. Set flags to force data recomputation
-    st.session_state.update_running = False  # Reset this flag
-    
-    return "All caches purged successfully"
-
-# Admin cache-clearing section - hidden unless query param is used
-import os
-from urllib.parse import parse_qs
-
-st.warning("⚠️ ADMIN MODE: Use with caution!")
-col1, col2 = st.columns([1,3])
-with col1:
-    if st.button("🧹 PURGE ALL CACHES", type="primary"):
-        result = purge_all_caches()
-        st.success(f"{result}. Redirecting...")
-        # Force page reload after purge
-        st.markdown(
-            """
-            <meta http-equiv="refresh" content="2">
-            <script>
-                setTimeout(function() {
-                    window.location.href = window.location.pathname;
-                }, 2000);
-            </script>
-            """,
-            unsafe_allow_html=True
-        )
-with col2:
-    st.info("This will delete ALL cached data and rebuild from scratch. The app will restart.")
-
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
