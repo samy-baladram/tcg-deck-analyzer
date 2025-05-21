@@ -20,32 +20,32 @@ import pathlib
 import streamlit as st
 from cache_utils import CACHE_DIR
 
-# # Print all cache paths for inspection
-# print(f"Application CACHE_DIR: {CACHE_DIR}")
-# print(f"Streamlit cache path: {os.path.join(os.path.expanduser('~'), '.streamlit')}")
-# print(f"Current working directory: {os.getcwd()}")
+# Print all cache paths for inspection
+print(f"Application CACHE_DIR: {CACHE_DIR}")
+print(f"Streamlit cache path: {os.path.join(os.path.expanduser('~'), '.streamlit')}")
+print(f"Current working directory: {os.getcwd()}")
 
-# # List all cache-related files
-# cache_files = []
-# for root, dirs, files in os.walk(CACHE_DIR):
-#     for file in files:
-#         cache_files.append(os.path.join(root, file))
-# print(f"Found {len(cache_files)} cache files:")
-# for file in cache_files[:10]:  # Print first 10 files only
-#     print(f" - {file}")
+# List all cache-related files
+cache_files = []
+for root, dirs, files in os.walk(CACHE_DIR):
+    for file in files:
+        cache_files.append(os.path.join(root, file))
+print(f"Found {len(cache_files)} cache files:")
+for file in cache_files[:10]:  # Print first 10 files only
+    print(f" - {file}")
 
-# # Remove key files - targeted approach
-# key_patterns = ["tournament_performance", "performance", "power_index"]
-# removed_files = []
-# for file in cache_files:
-#     if any(pattern in file.lower() for pattern in key_patterns):
-#         try:
-#             os.remove(file)
-#             removed_files.append(file)
-#         except Exception as e:
-#             print(f"Error removing {file}: {e}")
+# Remove key files - targeted approach
+key_patterns = ["tournament_performance", "performance", "power_index"]
+removed_files = []
+for file in cache_files:
+    if any(pattern in file.lower() for pattern in key_patterns):
+        try:
+            os.remove(file)
+            removed_files.append(file)
+        except Exception as e:
+            print(f"Error removing {file}: {e}")
 
-# print(f"Removed {len(removed_files)} files")
+print(f"Removed {len(removed_files)} files")
 
 # Add background from repository
 background.add_app_background()
