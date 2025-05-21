@@ -1405,7 +1405,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
 def display_matchup_summary(deck_name, set_name, working_df):
     """
     Display a summary of matchup distribution against the meta
-    using squared meta share weighting
+    using standard meta share weighting
     
     Args:
         deck_name: Current deck name
@@ -1419,32 +1419,31 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.info("No matchup data with meta share available.")
         return
     
-    # Get configured weighting method
-    from config import MWWR_USE_SQUARED
+    # Make a copy to avoid modifying the original dataframe
+    analysis_df = working_df.copy()
+    
+    # Ensure meta_share column has valid values
+    if analysis_df['meta_share'].isna().any() or not analysis_df['meta_share'].sum() > 0:
+        print("Warning: Invalid meta_share values found, using direct counts instead")
+        # Count the number of matchups in each category instead
+        analysis_df['meta_share'] = 1  # Assign 1 to each row for counting
     
     # Classify each matchup
-    working_df['matchup_type'] = working_df['win_pct'].apply(
+    analysis_df['matchup_type'] = analysis_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Add squared meta share if using squared formula
-    if MWWR_USE_SQUARED:
-        working_df['weighted_share'] = working_df['meta_share'] ** 2
-    else:
-        working_df['weighted_share'] = working_df['meta_share']
-    
-    # Calculate total weighted share in each category
-    favorable_share = working_df[working_df['matchup_type'] == 'Favorable']['weighted_share'].sum()
-    even_share = working_df[working_df['matchup_type'] == 'Even']['weighted_share'].sum()
-    unfavorable_share = working_df[working_df['matchup_type'] == 'Unfavorable']['weighted_share'].sum()
+    # Calculate total meta share in each category
+    favorable_share = analysis_df[analysis_df['matchup_type'] == 'Favorable']['meta_share'].sum()
+    even_share = analysis_df[analysis_df['matchup_type'] == 'Even']['meta_share'].sum()
+    unfavorable_share = analysis_df[analysis_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
     
     # Calculate total share of just these three categories
     total_known_share = favorable_share + even_share + unfavorable_share
     
-    # Save raw data for caption
-    raw_favorable = working_df[working_df['matchup_type'] == 'Favorable']['meta_share'].sum()
-    raw_even = working_df[working_df['matchup_type'] == 'Even']['meta_share'].sum()
-    raw_unfavorable = working_df[working_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
+    # Debug output
+    print(f"Meta distribution - Favorable: {favorable_share}, Even: {even_share}, Unfavorable: {unfavorable_share}")
+    print(f"Total known share: {total_known_share}")
     
     # Normalize values to sum to 100% (just the three known categories)
     if total_known_share > 0:  # Avoid division by zero
@@ -1491,12 +1490,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
         </div>
         """, unsafe_allow_html=True)
     
-    # Add a more detailed note about the data
+    # Add a detailed note about the data
     st.write("")
-    square_note = "using squared meta share weighting" if MWWR_USE_SQUARED else ""
-    
-    st.caption(f"""This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck {square_note}. 
-Values are normalized to sum to 100%. (Raw meta share percentages: Favorable {raw_favorable:.1f}%, Even {raw_even:.1f}%, Unfavorable {raw_unfavorable:.1f}%)""") 
+    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")
 
 def display_weighted_winrate(deck_name, set_name, working_df):
     """
