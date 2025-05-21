@@ -501,9 +501,9 @@ def render_sidebar_from_cache():
         
         # Display counter picker directly (no container)
         display_counter_picker_sidebar()
-        # Add a divider
-        for _ in range(20):
-            st.write("")   
+        st.markdown("""
+        <div style="height: 300px;"></div>
+        """, unsafe_allow_html=True)  
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
 
