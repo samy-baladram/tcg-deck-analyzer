@@ -50,12 +50,13 @@ def initialize_matchup_cache():
         # Import the necessary modules
         import cache_manager
         import threading
+        from config import MWWR_MIN_SHARE
         
         # Define a background update function
         def update_matchups_background():
             try:
-                # Update matchups for decks with at least 0.5% meta share
-                updated_count = cache_manager.update_matchup_cache(min_share=0.5)
+                # Update matchups for decks with at least min_share meta share
+                updated_count = cache_manager.update_matchup_cache(min_share=MWWR_MIN_SHARE)
                 print(f"Updated matchups for {updated_count} decks in background")
             except Exception as e:
                 print(f"Error updating matchups in background: {e}")
