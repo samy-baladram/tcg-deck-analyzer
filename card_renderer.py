@@ -204,7 +204,7 @@ class CardRenderer:
         var2_url = f"{CardConfig.IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" if var2_set and formatted_num2 else ""
         
         # Create HTML for variant comparison
-        # variant_html = f"""<div style="height:170px; display:flex; flex-direction:row; justify-content:space-between; margin-top:-10px; margin-bottom:-20px">
+        # variant_html = f"""<div style="height:170px; display:flex; flex-direction:row; justify-content:space-between; margin-top:-10px;">
         #     <!-- Variant 1 -->
         #     <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
         #         <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
