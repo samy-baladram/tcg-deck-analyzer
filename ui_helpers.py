@@ -441,7 +441,10 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
 def render_sidebar_from_cache():
     # Call update check function for background updates
     check_and_update_tournament_data()
-    
+
+    from datetime import datetime
+    current_month_year = datetime.now().strftime("%B %Y")
+ 
     # Load and encode the banner image if it exists
     banner_path = "sidebar_banner.png"
     if os.path.exists(banner_path):
@@ -469,10 +472,6 @@ def render_sidebar_from_cache():
         # Ensure energy cache is initialized
         import cache_manager
         cache_manager.ensure_energy_cache()
-        
-        # Get current month and year for display
-        from datetime import datetime
-        current_month_year = datetime.now().strftime("%B %Y")
         
         # Display performance data if it exists
         if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
