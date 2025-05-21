@@ -20,6 +20,46 @@ import pathlib
 import streamlit as st
 from cache_utils import CACHE_DIR
 
+# Force cache refresh - place at the very top of app.py
+import os
+import shutil
+import streamlit as st
+from datetime import datetime
+from cache_utils import CACHE_DIR
+
+# Debug controls
+with st.sidebar:
+    st.markdown("### Developer Controls")
+    if st.button("🧹 Clear Cache"):
+        try:
+            # Clear cache files
+            if os.path.exists(CACHE_DIR):
+                for item in os.listdir(CACHE_DIR):
+                    item_path = os.path.join(CACHE_DIR, item)
+                    if os.path.isfile(item_path):
+                        os.unlink(item_path)
+                    elif os.path.isdir(item_path):
+                        shutil.rmtree(item_path)
+            
+            # Clear relevant session state
+            keys_to_clear = [
+                'performance_data', 
+                'performance_fetch_time',
+                'card_usage_data', 
+                'analyzed_deck_cache',
+                'energy_cache',
+                'collected_decks'
+            ]
+            
+            for key in keys_to_clear:
+                if key in st.session_state:
+                    del st.session_state[key]
+                    
+            st.success("Cache cleared! Refreshing...")
+            st.rerun()
+        except Exception as e:
+            st.error(f"Error clearing cache: {e}")
+
 # Add background from repository
 background.add_app_background()
 
