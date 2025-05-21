@@ -865,11 +865,17 @@ def display_metagame_tab():
     )
 
     # Add a small footnote about data source and formula
+    # Add a small footnote about data source and formula
     from datetime import datetime
-    from config import MWWR_USE_SQUARED, TOURNAMENT_COUNT
+    from config import MWWR_USE_SQUARED, MWWR_DEVIATION_BASED, TOURNAMENT_COUNT
     current_month_year = datetime.now().strftime("%B %Y")
     
-    formula_note = "using squared meta share weighting" if MWWR_USE_SQUARED else ""
+    formula_note = ""
+    if MWWR_DEVIATION_BASED:
+        formula_note = "using deviation-based scoring"
+    elif MWWR_USE_SQUARED:
+        formula_note = "using squared meta share weighting"
+    
     st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG. Meta-Weighted Win Rate {formula_note} prioritizes performance against popular decks.")
 
     
