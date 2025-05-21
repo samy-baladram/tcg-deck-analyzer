@@ -844,8 +844,8 @@ def display_metagame_tab():
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
     
     # Add Pokémon image columns
-    final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
-    final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
+    #final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
+    #final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
     
     # Display dataframe with column configuration
     st.dataframe(
