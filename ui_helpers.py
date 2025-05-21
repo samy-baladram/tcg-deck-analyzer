@@ -17,6 +17,8 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # Add this at the top level (outside any function) in ui_helpers.py
 # Add this at the top level of ui_helpers.py
+# In ui_helpers.py - Modify check_and_update_tournament_data function
+
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
     # Import necessary modules
@@ -43,6 +45,10 @@ def check_and_update_tournament_data():
                 try:
                     # Update tournament data without spinner
                     performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+                    
+                    # Ensure meta-weighted win rate is calculated
+                    if 'meta_weighted_winrate' not in performance_df.columns:
+                        performance_df = cache_manager.calculate_all_meta_weighted_winrates()
                     
                     # Update session state
                     st.session_state.performance_data = performance_df
