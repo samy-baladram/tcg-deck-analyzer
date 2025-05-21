@@ -30,6 +30,36 @@ if 'app_state' not in st.session_state:
         'initial_data_loaded': False
     }
 
+def clear_all_caches():
+    """Force clear all caches to ensure formula changes take effect"""
+    # Clear session state cache
+    if 'performance_data' in st.session_state:
+        del st.session_state['performance_data']
+    if 'analyzed_deck_cache' in st.session_state:
+        st.session_state['analyzed_deck_cache'] = {}
+        
+    # Force disk cache to be recreated
+    import os
+    from cache_utils import TOURNAMENT_DATA_PATH
+    if os.path.exists(TOURNAMENT_DATA_PATH):
+        os.remove(TOURNAMENT_DATA_PATH)
+    
+    # Mark cache as expired
+    import datetime
+    st.session_state.performance_fetch_time = datetime.datetime.now() - datetime.timedelta(days=1)
+    
+    # Set flag to force update
+    st.session_state.update_running = True
+
+# Add to app.py near beginning of main code
+if st.sidebar.button("Rebuild Performance Data"):
+    clear_all_caches()
+    with st.spinner("Rebuilding performance data with new formula..."):
+        # Force refresh
+        perf_data = cache_manager.load_or_update_tournament_data(force_update=True)
+        st.success("Performance data rebuilt")
+        st.rerun()
+        
 # if 'disable_background' not in st.session_state:
 #     st.session_state.disable_background = True
 #     st.session_state.update_running = False  # This should prevent new bg threads
