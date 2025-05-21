@@ -1716,26 +1716,29 @@ def display_counter_picker():
             if matchups.empty:
                 continue
             
-            # Calculate average win rate against selected decks
-            avg_win_rate = 0
-            matched_decks = 0
-            
-            # Convert from displayed names to internal deck names for matching
-            selected_internal_names = []
-            for displayed in selected_decks:
-                for _, meta_deck in st.session_state.performance_data.iterrows():
-                    if meta_deck['displayed_name'] == displayed:
-                        selected_internal_names.append(meta_deck['deck_name'])
+            # Initialize variables for weighted average calculation
+            total_weighted_win_rate = 0
+            total_matches = 0
             
             # Look for matchups against selected decks
             for _, matchup in matchups.iterrows():
                 if matchup['opponent_deck_name'] in selected_internal_names:
-                    avg_win_rate += matchup['win_pct']
+                    # Get the number of matches for this matchup
+                    match_count = matchup['matches_played']
+                    
+                    # Add to weighted sum (win percentage × number of matches)
+                    total_weighted_win_rate += matchup['win_pct'] * match_count
+                    
+                    # Add to total matches count
+                    total_matches += match_count
+                    
+                    # Still track number of matched decks for filtering
                     matched_decks += 1
             
             # Only include if we found matchups against at least half the selected decks
             if matched_decks >= len(selected_decks) / 2:
-                avg_win_rate = avg_win_rate / matched_decks if matched_decks > 0 else 0
+                # Calculate weighted average: total weighted sum divided by total matches
+                avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
                 
                 counter_data.append({
                     'deck_name': deck_name,
