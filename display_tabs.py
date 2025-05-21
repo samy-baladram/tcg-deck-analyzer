@@ -1738,7 +1738,7 @@ def display_counter_picker():
             # Only include if we found matchups against at least half the selected decks
             if matched_decks >= len(selected_decks) / 2:
                 # Calculate weighted average: total weighted sum divided by total matches
-                avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
+                avg_win_rate = 0.1 #total_weighted_win_rate / total_matches if total_matches > 0 else 0
                 
                 counter_data.append({
                     'deck_name': deck_name,
