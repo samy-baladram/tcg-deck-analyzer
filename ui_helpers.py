@@ -386,6 +386,8 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
         
+# In ui_helpers.py - Modify render_sidebar_from_cache function
+
 def render_sidebar_from_cache():
     """Render the sidebar using cached data instead of fetching new data"""
     # Call update check function for background updates
@@ -414,8 +416,18 @@ def render_sidebar_from_cache():
     
     # Display performance data if it exists
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Make sure meta_weighted_winrate is calculated
+        if 'meta_weighted_winrate' not in st.session_state.performance_data.columns:
+            performance_data = cache_manager.calculate_all_meta_weighted_winrates()
+        else:
+            performance_data = st.session_state.performance_data
+        
+        # Sort by meta_weighted_winrate instead of power_index
+        if 'meta_weighted_winrate' in performance_data.columns:
+            performance_data = performance_data.sort_values('meta_weighted_winrate', ascending=False)
+        
         # Get the top 10 performing decks
-        top_decks = st.session_state.performance_data.head(10)
+        top_decks = performance_data.head(10)
         
         # Render each deck one by one, passing the rank (index + 1)
         for idx, deck in top_decks.iterrows():
@@ -437,33 +449,29 @@ def render_sidebar_from_cache():
         
         # Add expandable methodology section
         st.write("")
-        with st.expander("🔍 About the Power Index"):
+        with st.expander("🔍 About the Meta-Weighted Win Rate"):
             st.markdown(f"""
-            #### Power Index: How We Rank the Best Decks
+            #### Meta-Weighted Win Rate: How We Rank the Best Decks
             
             **Where the Data Comes From**  
-            Our Power Index uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in the most recent competitive play, not just how popular they are.
+            Our Meta-Weighted Win Rate uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform against the current metagame.
             
-            **What the Power Index Measures**  
-            The Power Index is calculated as:
-            """)
+            **What the Meta-Weighted Win Rate Measures**  
+            This score is calculated by weighting each deck's win rate against different opponents by those opponents' meta share. This means:
             
-            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
-            
-            st.markdown("""
-            This formula captures three key things:
-            * How many more wins than losses a deck achieves
-            * The value of ties (counted as 75% of a win)
-            * Statistical confidence (more games = more reliable data)
+            * Matchups against popular decks count more toward the final score
+            * Wins against common decks are more valuable than wins against rare decks
+            * The score represents expected performance in the current meta
             
             **Why It's Better Than Other Methods**
-            * **Better than Win Rate**: Accounts for both winning and avoiding losses
-            * **Better than Popularity**: Measures actual performance, not just what people choose to play
-            * **Better than Record Alone**: Balances impressive results against sample size
+            * **Better than Win Rate**: Accounts for who you're actually beating
+            * **Better than Power Index**: Directly measures performance against the current metagame
+            * **Better than Meta Share**: Shows actual effectiveness, not just popularity
             
             **Reading the Numbers**
-            * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
-            * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
+            * **Higher is Better**: The higher the Meta-Weighted Win Rate, the stronger the deck is against the current metagame
+            * **Above 50%**: Expected to perform well in the meta
+            * **Below 50%**: May struggle against common decks
             """)
         # Add a divider
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
