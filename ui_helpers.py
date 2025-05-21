@@ -409,22 +409,36 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             st.markdown(deck_html, unsafe_allow_html=True)
             
             # Display meta-weighted win rate as a caption
-            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] > 0:
-                # Determine color based on win rate
+            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] != 0:
+                # Get configuration
+                from config import MWWR_DEVIATION_BASED
+                
+                # Get the value
                 win_rate = deck['meta_weighted_winrate']
-                win_color = "#4FCC20" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fd9a00"
+                
+                # Format differently based on formula type
+                if MWWR_DEVIATION_BASED:
+                    # For deviation-based, show sign explicitly
+                    sign = "+" if win_rate > 0 else ""
+                    # Determine color based on value (positive is good, negative is bad)
+                    win_color = "#4FCC20" if win_rate >= 10 else "#fd6c6c" if win_rate < 0 else "#fd9a00"
+                    formatted_value = f"{sign}{win_rate:.1f}"
+                else:
+                    # For percentage-based, format as percentage
+                    win_color = "#4FCC20" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fd9a00"
+                    formatted_value = f"{win_rate:.1f}%"
                 
                 # Create a styled caption with the win rate
                 st.markdown(f"""
                 <div style="text-align: center; margin-top: 5px;">
                     <span style="font-weight: bold; color: {win_color};">
-                        {win_rate:.1f}% Meta-Weighted Win Rate
+                        {formatted_value} Meta-Weighted Score
                     </span>
                 </div>
                 """, unsafe_allow_html=True)
             else:
                 # Show power index as fallback if no meta-weighted win rate
-                st.caption(f"Power Index: {deck['power_index']:.2f}")
+                st.caption("")
             
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
@@ -498,13 +512,24 @@ def render_sidebar_from_cache():
         """, unsafe_allow_html=True)
         
         # Add expandable methodology section
+        # Add expandable methodology section
         st.write("")
         with st.expander("🔍 About the Meta-Weighted Win Rate"):
-            from config import MWWR_FORMULA, MWWR_DESCRIPTION, MWWR_USE_SQUARED
+            from config import (
+                MWWR_FORMULA_STANDARD, MWWR_FORMULA_DEVIATION, 
+                MWWR_DESCRIPTION_STANDARD, MWWR_DESCRIPTION_DEVIATION,
+                MWWR_USE_SQUARED, MWWR_DEVIATION_BASED
+            )
             
-            formula_display = MWWR_FORMULA
-            if MWWR_USE_SQUARED:
-                formula_display = formula_display.replace("meta share", "meta share²")
+            # Choose the appropriate formula and description based on config
+            if MWWR_DEVIATION_BASED:
+                formula_display = MWWR_FORMULA_DEVIATION
+                description = MWWR_DESCRIPTION_DEVIATION
+            else:
+                formula_display = MWWR_FORMULA_STANDARD
+                if MWWR_USE_SQUARED:
+                    formula_display = formula_display.replace("meta share", "meta share²")
+                description = MWWR_DESCRIPTION_STANDARD
             
             st.markdown(f"""
             #### Meta-Weighted Win Rate: How We Rank the Best Decks
@@ -515,7 +540,7 @@ def render_sidebar_from_cache():
             **What the Meta-Weighted Win Rate Measures**  
             {formula_display}
             
-            {MWWR_DESCRIPTION}
+            {description}
             
             **Why It's Better Than Other Methods**
             * **Better than Win Rate**: Accounts for who you're actually beating
@@ -524,8 +549,8 @@ def render_sidebar_from_cache():
             
             **Reading the Numbers**
             * **Higher is Better**: The higher the Meta-Weighted Win Rate, the stronger the deck is against the current metagame
-            * **Above 50%**: Expected to perform well in the meta
-            * **Below 50%**: May struggle against common decks
+            * **Above 0**: Expected to perform well in the meta
+            * **Below 0**: May struggle against common decks
             """)
         # Add a divider
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
