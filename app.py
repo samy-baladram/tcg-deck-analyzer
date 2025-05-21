@@ -62,31 +62,26 @@ def purge_all_caches():
 import os
 from urllib.parse import parse_qs
 
-# Check for admin mode in query parameters
-query_params = st.query_params
-admin_mode = 'admin' in query_params and query_params['admin'][0] == 'true'
-
-if admin_mode:
-    st.warning("⚠️ ADMIN MODE: Use with caution!")
-    col1, col2 = st.columns([1,3])
-    with col1:
-        if st.button("🧹 PURGE ALL CACHES", type="primary"):
-            result = purge_all_caches()
-            st.success(f"{result}. Redirecting...")
-            # Force page reload after purge
-            st.markdown(
-                """
-                <meta http-equiv="refresh" content="2">
-                <script>
-                    setTimeout(function() {
-                        window.location.href = window.location.pathname;
-                    }, 2000);
-                </script>
-                """,
-                unsafe_allow_html=True
-            )
-    with col2:
-        st.info("This will delete ALL cached data and rebuild from scratch. The app will restart.")
+st.warning("⚠️ ADMIN MODE: Use with caution!")
+col1, col2 = st.columns([1,3])
+with col1:
+    if st.button("🧹 PURGE ALL CACHES", type="primary"):
+        result = purge_all_caches()
+        st.success(f"{result}. Redirecting...")
+        # Force page reload after purge
+        st.markdown(
+            """
+            <meta http-equiv="refresh" content="2">
+            <script>
+                setTimeout(function() {
+                    window.location.href = window.location.pathname;
+                }, 2000);
+            </script>
+            """,
+            unsafe_allow_html=True
+        )
+with col2:
+    st.info("This will delete ALL cached data and rebuild from scratch. The app will restart.")
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
