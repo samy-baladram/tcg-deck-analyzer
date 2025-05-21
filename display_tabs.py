@@ -699,45 +699,6 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 pokemon_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
                 pokemon_options_grid.display()
-                
-                # Add variant expanders if we have variant data
-                if variant_df is not None and not variant_df.empty:
-                    # Import variant renderer
-                    from card_renderer import render_variant_cards
-                    from visualizations import create_variant_bar_chart, display_chart
-                    
-                    # Get energy types and primary energy for charts
-                    primary_energy = None
-                    if 'analyze' in st.session_state:
-                        current_deck_name = st.session_state.analyze.get('deck_name', '')
-                        current_set_name = st.session_state.analyze.get('set_name', 'A3')
-                        
-                        # Try to get energy from deck info directly instead of requesting it again
-                        if energy_types and len(energy_types) > 0:
-                            primary_energy = energy_types[0]
-                    
-                    #st.write("##### Card Versions")
-                    
-                    # Display variant analysis - without nested columns
-                    for idx, row in variant_df.iterrows():
-                        with st.expander(f"{row['Card Name']} Details", expanded=False):
-                            # Extract set codes and numbers
-                            var1 = row['Var1']
-                            var2 = row['Var2']
-                            
-                            var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
-                            var1_num = var1.split('-')[-1]         # Just the last part
-                            var2_set = '-'.join(var2.split('-')[:-1])
-                            var2_num = var2.split('-')[-1]
-                            
-                            # Display variants side by side with inline HTML
-                            variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                            st.markdown(variant_html, unsafe_allow_html=True)
-                            
-                            # Display chart below without columns - with a unique key
-                            fig_var = create_variant_bar_chart(row, primary_energy)
-                            variant_key = f"template_variant_{row['Card Name'].replace(' ', '_')}_{idx}"  # Use idx from enumerate
-                            display_chart(fig_var, key=variant_key)
         
         with flex_col2:
             # Only show Trainer options if there are any
@@ -746,9 +707,50 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 trainer_options_grid.add_cards_from_dataframe(trainer_options)
                 trainer_options_grid.display()
+        
         st.caption("Percentages show how often each card appears in top competitive decks. Higher values indicate more popular choices for your remaining slots.")
     else:
         st.info("No remaining slots available for this deck.")
+    
+    # IMPORTANT CHANGE: Move variant expanders outside the columns to ensure proper rendering
+    # Add variant expanders if we have variant data - MOVED OUTSIDE OF COLUMNS
+    if variant_df is not None and not variant_df.empty:
+        # Import variant renderer
+        from card_renderer import render_variant_cards
+        from visualizations import create_variant_bar_chart, display_chart
+        
+        # Get energy types and primary energy for charts
+        primary_energy = None
+        if 'analyze' in st.session_state:
+            current_deck_name = st.session_state.analyze.get('deck_name', '')
+            current_set_name = st.session_state.analyze.get('set_name', 'A3')
+            
+            # Try to get energy from deck info directly instead of requesting it again
+            if energy_types and len(energy_types) > 0:
+                primary_energy = energy_types[0]
+        
+        # st.write("##### Card Versions")  # UNCOMMENTED THIS LINE
+        
+        # Display variant analysis - without nested columns
+        for idx, row in variant_df.iterrows():
+            with st.expander(f"{row['Card Name']} Versions", expanded=False):  # CHANGED "Details" to "Versions" for consistency
+                # Extract set codes and numbers
+                var1 = row['Var1']
+                var2 = row['Var2']
+                
+                var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
+                var1_num = var1.split('-')[-1]         # Just the last part
+                var2_set = '-'.join(var2.split('-')[:-1])
+                var2_num = var2.split('-')[-1]
+                
+                # Display variants side by side with inline HTML
+                variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                st.markdown(variant_html, unsafe_allow_html=True)
+                
+                # Display chart below without columns - with a unique key
+                fig_var = create_variant_bar_chart(row, primary_energy)
+                variant_key = f"template_variant_{row['Card Name'].replace(' ', '_')}_{idx}"
+                display_chart(fig_var, key=variant_key)
         
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
