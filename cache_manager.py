@@ -797,3 +797,48 @@ def load_collected_decks_metadata(deck_name, set_name):
     
     print(f"No collected deck metadata found for {deck_name}")
     return False
+
+# Add this function to cache_manager.py
+def get_or_fetch_matchup_data(deck_name, set_name, force_update=False):
+    """
+    Get matchup data from cache or fetch if needed
+    
+    Args:
+        deck_name: Name of the deck
+        set_name: Set code (e.g., "A3")
+        force_update: Whether to force a fresh fetch
+        
+    Returns:
+        DataFrame with matchup data
+    """
+    # Check if we have this in session cache first
+    session_key = f"matchup_{deck_name}_{set_name}"
+    if not force_update and session_key in st.session_state:
+        return st.session_state[session_key]
+    
+    # Try to load from disk cache
+    import cache_utils
+    matchup_df, timestamp = cache_utils.load_matchup_data(deck_name, set_name)
+    
+    if matchup_df is not None and not force_update:
+        # Store in session cache
+        st.session_state[session_key] = matchup_df
+        return matchup_df
+    
+    # If not in cache or force update, fetch from web
+    from display_tabs import fetch_matchup_data
+    matchup_df = fetch_matchup_data(deck_name, set_name)
+    
+    if not matchup_df.empty:
+        # Save to disk cache
+        cache_utils.save_matchup_data(deck_name, set_name, matchup_df)
+        
+        # Store in session cache
+        st.session_state[session_key] = matchup_df
+    
+    return matchup_df
+
+def update_matchup_cache(min_share=0.5):
+    """Update matchup cache for all decks with at least min_share"""
+    import cache_utils
+    return cache_utils.update_all_matchups(min_share)
