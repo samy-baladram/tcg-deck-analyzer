@@ -596,6 +596,16 @@ def display_counter_picker_sidebar():
         st.warning("No meta deck data available")
         return
     
+    # Check if we should switch to a selected deck
+    if 'switch_to_deck' in st.session_state:
+        deck_name = st.session_state.switch_to_deck
+        # Clear the flag
+        del st.session_state['switch_to_deck']
+        # Set the deck for analysis - this uses create_deck_selector's logic
+        st.session_state.deck_to_analyze = deck_name
+        # Force a rerun
+        st.rerun()
+    
     # Multi-select for decks to counter
     selected_decks = st.multiselect(
         "Select decks you want to counter:",
@@ -603,7 +613,7 @@ def display_counter_picker_sidebar():
         default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
         help="Choose the decks you want to counter in the meta"
     )
-    #st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)  # Exactly 50px space
+    
     # Button to trigger analysis
     find_button = st.button("Find Counters", type="secondary", use_container_width=True)
     
@@ -717,9 +727,6 @@ def display_counter_picker_sidebar():
                 elif counter_df[col].dtype == 'float64':
                     counter_df[col] = counter_df[col].astype(float)
             
-            # Display results
-            #st.subheader("Best Counter Decks")
-            
             # Display top 5 counter decks with images and metrics
             st.write("#### Top Counters to Selected Decks")
             
@@ -784,7 +791,6 @@ def display_counter_picker_sidebar():
                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: left;">
                                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
                             </div>
-
                             """, unsafe_allow_html=True)
                         else:
                             # Placeholder if no image
@@ -794,21 +800,17 @@ def display_counter_picker_sidebar():
                                 <span style="color: #888;">No image</span>
                             </div>
                             """, unsafe_allow_html=True)
-                    
-                    #with col2:
-                        # Display deck name with ranking
+                        
+                        # MODIFIED: Replace text with button, using callback method
                         rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
-                        #st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
                         button_label = f"{rank_emoji} {deck['displayed_name']}"
-                
+                        
                         # Create a unique key for each button
                         button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
                         
-                        # Create the button that will select this deck in the dropdown
+                        # Create a button with the callback setting a switch flag
                         if st.button(button_label, key=button_key, type="tertiary"):
-                            # Set this deck for analysis
-                            st.session_state.deck_to_analyze = deck['deck_name']
-                            # Force rerun to update the UI
+                            st.session_state.switch_to_deck = deck['deck_name']
                             st.rerun()
                     
                     with col2:
@@ -841,21 +843,17 @@ def display_counter_picker_sidebar():
                                 <span style="color: #888; font-size: 0.9rem;">No image</span>
                             </div>
                             """, unsafe_allow_html=True)
-                    
-                    #with col2:
-                        # Display deck name with smaller font
+                        
+                        # MODIFIED: Replace text with button
                         rank_num = f"#{i+1}"
-                        #st.markdown(f"##### {rank_num} {deck['displayed_name']}")
                         button_label = f"{rank_num} {deck['displayed_name']}"
-                
+                        
                         # Create a unique key for each button
                         button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
                         
-                        # Create the button that will select this deck in the dropdown
+                        # Create a button with the callback setting a switch flag
                         if st.button(button_label, key=button_key, type="tertiary"):
-                            # Set this deck for analysis
-                            st.session_state.deck_to_analyze = deck['deck_name']
-                            # Force rerun to update the UI
+                            st.session_state.switch_to_deck = deck['deck_name']
                             st.rerun()
                     
                     with col2:
