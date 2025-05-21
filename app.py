@@ -33,6 +33,14 @@ if 'app_state' not in st.session_state:
         'initial_data_loaded': False
     }
     
+# Add this check after state initialization but before UI rendering
+if 'switch_to_deck' in st.session_state:
+    deck_name = st.session_state.switch_to_deck
+    # Clear the flag
+    del st.session_state['switch_to_deck']
+    # Set the deck to analyze
+    st.session_state.deck_to_analyze = deck_name
+    # Let the normal flow handle the rest
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
