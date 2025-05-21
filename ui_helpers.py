@@ -498,6 +498,8 @@ def render_sidebar_from_cache():
             st.markdown(formatted_explanation)
         
         # Add a divider
+        for _ in range(20):
+            st.write("")
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
         # Display counter picker directly (no container)
