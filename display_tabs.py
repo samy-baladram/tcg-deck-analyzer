@@ -718,8 +718,8 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                     
                     st.write("##### Card Variants")
                     
-                    # Display variant analysis
-                    for _, row in variant_df.iterrows():
+                    # Display variant analysis - without nested columns
+                    for idx, row in variant_df.iterrows():
                         with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
                             # Extract set codes and numbers
                             var1 = row['Var1']
@@ -730,20 +730,14 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                             var2_set = '-'.join(var2.split('-')[:-1])
                             var2_num = var2.split('-')[-1]
                             
-                            # Create the 2-column layout
-                            var_col1, var_col2 = st.columns([2, 5])
+                            # Display variants side by side with inline HTML
+                            variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                            st.markdown(variant_html, unsafe_allow_html=True)
                             
-                            # Column 1: Both Variants side by side
-                            with var_col1:
-                                variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
-                                st.markdown(variant_html, unsafe_allow_html=True)
-                            
-                            # Column 2: Bar Chart
-                            with var_col2:
-                                # Create variant bar chart with primary energy type
-                                fig_var = create_variant_bar_chart(row, primary_energy)
-                                variant_key = f"template_variant_{row['Card Name'].replace(' ', '_')}_{_}"
-                                display_chart(fig_var, key=variant_key)
+                            # Display chart below without columns - with a unique key
+                            fig_var = create_variant_bar_chart(row, primary_energy)
+                            variant_key = f"template_variant_{row['Card Name'].replace(' ', '_')}_{idx}"  # Use idx from enumerate
+                            display_chart(fig_var, key=variant_key)
         
         with flex_col2:
             # Only show Trainer options if there are any
