@@ -69,34 +69,71 @@ CATEGORY_LABELS = ['Tech', 'Standard', 'Core']
 FLEXIBLE_CORE_THRESHOLD = 25
 
 # Text for sidebar
+# POWER_INDEX_EXPLANATION = """
+# #### Power Index: How We Rank the Best Decks
+
+# **Data Source and Limitations**  
+# The Power Index uses recent tournament data from [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed), specifically the most recent {tournament_count} tournaments. This provides a rolling window of competitive results that adapts as the metagame evolves. Note that this data only includes reported "Best Finish" results, which may represent a subset of all matches played.
+
+# **Formula and Methodology**  
+# The Power Index is calculated as:
+
+# Power Index = (Wins - Losses) / √(Wins + Losses)
+
+# This formula balances three critical factors:
+# * Win-loss differential (raw performance)
+# * Sample size (statistical confidence)
+# * Recent metagame context (using latest tournament data)
+
+# **Advantages Over Alternative Metrics**
+# * **More robust than Win Rate**: Differentiates between decks with small sample sizes and those with proven consistency
+# * **More dynamic than Popularity**: Measures actual competitive performance rather than just prevalence in the meta
+# * **More normalized than Raw Record**: A 20-5 record and a 40-10 record would have different win rates but similar Power Index values, properly accounting for confidence
+
+# **Interpretation Guide**
+# * **Positive values**: Indicate winning records (higher values = stronger performance)
+# * **Negative values**: Indicate losing records (generally filtered from top displays)
+# * **Magnitude**: Values typically range from -3 to +3, with top-tier decks usually above 1.0
+
+# **Important Caveats**
+# * The metric is sensitive to metagame shifts and tournament representation
+# * Limited by the quantity of available tournament data
+# * Best used as one factor in deck selection alongside matchup analysis and personal play style considerations
+# """
+
 POWER_INDEX_EXPLANATION = """
-#### Power Index: How We Rank the Best Decks
+#### Power Index: Statistical Ranking of Meta Decks
 
-**Data Source and Limitations**  
-The Power Index uses recent tournament data from [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed), specifically the most recent {tournament_count} tournaments. This provides a rolling window of competitive results that adapts as the metagame evolves. Note that this data only includes reported "Best Finish" results, which may represent a subset of all matches played.
+**Data Source and Methodology**  
+The Power Index analyzes performance data from the {tournament_count} most recent tournaments on Limitless TCG, using a statistical approach called the Wilson Score Interval.
 
-**Formula and Methodology**  
-The Power Index is calculated as:
+**Technical Formula**
+Lower bound of 95% confidence interval for win rate, where:
 
-Power Index = (Wins - Losses) / √(Wins + Losses)
+p = (wins + 0.5*ties)/(total games)
+z = 1.96 (95% confidence level)
 
-This formula balances three critical factors:
-* Win-loss differential (raw performance)
-* Sample size (statistical confidence)
-* Recent metagame context (using latest tournament data)
+Power Index = [(p + z²/(2n) - z√(p(1-p)/n + z²/(4n²)))/(1 + z²/n) - 0.5] * 10
 
-**Advantages Over Alternative Metrics**
-* **More robust than Win Rate**: Differentiates between decks with small sample sizes and those with proven consistency
-* **More dynamic than Popularity**: Measures actual competitive performance rather than just prevalence in the meta
-* **More normalized than Raw Record**: A 20-5 record and a 40-10 record would have different win rates but similar Power Index values, properly accounting for confidence
+**Statistical Foundations**
+* Uses confidence interval statistics rather than simple ratios
+* Properly accounts for variable sample sizes
+* Conservatively estimates true win rate with 95% confidence
+* Scaled to intuitive -5 to +5 range for easier interpretation
+
+**Technical Advantages**
+* **Statistical validity**: Based on well-established binomial confidence intervals
+* **Sample size robustness**: Automatically adjusts confidence based on number of games
+* **Small sample protection**: Prevents decks with few games from dominating rankings
+* **Tie handling**: Properly incorporates ties as half-wins
 
 **Interpretation Guide**
-* **Positive values**: Indicate winning records (higher values = stronger performance)
-* **Negative values**: Indicate losing records (generally filtered from top displays)
-* **Magnitude**: Values typically range from -3 to +3, with top-tier decks usually above 1.0
+* **Positive values**: Indicate decks performing above 50% win rate with statistical confidence
+* **Negative values**: Indicate underperforming decks (below 50% win rate)
+* **Magnitude**: Values of +2 or higher generally represent strong meta contenders
 
-**Important Caveats**
-* The metric is sensitive to metagame shifts and tournament representation
-* Limited by the quantity of available tournament data
-* Best used as one factor in deck selection alongside matchup analysis and personal play style considerations
+**Technical Limitations**
+* Based on {tournament_count} recent tournaments (rolling window)
+* Cannot account for evolving strategies and counter-play between tournaments
+* Focuses on past performance rather than theoretical potential
 """
