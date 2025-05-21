@@ -19,19 +19,11 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 # Add this at the top level of ui_helpers.py
 # Modify the check_and_update_tournament_data function in ui_helpers.py
 def check_and_update_tournament_data():
-    """Check if tournament data needs updating and start background update if needed"""
-    # Disable background updates if flag is set
-    if st.session_state.get('disable_background', False):
-        return
+    """Check if tournament data needs updating"""
     # Import necessary modules
-    import threading
     from datetime import datetime, timedelta
     from config import CACHE_TTL
     
-    # Only proceed if not already updating
-    if st.session_state.get('update_running', False):
-        return
-        
     # Check if data is stale
     if 'performance_fetch_time' in st.session_state:
         time_since_update = datetime.now() - st.session_state.performance_fetch_time
@@ -40,33 +32,26 @@ def check_and_update_tournament_data():
         
         # Update if older than cache TTL
         if time_since_update.total_seconds() > CACHE_TTL:
-            # Set flag to prevent multiple updates
-            st.session_state.update_running = True
+            # Update and set flag to prevent multiple updates during rerun
+            if not st.session_state.get('update_running', False):
+                st.session_state.update_running = True
+                st.rerun()  # Trigger rerun to show spinner
             
-            def background_update():
-                try:
-                    # Update tournament data without spinner
-                    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
-                    
-                    # Update session state
-                    st.session_state.performance_data = performance_df
-                    st.session_state.performance_fetch_time = performance_timestamp
-                    
-                    # Update card usage data
-                    card_usage_df = cache_manager.aggregate_card_usage()
-                    st.session_state.card_usage_data = card_usage_df
-                    
-                    print("Background update completed successfully")
-                except Exception as e:
-                    print(f"Background update error: {e}")
-                finally:
-                    st.session_state.update_running = False
-            
-            # Start update in background
-            thread = threading.Thread(target=background_update)
-            thread.daemon = True
-            thread.start()
-            print("Background update started")
+            # This will only execute after rerun, with spinner visible
+            with st.spinner("Updating tournament data..."):
+                # Update tournament data
+                performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+                
+                # Update session state
+                st.session_state.performance_data = performance_df
+                st.session_state.performance_fetch_time = performance_timestamp
+                
+                # Update card usage data
+                card_usage_df = cache_manager.aggregate_card_usage()
+                st.session_state.card_usage_data = card_usage_df
+                
+                # Reset flag
+                st.session_state.update_running = False
             
 # Replace the existing get_energy_types_for_deck function with this one
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
