@@ -1037,7 +1037,12 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     Returns:
         Meta-weighted win rate as a float, or None if no data available
     """
+    # Import config values directly every time this function is called
     from config import MWWR_USE_SQUARED, MWWR_DEVIATION_BASED, MWWR_NEUTRAL_WINRATE
+    
+    # Print current config for debugging
+    print(f"Current formula config: SQUARED={MWWR_USE_SQUARED}, DEVIATION={MWWR_DEVIATION_BASED}")
+
     
     # Get matchup data without causing recursion
     session_key = f"matchup_{deck_name}_{set_name}"
