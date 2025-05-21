@@ -699,16 +699,21 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
                 pokemon_options_grid.display()
                 
-                # Get energy types and primary energy for charts
-                from ui_helpers import get_energy_types_for_deck
-                energy_types, _ = get_energy_types_for_deck(deck_info.get('deck_name', ''))
-                primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
-                
                 # Add variant expanders if we have variant data
                 if variant_df is not None and not variant_df.empty:
                     # Import variant renderer
                     from card_renderer import render_variant_cards
                     from visualizations import create_variant_bar_chart, display_chart
+                    
+                    # Get energy types and primary energy for charts
+                    primary_energy = None
+                    if 'analyze' in st.session_state:
+                        current_deck_name = st.session_state.analyze.get('deck_name', '')
+                        current_set_name = st.session_state.analyze.get('set_name', 'A3')
+                        
+                        # Try to get energy from deck info directly instead of requesting it again
+                        if energy_types and len(energy_types) > 0:
+                            primary_energy = energy_types[0]
                     
                     st.write("##### Card Variants")
                     
