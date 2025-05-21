@@ -761,8 +761,6 @@ def display_raw_data_tab(results, variant_df):
         st.write("#### Variant Analysis Data")
         st.dataframe(variant_df, use_container_width=True)
 
-# Modify the display_metagame_tab function in display_tabs.py
-
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.write("#### Tournament Performance Data")
@@ -796,42 +794,57 @@ def display_metagame_tab():
     # Calculate win rate
     display_df['win_rate'] = round((display_df['total_wins'] / (display_df['total_wins'] + display_df['total_losses'] + display_df['total_ties'])) * 100, 1)
     
-    # Add meta-weighted win rate column
-    import cache_manager
-    
-    # Show spinner while calculating
-    with st.spinner("Calculating meta-weighted win rates..."):
-        # Calculate meta-weighted win rate for each deck
-        meta_weighted_winrates = []
-        for _, row in display_df.iterrows():
-            mwwr = cache_manager.calculate_meta_weighted_winrate(row['deck_name'], row['set'])
-            meta_weighted_winrates.append(mwwr if mwwr is not None else 0.0)
-            
-        display_df['meta_weighted_winrate'] = meta_weighted_winrates
-    
     # Format numerical columns
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
-    
-    #Calculate meta-weighted win rate for each deck
-    meta_weighted_winrates = []
-    
-    for _, row in display_df.iterrows():
-        # Use the safely-defined function
-        mwwr = cache_manager.calculate_meta_weighted_winrate(row['deck_name'], row['set'])
-        meta_weighted_winrates.append(mwwr if mwwr is not None else 0.0)
-        
-    display_df['meta_weighted_winrate'] = meta_weighted_winrates
 
     # Extract Pokémon names and create image URLs
-    # [Rest of the existing function remains the same]
+    def extract_pokemon_urls(displayed_name):
+        # Remove content in parentheses and clean
+        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+        
+        # Split by spaces and slashes
+        parts = re.split(r'[\s/]+', clean_name)
+        
+        # Filter out suffixes
+        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+        pokemon_names = []
+        
+        for part in parts:
+            part = part.lower()
+            if part and part not in suffixes:
+                # Apply exceptions
+                if part in POKEMON_EXCEPTIONS:
+                    part = POKEMON_EXCEPTIONS[part]
+                
+                pokemon_names.append(part)
+                
+                # Limit to 2 Pokémon
+                if len(pokemon_names) >= 2:
+                    break
+        
+        # Create URLs
+        urls = []
+        for name in pokemon_names:
+            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+            
+        # Ensure we have exactly 2 elements
+        while len(urls) < 2:
+            urls.append(None)
+            
+        return urls[0], urls[1]  # Return as separate values
+    
+    # Apply the function to extract Pokémon image URLs
+    display_df[['pokemon_url1', 'pokemon_url2']] = display_df.apply(
+        lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
+        axis=1
+    )
     
     # Select and rename columns for display
     display_cols = {
         'rank': 'Rank',
         'displayed_name': 'Deck',
         'power_index': 'Power Index',
-        'meta_weighted_winrate': 'Meta-Weighted Win %',
         'share': 'Meta Share %',
         'tournaments_played': 'Best Finish Entries',
         'win_rate': 'Win %',
@@ -841,11 +854,12 @@ def display_metagame_tab():
     }
     
     # Create final display dataframe
+    
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
     
     # Add Pokémon image columns
-    #final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
-    #final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
+    final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
+    final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
     
     # Display dataframe with column configuration
     st.dataframe(
@@ -853,31 +867,64 @@ def display_metagame_tab():
         use_container_width=True,
         height=800,
         column_config={
-            # [Existing column configs...]
-            "Meta-Weighted Win %": st.column_config.NumberColumn(
-                "Meta-Weighted Win %",
-                help="Average win percentage weighted by opponents' meta share",
+            # "Rank": st.column_config.NumberColumn(
+            #     "Rank",
+            #     help="Position in the meta based on Power Index",
+            #     width="small"
+            # ),
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1",
+                help="First Pokémon in the deck",
+                width="20px",
+            ),
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2",
+                help="Second Pokémon in the deck",
+                width="20px",
+            ),
+            "Deck": st.column_config.TextColumn(
+                "Deck",
+                help="Deck archetype name"
+            ),
+            "Power Index": st.column_config.NumberColumn(
+                "Power Index",
+                help="Performance metric: (Wins + 0.75×Ties - Losses) ÷ √(Total Games). Higher values indicate stronger performance",
+                format="%.2f"
+            ),
+            "Meta Share %": st.column_config.NumberColumn(
+                "Meta Share %",
+                help="Percentage representation of this deck in the overall competitive metagame",
+                format="%.2f%%"
+            ),
+            "Best Finish Entries": st.column_config.NumberColumn(
+                "Best Finish Entries",
+                help="Number of tournament entries in the 'Best Finishes' section"
+            ),
+            "Win %": st.column_config.NumberColumn(
+                "Win %",
+                help="Percentage of matches won out of total matches played",
                 format="%.1f%%"
             ),
-            # [Other column configs remain the same]
+            "Wins": st.column_config.NumberColumn(
+                "Wins",
+                help="Total number of wins from all recorded 'Best Finishes' matches"
+            ),
+            "Losses": st.column_config.NumberColumn(
+                "Losses",
+                help="Total number of losses from all recorded 'Best Finishes' matches"
+            ),
+            "Ties": st.column_config.NumberColumn(
+                "Ties",
+                help="Total number of ties from all recorded 'Best Finishes' matches"
+            )
         },
         hide_index=True
     )
-
-    # Add a small footnote about data source and formula
-    # Add a small footnote about data source and formula
+    
+    # Add a small footnote about data source instead of the full explanation
     from datetime import datetime
-    from config import MWWR_USE_SQUARED, MWWR_DEVIATION_BASED, TOURNAMENT_COUNT
     current_month_year = datetime.now().strftime("%B %Y")
-    
-    formula_note = ""
-    if MWWR_DEVIATION_BASED:
-        formula_note = "using deviation-based scoring"
-    elif MWWR_USE_SQUARED:
-        formula_note = "using squared meta share weighting"
-    
-    st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG. Meta-Weighted Win Rate {formula_note} prioritizes performance against popular decks.")
-
+    st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.")
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
@@ -1273,145 +1320,127 @@ def generate_energy_analysis(deck_info):
             st.info("No collected decks found")
 
 # Add these functions to display_tabs.py
-# def fetch_matchup_data(deck_name, set_name="A3"):
-#     """
-#     Fetch matchup data for a specific deck from Limitless TCG.
-    
-#     Args:
-#         deck_name: The name of the deck (e.g., "giratina-ex-a2b-greninja-a1")
-#         set_name: The set name (default: "A3")
-        
-#     Returns:
-#         DataFrame containing matchup data or empty DataFrame if not found
-#     """
-#     import requests
-#     from bs4 import BeautifulSoup
-#     import pandas as pd
-#     import re
-#     from config import BASE_URL
-#     import streamlit as st
-    
-#     # Construct the URL for matchups
-#     url = f"{BASE_URL}/decks/{deck_name}/matchups/?game=POCKET&format=standard&set={set_name}"
-    
-#     try:
-#         # Fetch the webpage
-#         response = requests.get(url)
-#         if response.status_code != 200:
-#             return pd.DataFrame()
-        
-#         # Parse the HTML
-#         soup = BeautifulSoup(response.text, 'html.parser')
-#         table = soup.find('table', class_='striped')
-        
-#         if not table:
-#             return pd.DataFrame()
-        
-#         # Get meta share data for opponent decks
-#         meta_share_map = {}
-#         if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-#             performance_data = st.session_state.performance_data
-#             meta_share_map = {deck['deck_name']: deck['share'] for _, deck in performance_data.iterrows()}
-        
-#         # Process each data row
-#         rows = []
-#         for row in table.find_all('tr')[1:]:  # Skip header row
-#             cells = row.find_all(['td'])
-#             if len(cells) < 5:
-#                 continue
-            
-#             # Extract opponent deck display name
-#             opponent_display_name = cells[1].text.strip()
-            
-#             # Extract opponent deck raw name from URL
-#             opponent_deck_name = ""
-#             opponent_link = cells[1].find('a')
-            
-#             if opponent_link and 'href' in opponent_link.attrs:
-#                 href = opponent_link['href']
-#                 match = re.search(r'/matchups/([^/?]+)', href)
-#                 if match:
-#                     opponent_deck_name = match.group(1)
-#                 else:
-#                     match = re.search(r'/decks/([^/?]+)', href)
-#                     if match:
-#                         opponent_deck_name = match.group(1)
-            
-#             # Extract matches played
-#             matches_played = 0
-#             try:
-#                 matches_played = int(cells[2].text.strip())
-#             except ValueError:
-#                 pass
-            
-#             # Extract record
-#             record_text = cells[3].text.strip()
-#             wins, losses, ties = 0, 0, 0
-            
-#             win_match = re.search(r'^(\d+)', record_text)
-#             loss_match = re.search(r'-\s*(\d+)\s*-', record_text)
-#             tie_match = re.search(r'-\s*(\d+)$', record_text)
-            
-#             if win_match: wins = int(win_match.group(1))
-#             if loss_match: losses = int(loss_match.group(1))
-#             if tie_match: ties = int(tie_match.group(1))
-            
-#             # Extract win percentage
-#             win_pct = 0.0
-#             try:
-#                 win_pct = float(cells[4].text.strip().replace('%', ''))
-#             except ValueError:
-#                 pass
-            
-#             # Add meta share for this opponent deck
-#             meta_share = meta_share_map.get(opponent_deck_name, 0.0)
-            
-#             # Create row data
-#             row_data = {
-#                 'opponent_name': opponent_display_name,
-#                 'opponent_deck_name': opponent_deck_name,
-#                 'wins': wins,
-#                 'losses': losses,
-#                 'ties': ties,
-#                 'win_pct': win_pct,
-#                 'matches_played': matches_played,
-#                 'meta_share': meta_share
-#             }
-            
-#             rows.append(row_data)
-        
-#         # Create DataFrame from all row data
-#         df = pd.DataFrame(rows)
-        
-#         if not df.empty:
-#             df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
-        
-#         return df
-        
-#     except Exception as e:
-#         return pd.DataFrame()
-# In display_tabs.py - Remove the circular reference
 def fetch_matchup_data(deck_name, set_name="A3"):
     """
     Fetch matchup data for a specific deck from Limitless TCG.
-    Uses cache_manager but doesn't create a circular reference.
     
     Args:
-        deck_name: The name of the deck
+        deck_name: The name of the deck (e.g., "giratina-ex-a2b-greninja-a1")
         set_name: The set name (default: "A3")
         
     Returns:
         DataFrame containing matchup data or empty DataFrame if not found
     """
-    import cache_manager
+    import requests
+    from bs4 import BeautifulSoup
+    import pandas as pd
+    import re
+    from config import BASE_URL
+    import streamlit as st
     
-    # Direct call to get_or_fetch_matchup_data
-    return cache_manager.get_or_fetch_matchup_data(deck_name, set_name)
+    # Construct the URL for matchups
+    url = f"{BASE_URL}/decks/{deck_name}/matchups/?game=POCKET&format=standard&set={set_name}"
+    
+    try:
+        # Fetch the webpage
+        response = requests.get(url)
+        if response.status_code != 200:
+            return pd.DataFrame()
+        
+        # Parse the HTML
+        soup = BeautifulSoup(response.text, 'html.parser')
+        table = soup.find('table', class_='striped')
+        
+        if not table:
+            return pd.DataFrame()
+        
+        # Get meta share data for opponent decks
+        meta_share_map = {}
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+            performance_data = st.session_state.performance_data
+            meta_share_map = {deck['deck_name']: deck['share'] for _, deck in performance_data.iterrows()}
+        
+        # Process each data row
+        rows = []
+        for row in table.find_all('tr')[1:]:  # Skip header row
+            cells = row.find_all(['td'])
+            if len(cells) < 5:
+                continue
+            
+            # Extract opponent deck display name
+            opponent_display_name = cells[1].text.strip()
+            
+            # Extract opponent deck raw name from URL
+            opponent_deck_name = ""
+            opponent_link = cells[1].find('a')
+            
+            if opponent_link and 'href' in opponent_link.attrs:
+                href = opponent_link['href']
+                match = re.search(r'/matchups/([^/?]+)', href)
+                if match:
+                    opponent_deck_name = match.group(1)
+                else:
+                    match = re.search(r'/decks/([^/?]+)', href)
+                    if match:
+                        opponent_deck_name = match.group(1)
+            
+            # Extract matches played
+            matches_played = 0
+            try:
+                matches_played = int(cells[2].text.strip())
+            except ValueError:
+                pass
+            
+            # Extract record
+            record_text = cells[3].text.strip()
+            wins, losses, ties = 0, 0, 0
+            
+            win_match = re.search(r'^(\d+)', record_text)
+            loss_match = re.search(r'-\s*(\d+)\s*-', record_text)
+            tie_match = re.search(r'-\s*(\d+)$', record_text)
+            
+            if win_match: wins = int(win_match.group(1))
+            if loss_match: losses = int(loss_match.group(1))
+            if tie_match: ties = int(tie_match.group(1))
+            
+            # Extract win percentage
+            win_pct = 0.0
+            try:
+                win_pct = float(cells[4].text.strip().replace('%', ''))
+            except ValueError:
+                pass
+            
+            # Add meta share for this opponent deck
+            meta_share = meta_share_map.get(opponent_deck_name, 0.0)
+            
+            # Create row data
+            row_data = {
+                'opponent_name': opponent_display_name,
+                'opponent_deck_name': opponent_deck_name,
+                'wins': wins,
+                'losses': losses,
+                'ties': ties,
+                'win_pct': win_pct,
+                'matches_played': matches_played,
+                'meta_share': meta_share
+            }
+            
+            rows.append(row_data)
+        
+        # Create DataFrame from all row data
+        df = pd.DataFrame(rows)
+        
+        if not df.empty:
+            df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
+        
+        return df
+        
+    except Exception as e:
+        return pd.DataFrame()
 
 def display_matchup_summary(deck_name, set_name, working_df):
     """
     Display a summary of matchup distribution against the meta
-    using standard meta share weighting
     
     Args:
         deck_name: Current deck name
@@ -1425,31 +1454,18 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.info("No matchup data with meta share available.")
         return
     
-    # Make a copy to avoid modifying the original dataframe
-    analysis_df = working_df.copy()
-    
-    # Ensure meta_share column has valid values
-    if analysis_df['meta_share'].isna().any() or not analysis_df['meta_share'].sum() > 0:
-        print("Warning: Invalid meta_share values found, using direct counts instead")
-        # Count the number of matchups in each category instead
-        analysis_df['meta_share'] = 1  # Assign 1 to each row for counting
-    
     # Classify each matchup
-    analysis_df['matchup_type'] = analysis_df['win_pct'].apply(
+    working_df['matchup_type'] = working_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
     # Calculate total meta share in each category
-    favorable_share = analysis_df[analysis_df['matchup_type'] == 'Favorable']['meta_share'].sum()
-    even_share = analysis_df[analysis_df['matchup_type'] == 'Even']['meta_share'].sum()
-    unfavorable_share = analysis_df[analysis_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
+    favorable_share = working_df[working_df['matchup_type'] == 'Favorable']['meta_share'].sum()
+    even_share = working_df[working_df['matchup_type'] == 'Even']['meta_share'].sum()
+    unfavorable_share = working_df[working_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
     
     # Calculate total share of just these three categories
     total_known_share = favorable_share + even_share + unfavorable_share
-    
-    # Debug output
-    print(f"Meta distribution - Favorable: {favorable_share}, Even: {even_share}, Unfavorable: {unfavorable_share}")
-    print(f"Total known share: {total_known_share}")
     
     # Normalize values to sum to 100% (just the three known categories)
     if total_known_share > 0:  # Avoid division by zero
@@ -1469,7 +1485,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display favorable matchups
     with col1:
         st.markdown(f"""
-       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px; background-color: rgba(79, 204, 32, 0.05);">
+       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
@@ -1479,7 +1495,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display even matchups
     with col2:
         st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px; background-color: rgba(253, 167, 0, 0.05);">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold;">Even</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fda700; line-height: 0.8;">{even_share_norm:.1f}%</div>
             <div style="font-size: 1rem;">of meta</div>
@@ -1489,67 +1505,17 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display unfavorable matchups
     with col3:
         st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px; background-color: rgba(253, 108, 108, 0.05);">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold; ">Unfavorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.8;">{unfavorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
-    # Add a detailed note about the data
+    # Add a more detailed note about the data
     st.write("")
-    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")
+    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
 
-def display_weighted_winrate(deck_name, set_name, working_df):
-    """
-    Display a weighted average win rate calculation based on meta share
-    
-    Args:
-        deck_name: Current deck name
-        set_name: Current deck set
-        working_df: DataFrame with matchup data already processed
-    """
-    # Check if we have matchup data with meta share
-    if working_df.empty or 'meta_share' not in working_df.columns or 'win_pct' not in working_df.columns:
-        st.info("No matchup data with meta share available for weighted win rate calculation.")
-        return
-    
-    # Calculate total meta share
-    total_meta_share = working_df['meta_share'].sum()
-    
-    # Calculate weighted average win rate
-    if total_meta_share > 0:  # Avoid division by zero
-        # Weight each matchup's win rate by its meta share
-        weighted_sum = (working_df['win_pct'] * working_df['meta_share']).sum()
-        weighted_winrate = weighted_sum / total_meta_share
-    else:
-        # If no meta share data, use simple average
-        weighted_winrate = working_df['win_pct'].mean() if not working_df.empty else 0
-    
-    # Create a column for centered display
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    # Determine color based on win rate
-    if weighted_winrate >= 60:
-        win_color = "#4FCC20"  # Green for good win rate
-    elif weighted_winrate < 40:
-        win_color = "#fd6c6c"  # Red for poor win rate
-    else:
-        win_color = "#9370DB"  # Purple for balanced win rate
-    
-    # Display in the center column
-    with col2:
-        st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; background-color: rgba(147, 112, 219, 0.1); border-radius: 8px; height: 120px; text-align: center;">
-            <div style="font-size: 1.1rem; font-weight: bold;">Meta-Weighted Win Rate</div>
-            <div style="font-size: 2.8rem; font-weight: bold; color: {win_color}; line-height: 1.1;">{weighted_winrate:.1f}%</div>
-            <div style="font-size: 0.9rem; color: #666;">weighted by opponent meta share</div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Add explanatory caption
-    st.caption(f"This win rate is weighted by each opponent's meta share percentage, giving greater importance to matchups against more common decks. Raw unweighted average: {working_df['win_pct'].mean():.1f}%")
-    
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
@@ -1557,9 +1523,6 @@ def display_matchup_tab(deck_info=None):
     Args:
         deck_info: Dictionary containing deck information (optional)
     """
-    # Import meta share threshold
-    from config import MWWR_MIN_SHARE
-    
     #st.subheader("Matchup Analysis")
     import pandas as pd
     import re
@@ -1609,9 +1572,10 @@ def display_matchup_tab(deck_info=None):
         
         # Use filtered data if we found matches
         if not filtered_df.empty:
+            #st.success(f"Showing {len(filtered_df)} meta deck matchups")
             working_df = filtered_df.drop(columns=['deck_name_lower'])
         else:
-            st.warning(f"No matches found with meta decks (share > {MWWR_MIN_SHARE}%). Showing all matchups instead.")
+            st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
        
     # Function to extract Pokémon names and create image URLs
@@ -1765,18 +1729,11 @@ def display_matchup_tab(deck_info=None):
     
     # Add some space between summary and table
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-
-    # Display weighted win rate
-    display_weighted_winrate(deck_name, set_name, working_df)
     
-    # Add some space before the table caption
-    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
     # Add explanation
     from formatters import format_deck_name
     formatted_deck_name = format_deck_name(deck_name)
-
 
 def display_counter_picker():
     banner_path = "picker_banner.png"
