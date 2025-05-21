@@ -842,3 +842,37 @@ def update_matchup_cache(min_share=0.5):
     """Update matchup cache for all decks with at least min_share"""
     import cache_utils
     return cache_utils.update_all_matchups(min_share)
+
+# Add to cache_manager.py
+
+def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
+    """
+    Calculate meta-weighted win rate for a deck
+    
+    Args:
+        deck_name: Name of the deck
+        set_name: Set code (default: "A3")
+        
+    Returns:
+        Meta-weighted win rate as a float, or None if no data available
+    """
+    # Get matchup data for this deck
+    matchup_df = get_or_fetch_matchup_data(deck_name, set_name)
+    
+    if matchup_df.empty or 'meta_share' not in matchup_df.columns or 'win_pct' not in matchup_df.columns:
+        return None
+    
+    # Calculate total meta share
+    total_meta_share = matchup_df['meta_share'].sum()
+    
+    # Calculate weighted average win rate
+    if total_meta_share > 0:
+        # Weight each matchup's win rate by its meta share
+        weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share']).sum()
+        weighted_winrate = weighted_sum / total_meta_share
+        return weighted_winrate
+    elif not matchup_df.empty:
+        # If no meta share data but we have win percentages, use simple average
+        return matchup_df['win_pct'].mean()
+    
+    return None
