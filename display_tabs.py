@@ -1516,6 +1516,56 @@ def display_matchup_summary(deck_name, set_name, working_df):
     st.write("")
     st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
 
+def display_weighted_winrate(deck_name, set_name, working_df):
+    """
+    Display a weighted average win rate calculation based on meta share
+    
+    Args:
+        deck_name: Current deck name
+        set_name: Current deck set
+        working_df: DataFrame with matchup data already processed
+    """
+    # Check if we have matchup data with meta share
+    if working_df.empty or 'meta_share' not in working_df.columns or 'win_pct' not in working_df.columns:
+        st.info("No matchup data with meta share available for weighted win rate calculation.")
+        return
+    
+    # Calculate total meta share
+    total_meta_share = working_df['meta_share'].sum()
+    
+    # Calculate weighted average win rate
+    if total_meta_share > 0:  # Avoid division by zero
+        # Weight each matchup's win rate by its meta share
+        weighted_sum = (working_df['win_pct'] * working_df['meta_share']).sum()
+        weighted_winrate = weighted_sum / total_meta_share
+    else:
+        # If no meta share data, use simple average
+        weighted_winrate = working_df['win_pct'].mean() if not working_df.empty else 0
+    
+    # Create a column for centered display
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    # Determine color based on win rate
+    if weighted_winrate >= 60:
+        win_color = "#4FCC20"  # Green for good win rate
+    elif weighted_winrate < 40:
+        win_color = "#fd6c6c"  # Red for poor win rate
+    else:
+        win_color = "#9370DB"  # Purple for balanced win rate
+    
+    # Display in the center column
+    with col2:
+        st.markdown(f"""
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; background-color: rgba(147, 112, 219, 0.1); border-radius: 8px; height: 120px; text-align: center;">
+            <div style="font-size: 1.1rem; font-weight: bold;">Meta-Weighted Win Rate</div>
+            <div style="font-size: 2.8rem; font-weight: bold; color: {win_color}; line-height: 1.1;">{weighted_winrate:.1f}%</div>
+            <div style="font-size: 0.9rem; color: #666;">weighted by opponent meta share</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Add explanatory caption
+    st.caption(f"This win rate is weighted by each opponent's meta share percentage, giving greater importance to matchups against more common decks. Raw unweighted average: {working_df['win_pct'].mean():.1f}%")
+    
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
@@ -1729,11 +1779,18 @@ def display_matchup_tab(deck_info=None):
     
     # Add some space between summary and table
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+
+    # Display weighted win rate
+    display_weighted_winrate(deck_name, set_name, working_df)
     
+    # Add some space before the table caption
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
     # Add explanation
     from formatters import format_deck_name
     formatted_deck_name = format_deck_name(deck_name)
+
 
 def display_counter_picker():
     banner_path = "picker_banner.png"
