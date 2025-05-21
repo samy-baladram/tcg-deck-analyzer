@@ -798,7 +798,18 @@ def display_counter_picker_sidebar():
                     #with col2:
                         # Display deck name with ranking
                         rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
-                        st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
+                        #st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
+                        button_label = f"{rank_emoji} {deck['displayed_name']}"
+                
+                        # Create a unique key for each button
+                        button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
+                        
+                        # Create the button that will select this deck in the dropdown
+                        if st.button(button_label, key=button_key, type="tertiary"):
+                            # Set this deck for analysis
+                            st.session_state.deck_to_analyze = deck['deck_name']
+                            # Force rerun to update the UI
+                            st.rerun()
                     
                     with col2:
                         # Display win rate as a big percentage
@@ -834,7 +845,18 @@ def display_counter_picker_sidebar():
                     #with col2:
                         # Display deck name with smaller font
                         rank_num = f"#{i+1}"
-                        st.markdown(f"##### {rank_num} {deck['displayed_name']}")
+                        #st.markdown(f"##### {rank_num} {deck['displayed_name']}")
+                        button_label = f"{rank_num} {deck['displayed_name']}"
+                
+                        # Create a unique key for each button
+                        button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
+                        
+                        # Create the button that will select this deck in the dropdown
+                        if st.button(button_label, key=button_key, type="tertiary"):
+                            # Set this deck for analysis
+                            st.session_state.deck_to_analyze = deck['deck_name']
+                            # Force rerun to update the UI
+                            st.rerun()
                     
                     with col2:
                         # Display win rate as a smaller percentage without "win rate" text
