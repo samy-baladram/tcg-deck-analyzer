@@ -242,8 +242,43 @@ def on_deck_change():
     else:
         st.session_state.selected_deck_index = None
 
+def ensure_performance_data_updated():
+    """Ensure performance data uses latest formula"""
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        print("Updating power index formula...")
+        
+        # Force recalculate power index with new formula
+        performance_df = st.session_state.performance_data.copy()
+        
+        # Apply the new formula to each row
+        def recalculate_power_index(row):
+            total_wins = row['total_wins']
+            total_losses = row['total_losses']
+            total_ties = row['total_ties']
+            total_games = total_wins + total_losses + total_ties
+            
+            if total_games > 0:
+                # NEW FORMULA HERE
+                return total_wins
+            return 0.0
+        
+        # Update power index and resort
+        performance_df['power_index'] = performance_df.apply(recalculate_power_index, axis=1)
+        performance_df = performance_df.sort_values('power_index', ascending=False).reset_index(drop=True)
+        
+        # Replace in session state
+        st.session_state.performance_data = performance_df
+        
+        # Also clear deck display names to force regeneration
+        if 'deck_display_names' in st.session_state:
+            del st.session_state['deck_display_names']
+
+    return
+    
 def create_deck_selector():
     """Create and display the deck selector dropdown with minimal loading"""
+
+    ensure_performance_data_updated()
     # Initialize session state variables if they don't exist
     if 'selected_deck_index' not in st.session_state:
         st.session_state.selected_deck_index = None
@@ -310,7 +345,7 @@ def create_deck_selector():
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
     """Render a single deck in the sidebar"""
     # Format power index to 2 decimal places
-    power_index = round(2*deck['power_index'], 2)
+    power_index = round(deck['power_index'], 2)
     
     # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
     circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
