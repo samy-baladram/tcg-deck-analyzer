@@ -138,31 +138,6 @@ def render_energy_icons(energy_types, is_typical=False):
         <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
     </div>"""
     return energy_display
-
-# def initialize_energy_cache():
-#     """Initialize energy combinations cache from disk if available"""
-#     if 'energy_combinations' not in st.session_state:
-#         st.session_state.energy_combinations = {}
-        
-#         # Try to load from disk
-#         try:
-#             import json
-#             import os
-#             if os.path.exists(ENERGY_CACHE_FILE):
-#                 with open(ENERGY_CACHE_FILE, 'r') as f:
-#                     data = json.load(f)
-                
-#                 # Load energy combinations statistics
-#                 combo_data = data.get('archetype_energy_combos', {})
-                
-#                 # Convert string keys to tuples
-#                 for archetype, combos in combo_data.items():
-#                     st.session_state.energy_combinations[archetype] = {
-#                         tuple(sorted(combo.split(','))): count 
-#                         for combo, count in combos.items()
-#                     }
-#         except Exception as e:
-#             print(f"Error loading energy types from disk: {e}")
             
 def display_banner(img_path, max_width=900):
     """Display the app banner image"""
@@ -800,57 +775,6 @@ def display_counter_picker_sidebar():
                     divider_style = "solid 0.5px"
                     divider_color = "#ddd"
                     st.markdown(f"<hr style='margin: 0px 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
-            
-            # Display table with all results including icons
-            # st.write("")
-            # st.write("##### All Counter Options")
-            
-            # # Create a DataFrame with the ordered columns including icons
-            # display_df = pd.DataFrame({
-            #     'Icon1': counter_df['pokemon_url1'],
-            #     'Icon2': counter_df['pokemon_url2'],
-            #     'Deck': counter_df['displayed_name'],
-            #     'Win %': counter_df['average_win_rate'],
-            #     'Meta Share': counter_df['meta_share'],
-            #     'Power Index': counter_df['power_index']
-            # })
-            
-            # st.dataframe(
-            #     display_df,
-            #     column_config={
-            #         "Icon1": st.column_config.ImageColumn(
-            #             "Icon 1",
-            #             help="First Pokémon in the deck",
-            #             width="20px",
-            #         ),
-            #         "Icon2": st.column_config.ImageColumn(
-            #             "Icon 2", 
-            #             help="Second Pokémon in the deck",
-            #             width="20px",
-            #         ),
-            #         "Deck": st.column_config.TextColumn(
-            #             "Deck",
-            #             help="Deck archetype name"
-            #         ),
-            #         "Win %": st.column_config.NumberColumn(
-            #             "Avg Win %",
-            #             help="Average win percentage against selected decks",
-            #             format="%.1f%%"
-            #         ),
-            #         # "Meta Share": st.column_config.NumberColumn(
-            #         #     "Meta Share",
-            #         #     help="Percentage of the current meta",
-            #         #     format="%.2f%%"
-            #         # ),
-            #         # "Power Index": st.column_config.NumberColumn(
-            #         #     "Power Index",
-            #         #     help="Overall performance in the meta",
-            #         #     format="%.2f"
-            #         # )
-            #     },
-            #     hide_index=True,
-            #     use_container_width=True
-            # )
             
             # Add explanation text 
             st.caption("Higher average win rate indicates better performance against your selected decks. Data is from the current aggregated tournament result in [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
