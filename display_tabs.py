@@ -163,7 +163,7 @@ def generate_energy_analysis(deck_info):
         else:
             st.info("No collected decks found")
 
-def display_deck_template_tab(results):
+def display_deck_template_tab(results, variant_df=None):
     """Display the Deck Template tab with revised layout and two-column card sections"""
     # Import needed functions
     from ui_helpers import get_energy_types_for_deck
@@ -181,9 +181,6 @@ def display_deck_template_tab(results):
         
         # Get the most common energy combination
         energy_types, is_typical = get_energy_types_for_deck(deck_name)
-        
-        # No need to ensure collected decks since we're now caching everything
-        # The data should already be in st.session_state.collected_decks if needed
     
     # Create outer columns: Sample Deck (2) and Template (3) - switched order and ratio
     outer_col1, _, outer_col2 = st.columns([6,1,10])
@@ -195,7 +192,7 @@ def display_deck_template_tab(results):
     
     # Right column: Core Cards and Flexible Slots in vertical layout
     with outer_col2:
-        display_deck_composition(deck_info, energy_types, is_typical, total_cards, options)
+        display_deck_composition(deck_info, energy_types, is_typical, total_cards, options, variant_df)
 
 def display_variant_decks(deck_info, energy_types, is_typical, options):
     """Display the main sample deck and any variant decks containing other Pokémon options"""
@@ -637,7 +634,7 @@ def render_sample_deck(energy_types, is_typical):
         st.info("No sample deck available")
 
 
-def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options):
+def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options, variant_df=None):
     """Display the deck composition section"""
     # Create header
     st.write("#### Deck Composition", unsafe_allow_html=True)
@@ -701,6 +698,45 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 pokemon_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
                 pokemon_options_grid.display()
+                
+                # Get energy types and primary energy for charts
+                from ui_helpers import get_energy_types_for_deck
+                energy_types, _ = get_energy_types_for_deck(deck_info.get('deck_name', ''))
+                primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
+                
+                # Add variant expanders if we have variant data
+                if variant_df is not None and not variant_df.empty:
+                    # Import variant renderer
+                    from card_renderer import render_variant_cards
+                    from visualizations import create_variant_bar_chart, display_chart
+                    
+                    st.write("##### Card Variants")
+                    
+                    # Display variant analysis
+                    for _, row in variant_df.iterrows():
+                        with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
+                            # Extract set codes and numbers
+                            var1 = row['Var1']
+                            var2 = row['Var2']
+                            
+                            var1_set = '-'.join(var1.split('-')[:-1])  # Everything except the last part
+                            var1_num = var1.split('-')[-1]         # Just the last part
+                            var2_set = '-'.join(var2.split('-')[:-1])
+                            var2_num = var2.split('-')[-1]
+                            
+                            # Create the 2-column layout
+                            var_col1, var_col2 = st.columns([2, 5])
+                            
+                            # Column 1: Both Variants side by side
+                            with var_col1:
+                                variant_html = render_variant_cards(var1_set, var1_num, var2_set, var2_num, var1, var2)
+                                st.markdown(variant_html, unsafe_allow_html=True)
+                            
+                            # Column 2: Bar Chart
+                            with var_col2:
+                                # Create variant bar chart with primary energy type
+                                fig_var = create_variant_bar_chart(row, primary_energy)
+                                display_chart(fig_var)
         
         with flex_col2:
             # Only show Trainer options if there are any
