@@ -15,23 +15,41 @@ import os
 from PIL import Image
 import streamlit as st
 
-if 'formula_updated' not in st.session_state:
-    import cache_utils
-    # Clear cached tournament data from disk
+if 'formula_v2_applied' not in st.session_state:
     import os
-    if os.path.exists(cache_utils.TOURNAMENT_DATA_PATH):
-        os.remove(cache_utils.TOURNAMENT_DATA_PATH)
+    import shutil
+    from cache_utils import CACHE_DIR, TOURNAMENT_DATA_PATH, TOURNAMENT_TIMESTAMP_PATH
     
-    # Mark as formula updated to avoid doing this again
-    st.session_state.formula_updated = True
-    
-favicon = Image.open("favicon.png")  # PNG format
-
-st.set_page_config(
-    page_title="PTCGP Deck Analyzer",
-    page_icon=favicon,
-    layout="wide"
-)
+    with st.spinner("Updating to new Power Index formula..."):
+        # 1. Clear tournament data files from disk
+        if os.path.exists(TOURNAMENT_DATA_PATH):
+            os.remove(TOURNAMENT_DATA_PATH)
+            print("Removed tournament data file")
+        
+        if os.path.exists(TOURNAMENT_TIMESTAMP_PATH):
+            os.remove(TOURNAMENT_TIMESTAMP_PATH)
+            print("Removed tournament timestamp file")
+        
+        # 2. Clear session state cache
+        for key in list(st.session_state.keys()):
+            if key in ['performance_data', 'performance_fetch_time', 'deck_display_names']:
+                del st.session_state[key]
+                print(f"Cleared session state: {key}")
+        
+        # 3. Force reload tournament data with new formula
+        import cache_manager
+        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+        
+        # Log the first few values for debugging
+        if not performance_df.empty:
+            print(f"New Power Index values (first 5): {performance_df['power_index'].head(5).tolist()}")
+        
+        # 4. Update session state with new data
+        st.session_state.performance_data = performance_df
+        st.session_state.performance_fetch_time = performance_timestamp
+        st.session_state.formula_v2_applied = True
+        
+        print("Power Index formula update complete")
 
 # Add background from repository
 background.add_app_background()
