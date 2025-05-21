@@ -18,6 +18,9 @@ TOURNAMENT_TIMESTAMP_PATH = os.path.join(CACHE_DIR, "tournament_performance_time
 ANALYZED_DECKS_DIR = os.path.join(CACHE_DIR, "analyzed_decks")
 CARD_USAGE_PATH = os.path.join(CACHE_DIR, "card_usage.json")
 CARD_USAGE_TIMESTAMP_PATH = os.path.join(CACHE_DIR, "card_usage_timestamp.txt")
+MATCHUPS_DIR = os.path.join(CACHE_DIR, "matchups")
+MATCHUPS_TIMESTAMP_PATH = os.path.join(CACHE_DIR, "matchups_timestamp.txt")
+
 
 def ensure_cache_dirs():
     """Ensure all cache directories exist"""
@@ -412,3 +415,125 @@ def load_collected_decks(deck_name, set_name):
     except Exception as e:
         logger.error(f"Error loading collected decks: {e}")
         return None
+def save_matchup_data(deck_name, set_name, matchup_df):
+    """Save matchup data for a specific deck to cache"""
+    try:
+        # Ensure directories exist
+        ensure_cache_dirs()
+        os.makedirs(MATCHUPS_DIR, exist_ok=True)
+        
+        # Create a safe filename
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        file_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_matchups.csv")
+        
+        # Save DataFrame to CSV
+        matchup_df.to_csv(file_path, index=False)
+        
+        # Save timestamp for this specific deck
+        timestamp_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_timestamp.txt")
+        with open(timestamp_path, 'w') as f:
+            f.write(datetime.now().isoformat())
+            
+        logger.info(f"Saved matchup data for {deck_name} to {file_path}")
+        return True
+    except Exception as e:
+        logger.error(f"Error saving matchup data for {deck_name}: {e}")
+        return False
+
+def load_matchup_data(deck_name, set_name, max_age_hours=24):
+    """
+    Load matchup data for a specific deck from cache if available and not too old
+    
+    Args:
+        deck_name: Name of the deck
+        set_name: Set code (e.g., "A3")
+        max_age_hours: Maximum age in hours before data is considered stale
+        
+    Returns:
+        Tuple of (DataFrame, timestamp) if found, or (None, None) if not found or too old
+    """
+    try:
+        # Create a safe filename
+        safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+        file_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_matchups.csv")
+        timestamp_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_timestamp.txt")
+        
+        # Check if files exist
+        if not os.path.exists(file_path) or not os.path.exists(timestamp_path):
+            logger.info(f"No cached matchup data found for {deck_name}")
+            return None, None
+        
+        # Check how old the data is
+        with open(timestamp_path, 'r') as f:
+            timestamp_str = f.read().strip()
+            timestamp = datetime.fromisoformat(timestamp_str)
+        
+        # Check if data is too old
+        age = datetime.now() - timestamp
+        if age.total_seconds() > max_age_hours * 3600:
+            logger.info(f"Cached matchup data for {deck_name} is too old ({age.total_seconds()/3600:.1f} hours)")
+            return None, None
+        
+        # Load the data
+        matchup_df = pd.read_csv(file_path)
+        logger.info(f"Loaded cached matchup data for {deck_name} from {file_path}")
+        return matchup_df, timestamp
+    except Exception as e:
+        logger.error(f"Error loading matchup data for {deck_name}: {e}")
+        return None, None
+
+def update_all_matchups(min_share=0.5):
+    """
+    Update matchup data for all decks with at least the specified meta share
+    
+    Args:
+        min_share: Minimum meta share percentage for decks to update
+        
+    Returns:
+        Number of decks updated
+    """
+    from scraper import fetch_matchup_data
+    
+    try:
+        # Ensure we have performance data
+        if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+            logger.warning("No performance data available for updating matchups")
+            return 0
+        
+        # Filter for decks with at least min_share
+        qualifying_decks = st.session_state.performance_data[
+            st.session_state.performance_data['share'] >= min_share
+        ]
+        
+        logger.info(f"Updating matchups for {len(qualifying_decks)} decks with ≥{min_share}% meta share")
+        updated_count = 0
+        
+        # Update each deck's matchups
+        for _, deck in qualifying_decks.iterrows():
+            deck_name = deck['deck_name']
+            set_name = deck['set']
+            
+            # Fetch fresh matchup data
+            matchup_df = fetch_matchup_data(deck_name, set_name)
+            
+            if not matchup_df.empty:
+                # Save to cache
+                success = save_matchup_data(deck_name, set_name, matchup_df)
+                if success:
+                    updated_count += 1
+        
+        # Save global timestamp
+        with open(MATCHUPS_TIMESTAMP_PATH, 'w') as f:
+            f.write(datetime.now().isoformat())
+            
+        logger.info(f"Updated matchups for {updated_count} decks")
+        return updated_count
+    except Exception as e:
+        logger.error(f"Error updating all matchups: {e}")
+        return 0
+
+def ensure_cache_dirs():
+    """Ensure all cache directories exist"""
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    os.makedirs(ANALYZED_DECKS_DIR, exist_ok=True)
+    os.makedirs(MATCHUPS_DIR, exist_ok=True)
