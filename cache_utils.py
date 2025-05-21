@@ -20,7 +20,38 @@ CARD_USAGE_PATH = os.path.join(CACHE_DIR, "card_usage.json")
 CARD_USAGE_TIMESTAMP_PATH = os.path.join(CACHE_DIR, "card_usage_timestamp.txt")
 MATCHUPS_DIR = os.path.join(CACHE_DIR, "matchups")
 MATCHUPS_TIMESTAMP_PATH = os.path.join(CACHE_DIR, "matchups_timestamp.txt")
+CONFIG_FILE_PATH = os.path.join(CACHE_DIR, "formula_config.json")
 
+def save_formula_config(config_dict):
+    """Save formula configuration to disk"""
+    try:
+        ensure_cache_dirs()
+        
+        with open(CONFIG_FILE_PATH, 'w') as f:
+            json.dump(config_dict, f)
+            
+        logger.info(f"Saved formula configuration to {CONFIG_FILE_PATH}")
+        return True
+    except Exception as e:
+        logger.error(f"Error saving formula configuration: {e}")
+        return False
+
+def load_formula_config():
+    """Load formula configuration from disk"""
+    try:
+        if os.path.exists(CONFIG_FILE_PATH):
+            with open(CONFIG_FILE_PATH, 'r') as f:
+                config = json.load(f)
+                
+            logger.info(f"Loaded formula configuration from {CONFIG_FILE_PATH}")
+            return config
+        else:
+            logger.info(f"No formula configuration file found at {CONFIG_FILE_PATH}")
+            return None
+    except Exception as e:
+        logger.error(f"Error loading formula configuration: {e}")
+        return None
+        
 def ensure_cache_dirs():
     """Ensure all cache directories exist"""
     os.makedirs(CACHE_DIR, exist_ok=True)
