@@ -439,7 +439,10 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             print(f"Error rendering deck in sidebar: {e}")
         
 def render_sidebar_from_cache():
-    """Render the sidebar using cached data instead of fetching new data"""
+    # Initialize the session state variable for counter picker
+    if 'counter_picker_displayed' not in st.session_state:
+        st.session_state.counter_picker_displayed = False
+    
     # Call update check function for background updates
     check_and_update_tournament_data()
     
@@ -456,25 +459,26 @@ def render_sidebar_from_cache():
     else:
         st.title("Top 10 Meta Decks")
     
+    # Check if we should display counter picker now
+    if not st.session_state.counter_picker_displayed:
+        # Create placeholder for the counter picker
+        st.session_state.counter_picker_placeholder = st.sidebar.empty()
+    
     # Ensure energy cache is initialized
     import cache_manager
     cache_manager.ensure_energy_cache()
-    
-    # Get current month and year for display
-    from datetime import datetime
-    current_month_year = datetime.now().strftime("%B %Y")
     
     # Display performance data if it exists
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
         
-        # Render each deck one by one, passing the rank (index + 1)
+        # Render each deck one by one
         for idx, deck in top_decks.iterrows():
-            rank = idx + 1  # Calculate rank (1-based)
+            rank = idx + 1
             render_deck_in_sidebar(deck, rank=rank)
     
-        # Add disclaimer with update time in one line
+        # Add disclaimer with update time
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.markdown(f"""
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
@@ -486,25 +490,28 @@ def render_sidebar_from_cache():
         </div>
         """, unsafe_allow_html=True)
         
-        
         # Add expandable methodology section
         st.write("")
         with st.expander("🔍 About the Power Index"):
-            # Get current month and year
-            current_month_year = datetime.now().strftime("%B %Y")
-            
-            # Format the explanation with the current date and tournament count
+            # Format and display the explanation
             formatted_explanation = POWER_INDEX_EXPLANATION.format(
                 tournament_count=TOURNAMENT_COUNT,
-                current_month_year=current_month_year
+                current_month_year=datetime.now().strftime("%B %Y")
             )
-            
-            # Display the enhanced explanation
             st.markdown(formatted_explanation)
+        
         # Add a divider
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
-        display_counter_picker_sidebar()
+        # Now use the placeholder to display the counter picker
+        if not st.session_state.counter_picker_displayed:
+            with st.session_state.counter_picker_placeholder:
+                display_counter_picker_sidebar()
+            # Mark as displayed
+            st.session_state.counter_picker_displayed = True
+        
+        # Add smaller margin instead of the huge one
+        #st.markdown("<hr style='margin-top: 50px; margin-bottom: 50px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
             
     else:
