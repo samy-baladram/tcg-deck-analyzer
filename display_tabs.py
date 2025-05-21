@@ -1380,7 +1380,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         unfavorable_share_norm = 0
     
     # Columns
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns([1,1,1,2])
     
     # Display favorable matchups
     with col1:
