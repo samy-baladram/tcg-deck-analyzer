@@ -6,13 +6,13 @@ BASE_URL = "https://play.limitlesstcg.com"
 IMAGE_BASE_URL = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"
 
 # Cache settings
-CACHE_TTL = 3600  # 1 hour in seconds
+CACHE_TTL = 60  # 1 hour in seconds
 
 # Add to config.py
 ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_recent_performance
 
 # Tournament count
-TOURNAMENT_COUNT = 50
+TOURNAMENT_COUNT = 70
 
 # Display settings
 MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
