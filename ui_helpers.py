@@ -11,7 +11,6 @@ from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT
 import pandas as pd
 import base64
 import os
-import math
 from display_tabs import display_counter_picker, fetch_matchup_data, create_deck_header_images
 
 ENERGY_CACHE_FILE = "cached_data/energy_types.json"
@@ -259,32 +258,9 @@ def ensure_performance_data_updated():
             total_games = total_wins + total_losses + total_ties
             
             if total_games > 0:
-                # Handle ties as half-wins (common in card games)
-                adjusted_wins = total_wins + (0.5 * total_ties)
-                
-                # Calculate win proportion
-                win_proportion = adjusted_wins / total_games
-                
-                # Wilson Score Interval parameters
-                z = 1.96  # 95% confidence level
-                z_squared = z * z
-                
-                # Calculate Wilson Score lower bound
-                numerator = (win_proportion + (z_squared / (2 * total_games)) - 
-                             z * math.sqrt((win_proportion * (1 - win_proportion) + 
-                                          (z_squared / (4 * total_games))) / total_games))
-                
-                denominator = 1 + (z_squared / total_games)
-                
-                # Wilson Score lower bound (conservative estimate of true win rate)
-                wilson_score = numerator / denominator
-                
-                # Scale to make more intuitive (similar range to original power index)
-                # Transforming from 0-1 scale to -5 to +5 scale
-                #
-                power_index = 2#(wilson_score - 0.5) * 10
-            else:
-                power_index = 0.0
+                # NEW FORMULA HERE
+                return total_wins
+            return 0.0
         
         # Update power index and resort
         performance_df['power_index'] = performance_df.apply(recalculate_power_index, axis=1)
