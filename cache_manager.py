@@ -1022,6 +1022,8 @@ def update_matchup_cache(min_share=0.5):
 # Add to cache_manager.py
 
 # Add to cache_manager.py
+# In cache_manager.py - Update calculate_meta_weighted_winrate function
+
 def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     """
     Calculate meta-weighted win rate for a deck
@@ -1033,6 +1035,8 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     Returns:
         Meta-weighted win rate as a float, or None if no data available
     """
+    from config import MWWR_USE_SQUARED
+    
     # Get matchup data without causing recursion
     session_key = f"matchup_{deck_name}_{set_name}"
     
@@ -1048,17 +1052,33 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     if matchup_df is None or matchup_df.empty or 'meta_share' not in matchup_df.columns or 'win_pct' not in matchup_df.columns:
         return None
     
-    # Calculate total meta share
-    total_meta_share = matchup_df['meta_share'].sum()
+    # Apply squared formula if configured
+    if MWWR_USE_SQUARED:
+        # Create squared meta share column
+        matchup_df['meta_share_squared'] = matchup_df['meta_share'] ** 2
+        
+        # Calculate total meta share (squared)
+        total_meta_share = matchup_df['meta_share_squared'].sum()
+        
+        # Calculate weighted average win rate
+        if total_meta_share > 0:
+            # Weight each matchup's win rate by squared meta share
+            weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share_squared']).sum()
+            weighted_winrate = weighted_sum / total_meta_share
+            return weighted_winrate
+    else:
+        # Original formula (linear weighting)
+        total_meta_share = matchup_df['meta_share'].sum()
+        
+        # Calculate weighted average win rate
+        if total_meta_share > 0:
+            # Weight each matchup's win rate by meta share
+            weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share']).sum()
+            weighted_winrate = weighted_sum / total_meta_share
+            return weighted_winrate
     
-    # Calculate weighted average win rate
-    if total_meta_share > 0:
-        # Weight each matchup's win rate by its meta share
-        weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share']).sum()
-        weighted_winrate = weighted_sum / total_meta_share
-        return weighted_winrate
-    elif not matchup_df.empty:
-        # If no meta share data but we have win percentages, use simple average
+    # If no weighted calculation possible, use simple average
+    if not matchup_df.empty:
         return matchup_df['win_pct'].mean()
     
     return None
