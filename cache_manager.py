@@ -1184,3 +1184,59 @@ def calculate_all_meta_weighted_winrates():
     st.session_state.performance_data = performance_df
     
     return performance_df
+
+# Add to cache_manager.py
+
+def force_refresh_formula_calculations():
+    """
+    Force refresh of all formula-based calculations by:
+    1. Clearing performance data cache in memory
+    2. Reloading formula configuration from disk
+    3. Recalculating meta-weighted win rates
+    
+    Returns:
+        Updated performance DataFrame with recalculated values
+    """
+    import streamlit as st
+    from datetime import datetime
+    import os
+    from config import MWWR_USE_SQUARED, MWWR_DEVIATION_BASED
+    import cache_utils
+    
+    # Log current formula config
+    print(f"Current formula config before refresh: SQUARED={MWWR_USE_SQUARED}, DEVIATION={MWWR_DEVIATION_BASED}")
+    
+    # 1. Reload formula configuration from disk
+    formula_config = cache_utils.load_formula_config()
+    
+    if formula_config:
+        # Update config module variables with loaded values
+        import config
+        config_changed = False
+        
+        for key, value in formula_config.items():
+            if hasattr(config, key):
+                old_value = getattr(config, key)
+                if old_value != value:
+                    setattr(config, key, value)
+                    config_changed = True
+                    print(f"Updated config: {key} from {old_value} to {value}")
+    
+        # Log updated formula config
+        print(f"Formula config after reload: SQUARED={config.MWWR_USE_SQUARED}, DEVIATION={config.MWWR_DEVIATION_BASED}")
+    
+    # 2. Clear any cached meta-weighted win rates in session state
+    if 'performance_data' in st.session_state and 'meta_weighted_winrate' in st.session_state.performance_data.columns:
+        # Remove the column but keep the DataFrame
+        print("Removing meta_weighted_winrate column from performance_data")
+        performance_df = st.session_state.performance_data.drop(columns=['meta_weighted_winrate'], errors='ignore')
+        st.session_state.performance_data = performance_df
+    
+    # 3. Force recalculation of all meta-weighted win rates
+    print("Recalculating all meta-weighted win rates")
+    updated_df = calculate_all_meta_weighted_winrates()
+    
+    # 4. Ensure the updated data is saved
+    cache_utils.save_tournament_performance_data(updated_df)
+    
+    return updated_df
