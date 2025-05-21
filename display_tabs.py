@@ -1411,7 +1411,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
-    
+    # Add a more detailed note about the data
+    st.write("")
+    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     
 
 def display_matchup_tab(deck_info=None):
@@ -1625,9 +1627,6 @@ def display_matchup_tab(deck_info=None):
         )
     # After working_df is prepared, display the matchup summary
     #display_matchup_summary(deck_name, set_name, working_df)
-    # Add a more detailed note about the data
-    st.write("")
-    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     # Add some space between summary and table
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
