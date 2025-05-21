@@ -1559,7 +1559,7 @@ def display_matchup_tab(deck_info=None):
         st.dataframe(
             styled_df,
             use_container_width=True,
-            height=900,
+            height=850,
             column_config={
                 "Rank": st.column_config.NumberColumn(
                     "#",
@@ -1615,7 +1615,7 @@ def display_matchup_tab(deck_info=None):
         st.dataframe(
             basic_df,
             use_container_width=True,
-            height=600,
+            height=850,
             column_config={
                 "Win %": st.column_config.NumberColumn(
                     "Win %",
