@@ -14,7 +14,7 @@ import streamlit as st
 from scraper import get_deck_urls, extract_cards, get_deck_performance_data
 from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD
 from utils import is_flexible_core, calculate_display_usage, format_card_display
-from energy_utils import store_energy_types
+#from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
 import math
 
