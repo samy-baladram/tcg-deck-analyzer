@@ -213,7 +213,7 @@ def create_variant_bar_chart(variant_data, energy_type=None):
     if include_mixed:
         single_data.append(mixed_pct)
         double_data.append(0)  # Mixed has no "double" component
-        text_single.append(format_card_style(1+1,mixed_pct) if mixed_pct > 0 else "")
+        text_single.append(format_card_style('1+1',mixed_pct) if mixed_pct > 0 else "")
         text_double.append("")  # No double for mixed
     
     # Add var2 data
