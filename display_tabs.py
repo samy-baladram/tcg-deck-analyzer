@@ -70,7 +70,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
         if not type_cards.empty:
             # Pass primary energy type to chart
             fig = create_usage_bar_chart(type_cards, 'Pokemon', primary_energy)
-            display_chart(fig)
+            display_chart(fig, key="usage_pokemon_chart")
         else:
             st.info("No Pokemon cards found")
 
@@ -102,7 +102,8 @@ def display_card_usage_tab(results, total_decks, variant_df):
                     with var_col2:
                         # Create variant bar chart with primary energy type
                         fig_var = create_variant_bar_chart(row, primary_energy)
-                        display_chart(fig_var) 
+                        variant_key = f"usage_variant_{row['Card Name'].replace(' ', '_')}_{_}"
+                        display_chart(fig_var, key=variant_key) 
         
         # Add Energy Table at the bottom of column 1
         # st.write("##### Energy Analysis")
@@ -116,7 +117,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
         if not type_cards.empty:
             # Keep default colors for trainers
             fig = create_usage_bar_chart(type_cards, 'Trainer')
-            display_chart(fig)
+            display_chart(fig, key="usage_trainer_chart")
         else:
             st.info("No Trainer cards found")
 
@@ -734,7 +735,8 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
 
                             # Create variant bar chart with primary energy type
                             fig_var = create_variant_bar_chart(row, primary_energy)
-                            display_chart(fig_var)
+                            variant_key = f"template_variant_{row['Card Name'].replace(' ', '_')}_{_}"
+                            display_chart(fig_var, key=variant_key)
         
         with flex_col2:
             # Only show Trainer options if there are any
