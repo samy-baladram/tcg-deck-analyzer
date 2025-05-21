@@ -1347,7 +1347,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         set_name: Current deck set
         working_df: DataFrame with matchup data already processed
     """
-    st.write("###### Meta Matchup Distribution")
+    #st.write("###### Meta Matchup Distribution")
     
     # Check if we have matchup data with meta share
     if working_df.empty or 'meta_share' not in working_df.columns:
@@ -1412,9 +1412,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         </div>
         """, unsafe_allow_html=True)
     
-    # Add a more detailed note about the data
-    st.write("")
-    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
+    
 
 def display_matchup_tab(deck_info=None):
     """
@@ -1552,6 +1550,7 @@ def display_matchup_tab(deck_info=None):
     # Display the enhanced data table with all rows
     st.write("#### Matchup Data")
     
+    display_matchup_summary(deck_name, set_name, working_df)
     try:
         # First try with styled dataframe and images
         styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
@@ -1625,8 +1624,10 @@ def display_matchup_tab(deck_info=None):
             hide_index=True
         )
     # After working_df is prepared, display the matchup summary
-    display_matchup_summary(deck_name, set_name, working_df)
-    
+    #display_matchup_summary(deck_name, set_name, working_df)
+    # Add a more detailed note about the data
+    st.write("")
+    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     # Add some space between summary and table
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
