@@ -11,6 +11,7 @@ from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT
 import pandas as pd
 import base64
 import os
+import math
 from display_tabs import display_counter_picker, fetch_matchup_data, create_deck_header_images
 
 ENERGY_CACHE_FILE = "cached_data/energy_types.json"
