@@ -102,8 +102,12 @@ def save_current_config():
         'MWWR_MIN_SHARE': MWWR_MIN_SHARE
     }
     
+    # Print debug info
+    print(f"Saving config to disk: SQUARED={MWWR_USE_SQUARED}, DEVIATION={MWWR_DEVIATION_BASED}")
+    
     # Save to disk
     cache_utils.save_formula_config(config_dict)
 
-# Save configuration on module import
+# Make sure this function is called whenever a config value changes
+# Add this at the bottom of config.py
 save_current_config()
