@@ -17,8 +17,12 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # Add this at the top level (outside any function) in ui_helpers.py
 # Add this at the top level of ui_helpers.py
+# Modify the check_and_update_tournament_data function in ui_helpers.py
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
+    # Disable background updates if flag is set
+    if st.session_state.get('disable_background', False):
+        return
     # Import necessary modules
     import threading
     from datetime import datetime, timedelta
