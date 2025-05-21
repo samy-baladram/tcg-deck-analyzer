@@ -497,14 +497,13 @@ def render_sidebar_from_cache():
             # Display the enhanced explanation
             st.markdown(formatted_explanation)
         
-        # Add a divider
-        for _ in range(20):
-            st.write("")
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
         # Display counter picker directly (no container)
         display_counter_picker_sidebar()
-        st.markdown("<hr style='margin-top: 50px; margin-bottom: 50px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)    
+        # Add a divider
+        for _ in range(20):
+            st.write("")   
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
 
