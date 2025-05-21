@@ -177,7 +177,7 @@ if 'analyze' in st.session_state and selected_option:
                                                         ])
     
     with tab1:
-        display_tabs.display_deck_template_tab(results)
+        display_tabs.display_deck_template_tab(results, variant_df)
          # ADD THIS: Display last update time for the current deck
         last_update = ui_helpers.display_deck_update_info(
             original_deck_info['deck_name'], 
