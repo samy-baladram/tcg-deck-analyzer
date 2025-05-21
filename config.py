@@ -67,3 +67,36 @@ CATEGORY_LABELS = ['Tech', 'Standard', 'Core']
 
 # Flexible core thresholds
 FLEXIBLE_CORE_THRESHOLD = 25
+
+# Text for sidebar
+POWER_INDEX_EXPLANATION = """
+#### Power Index: How We Rank the Best Decks
+
+**Data Source and Limitations**  
+The Power Index uses recent tournament data from [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed), specifically the most recent {tournament_count} tournaments. This provides a rolling window of competitive results that adapts as the metagame evolves. Note that this data only includes reported "Best Finish" results, which may represent a subset of all matches played.
+
+**Formula and Methodology**  
+The Power Index is calculated as:
+
+Power Index = (Wins - Losses) / √(Wins + Losses)
+
+This formula balances three critical factors:
+* Win-loss differential (raw performance)
+* Sample size (statistical confidence)
+* Recent metagame context (using latest tournament data)
+
+**Advantages Over Alternative Metrics**
+* **More robust than Win Rate**: Differentiates between decks with small sample sizes and those with proven consistency
+* **More dynamic than Popularity**: Measures actual competitive performance rather than just prevalence in the meta
+* **More normalized than Raw Record**: A 20-5 record and a 40-10 record would have different win rates but similar Power Index values, properly accounting for confidence
+
+**Interpretation Guide**
+* **Positive values**: Indicate winning records (higher values = stronger performance)
+* **Negative values**: Indicate losing records (generally filtered from top displays)
+* **Magnitude**: Values typically range from -3 to +3, with top-tier decks usually above 1.0
+
+**Important Caveats**
+* The metric is sensitive to metagame shifts and tournament representation
+* Limited by the quantity of available tournament data
+* Best used as one factor in deck selection alongside matchup analysis and personal play style considerations
+"""
