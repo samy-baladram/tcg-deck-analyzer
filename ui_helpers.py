@@ -439,18 +439,14 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             print(f"Error rendering deck in sidebar: {e}")
         
 def render_sidebar_from_cache():
-    # Initialize the session state variable for counter picker
-    if 'counter_picker_displayed' not in st.session_state:
-        st.session_state.counter_picker_displayed = False
-    
     # Call update check function for background updates
     check_and_update_tournament_data()
     
-    # Get current month and year for display - MOVED THIS UP
-    from datetime import datetime
-    current_month_year = datetime.now().strftime("%B %Y")
+    # Create a container for the counter picker at the beginning
+    # This reserves its place in the DOM order
+    counter_picker_container = st.sidebar.container()
     
-    # Load and encode the banner image if it exists
+    # Load and encode the banner image
     banner_path = "sidebar_banner.png"
     if os.path.exists(banner_path):
         with open(banner_path, "rb") as f:
@@ -463,26 +459,25 @@ def render_sidebar_from_cache():
     else:
         st.title("Top 10 Meta Decks")
     
-    # Check if we should display counter picker now
-    if not st.session_state.counter_picker_displayed:
-        # Create placeholder for the counter picker
-        st.session_state.counter_picker_placeholder = st.sidebar.empty()
-    
     # Ensure energy cache is initialized
     import cache_manager
     cache_manager.ensure_energy_cache()
+    
+    # Get current month and year for display
+    from datetime import datetime
+    current_month_year = datetime.now().strftime("%B %Y")
     
     # Display performance data if it exists
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Get the top 10 performing decks
         top_decks = st.session_state.performance_data.head(10)
         
-        # Render each deck one by one
+        # Render each deck one by one, passing the rank (index + 1)
         for idx, deck in top_decks.iterrows():
-            rank = idx + 1
+            rank = idx + 1  # Calculate rank (1-based)
             render_deck_in_sidebar(deck, rank=rank)
     
-        # Add disclaimer with update time
+        # Add disclaimer with update time in one line
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         st.markdown(f"""
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
@@ -497,27 +492,25 @@ def render_sidebar_from_cache():
         # Add expandable methodology section
         st.write("")
         with st.expander("🔍 About the Power Index"):
-            # Format and display the explanation
+            # Format the explanation with the current date and tournament count
             formatted_explanation = POWER_INDEX_EXPLANATION.format(
                 tournament_count=TOURNAMENT_COUNT,
-                current_month_year=datetime.now().strftime("%B %Y")
+                current_month_year=current_month_year
             )
+            
+            # Display the enhanced explanation
             st.markdown(formatted_explanation)
         
         # Add a divider
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
-        # Now use the placeholder to display the counter picker
-        if not st.session_state.counter_picker_displayed:
-            with st.session_state.counter_picker_placeholder:
-                display_counter_picker_sidebar()
-            # Mark as displayed
-            st.session_state.counter_picker_displayed = True
+        # Now use the container to display the counter picker
+        with counter_picker_container:
+            display_counter_picker_sidebar()
         
-        # Add smaller margin instead of the huge one
-        #st.markdown("<hr style='margin-top: 50px; margin-bottom: 50px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
-        st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
-            
+        # Add a smaller margin
+        st.markdown("<hr style='margin-top: 50px; margin-bottom: 50px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+        #st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)    
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
 
