@@ -141,15 +141,15 @@ def display_banner(img_path, max_width=900):
 
 def load_initial_data():
     """Load only essential initial data for fast app startup"""
+    # Initialize minimal caches first
+    cache_manager.init_caches()
+    
     # Initialize session state variables
     if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = None
+        st.session_state.selected_deck_index = 0  # Pre-select first option (index 0)
         
     if 'deck_to_analyze' not in st.session_state:
         st.session_state.deck_to_analyze = None
-    
-    # Initialize minimal caches first
-    cache_manager.init_caches()
     
     # Initialize deck list if not already loaded
     if 'deck_list' not in st.session_state:
@@ -319,10 +319,34 @@ def create_deck_selector():
         # Store for reuse
         st.session_state.deck_display_names = deck_display_names
         st.session_state.deck_name_mapping = deck_name_mapping
+        
+        # Pre-select first deck if we have options and no selection yet
+        if deck_display_names and (st.session_state.selected_deck_index is None or 'analyze' not in st.session_state):
+            st.session_state.selected_deck_index = 0
+            
+            # Set the first deck to analyze
+            first_deck_display = deck_display_names[0]
+            first_deck_info = deck_name_mapping[first_deck_display]
+            st.session_state.analyze = {
+                'deck_name': first_deck_info['deck_name'],
+                'set_name': first_deck_info['set'],
+            }
     else:
         # Use cached options
         deck_display_names = st.session_state.deck_display_names
         deck_name_mapping = st.session_state.deck_name_mapping
+        
+        # Check if we need to pre-select first deck
+        if deck_display_names and (st.session_state.selected_deck_index is None or 'analyze' not in st.session_state):
+            st.session_state.selected_deck_index = 0
+            
+            # Set the first deck to analyze
+            first_deck_display = deck_display_names[0]
+            first_deck_info = deck_name_mapping[first_deck_display]
+            st.session_state.analyze = {
+                'deck_name': first_deck_info['deck_name'],
+                'set_name': first_deck_info['set'],
+            }
     
     # Calculate time ago
     time_str = calculate_time_ago(st.session_state.fetch_time)
