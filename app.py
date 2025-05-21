@@ -26,82 +26,18 @@ st.set_page_config(
 # Add background from repository
 background.add_app_background()
 
+# In app.py - before using any session state variables
 # Initialize app state tracking and load initial data
 if 'app_state' not in st.session_state:
     st.session_state.app_state = {
         'initial_data_loaded': False
     }
+    
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
-    
-    # Load formula configuration
-    import cache_utils
-    formula_config = cache_utils.load_formula_config()
-    
-    if formula_config:
-        # Apply the loaded configuration to the current session
-        import config
-        
-        # Update config module variables with loaded values
-        for key, value in formula_config.items():
-            if hasattr(config, key):
-                setattr(config, key, value)
-                print(f"Applied saved configuration: {key} = {value}")
-    
-    # Make sure meta-weighted win rate is calculated
-    import cache_manager
-    cache_manager.ensure_meta_weighted_winrate()
-    
     st.session_state.app_state['initial_data_loaded'] = True
-
-if 'performance_data' in st.session_state and 'meta_weighted_winrate' in st.session_state.performance_data.columns:
-    # Look for formula type mismatch
-    from config import MWWR_DEVIATION_BASED
-    
-    # Check if values have correct range for the formula type
-    df = st.session_state.performance_data
-    max_value = df['meta_weighted_winrate'].max()
-    
-    # For deviation formula: values should be in range -50 to 50 (approximately)
-    # For percentage formula: values should be in range 0 to 100
-    formula_mismatch = (MWWR_DEVIATION_BASED and max_value > 60) or (not MWWR_DEVIATION_BASED and max_value < 1)
-    
-    if formula_mismatch:
-        print(f"Detected formula mismatch! Max value: {max_value}, MWWR_DEVIATION_BASED: {MWWR_DEVIATION_BASED}")
-        import cache_manager
-        st.session_state.performance_data = cache_manager.force_refresh_formula_calculations()
-
-# Add this after loading initial data in app.py
-def initialize_matchup_cache():
-    """Initialize matchup cache when app starts"""
-    # Only run this once when the app starts
-    if 'matchup_cache_initialized' not in st.session_state:
-        # Import the necessary modules
-        import cache_manager
-        import threading
-        from config import MWWR_MIN_SHARE
-        
-        # Define a background update function
-        def update_matchups_background():
-            try:
-                # Update matchups for decks with at least min_share meta share
-                updated_count = cache_manager.update_matchup_cache(min_share=MWWR_MIN_SHARE)
-                print(f"Updated matchups for {updated_count} decks in background")
-            except Exception as e:
-                print(f"Error updating matchups in background: {e}")
-        
-        # Start the update in a background thread
-        thread = threading.Thread(target=update_matchups_background)
-        thread.daemon = True
-        thread.start()
-        
-        # Mark as initialized
-        st.session_state.matchup_cache_initialized = True
-
-# Call the initialization function
-initialize_matchup_cache()
 
 # Apply custom styles - IMPORTANT: Put CSS before any components render
 st.markdown("""
@@ -241,7 +177,7 @@ if 'analyze' in st.session_state and selected_option:
                                                         ])
     
     with tab1:
-        display_tabs.display_deck_template_tab(results, variant_df)
+        display_tabs.display_deck_template_tab(results)
          # ADD THIS: Display last update time for the current deck
         last_update = ui_helpers.display_deck_update_info(
             original_deck_info['deck_name'], 
@@ -283,55 +219,6 @@ st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
 # Load sidebar AFTER main content to ensure main interface loads first
 #ui_helpers.render_sidebar()
 
-# Only shown in development mode
-st.markdown("<hr style='margin: 2rem 0;'>", unsafe_allow_html=True)
-st.subheader("Developer Options")
-
-# Formula configuration section
-with st.expander("Formula Configuration"):
-    from config import MWWR_DEVIATION_BASED, MWWR_USE_SQUARED
-    
-    # Show current configuration
-    st.write("### Current Configuration")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write(f"Deviation Based: **{MWWR_DEVIATION_BASED}**")
-    
-    with col2:
-        st.write(f"Squared Weighting: **{MWWR_USE_SQUARED}**")
-        
-    # Add reset options
-    st.write("### Reset Configuration")
-    reset_col1, reset_col2, reset_col3 = st.columns([2, 2, 1])
-    
-    with reset_col1:
-        new_deviation = st.checkbox("Use Deviation Formula", value=True)
-    
-    with reset_col2:
-        new_squared = st.checkbox("Use Squared Weighting", value=True)
-        
-    with reset_col3:
-        if st.button("Reset Formulas"):
-            # Import reset function
-            import cache_utils
-            success = cache_utils.reset_formula_config(
-                deviation_based=new_deviation,
-                use_squared=new_squared
-            )
-            
-            if success:
-                # Force reload the page to apply changes
-                st.rerun()
-            else:
-                st.error("Failed to reset formula configuration")
-
-    # Add a hard refresh option
-    if st.button("Force Recalculation", help="Force recalculation of all meta-weighted win rates"):
-        import cache_manager
-        updated_df = cache_manager.force_refresh_formula_calculations()
-        st.success(f"Recalculated meta-weighted win rates for {len(updated_df)} decks")
-        st.rerun()
 
 # Footer
 st.markdown("---")
