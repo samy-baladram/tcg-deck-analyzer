@@ -1,3 +1,4 @@
 [theme]
 # Primary accent color for interactive elements
+base="dark"
 primaryColor = "#00A0FF"  # This is the blue color I see in your CSS
