@@ -1551,11 +1551,11 @@ def display_matchup_tab(deck_info=None):
     
     # Display the enhanced data table with all rows
     display_matchup_summary(deck_name, set_name, working_df)
-    st.write("###### Matchup Data")
+    
     try:
         # First try with styled dataframe and images
         styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
-        
+        st.write("###### Matchup Data")
         st.dataframe(
             styled_df,
             use_container_width=True,
