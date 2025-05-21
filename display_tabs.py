@@ -661,7 +661,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
     from card_renderer import CardGrid
     
     # Core Cards: Pokemon and Trainer in columns with 1:2 ratio
-    core_col1, core_col2 = st.columns([1, 2])
+    core_col1, core_col2 = st.columns([1, 1])
     
     with core_col1:
         # Pokemon cards section
