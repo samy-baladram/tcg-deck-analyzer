@@ -1528,6 +1528,9 @@ def display_matchup_tab(deck_info=None):
     Args:
         deck_info: Dictionary containing deck information (optional)
     """
+    # Import meta share threshold
+    from config import MWWR_MIN_SHARE
+    
     #st.subheader("Matchup Analysis")
     import pandas as pd
     import re
@@ -1577,10 +1580,9 @@ def display_matchup_tab(deck_info=None):
         
         # Use filtered data if we found matches
         if not filtered_df.empty:
-            #st.success(f"Showing {len(filtered_df)} meta deck matchups")
             working_df = filtered_df.drop(columns=['deck_name_lower'])
         else:
-            st.warning("No matches found with current meta decks. Showing all matchups instead.")
+            st.warning(f"No matches found with meta decks (share > {MWWR_MIN_SHARE}%). Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
        
     # Function to extract Pokémon names and create image URLs
