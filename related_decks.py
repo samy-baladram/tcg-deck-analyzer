@@ -1,5 +1,6 @@
 # Add this to a new file called related_decks.py
 
+import streamlit as st
 import pandas as pd
 from image_processor import extract_pokemon_from_deck_name
 
