@@ -17,8 +17,6 @@ ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # Add this at the top level (outside any function) in ui_helpers.py
 # Add this at the top level of ui_helpers.py
-# In ui_helpers.py - Modify check_and_update_tournament_data function
-
 def check_and_update_tournament_data():
     """Check if tournament data needs updating and start background update if needed"""
     # Import necessary modules
@@ -45,10 +43,6 @@ def check_and_update_tournament_data():
                 try:
                     # Update tournament data without spinner
                     performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
-                    
-                    # Ensure meta-weighted win rate is calculated
-                    if 'meta_weighted_winrate' not in performance_df.columns:
-                        performance_df = cache_manager.calculate_all_meta_weighted_winrates()
                     
                     # Update session state
                     st.session_state.performance_data = performance_df
@@ -198,8 +192,6 @@ def load_initial_data():
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
 
-# In ui_helpers.py - Modify create_deck_options function
-
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
     # Initialize deck display names and mapping
@@ -208,39 +200,13 @@ def create_deck_options():
     
     # First try to use performance data
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Make sure meta_weighted_winrate is calculated
-        import cache_manager
-        from config import MWWR_DEVIATION_BASED
-        
-        if 'meta_weighted_winrate' not in st.session_state.performance_data.columns:
-            performance_df = cache_manager.calculate_all_meta_weighted_winrates()
-        else:
-            performance_df = st.session_state.performance_data
-        
-        # Sort by meta_weighted_winrate instead of power_index
-        if 'meta_weighted_winrate' in performance_df.columns:
-            top_performing_decks = performance_df.sort_values('meta_weighted_winrate', ascending=False).head(30)
-        else:
-            # Fallback to power_index if meta_weighted_winrate not available
-            top_performing_decks = performance_df.head(30)
+        # Get top 30 decks from performance data
+        top_performing_decks = st.session_state.performance_data.head(30)
         
         for _, deck in top_performing_decks.iterrows():
-            # Use meta_weighted_winrate if available, otherwise fallback to power_index
-            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] != 0:
-                # Format based on formula type
-                if MWWR_DEVIATION_BASED:
-                    # For deviation-based, show sign explicitly
-                    win_rate = deck['meta_weighted_winrate']
-                    sign = "+" if win_rate > 0 else ""
-                    metric = f"{sign}{win_rate:.1f}"
-                else:
-                    # For percentage-based, format as percentage
-                    metric = f"{deck['meta_weighted_winrate']:.1f}%"
-            else:
-                metric = f"PI: {deck['power_index']:.2f}"
-                
-            # Format: "Deck Name (Metric)"
-            display_name = f"{deck['displayed_name']} ({metric})"
+            power_index = round(deck['power_index'], 2)
+            # Format: "Deck Name (Power Index)"
+            display_name = f"{deck['displayed_name']} ({power_index})"
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
@@ -258,8 +224,8 @@ def create_deck_options():
                 
         # Now we're sure deck_list exists, use it
         try:
-            from config import MWWR_MIN_SHARE
-            popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MWWR_MIN_SHARE]
+            from config import MIN_META_SHARE
+            popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
             
             for _, row in popular_decks.iterrows():
                 display_name = format_deck_option(row['deck_name'], row['share'])
@@ -312,8 +278,6 @@ def on_deck_change():
     else:
         st.session_state.selected_deck_index = None
 
-# In ui_helpers.py - Update create_deck_selector function
-
 def create_deck_selector():
     """Create and display the deck selector dropdown with minimal loading"""
     # Initialize session state variables if they don't exist
@@ -363,7 +327,7 @@ def create_deck_selector():
     
     # Create label and help text
     label_text = f"Current Set: {current_set}"
-    help_text = f"Showing top performing decks sorted by Meta-Weighted Win Rate. Updated {time_str}."
+    help_text = f"Showing top performing decks. Updated {time_str}."
     
     # Display the selectbox
     selected_option = st.selectbox(
@@ -379,10 +343,11 @@ def create_deck_selector():
     return selected_option
 
 # In ui_helpers.py - Updated render_deck_in_sidebar function
-# In ui_helpers.py - Modify render_deck_in_sidebar function
-
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
     """Render a single deck in the sidebar"""
+    # Format power index to 2 decimal places
+    power_index = round(deck['power_index'], 2)
+    
     # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
     circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
     
@@ -391,8 +356,8 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
     if rank is not None and 0 <= rank <= 10:
         rank_symbol = circled_numbers[rank]
     
-    # Create a plain text expander title with just the rank and deck name
-    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']}", expanded=expanded):
+    # Create a plain text expander title with the rank and power index
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ({power_index})", expanded=expanded):
         # Get sample deck data
         deck_name = deck['deck_name']
         
@@ -417,52 +382,15 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             
             # Display the deck
             st.markdown(deck_html, unsafe_allow_html=True)
-            
-            # Display meta-weighted win rate as a caption
-            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] != 0:
-                # Get configuration
-                from config import MWWR_DEVIATION_BASED
-                
-                # Get the value
-                win_rate = deck['meta_weighted_winrate']
-                
-                # Format differently based on formula type
-                if MWWR_DEVIATION_BASED:
-                    # For deviation-based, show sign explicitly
-                    sign = "+" if win_rate > 0 else ""
-                    # Determine color based on value (positive is good, negative is bad)
-                    win_color = "#4FCC20" if win_rate >= 10 else "#fd6c6c" if win_rate < 0 else "#fd9a00"
-                    formatted_value = f"{sign}{win_rate:.1f}"
-                else:
-                    # For percentage-based, format as percentage
-                    win_color = "#4FCC20" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fd9a00"
-                    formatted_value = f"{win_rate:.1f}%"
-                
-                # Create a styled caption with the win rate
-                st.markdown(f"""
-                <div style="text-align: center; margin-top: 5px;">
-                    <span style="font-weight: bold; color: {win_color};">
-                        {formatted_value} Meta-Weighted Score
-                    </span>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                # Show power index as fallback if no meta-weighted win rate
-                st.caption("")
-            
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
         
-# In ui_helpers.py - Modify render_sidebar_from_cache function
-
 def render_sidebar_from_cache():
     """Render the sidebar using cached data instead of fetching new data"""
     # Call update check function for background updates
     check_and_update_tournament_data()
-    from config import MWWR_DEVIATION_BASED, MWWR_USE_SQUARED
-    formula_type = "Deviation-based" if MWWR_DEVIATION_BASED else ("Squared Meta Share" if MWWR_USE_SQUARED else "Linear Meta Share")
-    st.sidebar.caption(f"Using {formula_type} formula for Meta-Weighted Win Rate")
+    
     # Load and encode the banner image if it exists
     banner_path = "sidebar_banner.png"
     if os.path.exists(banner_path):
@@ -486,29 +414,12 @@ def render_sidebar_from_cache():
     
     # Display performance data if it exists
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Make sure meta_weighted_winrate is calculated
-        if 'meta_weighted_winrate' not in st.session_state.performance_data.columns:
-            performance_data = cache_manager.calculate_all_meta_weighted_winrates()
-        else:
-            performance_data = st.session_state.performance_data.copy()
-        
-        # Sort by meta_weighted_winrate
-        if 'meta_weighted_winrate' in performance_data.columns:
-            # Create a temporary rank column for tracking
-            performance_data = performance_data.sort_values('meta_weighted_winrate', ascending=False).reset_index(drop=True)
-            performance_data['mwwr_rank'] = performance_data.index + 1  # 1-based ranking
-        
         # Get the top 10 performing decks
-        top_decks = performance_data.head(10)
+        top_decks = st.session_state.performance_data.head(10)
         
-        # Render each deck one by one, using mwwr_rank for medal assignment
+        # Render each deck one by one, passing the rank (index + 1)
         for idx, deck in top_decks.iterrows():
-            # Use meta-weighted win rate rank for medal if available
-            if 'mwwr_rank' in deck:
-                rank = deck['mwwr_rank']  # Use pre-calculated rank
-            else:
-                rank = idx + 1  # Fallback to index + 1
-                
+            rank = idx + 1  # Calculate rank (1-based)
             render_deck_in_sidebar(deck, rank=rank)
     
         # Add disclaimer with update time in one line
@@ -523,46 +434,36 @@ def render_sidebar_from_cache():
         </div>
         """, unsafe_allow_html=True)
         
-        # Add expandable methodology section
+        
         # Add expandable methodology section
         st.write("")
-        with st.expander("🔍 About the Meta-Weighted Win Rate"):
-            from config import (
-                MWWR_FORMULA_STANDARD, MWWR_FORMULA_DEVIATION, 
-                MWWR_DESCRIPTION_STANDARD, MWWR_DESCRIPTION_DEVIATION,
-                MWWR_USE_SQUARED, MWWR_DEVIATION_BASED
-            )
-            
-            # Choose the appropriate formula and description based on config
-            if MWWR_DEVIATION_BASED:
-                formula_display = MWWR_FORMULA_DEVIATION
-                description = MWWR_DESCRIPTION_DEVIATION
-            else:
-                formula_display = MWWR_FORMULA_STANDARD
-                if MWWR_USE_SQUARED:
-                    formula_display = formula_display.replace("meta share", "meta share²")
-                description = MWWR_DESCRIPTION_STANDARD
-            
+        with st.expander("🔍 About the Power Index"):
             st.markdown(f"""
-            #### Meta-Weighted Win Rate: How We Rank the Best Decks
+            #### Power Index: How We Rank the Best Decks
             
             **Where the Data Comes From**  
-            Our Meta-Weighted Win Rate uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform against the current metagame.
+            Our Power Index uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in the most recent competitive play, not just how popular they are.
             
-            **What the Meta-Weighted Win Rate Measures**  
-            {formula_display}
+            **What the Power Index Measures**  
+            The Power Index is calculated as:
+            """)
             
-            {description}
+            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
+            
+            st.markdown("""
+            This formula captures three key things:
+            * How many more wins than losses a deck achieves
+            * The value of ties (counted as 75% of a win)
+            * Statistical confidence (more games = more reliable data)
             
             **Why It's Better Than Other Methods**
-            * **Better than Win Rate**: Accounts for who you're actually beating
-            * **Better than Power Index**: Directly measures performance against the current metagame
-            * **Better than Meta Share**: Shows actual effectiveness, not just popularity
+            * **Better than Win Rate**: Accounts for both winning and avoiding losses
+            * **Better than Popularity**: Measures actual performance, not just what people choose to play
+            * **Better than Record Alone**: Balances impressive results against sample size
             
             **Reading the Numbers**
-            * **Higher is Better**: The higher the Meta-Weighted Win Rate, the stronger the deck is against the current metagame
-            * **Above 0**: Expected to perform well in the meta
-            * **Below 0**: May struggle against common decks
+            * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
+            * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
             """)
         # Add a divider
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
