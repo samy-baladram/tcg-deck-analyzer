@@ -36,6 +36,20 @@ if 'app_state' not in st.session_state:
 if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
     
+    # Load formula configuration
+    import cache_utils
+    formula_config = cache_utils.load_formula_config()
+    
+    if formula_config:
+        # Apply the loaded configuration to the current session
+        import config
+        
+        # Update config module variables with loaded values
+        for key, value in formula_config.items():
+            if hasattr(config, key):
+                setattr(config, key, value)
+                print(f"Applied saved configuration: {key} = {value}")
+    
     # Make sure meta-weighted win rate is calculated
     import cache_manager
     cache_manager.ensure_meta_weighted_winrate()
