@@ -167,13 +167,12 @@ if 'analyze' in st.session_state and selected_option:
     display_tabs.display_deck_header(original_deck_info, results)
     
     # Create tab container
-    tab1, tab2, tab3, tab4, tab5, tab6,tab7 = st.tabs(["Deck Template", 
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
                                                         "Card Usage",  
                                                         "Meta Matchups",
                                                         "Metagame Overview",
                                                         "Related Decks",
-                                                        "Raw Data", 
-                                                        "Meta Counter Picker"
+                                                        "Raw Data"
                                                         ])
     
     with tab1:
