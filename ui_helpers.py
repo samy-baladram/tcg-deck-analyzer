@@ -506,17 +506,17 @@ def render_sidebar_from_cache():
                 
                 # Display the enhanced explanation
                 st.markdown(formatted_explanation)
-            
-        st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
-        
-        # Display counter picker directly (no container)
-        display_counter_picker_sidebar()
-        st.markdown("""
-        <div style="height: 300px;"></div>
-        """, unsafe_allow_html=True)  
+     
     else:
-        st.info(f"No tournament performance data available for {current_month_year}")
-
+        st.write("")
+        #st.info(f"No tournament performance data available for {current_month_year}")
+    st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+    # Display counter picker directly (no container)
+    display_counter_picker_sidebar()
+    st.markdown("""
+    <div style="height: 300px;"></div>
+    """, unsafe_allow_html=True) 
+    
 def display_deck_update_info(deck_name, set_name):
     """Display when the deck was last updated"""
     import os
