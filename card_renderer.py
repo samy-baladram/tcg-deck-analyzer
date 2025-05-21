@@ -225,7 +225,7 @@ class CardRenderer:
         #     </div>
         # </div>"""
         variant_html = f"""
-            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; margin-top:-10px; margin-bottom:-20px; justify-content:center;">
                 <div style="text-align:center; margin-bottom:0px;"><strong>{var1}</strong></div>
                 {
                     f'<img class="card-image" src="{var1_url}" style="max-height:100px; max-width:100%; object-fit:contain; margin-bottom:10px; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
