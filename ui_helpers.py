@@ -198,6 +198,8 @@ def load_initial_data():
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
 
+# In ui_helpers.py - Modify create_deck_options function
+
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
     # Initialize deck display names and mapping
@@ -206,13 +208,29 @@ def create_deck_options():
     
     # First try to use performance data
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Get top 30 decks from performance data
-        top_performing_decks = st.session_state.performance_data.head(30)
+        # Make sure meta_weighted_winrate is calculated
+        import cache_manager
+        if 'meta_weighted_winrate' not in st.session_state.performance_data.columns:
+            performance_df = cache_manager.calculate_all_meta_weighted_winrates()
+        else:
+            performance_df = st.session_state.performance_data
+        
+        # Sort by meta_weighted_winrate instead of power_index
+        if 'meta_weighted_winrate' in performance_df.columns:
+            top_performing_decks = performance_df.sort_values('meta_weighted_winrate', ascending=False).head(30)
+        else:
+            # Fallback to power_index if meta_weighted_winrate not available
+            top_performing_decks = performance_df.head(30)
         
         for _, deck in top_performing_decks.iterrows():
-            power_index = round(deck['power_index'], 2)
-            # Format: "Deck Name (Power Index)"
-            display_name = f"{deck['displayed_name']} ({power_index})"
+            # Use meta_weighted_winrate if available, otherwise fallback to power_index
+            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] > 0:
+                metric = f"{deck['meta_weighted_winrate']:.1f}%"
+            else:
+                metric = f"PI: {deck['power_index']:.2f}"
+                
+            # Format: "Deck Name (Metric)"
+            display_name = f"{deck['displayed_name']} ({metric})"
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
@@ -230,8 +248,8 @@ def create_deck_options():
                 
         # Now we're sure deck_list exists, use it
         try:
-            from config import MIN_META_SHARE
-            popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
+            from config import MWWR_MIN_SHARE
+            popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MWWR_MIN_SHARE]
             
             for _, row in popular_decks.iterrows():
                 display_name = format_deck_option(row['deck_name'], row['share'])
@@ -284,6 +302,8 @@ def on_deck_change():
     else:
         st.session_state.selected_deck_index = None
 
+# In ui_helpers.py - Update create_deck_selector function
+
 def create_deck_selector():
     """Create and display the deck selector dropdown with minimal loading"""
     # Initialize session state variables if they don't exist
@@ -333,7 +353,7 @@ def create_deck_selector():
     
     # Create label and help text
     label_text = f"Current Set: {current_set}"
-    help_text = f"Showing top performing decks. Updated {time_str}."
+    help_text = f"Showing top performing decks sorted by Meta-Weighted Win Rate. Updated {time_str}."
     
     # Display the selectbox
     selected_option = st.selectbox(
