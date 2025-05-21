@@ -562,3 +562,43 @@ def update_all_matchups(min_share=0.5):
     except Exception as e:
         logger.error(f"Error updating all matchups: {e}")
         return 0
+        
+def reset_formula_config(deviation_based=True, use_squared=True):
+    """
+    Reset formula configuration to specified values and clear related caches
+    
+    Args:
+        deviation_based: Whether to use deviation-based formula
+        use_squared: Whether to use squared meta share weighting
+        
+    Returns:
+        Boolean indicating success
+    """
+    try:
+        # Update config.py values
+        import config
+        config.MWWR_DEVIATION_BASED = deviation_based
+        config.MWWR_USE_SQUARED = use_squared
+        
+        # Save to disk
+        config.save_current_config()
+        
+        # Clear performance data from disk cache
+        import os
+        if os.path.exists(TOURNAMENT_DATA_PATH):
+            os.remove(TOURNAMENT_DATA_PATH)
+            print(f"Removed tournament performance data cache: {TOURNAMENT_DATA_PATH}")
+        
+        # Clear from session state if exists
+        import streamlit as st
+        if 'performance_data' in st.session_state and 'meta_weighted_winrate' in st.session_state.performance_data.columns:
+            # Remove the column but keep the DataFrame
+            performance_df = st.session_state.performance_data.drop(columns=['meta_weighted_winrate'], errors='ignore')
+            st.session_state.performance_data = performance_df
+            print("Removed meta_weighted_winrate column from session state")
+        
+        print(f"Reset formula config to: DEVIATION={deviation_based}, SQUARED={use_squared}")
+        return True
+    except Exception as e:
+        print(f"Error resetting formula config: {e}")
+        return False
