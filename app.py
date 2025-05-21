@@ -13,12 +13,15 @@ import base64
 import os
 
 from PIL import Image
-
-import os
-import shutil
-import pathlib
 import streamlit as st
-from cache_utils import CACHE_DIR
+
+favicon = Image.open("favicon.png")  # PNG format
+
+st.set_page_config(
+    page_title="PTCGP Deck Analyzer",
+    page_icon=favicon,
+    layout="wide"
+)
 
 # Add background from repository
 background.add_app_background()
@@ -30,6 +33,7 @@ if 'app_state' not in st.session_state:
         'initial_data_loaded': False
     }
     
+
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
@@ -163,12 +167,13 @@ if 'analyze' in st.session_state and selected_option:
     display_tabs.display_deck_header(original_deck_info, results)
     
     # Create tab container
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
+    tab1, tab2, tab3, tab4, tab5, tab6,tab7 = st.tabs(["Deck Template", 
                                                         "Card Usage",  
                                                         "Meta Matchups",
                                                         "Metagame Overview",
                                                         "Related Decks",
-                                                        "Raw Data"
+                                                        "Raw Data", 
+                                                        "Meta Counter Picker"
                                                         ])
     
     with tab1:
