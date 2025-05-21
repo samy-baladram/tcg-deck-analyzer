@@ -41,7 +41,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
     """Display the Card Usage tab with energy-colored charts based on deck energy types"""
     # Create two columns for Pokemon and Trainer
     st.write("#### Card Usage & Variants")
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns([2, 3])
     
     # Get energy types using our improved function from ui_helpers
     from ui_helpers import get_energy_types_for_deck
@@ -661,7 +661,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
     from card_renderer import CardGrid
     
     # Core Cards: Pokemon and Trainer in columns with 1:2 ratio
-    core_col1, core_col2 = st.columns([1, 1])
+    core_col1, core_col2 = st.columns([2, 3])
     
     with core_col1:
         # Pokemon cards section
