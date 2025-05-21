@@ -432,8 +432,8 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             )
             
             # Display the deck
-            st.caption(f"Power Index: {power_index}")
             st.markdown(deck_html, unsafe_allow_html=True)
+            st.caption(f"Power Index: {power_index}")
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
