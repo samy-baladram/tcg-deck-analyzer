@@ -204,10 +204,11 @@ ui_helpers.display_banner("title_banner.png")
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
 
-# Define the sidebar container but don't populate it yet
-sidebar_container = st.sidebar.container()
+# Simple, direct sidebar rendering - ALWAYS runs but uses cached data
+with st.sidebar:
+    ui_helpers.render_sidebar_from_cache()  # You'll need to create this function
 
-# FIRST: Render main content
+# Main content area
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
     
@@ -241,32 +242,40 @@ if 'analyze' in st.session_state and selected_option:
         )
         if last_update:
             st.caption(last_update)
+       # st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)    
     
     with tab2:
         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
         st.caption(f"Data of 20 collected decks (with partial energy info). {last_update}")
+        #st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
         
     with tab3:
         display_tabs.display_matchup_tab()
+        #st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
         
     with tab4:
         display_tabs.display_metagame_tab() 
+        #st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
         
     with tab5:
         display_tabs.display_related_decks_tab(original_deck_info, results)
+        #st.markdown("<div style='margin-top: 300px;'></div>", unsafe_allow_html=True)
         
     with tab6:
         display_tabs.display_raw_data_tab(results, variant_df)
 
+    #with tab7:
+     #   display_tabs.display_counter_picker()
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
 st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
 st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
+#display_tabs.display_counter_picker()
 
-# SECOND: Now render the sidebar content after main content is rendered
-with sidebar_container:
-    ui_helpers.render_sidebar_from_cache()
+# Load sidebar AFTER main content to ensure main interface loads first
+#ui_helpers.render_sidebar()
+
 
 # Footer
 st.markdown("---")
