@@ -1320,129 +1320,14 @@ def generate_energy_analysis(deck_info):
             st.info("No collected decks found")
 
 # Add these functions to display_tabs.py
+# In display_tabs.py - Remove the circular reference
 def fetch_matchup_data(deck_name, set_name="A3"):
     """
     Fetch matchup data for a specific deck from Limitless TCG.
+    Uses cache_manager but doesn't create a circular reference.
     
     Args:
-        deck_name: The name of the deck (e.g., "giratina-ex-a2b-greninja-a1")
-        set_name: The set name (default: "A3")
-        
-    Returns:
-        DataFrame containing matchup data or empty DataFrame if not found
-    # """
-    # import requests
-    # from bs4 import BeautifulSoup
-    # import pandas as pd
-    # import re
-    # from config import BASE_URL
-    # import streamlit as st
-    
-    # # Construct the URL for matchups
-    # url = f"{BASE_URL}/decks/{deck_name}/matchups/?game=POCKET&format=standard&set={set_name}"
-    
-    # try:
-    #     # Fetch the webpage
-    #     response = requests.get(url)
-    #     if response.status_code != 200:
-    #         return pd.DataFrame()
-        
-    #     # Parse the HTML
-    #     soup = BeautifulSoup(response.text, 'html.parser')
-    #     table = soup.find('table', class_='striped')
-        
-    #     if not table:
-    #         return pd.DataFrame()
-        
-    #     # Get meta share data for opponent decks
-    #     meta_share_map = {}
-    #     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-    #         performance_data = st.session_state.performance_data
-    #         meta_share_map = {deck['deck_name']: deck['share'] for _, deck in performance_data.iterrows()}
-        
-    #     # Process each data row
-    #     rows = []
-    #     for row in table.find_all('tr')[1:]:  # Skip header row
-    #         cells = row.find_all(['td'])
-    #         if len(cells) < 5:
-    #             continue
-            
-    #         # Extract opponent deck display name
-    #         opponent_display_name = cells[1].text.strip()
-            
-    #         # Extract opponent deck raw name from URL
-    #         opponent_deck_name = ""
-    #         opponent_link = cells[1].find('a')
-            
-    #         if opponent_link and 'href' in opponent_link.attrs:
-    #             href = opponent_link['href']
-    #             match = re.search(r'/matchups/([^/?]+)', href)
-    #             if match:
-    #                 opponent_deck_name = match.group(1)
-    #             else:
-    #                 match = re.search(r'/decks/([^/?]+)', href)
-    #                 if match:
-    #                     opponent_deck_name = match.group(1)
-            
-    #         # Extract matches played
-    #         matches_played = 0
-    #         try:
-    #             matches_played = int(cells[2].text.strip())
-    #         except ValueError:
-    #             pass
-            
-    #         # Extract record
-    #         record_text = cells[3].text.strip()
-    #         wins, losses, ties = 0, 0, 0
-            
-    #         win_match = re.search(r'^(\d+)', record_text)
-    #         loss_match = re.search(r'-\s*(\d+)\s*-', record_text)
-    #         tie_match = re.search(r'-\s*(\d+)$', record_text)
-            
-    #         if win_match: wins = int(win_match.group(1))
-    #         if loss_match: losses = int(loss_match.group(1))
-    #         if tie_match: ties = int(tie_match.group(1))
-            
-    #         # Extract win percentage
-    #         win_pct = 0.0
-    #         try:
-    #             win_pct = float(cells[4].text.strip().replace('%', ''))
-    #         except ValueError:
-    #             pass
-            
-    #         # Add meta share for this opponent deck
-    #         meta_share = meta_share_map.get(opponent_deck_name, 0.0)
-            
-    #         # Create row data
-    #         row_data = {
-    #             'opponent_name': opponent_display_name,
-    #             'opponent_deck_name': opponent_deck_name,
-    #             'wins': wins,
-    #             'losses': losses,
-    #             'ties': ties,
-    #             'win_pct': win_pct,
-    #             'matches_played': matches_played,
-    #             'meta_share': meta_share
-    #         }
-            
-    #         rows.append(row_data)
-        
-    #     # Create DataFrame from all row data
-    #     df = pd.DataFrame(rows)
-        
-    #     if not df.empty:
-    #         df = df.sort_values('win_pct', ascending=False).reset_index(drop=True)
-        
-    #     return df
-        
-    # except Exception as e:
-    #     return pd.DataFrame()
-def fetch_matchup_data(deck_name, set_name="A3"):
-    """
-    Fetch matchup data for a specific deck from cache or Limitless TCG.
-    
-    Args:
-        deck_name: The name of the deck (e.g., "giratina-ex-a2b-greninja-a1")
+        deck_name: The name of the deck
         set_name: The set name (default: "A3")
         
     Returns:
@@ -1450,7 +1335,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     """
     import cache_manager
     
-    # Use the new cache function
+    # Direct call to get_or_fetch_matchup_data
     return cache_manager.get_or_fetch_matchup_data(deck_name, set_name)
 
 def display_matchup_summary(deck_name, set_name, working_df):
