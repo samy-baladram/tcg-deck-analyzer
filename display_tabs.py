@@ -812,7 +812,16 @@ def display_metagame_tab():
     # Format numerical columns
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
-    display_df['meta_weighted_winrate'] = display_df['meta_weighted_winrate'].round(1)
+    
+    #Calculate meta-weighted win rate for each deck
+    meta_weighted_winrates = []
+    
+    for _, row in display_df.iterrows():
+        # Use the safely-defined function
+        mwwr = cache_manager.calculate_meta_weighted_winrate(row['deck_name'], row['set'])
+        meta_weighted_winrates.append(mwwr if mwwr is not None else 0.0)
+        
+    display_df['meta_weighted_winrate'] = meta_weighted_winrates
 
     # Extract Pokémon names and create image URLs
     # [Rest of the existing function remains the same]
