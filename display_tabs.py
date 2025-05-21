@@ -863,6 +863,15 @@ def display_metagame_tab():
         },
         hide_index=True
     )
+
+    # Add a small footnote about data source and formula
+    from datetime import datetime
+    from config import MWWR_USE_SQUARED, TOURNAMENT_COUNT
+    current_month_year = datetime.now().strftime("%B %Y")
+    
+    formula_note = "using squared meta share weighting" if MWWR_USE_SQUARED else ""
+    st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG. Meta-Weighted Win Rate {formula_note} prioritizes performance against popular decks.")
+
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
