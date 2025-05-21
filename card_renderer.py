@@ -204,39 +204,39 @@ class CardRenderer:
         var2_url = f"{CardConfig.IMAGE_BASE_URL}/{var2_set}/{var2_set}_{formatted_num2}_EN.webp" if var2_set and formatted_num2 else ""
         
         # Create HTML for variant comparison
-        # variant_html = f"""<div style="height:170px; display:flex; flex-direction:row; justify-content:space-between; margin-top:-10px;">
-        #     <!-- Variant 1 -->
-        #     <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        #         <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
-        #         {
-        #             f'<img class="card-image" src="{var1_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
-        #             if var1_url else
-        #             f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
-        #         }
-        #     </div>
-        #     <!-- Variant 2 -->
-        #     <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        #         <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
-        #         {
-        #             f'<img class="card-image" src="{var2_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
-        #             if var2_url else
-        #             f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
-        #         }
-        #     </div>
-        # </div>"""
-        variant_html = f"""
-            <div style="flex:1; display:flex; flex-direction:column; align-items:center; margin-top:-10px; margin-bottom:-20px; justify-content:center;">
-                <div style="text-align:center; margin-bottom:0px;"><strong>{var1}</strong></div>
+        variant_html = f"""<div style="height:170px; display:flex; flex-direction:row; justify-content:space-between; margin-top:-10px;">
+            <!-- Variant 1 -->
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
                 {
-                    f'<img class="card-image" src="{var1_url}" style="max-height:100px; max-width:100%; object-fit:contain; margin-bottom:10px; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    f'<img class="card-image" src="{var1_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    if var1_url else
+                    f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                 }
             </div>
+            <!-- Variant 2 -->
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                <div style="text-align:center; margin-bottom:0px;"><strong>{var2}</strong></div>
+                <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
                 {
-                    f'<img class="card-image" src="{var2_url}" style="max-height:100px; max-width:100%; object-fit:contain; margin-bottom:10px; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    f'<img class="card-image" src="{var2_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    if var2_url else
+                    f'<div style="border:1px dashed {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px; padding:20px; color:#888; text-align:center; width:80%;">Image not available</div>'
                 }
-            </div>"""
+            </div>
+        </div>"""
+        # variant_html = f"""
+        #     <div style="flex:1; display:flex; flex-direction:column; align-items:center; margin-top:-10px; margin-bottom:-20px; justify-content:center;">
+        #         <div style="text-align:center; margin-bottom:0px;"><strong>{var1}</strong></div>
+        #         {
+        #             f'<img class="card-image" src="{var1_url}" style="max-height:100px; max-width:100%; object-fit:contain; margin-bottom:10px; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+        #         }
+        #     </div>
+        #     <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        #         <div style="text-align:center; margin-bottom:0px;"><strong>{var2}</strong></div>
+        #         {
+        #             f'<img class="card-image" src="{var2_url}" style="max-height:100px; max-width:100%; object-fit:contain; margin-bottom:10px; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+        #         }
+        #     </div>"""
         return variant_html
 
 
