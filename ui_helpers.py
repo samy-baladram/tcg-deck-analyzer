@@ -450,7 +450,9 @@ def render_sidebar_from_cache():
     """Render the sidebar using cached data instead of fetching new data"""
     # Call update check function for background updates
     check_and_update_tournament_data()
-    
+    from config import MWWR_DEVIATION_BASED, MWWR_USE_SQUARED
+    formula_type = "Deviation-based" if MWWR_DEVIATION_BASED else ("Squared Meta Share" if MWWR_USE_SQUARED else "Linear Meta Share")
+    st.sidebar.caption(f"Using {formula_type} formula for Meta-Weighted Win Rate")
     # Load and encode the banner image if it exists
     banner_path = "sidebar_banner.png"
     if os.path.exists(banner_path):
