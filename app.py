@@ -30,9 +30,9 @@ if 'app_state' not in st.session_state:
         'initial_data_loaded': False
     }
 
-if 'disable_background' not in st.session_state:
-    st.session_state.disable_background = True
-    st.session_state.update_running = False  # This should prevent new bg threads
+# if 'disable_background' not in st.session_state:
+#     st.session_state.disable_background = True
+#     st.session_state.update_running = False  # This should prevent new bg threads
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
