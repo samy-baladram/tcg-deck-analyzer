@@ -63,7 +63,7 @@ import os
 from urllib.parse import parse_qs
 
 # Check for admin mode in query parameters
-query_params = st.query_params()
+query_params = st.query_params
 admin_mode = 'admin' in query_params and query_params['admin'][0] == 'true'
 
 if admin_mode:
