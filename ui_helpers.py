@@ -626,7 +626,13 @@ def display_counter_picker_sidebar():
     with st.spinner("Analyzing counters..."):
         # This collects all matchup data for each meta deck
         counter_data = []
-        
+
+        selected_internal_names = []
+        for displayed in selected_decks:
+            for _, meta_deck in st.session_state.performance_data.iterrows():
+                if meta_deck['displayed_name'] == displayed:
+                    selected_internal_names.append(meta_deck['deck_name'])
+
         # For each possible counter deck in the meta
         for _, deck in st.session_state.performance_data.iterrows():
             deck_name = deck['deck_name']
