@@ -464,18 +464,25 @@ def render_sidebar_from_cache():
         if 'meta_weighted_winrate' not in st.session_state.performance_data.columns:
             performance_data = cache_manager.calculate_all_meta_weighted_winrates()
         else:
-            performance_data = st.session_state.performance_data
+            performance_data = st.session_state.performance_data.copy()
         
-        # Sort by meta_weighted_winrate instead of power_index
+        # Sort by meta_weighted_winrate
         if 'meta_weighted_winrate' in performance_data.columns:
-            performance_data = performance_data.sort_values('meta_weighted_winrate', ascending=False)
+            # Create a temporary rank column for tracking
+            performance_data = performance_data.sort_values('meta_weighted_winrate', ascending=False).reset_index(drop=True)
+            performance_data['mwwr_rank'] = performance_data.index + 1  # 1-based ranking
         
         # Get the top 10 performing decks
         top_decks = performance_data.head(10)
         
-        # Render each deck one by one, passing the rank (index + 1)
+        # Render each deck one by one, using mwwr_rank for medal assignment
         for idx, deck in top_decks.iterrows():
-            rank = idx + 1  # Calculate rank (1-based)
+            # Use meta-weighted win rate rank for medal if available
+            if 'mwwr_rank' in deck:
+                rank = deck['mwwr_rank']  # Use pre-calculated rank
+            else:
+                rank = idx + 1  # Fallback to index + 1
+                
             render_deck_in_sidebar(deck, rank=rank)
     
         # Add disclaimer with update time in one line
@@ -490,14 +497,14 @@ def render_sidebar_from_cache():
         </div>
         """, unsafe_allow_html=True)
         
-        
-        # Add expandable methodology section
-        # In ui_helpers.py - Update the sidebar expander in render_sidebar_from_cache function
-
         # Add expandable methodology section
         st.write("")
         with st.expander("🔍 About the Meta-Weighted Win Rate"):
-            from config import MWWR_FORMULA, MWWR_DESCRIPTION
+            from config import MWWR_FORMULA, MWWR_DESCRIPTION, MWWR_USE_SQUARED
+            
+            formula_display = MWWR_FORMULA
+            if MWWR_USE_SQUARED:
+                formula_display = formula_display.replace("meta share", "meta share²")
             
             st.markdown(f"""
             #### Meta-Weighted Win Rate: How We Rank the Best Decks
@@ -506,7 +513,7 @@ def render_sidebar_from_cache():
             Our Meta-Weighted Win Rate uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform against the current metagame.
             
             **What the Meta-Weighted Win Rate Measures**  
-            {MWWR_FORMULA}
+            {formula_display}
             
             {MWWR_DESCRIPTION}
             
