@@ -648,6 +648,7 @@ def display_counter_picker_sidebar():
             # Initialize variables for weighted average calculation
             total_weighted_win_rate = 0
             total_matches = 0
+            matched_decks = 0  # Add this line to initialize matched_decks
             
             # Look for matchups against selected decks
             for _, matchup in matchups.iterrows():
