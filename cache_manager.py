@@ -314,6 +314,8 @@ def aggregate_card_usage(force_update=False):
         
         return card_usage_summary
 
+# In cache_manager.py - Modify load_or_update_tournament_data function
+
 def load_or_update_tournament_data(force_update=False):
     """Load tournament data from cache or update if stale"""
     # Try to load tournament data from cache first
@@ -332,6 +334,33 @@ def load_or_update_tournament_data(force_update=False):
             # Then update performance metrics
             performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
             
+            # Calculate meta-weighted win rates for all decks if not already there
+            if 'meta_weighted_winrate' not in performance_df.columns:
+                # Calculate for each deck
+                from display_tabs import fetch_matchup_data
+                
+                meta_weighted_winrates = []
+                for _, deck in performance_df.iterrows():
+                    # Get matchup data
+                    matchup_df = get_or_fetch_matchup_data(deck['deck_name'], deck['set'])
+                    
+                    if not matchup_df.empty and 'meta_share' in matchup_df.columns and 'win_pct' in matchup_df.columns:
+                        # Calculate weighted win rate
+                        total_meta_share = matchup_df['meta_share'].sum()
+                        if total_meta_share > 0:
+                            weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share']).sum()
+                            weighted_winrate = weighted_sum / total_meta_share
+                            meta_weighted_winrates.append(weighted_winrate)
+                        else:
+                            # Fall back to simple average if no meta share
+                            meta_weighted_winrates.append(matchup_df['win_pct'].mean())
+                    else:
+                        # No matchup data
+                        meta_weighted_winrates.append(0.0)
+                
+                # Add to DataFrame
+                performance_df['meta_weighted_winrate'] = meta_weighted_winrates
+            
             # Save to cache
             cache_utils.save_tournament_performance_data(performance_df)
         
@@ -345,6 +374,51 @@ def load_or_update_tournament_data(force_update=False):
 
     # Return the loaded or updated data with timestamp
     return performance_df, performance_timestamp
+
+# Add to cache_manager.py
+
+def ensure_meta_weighted_winrate():
+    """
+    Ensure meta-weighted win rate is calculated for all decks in performance data
+    Must be called after performance data is loaded
+    """
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+        return
+        
+    performance_df = st.session_state.performance_data
+    
+    # If meta_weighted_winrate is already calculated, no need to do it again
+    if 'meta_weighted_winrate' in performance_df.columns:
+        return
+    
+    # Calculate for each deck
+    meta_weighted_winrates = []
+    for _, deck in performance_df.iterrows():
+        # Get matchup data
+        matchup_df = get_or_fetch_matchup_data(deck['deck_name'], deck['set'])
+        
+        if not matchup_df.empty and 'meta_share' in matchup_df.columns and 'win_pct' in matchup_df.columns:
+            # Calculate weighted win rate
+            total_meta_share = matchup_df['meta_share'].sum()
+            if total_meta_share > 0:
+                weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share']).sum()
+                weighted_winrate = weighted_sum / total_meta_share
+                meta_weighted_winrates.append(weighted_winrate)
+            else:
+                # Fall back to simple average if no meta share
+                meta_weighted_winrates.append(matchup_df['win_pct'].mean())
+        else:
+            # No matchup data
+            meta_weighted_winrates.append(0.0)
+    
+    # Add to DataFrame
+    performance_df['meta_weighted_winrate'] = meta_weighted_winrates
+    
+    # Update session state
+    st.session_state.performance_data = performance_df
+    
+    # Save to cache
+    cache_utils.save_tournament_performance_data(performance_df)
 
 #######################################################################################################################
 
