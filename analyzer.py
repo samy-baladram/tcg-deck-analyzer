@@ -42,11 +42,11 @@ def analyze_recent_performance(raw_performance_data=None):
         tournaments_played = len(performance['tournament_id'])
         
         # Calculate total games
-        total_games = total_wins + total_losses + total_ties
+        total_games = total_wins + total_losses
         
         if total_games > 0:
             # Calculate Power Index
-            power_index = ((total_wins + (0.75*total_ties) - total_losses) / math.sqrt(total_games))
+            power_index = ((total_wins  - total_losses) / math.sqrt(total_games))
         else:
             power_index = 0.0
         
