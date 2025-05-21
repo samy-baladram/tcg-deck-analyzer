@@ -720,7 +720,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                     
                     # Display variant analysis - without nested columns
                     for idx, row in variant_df.iterrows():
-                        with st.expander(f"{row['Card Name']} Options", expanded=False):
+                        with st.expander(f"{row['Card Name']} Details", expanded=False):
                             # Extract set codes and numbers
                             var1 = row['Var1']
                             var2 = row['Var2']
