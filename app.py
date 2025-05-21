@@ -13,43 +13,39 @@ import base64
 import os
 
 from PIL import Image
-import streamlit as st
 
-if 'formula_v2_applied' not in st.session_state:
-    import os
-    import shutil
-    from cache_utils import CACHE_DIR, TOURNAMENT_DATA_PATH, TOURNAMENT_TIMESTAMP_PATH
-    
-    with st.spinner("Updating to new Power Index formula..."):
-        # 1. Clear tournament data files from disk
-        if os.path.exists(TOURNAMENT_DATA_PATH):
-            os.remove(TOURNAMENT_DATA_PATH)
-            print("Removed tournament data file")
-        
-        if os.path.exists(TOURNAMENT_TIMESTAMP_PATH):
-            os.remove(TOURNAMENT_TIMESTAMP_PATH)
-            print("Removed tournament timestamp file")
-        
-        # 2. Clear session state cache
-        for key in list(st.session_state.keys()):
-            if key in ['performance_data', 'performance_fetch_time', 'deck_display_names']:
-                del st.session_state[key]
-                print(f"Cleared session state: {key}")
-        
-        # 3. Force reload tournament data with new formula
-        import cache_manager
-        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
-        
-        # Log the first few values for debugging
-        if not performance_df.empty:
-            print(f"New Power Index values (first 5): {performance_df['power_index'].head(5).tolist()}")
-        
-        # 4. Update session state with new data
-        st.session_state.performance_data = performance_df
-        st.session_state.performance_fetch_time = performance_timestamp
-        st.session_state.formula_v2_applied = True
-        
-        print("Power Index formula update complete")
+import os
+import shutil
+import pathlib
+import streamlit as st
+from cache_utils import CACHE_DIR
+
+# Print all cache paths for inspection
+print(f"Application CACHE_DIR: {CACHE_DIR}")
+print(f"Streamlit cache path: {os.path.join(os.path.expanduser('~'), '.streamlit')}")
+print(f"Current working directory: {os.getcwd()}")
+
+# List all cache-related files
+cache_files = []
+for root, dirs, files in os.walk(CACHE_DIR):
+    for file in files:
+        cache_files.append(os.path.join(root, file))
+print(f"Found {len(cache_files)} cache files:")
+for file in cache_files[:10]:  # Print first 10 files only
+    print(f" - {file}")
+
+# Remove key files - targeted approach
+key_patterns = ["tournament_performance", "performance", "power_index"]
+removed_files = []
+for file in cache_files:
+    if any(pattern in file.lower() for pattern in key_patterns):
+        try:
+            os.remove(file)
+            removed_files.append(file)
+        except Exception as e:
+            print(f"Error removing {file}: {e}")
+
+print(f"Removed {len(removed_files)} files")
 
 # Add background from repository
 background.add_app_background()
