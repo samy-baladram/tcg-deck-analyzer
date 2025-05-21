@@ -882,7 +882,7 @@ def display_counter_picker_sidebar():
                     # Top 3 get normal divider, 4-5 get thinner divider
                     divider_style = "solid 0.5px"
                     divider_color = "#ddd"
-                    st.markdown(f"<hr style='margin: -10px 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+                    st.markdown(f"<hr style='margin-top: -10px; margin-bottom: -10px; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
             # Add explanation text 
             st.caption("Win rates shown are weighted by number of matches played, providing a more reliable performance indicator against your selected decks. Decks with higher win rates have demonstrated stronger results in tournament play. Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
