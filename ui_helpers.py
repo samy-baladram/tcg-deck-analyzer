@@ -472,8 +472,13 @@ def render_sidebar_from_cache():
         
         
         # Add expandable methodology section
+        # In ui_helpers.py - Update the sidebar expander in render_sidebar_from_cache function
+
+        # Add expandable methodology section
         st.write("")
         with st.expander("🔍 About the Meta-Weighted Win Rate"):
+            from config import MWWR_FORMULA, MWWR_DESCRIPTION
+            
             st.markdown(f"""
             #### Meta-Weighted Win Rate: How We Rank the Best Decks
             
@@ -481,11 +486,9 @@ def render_sidebar_from_cache():
             Our Meta-Weighted Win Rate uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform against the current metagame.
             
             **What the Meta-Weighted Win Rate Measures**  
-            This score is calculated by weighting each deck's win rate against different opponents by those opponents' meta share. This means:
+            {MWWR_FORMULA}
             
-            * Matchups against popular decks count more toward the final score
-            * Wins against common decks are more valuable than wins against rare decks
-            * The score represents expected performance in the current meta
+            {MWWR_DESCRIPTION}
             
             **Why It's Better Than Other Methods**
             * **Better than Win Rate**: Accounts for who you're actually beating
