@@ -17,11 +17,22 @@ MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
 # Meta-weighted win rate configuration
 MWWR_MIN_SHARE = 0.5          # Minimum meta share for inclusion (0.5%)
 MWWR_USE_SQUARED = True        # Whether to use squared meta share in weighting
-MWWR_FORMULA = "Meta-weighted win rate = Σ(win% against deck × deck's meta share²) ÷ Σ(deck's meta share²)"
-MWWR_DESCRIPTION = """
+MWWR_DEVIATION_BASED = True    # Whether to use deviation from 50% win rate
+MWWR_NEUTRAL_WINRATE = 50.0    # The win rate considered "neutral" (50%)
+
+# Formula description depends on the mode
+MWWR_FORMULA_STANDARD = "Meta-weighted win rate = Σ(win% against deck × deck's meta share²) ÷ Σ(deck's meta share²)"
+MWWR_FORMULA_DEVIATION = "Meta-weighted win rate = Σ((win% - 50%)² × sign(win% - 50%) × deck's meta share) ÷ Σ(deck's meta share)"
+MWWR_DESCRIPTION_STANDARD = """
 This score weights each matchup by the square of the opponent's meta share percentage.
 This gives extra importance to matchups against the most common decks, accounting for
 their faster rate of prevalence in the metagame.
+"""
+MWWR_DESCRIPTION_DEVIATION = """
+This score emphasizes how much a deck's win rates deviate from 50% against the meta.
+It quadratically weights matchups that strongly deviate from 50% (either wins or losses)
+while preserving the sign (positive for >50%, negative for <50%). This helps identify
+decks that have decisive matchups against the current metagame.
 """
 
 CHART_COLORS = {
