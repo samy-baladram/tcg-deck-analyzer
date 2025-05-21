@@ -448,12 +448,11 @@ def render_sidebar_from_cache():
             The Power Index is calculated as:
             """)
             
-            st.code("Power Index = (Wins + (0.75 × Ties) - Losses) / √(Total Games)", language="")
+            st.code("Power Index = (Wins - Losses) / √(Wins + Losses)", language="")
             
             st.markdown("""
             This formula captures three key things:
             * How many more wins than losses a deck achieves
-            * The value of ties (counted as 75% of a win)
             * Statistical confidence (more games = more reliable data)
             
             **Why It's Better Than Other Methods**
