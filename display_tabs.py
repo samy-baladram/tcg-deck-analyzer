@@ -690,7 +690,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
     flex_options_available = not pokemon_options.empty or not trainer_options.empty
     
     if flex_options_available:
-        flex_col1, flex_col2 = st.columns([1, 2])
+        flex_col1, flex_col2 = st.columns([1, 1])
         
         with flex_col1:
             # Only show Pokemon options if there are any
