@@ -446,6 +446,10 @@ def render_sidebar_from_cache():
     # Call update check function for background updates
     check_and_update_tournament_data()
     
+    # Get current month and year for display - MOVED THIS UP
+    from datetime import datetime
+    current_month_year = datetime.now().strftime("%B %Y")
+    
     # Load and encode the banner image if it exists
     banner_path = "sidebar_banner.png"
     if os.path.exists(banner_path):
