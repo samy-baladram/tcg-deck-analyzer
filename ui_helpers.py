@@ -469,7 +469,7 @@ def render_sidebar_from_cache():
         if st.button("See now", type="tertiary", use_container_width=True):
             st.session_state.show_decks = True
             #st.session_state.show_decks = not st.session_state.show_decks
-    
+            st.rerun()
     # Only show decks if the button has been clicked
     if st.session_state.show_decks:
         
