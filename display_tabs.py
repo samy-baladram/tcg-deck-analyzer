@@ -1405,6 +1405,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
 def display_matchup_summary(deck_name, set_name, working_df):
     """
     Display a summary of matchup distribution against the meta
+    using squared meta share weighting
     
     Args:
         deck_name: Current deck name
@@ -1418,18 +1419,32 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.info("No matchup data with meta share available.")
         return
     
+    # Get configured weighting method
+    from config import MWWR_USE_SQUARED
+    
     # Classify each matchup
     working_df['matchup_type'] = working_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
     )
     
-    # Calculate total meta share in each category
-    favorable_share = working_df[working_df['matchup_type'] == 'Favorable']['meta_share'].sum()
-    even_share = working_df[working_df['matchup_type'] == 'Even']['meta_share'].sum()
-    unfavorable_share = working_df[working_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
+    # Add squared meta share if using squared formula
+    if MWWR_USE_SQUARED:
+        working_df['weighted_share'] = working_df['meta_share'] ** 2
+    else:
+        working_df['weighted_share'] = working_df['meta_share']
+    
+    # Calculate total weighted share in each category
+    favorable_share = working_df[working_df['matchup_type'] == 'Favorable']['weighted_share'].sum()
+    even_share = working_df[working_df['matchup_type'] == 'Even']['weighted_share'].sum()
+    unfavorable_share = working_df[working_df['matchup_type'] == 'Unfavorable']['weighted_share'].sum()
     
     # Calculate total share of just these three categories
     total_known_share = favorable_share + even_share + unfavorable_share
+    
+    # Save raw data for caption
+    raw_favorable = working_df[working_df['matchup_type'] == 'Favorable']['meta_share'].sum()
+    raw_even = working_df[working_df['matchup_type'] == 'Even']['meta_share'].sum()
+    raw_unfavorable = working_df[working_df['matchup_type'] == 'Unfavorable']['meta_share'].sum()
     
     # Normalize values to sum to 100% (just the three known categories)
     if total_known_share > 0:  # Avoid division by zero
@@ -1449,7 +1464,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display favorable matchups
     with col1:
         st.markdown(f"""
-       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
+       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px; background-color: rgba(79, 204, 32, 0.05);">
             <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
@@ -1459,7 +1474,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display even matchups
     with col2:
         st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px; background-color: rgba(253, 167, 0, 0.05);">
             <div style="font-size: 1.1rem; font-weight: bold;">Even</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fda700; line-height: 0.8;">{even_share_norm:.1f}%</div>
             <div style="font-size: 1rem;">of meta</div>
@@ -1469,7 +1484,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display unfavorable matchups
     with col3:
         st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px; background-color: rgba(253, 108, 108, 0.05);">
             <div style="font-size: 1.1rem; font-weight: bold; ">Unfavorable</div>
             <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.8;">{unfavorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
@@ -1478,7 +1493,10 @@ def display_matchup_summary(deck_name, set_name, working_df):
     
     # Add a more detailed note about the data
     st.write("")
-    st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
+    square_note = "using squared meta share weighting" if MWWR_USE_SQUARED else ""
+    
+    st.caption(f"""This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against your deck {square_note}. 
+Values are normalized to sum to 100%. (Raw meta share percentages: Favorable {raw_favorable:.1f}%, Even {raw_even:.1f}%, Unfavorable {raw_unfavorable:.1f}%)""") 
 
 def display_weighted_winrate(deck_name, set_name, working_df):
     """
