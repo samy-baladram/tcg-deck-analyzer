@@ -204,11 +204,7 @@ ui_helpers.display_banner("title_banner.png")
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
 
-# Simple, direct sidebar rendering - ALWAYS runs but uses cached data
-with st.sidebar:
-    ui_helpers.render_sidebar_from_cache()  # You'll need to create this function
-
-# Main content area
+# FIRST: Render main content - moved up before sidebar
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
     
@@ -271,11 +267,10 @@ else:
 
 st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
 st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
-#display_tabs.display_counter_picker()
 
-# Load sidebar AFTER main content to ensure main interface loads first
-#ui_helpers.render_sidebar()
-
+# SECOND: Render sidebar AFTER main content
+with st.sidebar:
+    ui_helpers.render_sidebar_from_cache()  # Now this runs after main content
 
 # Footer
 st.markdown("---")
