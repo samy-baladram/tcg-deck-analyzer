@@ -878,7 +878,7 @@ def display_counter_picker_sidebar():
                     st.markdown(f"<hr style='margin: 0px 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
             # Add explanation text 
-           st.caption("Win rates shown are weighted by number of matches played, providing a more reliable performance indicator against your selected decks. Decks with higher win rates have demonstrated stronger results in tournament play. Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+            st.caption("Win rates shown are weighted by number of matches played, providing a more reliable performance indicator against your selected decks. Decks with higher win rates have demonstrated stronger results in tournament play. Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
         else:
             st.warning("No counter data found for the selected decks")
 
