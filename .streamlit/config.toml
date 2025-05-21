@@ -2,3 +2,6 @@
 # Primary accent color for interactive elements
 base="dark"
 primaryColor = "#00A0FF"  # This is the blue color I see in your CSS
+page_title="PTCGP Deck Analyzer",
+page_icon=favicon,
+layout="wide"
