@@ -988,3 +988,82 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
         return matchup_df['win_pct'].mean()
     
     return None
+
+# Add to cache_manager.py
+
+def preload_matchup_data_for_meta_decks(min_share=0.5):
+    """
+    Preload matchup data for all decks with at least the specified meta share
+    
+    Args:
+        min_share: Minimum meta share percentage for decks to load
+    
+    Returns:
+        Number of decks loaded
+    """
+    # Make sure performance data is loaded
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+        # Load performance data
+        performance_df, _ = load_or_update_tournament_data()
+        st.session_state.performance_data = performance_df
+    
+    # Get decks with at least min_share
+    relevant_decks = st.session_state.performance_data[
+        st.session_state.performance_data['share'] >= min_share
+    ]
+    
+    # Skip if no relevant decks found
+    if relevant_decks.empty:
+        return 0
+    
+    # Load matchup data for each deck
+    count = 0
+    for _, deck in relevant_decks.iterrows():
+        deck_name = deck['deck_name']
+        set_name = deck['set']
+        
+        # Get or fetch matchup data
+        matchup_df = get_or_fetch_matchup_data(deck_name, set_name)
+        
+        if not matchup_df.empty:
+            count += 1
+    
+    return count
+
+# Add to cache_manager.py
+
+def calculate_all_meta_weighted_winrates(min_share=0.5):
+    """
+    Calculate meta-weighted win rates for all relevant decks and update performance data
+    
+    Args:
+        min_share: Minimum meta share percentage to include
+        
+    Returns:
+        Updated performance DataFrame with meta_weighted_winrate column
+    """
+    # Make sure performance data is loaded
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+        performance_df, _ = load_or_update_tournament_data()
+    else:
+        performance_df = st.session_state.performance_data.copy()
+    
+    # Calculate meta-weighted win rate for each deck
+    meta_weighted_winrates = []
+    
+    for _, row in performance_df.iterrows():
+        # Skip decks with too low share if requested
+        if row['share'] < min_share:
+            meta_weighted_winrates.append(0.0)
+            continue
+            
+        mwwr = calculate_meta_weighted_winrate(row['deck_name'], row['set'])
+        meta_weighted_winrates.append(mwwr if mwwr is not None else 0.0)
+    
+    # Add to DataFrame
+    performance_df['meta_weighted_winrate'] = meta_weighted_winrates
+    
+    # Update session state
+    st.session_state.performance_data = performance_df
+    
+    return performance_df
