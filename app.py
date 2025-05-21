@@ -32,7 +32,36 @@ if 'app_state' not in st.session_state:
     st.session_state.app_state = {
         'initial_data_loaded': False
     }
-    
+
+# Add this after loading initial data in app.py
+def initialize_matchup_cache():
+    """Initialize matchup cache when app starts"""
+    # Only run this once when the app starts
+    if 'matchup_cache_initialized' not in st.session_state:
+        # Import the necessary modules
+        import cache_manager
+        import threading
+        
+        # Define a background update function
+        def update_matchups_background():
+            try:
+                # Update matchups for decks with at least 0.5% meta share
+                updated_count = cache_manager.update_matchup_cache(min_share=0.5)
+                print(f"Updated matchups for {updated_count} decks in background")
+            except Exception as e:
+                print(f"Error updating matchups in background: {e}")
+        
+        # Start the update in a background thread
+        thread = threading.Thread(target=update_matchups_background)
+        thread.daemon = True
+        thread.start()
+        
+        # Mark as initialized
+        st.session_state.matchup_cache_initialized = True
+
+# Call the initialization function
+initialize_matchup_cache()
+
 # Add this check after state initialization but before UI rendering
 if 'switch_to_deck' in st.session_state:
     deck_name = st.session_state.switch_to_deck
