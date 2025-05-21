@@ -165,7 +165,7 @@ def create_deck_options():
     # First try to use performance data
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Get top 30 decks from performance data
-        top_performing_decks = st.session_state.performance_data.head(30)
+        top_performing_decks = st.session_state.performance_data #.head(30)
         
         for _, deck in top_performing_decks.iterrows():
             power_index = round(deck['power_index'], 2)
