@@ -39,6 +39,27 @@ if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
     st.session_state.app_state['initial_data_loaded'] = True
 
+# In app.py, after loading initial data but before UI rendering
+if 'deck_display_names' in st.session_state and st.session_state.deck_display_names:
+    # If we have deck options but no analysis yet, set up the first deck
+    if 'analyze' not in st.session_state and 'selected_deck_index' in st.session_state:
+        selected_index = st.session_state.selected_deck_index
+        
+        # Default to first deck if no selection
+        if selected_index is None and st.session_state.deck_display_names:
+            selected_index = 0
+            st.session_state.selected_deck_index = 0
+        
+        # Set up deck to analyze if valid index
+        if selected_index is not None and selected_index < len(st.session_state.deck_display_names):
+            selected_deck_display = st.session_state.deck_display_names[selected_index]
+            deck_info = st.session_state.deck_name_mapping[selected_deck_display]
+            
+            st.session_state.analyze = {
+                'deck_name': deck_info['deck_name'],
+                'set_name': deck_info['set'],
+            }
+            
 # Apply custom styles - IMPORTANT: Put CSS before any components render
 st.markdown("""
 <style>
