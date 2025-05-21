@@ -1024,8 +1024,6 @@ def update_matchup_cache(min_share=0.5):
 # Add to cache_manager.py
 # In cache_manager.py - Update calculate_meta_weighted_winrate function
 
-# In cache_manager.py - Update calculate_meta_weighted_winrate function
-
 def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     """
     Calculate meta-weighted win rate for a deck
@@ -1048,6 +1046,7 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     session_key = f"matchup_{deck_name}_{set_name}"
     
     # First try session state
+    import streamlit as st
     if session_key in st.session_state:
         matchup_df = st.session_state[session_key]
     else:
