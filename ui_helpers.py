@@ -556,7 +556,7 @@ def update_energy_cache(deck_name, energy_types):
     else:
         st.session_state.energy_combinations[deck_name][combo_key] = 1
 
-def display_counter_picker():
+def display_counter_picker_sidebar():
     banner_path = "picker_banner.png"
     if os.path.exists(banner_path):
         with open(banner_path, "rb") as f:
