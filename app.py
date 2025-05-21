@@ -30,39 +30,63 @@ if 'app_state' not in st.session_state:
         'initial_data_loaded': False
     }
 
-def clear_all_caches():
-    """Force clear all caches to ensure formula changes take effect"""
-    # Clear session state cache
-    if 'performance_data' in st.session_state:
-        del st.session_state['performance_data']
-    if 'analyzed_deck_cache' in st.session_state:
-        st.session_state['analyzed_deck_cache'] = {}
-        
-    # Force disk cache to be recreated
+def purge_all_caches():
+    """Aggressively purge all caches to force formula recomputation"""
     import os
-    from cache_utils import TOURNAMENT_DATA_PATH
-    if os.path.exists(TOURNAMENT_DATA_PATH):
-        os.remove(TOURNAMENT_DATA_PATH)
+    import shutil
     
-    # Mark cache as expired
-    import datetime
-    st.session_state.performance_fetch_time = datetime.datetime.now() - datetime.timedelta(days=1)
+    # 1. Clear all session state variables
+    for key in list(st.session_state.keys()):
+        if key != 'app_state':  # Keep minimal app state
+            del st.session_state[key]
     
-    # Set flag to force update
-    st.session_state.update_running = True
+    # 2. Delete entire cached_data directory
+    cache_dir = "cached_data"
+    if os.path.exists(cache_dir):
+        try:
+            shutil.rmtree(cache_dir)
+            os.makedirs(cache_dir)  # Recreate empty directory
+            print(f"Successfully deleted and recreated {cache_dir}")
+        except Exception as e:
+            print(f"Error deleting cache directory: {e}")
+    
+    # 3. Reset app state to force initialization
+    st.session_state.app_state['initial_data_loaded'] = False
+    
+    # 4. Set flags to force data recomputation
+    st.session_state.update_running = False  # Reset this flag
+    
+    return "All caches purged successfully"
 
-# Add to app.py near beginning of main code
-if st.sidebar.button("Rebuild Performance Data"):
-    clear_all_caches()
-    with st.spinner("Rebuilding performance data with new formula..."):
-        # Force refresh
-        perf_data = cache_manager.load_or_update_tournament_data(force_update=True)
-        st.success("Performance data rebuilt")
-        st.rerun()
-        
-# if 'disable_background' not in st.session_state:
-#     st.session_state.disable_background = True
-#     st.session_state.update_running = False  # This should prevent new bg threads
+# Admin cache-clearing section - hidden unless query param is used
+import os
+from urllib.parse import parse_qs
+
+# Check for admin mode in query parameters
+query_params = st.experimental_get_query_params()
+admin_mode = 'admin' in query_params and query_params['admin'][0] == 'true'
+
+if admin_mode:
+    st.warning("⚠️ ADMIN MODE: Use with caution!")
+    col1, col2 = st.columns([1,3])
+    with col1:
+        if st.button("🧹 PURGE ALL CACHES", type="primary"):
+            result = purge_all_caches()
+            st.success(f"{result}. Redirecting...")
+            # Force page reload after purge
+            st.markdown(
+                """
+                <meta http-equiv="refresh" content="2">
+                <script>
+                    setTimeout(function() {
+                        window.location.href = window.location.pathname;
+                    }, 2000);
+                </script>
+                """,
+                unsafe_allow_html=True
+            )
+    with col2:
+        st.info("This will delete ALL cached data and rebuild from scratch. The app will restart.")
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
