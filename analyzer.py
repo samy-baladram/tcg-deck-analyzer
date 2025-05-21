@@ -69,7 +69,8 @@ def analyze_recent_performance(raw_performance_data=None):
             
             # Scale to make more intuitive (similar range to original power index)
             # Transforming from 0-1 scale to -5 to +5 scale
-            power_index = (wilson_score - 0.5) * 10
+            #(wilson_score - 0.5) * 10
+            power_index = 0
         else:
             power_index = 0.0
         
