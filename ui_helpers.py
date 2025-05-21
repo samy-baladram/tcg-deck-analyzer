@@ -442,11 +442,7 @@ def render_sidebar_from_cache():
     # Call update check function for background updates
     check_and_update_tournament_data()
     
-    # Create a container for the counter picker at the beginning
-    # This reserves its place in the DOM order
-    counter_picker_container = st.sidebar.container()
-    
-    # Load and encode the banner image
+    # Load and encode the banner image if it exists
     banner_path = "sidebar_banner.png"
     if os.path.exists(banner_path):
         with open(banner_path, "rb") as f:
@@ -504,13 +500,9 @@ def render_sidebar_from_cache():
         # Add a divider
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
-        # Now use the container to display the counter picker
-        with counter_picker_container:
-            display_counter_picker_sidebar()
-        
-        # Add a smaller margin
-        st.markdown("<hr style='margin-top: 50px; margin-bottom: 50px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
-        #st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)    
+        # Display counter picker directly (no container)
+        display_counter_picker_sidebar()
+        st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)    
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
 
