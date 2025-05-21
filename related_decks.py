@@ -73,9 +73,21 @@ def find_related_decks(current_deck_name, deck_list_mapping, max_related=10):
     # Remove the current deck
     related_decks = related_decks[related_decks['deck_name'] != current_deck_name]
     
-    # Sort by number of shared Pokémon (desc) and share percentage (desc)
+    # Sort by number of shared Pokémon (desc) and meta-weighted win rate (desc)
+    # Try to get meta-weighted win rate from session state performance data if available
+    meta_winrate_map = {}
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty and 'meta_weighted_winrate' in st.session_state.performance_data.columns:
+        performance_df = st.session_state.performance_data
+        meta_winrate_map = {deck['deck_name']: deck['meta_weighted_winrate'] for _, deck in performance_df.iterrows()}
+    
+    # Add meta-weighted win rate to the related decks dataframe
+    related_decks['meta_weighted_winrate'] = related_decks['deck_name'].apply(
+        lambda x: meta_winrate_map.get(x, 0.0)
+    )
+    
+    # Sort by shared Pokémon first, then by meta-weighted win rate
     related_decks = related_decks.sort_values(
-        by=['shared_pokemon', 'share'], 
+        by=['shared_pokemon', 'meta_weighted_winrate'], 
         ascending=[False, False]
     )
     
