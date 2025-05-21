@@ -288,7 +288,7 @@ def create_variant_bar_chart(variant_data, energy_type=None):
     
     return fig
 
-def display_chart(fig, use_container_width=True):
+def display_chart(fig, use_container_width=True, key=None):
     """Display a plotly chart with standard config"""
     import streamlit as st
     
@@ -296,4 +296,7 @@ def display_chart(fig, use_container_width=True):
     config = PLOTLY_CONFIG.copy()
     config['displayModeBar'] = False
     
-    st.plotly_chart(fig, use_container_width=use_container_width, config=config)
+    # Add the key parameter to plotly_chart
+    st.plotly_chart(fig, use_container_width=use_container_width, config=config, key=key)
+
+
