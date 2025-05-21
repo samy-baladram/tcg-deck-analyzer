@@ -732,8 +732,12 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         # st.write("##### Card Versions")  # UNCOMMENTED THIS LINE
         
         # Display variant analysis - without nested columns
-        for idx, row in variant_df.iterrows():
-            with st.expander(f"{row['Card Name']} Versions", expanded=False):  # CHANGED "Details" to "Versions" for consistency
+        # Replace it with this corrected code
+        for _, row in variant_df.iterrows():  # Change idx to _
+            # Create a unique expander key
+            expander_key = f"exp_template_{row['Card Name'].replace(' ', '_')}_{_}"  # Use DataFrame index directly
+            
+            with st.expander(f"{row['Card Name']} Versions", expanded=False, key=expander_key):
                 # Extract set codes and numbers
                 var1 = row['Var1']
                 var2 = row['Var2']
@@ -749,7 +753,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 
                 # Display chart below without columns - with a unique key
                 fig_var = create_variant_bar_chart(row, primary_energy)
-                variant_key = f"template_variant_{row['Card Name'].replace(' ', '_')}_{idx}"
+                variant_key = f"chart_template_{row['Card Name'].replace(' ', '_')}_{_}"  # Use DataFrame index directly
                 display_chart(fig_var, key=variant_key)
         
 def display_raw_data_tab(results, variant_df):
