@@ -18,11 +18,15 @@ from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
 import math
 
+# Modify analyze_recent_performance() to log its version
 def analyze_recent_performance(raw_performance_data=None):
     """
-    Analyze the recent performance of popular decks using Wilson Score Interval
+    Analyze the recent performance of popular decks
     Can either fetch new data or use provided raw_performance_data
     """
+    from config import ALGORITHM_VERSION
+    print(f"🔄 Running analyze_recent_performance() version {ALGORITHM_VERSION}")
+    
     import math
     
     if raw_performance_data is None:
@@ -92,6 +96,8 @@ def analyze_recent_performance(raw_performance_data=None):
     if not results_df.empty:
         results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
     
+    # Add version to output
+    results_df['algorithm_version'] = ALGORITHM_VERSION
     return results_df
     
 # In analyzer.py - Modify analyze_deck function
