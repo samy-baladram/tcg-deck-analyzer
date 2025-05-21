@@ -332,7 +332,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         rank_symbol = circled_numbers[rank]
     
     # Create a plain text expander title with the rank and power index
-    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ({power_index})", expanded=expanded):
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
         # Get sample deck data
         deck_name = deck['deck_name']
         
