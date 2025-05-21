@@ -947,6 +947,7 @@ def update_matchup_cache(min_share=0.5):
 
 # Add to cache_manager.py
 
+# Add to cache_manager.py
 def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     """
     Calculate meta-weighted win rate for a deck
@@ -958,10 +959,19 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     Returns:
         Meta-weighted win rate as a float, or None if no data available
     """
-    # Get matchup data for this deck
-    matchup_df = get_or_fetch_matchup_data(deck_name, set_name)
+    # Get matchup data without causing recursion
+    session_key = f"matchup_{deck_name}_{set_name}"
     
-    if matchup_df.empty or 'meta_share' not in matchup_df.columns or 'win_pct' not in matchup_df.columns:
+    # First try session state
+    if session_key in st.session_state:
+        matchup_df = st.session_state[session_key]
+    else:
+        # Try to load from disk directly
+        import cache_utils
+        matchup_df, _ = cache_utils.load_matchup_data(deck_name, set_name)
+    
+    # If no data found, we can't calculate
+    if matchup_df is None or matchup_df.empty or 'meta_share' not in matchup_df.columns or 'win_pct' not in matchup_df.columns:
         return None
     
     # Calculate total meta share
