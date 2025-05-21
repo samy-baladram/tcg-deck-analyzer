@@ -14,27 +14,6 @@ TOURNAMENT_COUNT = 70
 # Display settings
 MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
 
-# Meta-weighted win rate configuration
-MWWR_MIN_SHARE = 0.5          # Minimum meta share for inclusion (0.5%)
-MWWR_USE_SQUARED = True        # Whether to use squared meta share in weighting
-MWWR_DEVIATION_BASED = True    # Whether to use deviation from 50% win rate
-MWWR_NEUTRAL_WINRATE = 50.0    # The win rate considered "neutral" (50%)
-
-# Formula description depends on the mode
-MWWR_FORMULA_STANDARD = "Meta-weighted win rate = Σ(win% against deck × deck's meta share²) ÷ Σ(deck's meta share²)"
-MWWR_FORMULA_DEVIATION = "Meta-weighted win rate = Σ((win% - 50%)² × sign(win% - 50%) × deck's meta share) ÷ Σ(deck's meta share)"
-MWWR_DESCRIPTION_STANDARD = """
-This score weights each matchup by the square of the opponent's meta share percentage.
-This gives extra importance to matchups against the most common decks, accounting for
-their faster rate of prevalence in the metagame.
-"""
-MWWR_DESCRIPTION_DEVIATION = """
-This score emphasizes how much a deck's win rates deviate from 50% against the meta.
-It quadratically weights matchups that strongly deviate from 50% (either wins or losses)
-while preserving the sign (positive for >50%, negative for <50%). This helps identify
-decks that have decisive matchups against the current metagame.
-"""
-
 CHART_COLORS = {
     'pokemon_1': '#81D4FA',  # Light blue
     'pokemon_2': '#0288D1',  # Darker blue
@@ -88,26 +67,3 @@ CATEGORY_LABELS = ['Tech', 'Standard', 'Core']
 
 # Flexible core thresholds
 FLEXIBLE_CORE_THRESHOLD = 25
-
-# Save configuration function to persist changes
-def save_current_config():
-    """Save the current formula configuration to disk"""
-    import cache_utils
-    
-    # Create a dictionary of the current configuration
-    config_dict = {
-        'MWWR_USE_SQUARED': MWWR_USE_SQUARED,
-        'MWWR_DEVIATION_BASED': MWWR_DEVIATION_BASED,
-        'MWWR_NEUTRAL_WINRATE': MWWR_NEUTRAL_WINRATE,
-        'MWWR_MIN_SHARE': MWWR_MIN_SHARE
-    }
-    
-    # Print debug info
-    print(f"Saving config to disk: SQUARED={MWWR_USE_SQUARED}, DEVIATION={MWWR_DEVIATION_BASED}")
-    
-    # Save to disk
-    cache_utils.save_formula_config(config_dict)
-
-# Make sure this function is called whenever a config value changes
-# Add this at the bottom of config.py
-save_current_config()
