@@ -1550,9 +1550,8 @@ def display_matchup_tab(deck_info=None):
             return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
     
     # Display the enhanced data table with all rows
-    st.write("###### Matchup Data")
-    
     display_matchup_summary(deck_name, set_name, working_df)
+    st.write("###### Matchup Data")
     try:
         # First try with styled dataframe and images
         styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
