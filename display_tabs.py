@@ -865,7 +865,7 @@ def display_metagame_tab():
     st.dataframe(
         final_df,
         use_container_width=True,
-        height=800,
+        height=850,
         column_config={
             # "Rank": st.column_config.NumberColumn(
             #     "Rank",
