@@ -454,49 +454,60 @@ def render_sidebar_from_cache():
         """, unsafe_allow_html=True)
     else:
         st.title("Top 10 Meta Decks")
+
+    # Add debug button to toggle deck visibility
+    if 'show_decks' not in st.session_state:
+        st.session_state.show_decks = False
     
-    # Ensure energy cache is initialized
-    import cache_manager
-    cache_manager.ensure_energy_cache()
-    
-    # Get current month and year for display
-    from datetime import datetime
-    current_month_year = datetime.now().strftime("%B %Y")
-    
-    # Display performance data if it exists
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Get the top 10 performing decks
-        top_decks = st.session_state.performance_data.head(10)
+    # Debug button to show/hide decks
+    if st.button("See now", type="tertiary", use_container_width=True):
+        st.session_state.show_decks = not st.session_state.show_decks
+
+    # Only show decks if the button has been clicked
+    if st.session_state.show_decks:
         
-        # Render each deck one by one, passing the rank (index + 1)
-        for idx, deck in top_decks.iterrows():
-            rank = idx + 1  # Calculate rank (1-based)
-            render_deck_in_sidebar(deck, rank=rank)
-    
-        # Add disclaimer with update time in one line
-        performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-        st.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
-            <div>Top performers from {current_month_year}</div>
-            <div>Updated {performance_time_str}</div>
-        </div>
-        <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-            Based on up to {TOURNAMENT_COUNT} tournament results
-        </div>
-        """, unsafe_allow_html=True)
+        # Ensure energy cache is initialized
+        import cache_manager
+        cache_manager.ensure_energy_cache()
         
-        # Add expandable methodology section
-        st.write("")
-        with st.expander("🔍 About the Power Index"):
-            # Format the explanation with the current date and tournament count
-            formatted_explanation = POWER_INDEX_EXPLANATION.format(
-                tournament_count=TOURNAMENT_COUNT,
-                current_month_year=current_month_year
-            )
+        # Get current month and year for display
+        from datetime import datetime
+        current_month_year = datetime.now().strftime("%B %Y")
+        
+        # Display performance data if it exists
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+            # Get the top 10 performing decks
+            top_decks = st.session_state.performance_data.head(10)
             
-            # Display the enhanced explanation
-            st.markdown(formatted_explanation)
+            # Render each deck one by one, passing the rank (index + 1)
+            for idx, deck in top_decks.iterrows():
+                rank = idx + 1  # Calculate rank (1-based)
+                render_deck_in_sidebar(deck, rank=rank)
         
+            # Add disclaimer with update time in one line
+            performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+            st.markdown(f"""
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
+                <div>Top performers from {current_month_year}</div>
+                <div>Updated {performance_time_str}</div>
+            </div>
+            <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+                Based on up to {TOURNAMENT_COUNT} tournament results
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Add expandable methodology section
+            st.write("")
+            with st.expander("🔍 About the Power Index"):
+                # Format the explanation with the current date and tournament count
+                formatted_explanation = POWER_INDEX_EXPLANATION.format(
+                    tournament_count=TOURNAMENT_COUNT,
+                    current_month_year=current_month_year
+                )
+                
+                # Display the enhanced explanation
+                st.markdown(formatted_explanation)
+            
         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
         # Display counter picker directly (no container)
