@@ -7,7 +7,7 @@ from formatters import format_deck_name, format_deck_option
 from utils import calculate_time_ago
 from scraper import get_deck_list
 import cache_manager
-from config import MIN_META_SHARE, TOURNAMENT_COUNT
+from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT
 import pandas as pd
 import base64
 import os
@@ -438,37 +438,17 @@ def render_sidebar_from_cache():
         # Add expandable methodology section
         st.write("")
         with st.expander("🔍 About the Power Index"):
-            st.markdown(f"""
-            #### Power Index: How We Rank the Best Decks
+            # Get current month and year
+            current_month_year = datetime.now().strftime("%B %Y")
             
-            **Where the Data Comes From**  
-            Our Power Index uses the most recent community tournament results from the current month ({current_month_year}) on [Limitless TCG](https://play.limitlesstcg.com/tournaments/completed). This shows how decks actually perform in the most recent competitive play, not just how popular they are.
+            # Format the explanation with the current date and tournament count
+            formatted_explanation = POWER_INDEX_EXPLANATION.format(
+                tournament_count=TOURNAMENT_COUNT,
+                current_month_year=current_month_year
+            )
             
-            **What the Power Index Measures**  
-            The Power Index is calculated as:
-            """)
-            
-            st.code("Power Index = (Wins - Losses) / √(Wins + Losses)", language="")
-            
-            st.markdown("""
-            This formula captures three key things:
-            * How many more wins than losses a deck achieves
-            * Statistical confidence (more games = more reliable data)
-            
-            **Why It's Better Than Other Methods**
-            * **Better than Win Rate**: Accounts for both winning and avoiding losses
-            * **Better than Popularity**: Measures actual performance, not just what people choose to play
-            * **Better than Record Alone**: Balances impressive results against sample size
-            
-            **Reading the Numbers**
-            * **Higher is Better**: The higher the Power Index, the stronger the deck has proven itself
-            * **Positive vs Negative**: Positive numbers mean winning more than losing (decks with negative Power Index will mostly not be shown here)
-            """)
-        # Add a divider
-        st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
-        
-        display_counter_picker_sidebar()
-        st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+            # Display the enhanced explanation
+            st.markdown(formatted_explanation)
             
     else:
         st.info(f"No tournament performance data available for {current_month_year}")
