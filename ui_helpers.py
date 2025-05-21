@@ -343,11 +343,10 @@ def create_deck_selector():
     return selected_option
 
 # In ui_helpers.py - Updated render_deck_in_sidebar function
+# In ui_helpers.py - Modify render_deck_in_sidebar function
+
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
     """Render a single deck in the sidebar"""
-    # Format power index to 2 decimal places
-    power_index = round(deck['power_index'], 2)
-    
     # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
     circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
     
@@ -356,8 +355,8 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
     if rank is not None and 0 <= rank <= 10:
         rank_symbol = circled_numbers[rank]
     
-    # Create a plain text expander title with the rank and power index
-    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ({power_index})", expanded=expanded):
+    # Create a plain text expander title with just the rank and deck name
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']}", expanded=expanded):
         # Get sample deck data
         deck_name = deck['deck_name']
         
@@ -382,6 +381,25 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             
             # Display the deck
             st.markdown(deck_html, unsafe_allow_html=True)
+            
+            # Display meta-weighted win rate as a caption
+            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] > 0:
+                # Determine color based on win rate
+                win_rate = deck['meta_weighted_winrate']
+                win_color = "#4FCC20" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fd9a00"
+                
+                # Create a styled caption with the win rate
+                st.markdown(f"""
+                <div style="text-align: center; margin-top: 5px;">
+                    <span style="font-weight: bold; color: {win_color};">
+                        {win_rate:.1f}% Meta-Weighted Win Rate
+                    </span>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                # Show power index as fallback if no meta-weighted win rate
+                st.caption(f"Power Index: {deck['power_index']:.2f}")
+            
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
