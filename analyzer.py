@@ -20,15 +20,17 @@ import math
 
 def analyze_recent_performance(raw_performance_data=None):
     """
-    Analyze the recent performance of popular decks
+    Analyze the recent performance of popular decks using Wilson Score Interval
     Can either fetch new data or use provided raw_performance_data
     """
+    import math
+    
     if raw_performance_data is None:
         # Import from scraper if not provided
         from scraper import get_deck_performance_data
         raw_performance_data = get_deck_performance_data()
     
-    # Process the raw data (analysis logic stays here)
+    # Process the raw data with Wilson Score Interval
     results = []
     
     for deck_data in raw_performance_data:
@@ -41,12 +43,33 @@ def analyze_recent_performance(raw_performance_data=None):
         total_ties = performance['ties'].sum()
         tournaments_played = len(performance['tournament_id'])
         
-        # Calculate total games
-        total_games = total_wins + total_losses
+        # Calculate total games (including ties)
+        total_games = total_wins + total_losses + total_ties
         
         if total_games > 0:
-            # Calculate Power Index
-            power_index = ((total_wins  - total_losses) / math.sqrt(total_games))
+            # Handle ties as half-wins (common in card games)
+            adjusted_wins = total_wins + (0.5 * total_ties)
+            
+            # Calculate win proportion
+            win_proportion = adjusted_wins / total_games
+            
+            # Wilson Score Interval parameters
+            z = 1.96  # 95% confidence level
+            z_squared = z * z
+            
+            # Calculate Wilson Score lower bound
+            numerator = (win_proportion + (z_squared / (2 * total_games)) - 
+                         z * math.sqrt((win_proportion * (1 - win_proportion) + 
+                                      (z_squared / (4 * total_games))) / total_games))
+            
+            denominator = 1 + (z_squared / total_games)
+            
+            # Wilson Score lower bound (conservative estimate of true win rate)
+            wilson_score = numerator / denominator
+            
+            # Scale to make more intuitive (similar range to original power index)
+            # Transforming from 0-1 scale to -5 to +5 scale
+            power_index = (wilson_score - 0.5) * 10
         else:
             power_index = 0.0
         
@@ -59,7 +82,8 @@ def analyze_recent_performance(raw_performance_data=None):
             'total_losses': total_losses,
             'total_ties': total_ties,
             'tournaments_played': tournaments_played,
-            'power_index': power_index
+            'power_index': power_index,
+            'win_rate': (total_wins + (0.5 * total_ties)) / total_games if total_games > 0 else 0
         })
     
     # Convert to DataFrame and sort
