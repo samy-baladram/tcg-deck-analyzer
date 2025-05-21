@@ -310,7 +310,7 @@ def create_deck_selector():
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
     """Render a single deck in the sidebar"""
     # Format power index to 2 decimal places
-    power_index = round(deck['power_index'], 2)
+    power_index = round(2*deck['power_index'], 2)
     
     # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
     circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
