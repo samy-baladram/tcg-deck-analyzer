@@ -1024,6 +1024,8 @@ def update_matchup_cache(min_share=0.5):
 # Add to cache_manager.py
 # In cache_manager.py - Update calculate_meta_weighted_winrate function
 
+# In cache_manager.py - Update calculate_meta_weighted_winrate function
+
 def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     """
     Calculate meta-weighted win rate for a deck
@@ -1035,7 +1037,7 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     Returns:
         Meta-weighted win rate as a float, or None if no data available
     """
-    from config import MWWR_USE_SQUARED
+    from config import MWWR_USE_SQUARED, MWWR_DEVIATION_BASED, MWWR_NEUTRAL_WINRATE
     
     # Get matchup data without causing recursion
     session_key = f"matchup_{deck_name}_{set_name}"
@@ -1052,34 +1054,51 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
     if matchup_df is None or matchup_df.empty or 'meta_share' not in matchup_df.columns or 'win_pct' not in matchup_df.columns:
         return None
     
-    # Apply squared formula if configured
-    if MWWR_USE_SQUARED:
-        # Create squared meta share column
-        matchup_df['meta_share_squared'] = matchup_df['meta_share'] ** 2
+    # Create a copy of the DataFrame to avoid warnings
+    df = matchup_df.copy()
+    
+    # Check if we should use deviation-based formula
+    if MWWR_DEVIATION_BASED:
+        # Calculate deviation from neutral win rate
+        df['win_rate_deviation'] = df['win_pct'] - MWWR_NEUTRAL_WINRATE
         
-        # Calculate total meta share (squared)
-        total_meta_share = matchup_df['meta_share_squared'].sum()
+        # Calculate the squared deviation, preserving sign
+        df['weighted_value'] = df['win_rate_deviation']**2 * df['win_rate_deviation'].apply(lambda x: 1 if x >= 0 else -1)
         
-        # Calculate weighted average win rate
-        if total_meta_share > 0:
-            # Weight each matchup's win rate by squared meta share
-            weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share_squared']).sum()
-            weighted_winrate = weighted_sum / total_meta_share
-            return weighted_winrate
+        # Apply meta share weighting (squared if configured)
+        if MWWR_USE_SQUARED:
+            df['weighted_share'] = df['meta_share']**2
+        else:
+            df['weighted_share'] = df['meta_share']
+        
+        # Calculate weighted score
+        total_share = df['weighted_share'].sum()
+        
+        if total_share > 0:
+            # Sum of (deviation^2 * sign * meta_share) / sum(meta_share)
+            score = (df['weighted_value'] * df['weighted_share']).sum() / total_share
+            return score
     else:
-        # Original formula (linear weighting)
-        total_meta_share = matchup_df['meta_share'].sum()
+        # Original formula (meta share weighted win rate)
+        if MWWR_USE_SQUARED:
+            # Create squared meta share column
+            df['weighted_share'] = df['meta_share']**2
+        else:
+            df['weighted_share'] = df['meta_share']
+        
+        # Calculate total meta share
+        total_share = df['weighted_share'].sum()
         
         # Calculate weighted average win rate
-        if total_meta_share > 0:
+        if total_share > 0:
             # Weight each matchup's win rate by meta share
-            weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share']).sum()
-            weighted_winrate = weighted_sum / total_meta_share
+            weighted_sum = (df['win_pct'] * df['weighted_share']).sum()
+            weighted_winrate = weighted_sum / total_share
             return weighted_winrate
     
     # If no weighted calculation possible, use simple average
-    if not matchup_df.empty:
-        return matchup_df['win_pct'].mean()
+    if not df.empty:
+        return df['win_pct'].mean()
     
     return None
 
