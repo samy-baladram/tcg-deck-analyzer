@@ -78,9 +78,9 @@ def display_card_usage_tab(results, total_decks, variant_df):
             # Import variant renderer
             from card_renderer import render_variant_cards
             
-            # Display variant analysis
+            # Display variant analysis #({row['Total Decks']} decks)
             for _, row in variant_df.iterrows():
-                with st.expander(f"{row['Card Name']} Variants ({row['Total Decks']} decks)", expanded=False):
+                with st.expander(f"{row['Card Name']} Versions", expanded=False): 
                     # Extract set codes and numbers
                     var1 = row['Var1']
                     var2 = row['Var2']
