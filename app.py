@@ -56,6 +56,23 @@ if not st.session_state.app_state['initial_data_loaded']:
     
     st.session_state.app_state['initial_data_loaded'] = True
 
+if 'performance_data' in st.session_state and 'meta_weighted_winrate' in st.session_state.performance_data.columns:
+    # Look for formula type mismatch
+    from config import MWWR_DEVIATION_BASED
+    
+    # Check if values have correct range for the formula type
+    df = st.session_state.performance_data
+    max_value = df['meta_weighted_winrate'].max()
+    
+    # For deviation formula: values should be in range -50 to 50 (approximately)
+    # For percentage formula: values should be in range 0 to 100
+    formula_mismatch = (MWWR_DEVIATION_BASED and max_value > 60) or (not MWWR_DEVIATION_BASED and max_value < 1)
+    
+    if formula_mismatch:
+        print(f"Detected formula mismatch! Max value: {max_value}, MWWR_DEVIATION_BASED: {MWWR_DEVIATION_BASED}")
+        import cache_manager
+        st.session_state.performance_data = cache_manager.force_refresh_formula_calculations()
+
 # Add this after loading initial data in app.py
 def initialize_matchup_cache():
     """Initialize matchup cache when app starts"""
