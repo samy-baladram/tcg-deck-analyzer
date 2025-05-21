@@ -1347,7 +1347,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         set_name: Current deck set
         working_df: DataFrame with matchup data already processed
     """
-    #st.write("###### Meta Matchup Distribution")
+    st.write("#### Meta Matchup Distribution")
     
     # Check if we have matchup data with meta share
     if working_df.empty or 'meta_share' not in working_df.columns:
@@ -1550,7 +1550,7 @@ def display_matchup_tab(deck_info=None):
             return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
     
     # Display the enhanced data table with all rows
-    st.write("#### Matchup Data")
+    st.write("###### Matchup Data")
     
     display_matchup_summary(deck_name, set_name, working_df)
     try:
