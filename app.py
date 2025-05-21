@@ -284,55 +284,54 @@ st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
 #ui_helpers.render_sidebar()
 
 # Only shown in development mode
-if st.query_params.get("dev") == "true":
-    st.markdown("<hr style='margin: 2rem 0;'>", unsafe_allow_html=True)
-    st.subheader("Developer Options")
-    
-    # Formula configuration section
-    with st.expander("Formula Configuration"):
-        from config import MWWR_DEVIATION_BASED, MWWR_USE_SQUARED
-        
-        # Show current configuration
-        st.write("### Current Configuration")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write(f"Deviation Based: **{MWWR_DEVIATION_BASED}**")
-        
-        with col2:
-            st.write(f"Squared Weighting: **{MWWR_USE_SQUARED}**")
-            
-        # Add reset options
-        st.write("### Reset Configuration")
-        reset_col1, reset_col2, reset_col3 = st.columns([2, 2, 1])
-        
-        with reset_col1:
-            new_deviation = st.checkbox("Use Deviation Formula", value=True)
-        
-        with reset_col2:
-            new_squared = st.checkbox("Use Squared Weighting", value=True)
-            
-        with reset_col3:
-            if st.button("Reset Formulas"):
-                # Import reset function
-                import cache_utils
-                success = cache_utils.reset_formula_config(
-                    deviation_based=new_deviation,
-                    use_squared=new_squared
-                )
-                
-                if success:
-                    # Force reload the page to apply changes
-                    st.rerun()
-                else:
-                    st.error("Failed to reset formula configuration")
+st.markdown("<hr style='margin: 2rem 0;'>", unsafe_allow_html=True)
+st.subheader("Developer Options")
 
-        # Add a hard refresh option
-        if st.button("Force Recalculation", help="Force recalculation of all meta-weighted win rates"):
-            import cache_manager
-            updated_df = cache_manager.force_refresh_formula_calculations()
-            st.success(f"Recalculated meta-weighted win rates for {len(updated_df)} decks")
-            st.rerun()
+# Formula configuration section
+with st.expander("Formula Configuration"):
+    from config import MWWR_DEVIATION_BASED, MWWR_USE_SQUARED
+    
+    # Show current configuration
+    st.write("### Current Configuration")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write(f"Deviation Based: **{MWWR_DEVIATION_BASED}**")
+    
+    with col2:
+        st.write(f"Squared Weighting: **{MWWR_USE_SQUARED}**")
+        
+    # Add reset options
+    st.write("### Reset Configuration")
+    reset_col1, reset_col2, reset_col3 = st.columns([2, 2, 1])
+    
+    with reset_col1:
+        new_deviation = st.checkbox("Use Deviation Formula", value=True)
+    
+    with reset_col2:
+        new_squared = st.checkbox("Use Squared Weighting", value=True)
+        
+    with reset_col3:
+        if st.button("Reset Formulas"):
+            # Import reset function
+            import cache_utils
+            success = cache_utils.reset_formula_config(
+                deviation_based=new_deviation,
+                use_squared=new_squared
+            )
+            
+            if success:
+                # Force reload the page to apply changes
+                st.rerun()
+            else:
+                st.error("Failed to reset formula configuration")
+
+    # Add a hard refresh option
+    if st.button("Force Recalculation", help="Force recalculation of all meta-weighted win rates"):
+        import cache_manager
+        updated_df = cache_manager.force_refresh_formula_calculations()
+        st.success(f"Recalculated meta-weighted win rates for {len(updated_df)} decks")
+        st.rerun()
 
 # Footer
 st.markdown("---")
