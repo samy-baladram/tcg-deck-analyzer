@@ -1085,16 +1085,16 @@ def calculate_meta_weighted_winrate(deck_name, set_name="A3"):
 
 # Add to cache_manager.py
 
-def preload_matchup_data_for_meta_decks(min_share=0.5):
+def preload_matchup_data_for_meta_decks():
     """
     Preload matchup data for all decks with at least the specified meta share
-    
-    Args:
-        min_share: Minimum meta share percentage for decks to load
     
     Returns:
         Number of decks loaded
     """
+    # Import meta share threshold
+    from config import MWWR_MIN_SHARE
+    
     # Make sure performance data is loaded
     if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
         # Load performance data
@@ -1103,7 +1103,7 @@ def preload_matchup_data_for_meta_decks(min_share=0.5):
     
     # Get decks with at least min_share
     relevant_decks = st.session_state.performance_data[
-        st.session_state.performance_data['share'] >= min_share
+        st.session_state.performance_data['share'] >= MWWR_MIN_SHARE
     ]
     
     # Skip if no relevant decks found
