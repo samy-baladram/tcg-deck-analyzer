@@ -282,7 +282,7 @@ def ensure_performance_data_updated():
                 # Scale to make more intuitive (similar range to original power index)
                 # Transforming from 0-1 scale to -5 to +5 scale
                 #
-                power_index = (wilson_score - 0.5) * 10
+                power_index = 2#(wilson_score - 0.5) * 10
             else:
                 power_index = 0.0
         
