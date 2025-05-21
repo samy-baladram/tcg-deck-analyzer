@@ -15,7 +15,7 @@ ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_
 TOURNAMENT_COUNT = 80
 
 # Display settings
-MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
+MIN_META_SHARE = 0.4  # Minimum meta share percentage to display
 
 CHART_COLORS = {
     'pokemon_1': '#81D4FA',  # Light blue
