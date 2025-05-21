@@ -351,77 +351,77 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
         
-# def render_sidebar_from_cache():
-#     """Render the sidebar using cached data instead of fetching new data"""
-#     # Call update check function for background updates
-#     check_and_update_tournament_data()
+def render_sidebar_from_cache():
+    """Render the sidebar using cached data instead of fetching new data"""
+    # Call update check function for background updates
+    check_and_update_tournament_data()
     
-#     # Load and encode the banner image if it exists
-#     banner_path = "sidebar_banner.png"
-#     if os.path.exists(banner_path):
-#         with open(banner_path, "rb") as f:
-#             banner_base64 = base64.b64encode(f.read()).decode()
-#         st.markdown(f"""
-#         <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
-#             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
-#         </div>
-#         """, unsafe_allow_html=True)
-#     else:
-#         st.title("Top 10 Meta Decks")
+    # Load and encode the banner image if it exists
+    banner_path = "sidebar_banner.png"
+    if os.path.exists(banner_path):
+        with open(banner_path, "rb") as f:
+            banner_base64 = base64.b64encode(f.read()).decode()
+        st.markdown(f"""
+        <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.title("Top 10 Meta Decks")
     
-#     # Ensure energy cache is initialized
-#     import cache_manager
-#     cache_manager.ensure_energy_cache()
+    # Ensure energy cache is initialized
+    import cache_manager
+    cache_manager.ensure_energy_cache()
     
-#     # Get current month and year for display
-#     from datetime import datetime
-#     current_month_year = datetime.now().strftime("%B %Y")
+    # Get current month and year for display
+    from datetime import datetime
+    current_month_year = datetime.now().strftime("%B %Y")
     
-#     # Display performance data if it exists
-#     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-#         # Get the top 10 performing decks
-#         top_decks = st.session_state.performance_data.head(10)
+    # Display performance data if it exists
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Get the top 10 performing decks
+        top_decks = st.session_state.performance_data.head(10)
         
-#         # Render each deck one by one, passing the rank (index + 1)
-#         for idx, deck in top_decks.iterrows():
-#             rank = idx + 1  # Calculate rank (1-based)
-#             render_deck_in_sidebar(deck, rank=rank)
+        # Render each deck one by one, passing the rank (index + 1)
+        for idx, deck in top_decks.iterrows():
+            rank = idx + 1  # Calculate rank (1-based)
+            render_deck_in_sidebar(deck, rank=rank)
     
-#         # Add disclaimer with update time in one line
-#         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-#         st.markdown(f"""
-#         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
-#             <div>Top performers from {current_month_year}</div>
-#             <div>Updated {performance_time_str}</div>
-#         </div>
-#         <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-#             Based on up to {TOURNAMENT_COUNT} tournament results
-#         </div>
-#         """, unsafe_allow_html=True)
+        # Add disclaimer with update time in one line
+        performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+        st.markdown(f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
+            <div>Top performers from {current_month_year}</div>
+            <div>Updated {performance_time_str}</div>
+        </div>
+        <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+            Based on up to {TOURNAMENT_COUNT} tournament results
+        </div>
+        """, unsafe_allow_html=True)
         
         
-#         # Add expandable methodology section
-#         st.write("")
-#         with st.expander("🔍 About the Power Index"):
-#             # Get current month and year
-#             current_month_year = datetime.now().strftime("%B %Y")
+        # Add expandable methodology section
+        st.write("")
+        with st.expander("🔍 About the Power Index"):
+            # Get current month and year
+            current_month_year = datetime.now().strftime("%B %Y")
             
-#             # Format the explanation with the current date and tournament count
-#             formatted_explanation = POWER_INDEX_EXPLANATION.format(
-#                 tournament_count=TOURNAMENT_COUNT,
-#                 current_month_year=current_month_year
-#             )
+            # Format the explanation with the current date and tournament count
+            formatted_explanation = POWER_INDEX_EXPLANATION.format(
+                tournament_count=TOURNAMENT_COUNT,
+                current_month_year=current_month_year
+            )
             
-#             # Display the enhanced explanation
-#             st.markdown(formatted_explanation)
-#         # Add a divider
-#         st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+            # Display the enhanced explanation
+            st.markdown(formatted_explanation)
+        # Add a divider
+        st.markdown("<hr style='margin-top: 25px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
         
-#         display_counter_picker_sidebar()
-#         st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+        display_counter_picker_sidebar()
+        st.markdown("<hr style='margin-top: 700px; margin-bottom: 300px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
             
-#     else:
-#         st.info(f"No tournament performance data available for {current_month_year}")
+    else:
+        st.info(f"No tournament performance data available for {current_month_year}")
 
 def display_deck_update_info(deck_name, set_name):
     """Display when the deck was last updated"""
