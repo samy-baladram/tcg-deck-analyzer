@@ -1366,12 +1366,14 @@ def generate_energy_analysis(deck_info):
         
 #     except Exception as e:
 #         return pd.DataFrame()
+# In display_tabs.py - Remove the circular reference
 def fetch_matchup_data(deck_name, set_name="A3"):
     """
-    Fetch matchup data for a specific deck from cache or Limitless TCG.
+    Fetch matchup data for a specific deck from Limitless TCG.
+    Uses cache_manager but doesn't create a circular reference.
     
     Args:
-        deck_name: The name of the deck (e.g., "giratina-ex-a2b-greninja-a1")
+        deck_name: The name of the deck
         set_name: The set name (default: "A3")
         
     Returns:
@@ -1379,7 +1381,7 @@ def fetch_matchup_data(deck_name, set_name="A3"):
     """
     import cache_manager
     
-    # Use the new cache function
+    # Direct call to get_or_fetch_matchup_data
     return cache_manager.get_or_fetch_matchup_data(deck_name, set_name)
 
 def display_matchup_summary(deck_name, set_name, working_df):
