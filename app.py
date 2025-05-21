@@ -15,6 +15,16 @@ import os
 from PIL import Image
 import streamlit as st
 
+if 'formula_updated' not in st.session_state:
+    import cache_utils
+    # Clear cached tournament data from disk
+    import os
+    if os.path.exists(cache_utils.TOURNAMENT_DATA_PATH):
+        os.remove(cache_utils.TOURNAMENT_DATA_PATH)
+    
+    # Mark as formula updated to avoid doing this again
+    st.session_state.formula_updated = True
+    
 favicon = Image.open("favicon.png")  # PNG format
 
 st.set_page_config(
