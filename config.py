@@ -88,3 +88,22 @@ CATEGORY_LABELS = ['Tech', 'Standard', 'Core']
 
 # Flexible core thresholds
 FLEXIBLE_CORE_THRESHOLD = 25
+
+# Save configuration function to persist changes
+def save_current_config():
+    """Save the current formula configuration to disk"""
+    import cache_utils
+    
+    # Create a dictionary of the current configuration
+    config_dict = {
+        'MWWR_USE_SQUARED': MWWR_USE_SQUARED,
+        'MWWR_DEVIATION_BASED': MWWR_DEVIATION_BASED,
+        'MWWR_NEUTRAL_WINRATE': MWWR_NEUTRAL_WINRATE,
+        'MWWR_MIN_SHARE': MWWR_MIN_SHARE
+    }
+    
+    # Save to disk
+    cache_utils.save_formula_config(config_dict)
+
+# Save configuration on module import
+save_current_config()
