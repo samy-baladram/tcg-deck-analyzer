@@ -210,6 +210,8 @@ def create_deck_options():
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Make sure meta_weighted_winrate is calculated
         import cache_manager
+        from config import MWWR_DEVIATION_BASED
+        
         if 'meta_weighted_winrate' not in st.session_state.performance_data.columns:
             performance_df = cache_manager.calculate_all_meta_weighted_winrates()
         else:
@@ -224,8 +226,16 @@ def create_deck_options():
         
         for _, deck in top_performing_decks.iterrows():
             # Use meta_weighted_winrate if available, otherwise fallback to power_index
-            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] > 0:
-                metric = f"{deck['meta_weighted_winrate']:.1f}%"
+            if 'meta_weighted_winrate' in deck and deck['meta_weighted_winrate'] != 0:
+                # Format based on formula type
+                if MWWR_DEVIATION_BASED:
+                    # For deviation-based, show sign explicitly
+                    win_rate = deck['meta_weighted_winrate']
+                    sign = "+" if win_rate > 0 else ""
+                    metric = f"{sign}{win_rate:.1f}"
+                else:
+                    # For percentage-based, format as percentage
+                    metric = f"{deck['meta_weighted_winrate']:.1f}%"
             else:
                 metric = f"PI: {deck['power_index']:.2f}"
                 
