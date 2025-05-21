@@ -228,13 +228,13 @@ class CardRenderer:
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div style="text-align:center; margin-bottom:2px;"><strong>{var1}</strong></div>
                 {
-                    f'<img class="card-image" src="{var1_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    f'<img class="card-image" src="{var1_url}" style="max-height:100px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
                 }
             </div>
             <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div style="text-align:center; margin-bottom:2px;"><strong>{var2}</strong></div>
                 {
-                    f'<img class="card-image" src="{var2_url}" style="max-height:150px; max-width:100%; object-fit:contain; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
+                    f'<img class="card-image" src="{var2_url}" style="max-height:100px; max-width:100%; object-fit:contain; margin-bottom:5px; border:1px solid {CardConfig.BORDER_COLOR}; border-radius:{CardConfig.BORDER_RADIUS}px;">' 
                 }
             </div>"""
         return variant_html
