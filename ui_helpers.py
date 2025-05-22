@@ -640,7 +640,7 @@ def display_counter_picker_sidebar():
         st.session_state.run_counter_analysis = False
 
 def analyze_counter(selected_decks):        
-    with st.spinner("Analyzing counters..."):
+    # with st.spinner("Analyzing counters..."):
         # This collects all matchup data for each meta deck
         counter_data = []
 
