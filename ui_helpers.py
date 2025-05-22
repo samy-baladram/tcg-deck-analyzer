@@ -382,7 +382,7 @@ def create_deck_selector():
 
     deck_icon_display_names = []
     for name in deck_display_names:
-        deck_icon_display_names.append(displayed_name_to_markdown(name))
+        deck_icon_display_names.append(f"{displayed_name_to_markdown(name)} {name}")
 
     # Display the selectbox
     selected_option = st.selectbox(
@@ -394,7 +394,7 @@ def create_deck_selector():
         help=help_text,
         key="deck_select",
         on_change=on_deck_change,
-        format_func=lambda x: x  # This ensures the markdown is passed through
+        #format_func=lambda x: x  # This ensures the markdown is passed through
     )
     
     return selected_option
