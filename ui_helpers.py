@@ -693,59 +693,12 @@ def analyze_counter(selected_decks):
                     'matched_decks': matched_decks,
                     'total_selected': len(selected_decks)
                 })
+                counter_df = pd.DataFrame(counter_data).sort_values('average_win_rate', ascending=False)
         
-        # Create DataFrame and sort by average win rate
-        if counter_data:
-            counter_df = pd.DataFrame(counter_data)
-            counter_df = counter_df.sort_values('average_win_rate', ascending=False)
-            
-            # # Add Pokemon icon URLs
-            # # Define Pokemon exceptions dictionary (for special cases)
-            # POKEMON_EXCEPTIONS = {
-            #     'oricorio': 'oricorio-pom-pom',
-            #     # Add other exceptions as needed
-            # }
-            
-            # # Function to extract Pokemon names and create image URLs
-            # def extract_pokemon_urls(displayed_name):
-            #     import re
-            #     clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-            #     parts = re.split(r'[\s/]+', clean_name)
-            #     suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-            #     pokemon_names = []
-                
-            #     for part in parts:
-            #         part = part.lower()
-            #         if part and part not in suffixes:
-            #             if part in POKEMON_EXCEPTIONS:
-            #                 part = POKEMON_EXCEPTIONS[part]
-            #             pokemon_names.append(part)
-            #             if len(pokemon_names) >= 2:
-            #                 break
-                
-            #     urls = []
-            #     for name in pokemon_names:
-            #         urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-                
-            #     # Ensure we have exactly 2 elements
-            #     while len(urls) < 2:
-            #         urls.append(None)
-                    
-            #     return urls[0], urls[1]
-            
-            # # Apply the function to extract Pokemon image URLs
-            # counter_df[['pokemon_url1', 'pokemon_url2']] = counter_df.apply(
-            #     lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
-            #     axis=1
-            # )
-            
-            # # Convert numpy types to Python native types
-            # counter_df = counter_df.copy()
-            # for col in counter_df.columns:
-            #     if counter_df[col].dtype == 'int64':
-            #         counter_df[col] = counter_df[col].astype(int)
-            #     elif counter_df[col].dtype == 'float64':
-            #         counter_df[col] = counter_df[col].astype(float)
+        # # Create DataFrame and sort by average win rate
+        # if counter_data:
+        #     counter_df = pd.DataFrame(counter_data)
+        #     counter_df = counter_df.sort_values('average_win_rate', ascending=False)
             
             # Display top 5 counter decks with images and metrics
             st.write("#### Top Counters to Selected Decks")
