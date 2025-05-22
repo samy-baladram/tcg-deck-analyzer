@@ -970,7 +970,7 @@ def display_metagame_tab():
                 "Deck",
                 help="Deck archetype name"
             ),
-            "Score": st.column_config.NumberColumn(
+            "Index": st.column_config.NumberColumn(
                 "Score",
                 help="Performance metric: The Wilson score (see sidebar for details). Higher values indicate stronger performance",
                 format="%.2f"
