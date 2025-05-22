@@ -15,7 +15,7 @@ GRADIENT_RATIO = 0.15
 import requests
 from PIL import Image, ImageFilter, ImageEnhance
 from io import BytesIO
-import cv2
+#import cv2
 import numpy as np
 import base64
 
