@@ -844,13 +844,13 @@ def display_metagame_tab():
     display_cols = {
         'rank': 'Rank',
         'displayed_name': 'Deck',
-        'power_index': 'Power Index',
         'share': 'Meta Share %',
-        'tournaments_played': 'Best Finish Entries',
-        'win_rate': 'Win %',
         'total_wins': 'Wins',
         'total_losses': 'Losses',
-        'total_ties': 'Ties'      
+        'total_ties': 'Ties',
+        'win_rate': 'Win %',
+        'tournaments_played': 'Best Finish Entries',
+        'power_index': 'Power Index',
     }
     
     # Create final display dataframe
@@ -867,11 +867,11 @@ def display_metagame_tab():
         use_container_width=True,
         height=850,
         column_config={
-            # "Rank": st.column_config.NumberColumn(
-            #     "Rank",
-            #     help="Position in the meta based on Power Index",
-            #     width="small"
-            # ),
+            "Rank": st.column_config.TextColumn(
+                "Rank",
+                help="Position in the meta based on Power Index",
+                width="small"
+            ),
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
                 help="First Pokémon in the deck",
