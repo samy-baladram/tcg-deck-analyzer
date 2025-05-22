@@ -38,7 +38,7 @@ def display_deck_header(deck_info, results):
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1em; margin-top:0.25rem">
-            <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -0.5rem;">
+            <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -1rem;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
             </div>"""
         
@@ -50,7 +50,7 @@ def display_deck_header(deck_info, results):
         else:
             # When no featured image, keep normal centering
             header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-left: 0.5rem; margin-bottom: -0.75rem; margin-top:0.5rem;">"""
+            <div style="flex: 1; min-width: 200px; margin-left: 1rem; margin-right: 1rem; margin-bottom: -0.5rem; margin-top:0.5rem;">"""
         
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
