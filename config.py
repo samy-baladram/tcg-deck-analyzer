@@ -114,6 +114,7 @@ The Power Index analyzes performance data from the {tournament_count} most recen
 Lower bound of 95% confidence interval for win rate, where:
 
 p = (wins + 0.5*ties)/(total games)
+
 z = 1.96 (95% confidence level)
 
 Power Index = [(p + z²/(2n) - z√(p(1-p)/n + z²/(4n²)))/(1 + z²/n) - 0.5] * 10
