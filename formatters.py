@@ -70,3 +70,39 @@ def format_card_label(card_name, set_code=None, num=None):
     if set_code and num:
         return f"{card_name} ({set_code}-{num})"
     return card_name
+
+# Extract Pokémon names and create image URLs
+def extract_pokemon_urls(displayed_name):
+    # Remove content in parentheses and clean
+    clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+    
+    # Split by spaces and slashes
+    parts = re.split(r'[\s/]+', clean_name)
+    
+    # Filter out suffixes
+    suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+    pokemon_names = []
+    
+    for part in parts:
+        part = part.lower()
+        if part and part not in suffixes:
+            # Apply exceptions
+            if part in POKEMON_EXCEPTIONS:
+                part = POKEMON_EXCEPTIONS[part]
+            
+            pokemon_names.append(part)
+            
+            # Limit to 2 Pokémon
+            if len(pokemon_names) >= 2:
+                break
+    
+    # Create URLs
+    urls = []
+    for name in pokemon_names:
+        urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
+        
+    # Ensure we have exactly 2 elements
+    while len(urls) < 2:
+        urls.append(None)
+        
+    return urls[0], urls[1]  # Return as separate values
