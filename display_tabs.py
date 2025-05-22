@@ -1239,7 +1239,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             showgrid=False,
             showline=False,
             zeroline=False,
-            range=[0, 50]
+            range=[0, 30]
         ),
         
         # Remove legend and other elements
