@@ -1174,6 +1174,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     # Ensure all bins are represented (fill missing with 0)
     all_bins_df = pd.DataFrame({'win_rate_bin': bin_labels})
     bin_data = all_bins_df.merge(bin_data, on='win_rate_bin', how='left').fillna(0)
+    bin_data = bin_data.iloc[::-1].reset_index(drop=True)
     
     # Get colors for each bin using the same gradient
     def get_bin_color(bin_index):
@@ -1182,16 +1183,16 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         
         # Same RGB colors from the gradient
         colors = [
-            (220, 53, 69),     # Red (0%)
-            (253, 126, 20),    # Red-Orange (10%)
-            (255, 152, 0),     # Orange (20%)
-            (255, 183, 77),    # Light Orange (30%)
-            (255, 235, 59),    # Yellow (40%)
-            (205, 220, 57),    # Yellow-Green (50%)
-            (156, 204, 101),   # Light Green (60%)
-            (139, 195, 74),    # Medium Green (70%)
-            (102, 187, 106),   # Green (80%)
-            (27, 94, 32)       # Very Dark Green (90-100%)
+            (27, 94, 32),      # Very Dark Green (90-99%)
+            (102, 187, 106),   # Green (80-89%)
+            (139, 195, 74),    # Medium Green (70-79%)
+            (156, 204, 101),   # Light Green (60-69%)
+            (205, 220, 57),    # Yellow-Green (50-59%)
+            (255, 235, 59),    # Yellow (40-49%)
+            (255, 183, 77),    # Light Orange (30-39%)
+            (255, 152, 0),     # Orange (20-29%)
+            (253, 126, 20),    # Red-Orange (10-19%)
+            (220, 53, 69)      # Red (0-9%)
         ]
         
         return f"rgb({colors[bin_index][0]}, {colors[bin_index][1]}, {colors[bin_index][2]})"
@@ -1208,6 +1209,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         marker_color=bar_colors,
         marker_line=dict(width=0),  # No outline
         text=bin_data['meta_share'].apply(lambda x: f"{x:.1f}%" if x > 0 else ""),
+        textfont = dict(size=14),
         textposition='outside',
         textfont=dict(size=11, color="black"),
         hovertemplate="<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Matchups: %{customdata}<extra></extra>",
