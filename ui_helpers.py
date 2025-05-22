@@ -628,6 +628,8 @@ def display_counter_picker_sidebar():
                             type="secondary",
                             on_click=analyze_counter(selected_decks),
                             use_container_width=True)
+    if not find_button:
+         return
 
     #return selected_decks
     # # Only proceed if decks are selected
