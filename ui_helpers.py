@@ -387,7 +387,7 @@ def create_deck_selector():
     # Display the selectbox
     selected_option = st.selectbox(
         label_text,
-        ("![Meowscarada](https://r2.limitlesstcg.net/pokemon/gen9/meowscarada.png)","![Meowscarada](https://r2.limitlesstcg.net/pokemon/gen9/meowscarada.png)")
+        ("![Meowscarada](https://r2.limitlesstcg.net/pokemon/gen9/meowscarada.png)","![Meowscarada](https://r2.limitlesstcg.net/pokemon/gen9/meowscarada.png)"),
         #deck_icon_display_names,
         #deck_display_names,
         index=st.session_state.selected_deck_index,
