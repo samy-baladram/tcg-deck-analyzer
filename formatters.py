@@ -37,7 +37,7 @@ def format_deck_name(deck_name):
                 
             result.append(word)
     
-    return ' '.join(result)
+    return ' '.join(result).rstrip()
 
 def format_percentage(value, show_zero=False):
     """Format a percentage value for display"""
