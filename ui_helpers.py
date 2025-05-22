@@ -389,7 +389,8 @@ def create_deck_selector():
         placeholder="Select a deck to analyze...",
         help=help_text,
         key="deck_select",
-        on_change=on_deck_change
+        on_change=on_deck_change,
+        format_func=lambda x: x  # This ensures the markdown is passed through
     )
     
     return selected_option
