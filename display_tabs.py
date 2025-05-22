@@ -34,40 +34,25 @@ def display_deck_header(deck_info, results):
                 featured_image_base64 = base64.b64encode(f.read()).decode()
     
     if header_image:
-        # Build the header content with conditional featured image
+        # Simplified centered layout
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1em; margin-top:0.25rem">
-            <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -1rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; border-radius: 10px;">
-            </div>"""
-        
-        # Conditional styling based on whether featured image is showing
-        if show_landing_message and featured_image_base64:
-            header_content = f"""
-            <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1em; margin-top:0rem">
-                <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -1rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 450px; height: auto; border-radius: 10px;">
-                </div>"""
-            # When featured image is present, push content down
-            header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-left: 0.2rem; margin-right: 0.2rem;  align-self: flex-end; padding-bottom: 20px;">"""
-        else:
-            # When no featured image, keep normal centering
-            header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-left: 0.2rem; margin-right: 0.2rem; margin-top:1rem; margin-bottom:0.5rem;">"""
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; margin: 1rem 0; text-align: center;">
+            <div>
+                <img src="data:image/png;base64,{header_image}" style="max-width: 400px; width: 100%; height: auto; border-radius: 10px;">
+            </div>
+            <div style="min-width: 200px;">"""
         
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
             header_content += f"""
-                <div style="margin-bottom: -1rem; text-align: center; margin-top: 1.5rem;">
-                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 60px;">
+                <div style="margin-bottom: 0.5rem;">
+                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; max-height: 60px;">
                 </div>"""
         
         # Add the deck name
         header_content += f"""
-                <h1 style="margin-bottom:-1rem; margin-top:-0.5rem; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
+                <h1 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
             </div>
         </div>"""
         
@@ -85,10 +70,87 @@ def display_deck_header(deck_info, results):
             <div style="text-align: center; margin-bottom: 1rem;">
                 <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px;">
             </div>
-            <h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
+            <h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
             """, unsafe_allow_html=True)
         else:
-            st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)            
+            st.markdown(f"""<h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
+            
+# def display_deck_header(deck_info, results):
+#     """Display the deck header with image and text that wraps properly"""
+#     header_image = create_deck_header_images(deck_info, results)
+    
+#     # Check if this is the first time showing a deck header
+#     if 'first_deck_header_shown' not in st.session_state:
+#         st.session_state.first_deck_header_shown = True
+#         show_landing_message = True
+#     else:
+#         show_landing_message = False
+    
+#     # Load and encode the featured image if it exists and we want to show it
+#     featured_image_base64 = None
+#     if show_landing_message:
+#         featured_image_path = "featured_banner.png"
+#         if os.path.exists(featured_image_path):
+#             with open(featured_image_path, "rb") as f:
+#                 featured_image_base64 = base64.b64encode(f.read()).decode()
+    
+#     if header_image:
+#         # Build the header content with conditional featured image
+#         header_content = f"""
+#         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
+#         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1em; margin-top:0.25rem">
+#             <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -1rem;">
+#                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; border-radius: 10px;">
+#             </div>"""
+        
+#         # Conditional styling based on whether featured image is showing
+#         if show_landing_message and featured_image_base64:
+#             header_content = f"""
+#             <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
+#             <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1em; margin-top:0rem">
+#                 <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -1rem;">
+#                     <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 450px; height: auto; border-radius: 10px;">
+#                 </div>"""
+#             # When featured image is present, push content down
+#             header_content += f"""
+#             <div style="flex: 1; min-width: 200px; margin-left: 0.2rem; margin-right: 0.2rem;  align-self: flex-end; padding-bottom: 20px;">"""
+#         else:
+#             # When no featured image, keep normal centering
+#             header_content += f"""
+#             <div style="flex: 1; min-width: 200px; margin-left: 0.2rem; margin-right: 0.2rem; margin-top:1rem; margin-bottom:0.5rem;">"""
+        
+#         # Add featured image if this is the first time and image exists
+#         if show_landing_message and featured_image_base64:
+#             header_content += f"""
+#                 <div style="margin-bottom: -1rem; text-align: center; margin-top: 1.5rem;">
+#                     <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 60px;">
+#                 </div>"""
+        
+#         # Add the deck name
+#         header_content += f"""
+#                 <h1 style="margin-bottom:-1rem; margin-top:-0.5rem; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
+#             </div>
+#         </div>"""
+        
+#         st.markdown(header_content, unsafe_allow_html=True)
+        
+#     else:
+#         # No header image case
+#         st.markdown("""
+#         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
+#         """, unsafe_allow_html=True)
+        
+#         # Build content for no-image case
+#         if show_landing_message and featured_image_base64:
+#             st.markdown(f"""
+#             <div style="text-align: center; margin-bottom: 1rem;">
+#                 <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px;">
+#             </div>
+#             <h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
+#             """, unsafe_allow_html=True)
+#         else:
+#             st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)            
+
 # In display_card_usage_tab function in display_tabs.py
 def display_card_usage_tab(results, total_decks, variant_df):
     """Display the Card Usage tab with energy-colored charts based on deck energy types"""
