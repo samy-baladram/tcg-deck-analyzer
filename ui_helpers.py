@@ -626,9 +626,10 @@ def display_counter_picker_sidebar():
     # Button to trigger analysis
     find_button = st.button("Find Counters", 
                             type="secondary",
-                            on_click=analyze_counter,
+                            on_click=analyze_counter(selected_decks),
                             use_container_width=True)
-    
+
+    #return selected_decks
     # # Only proceed if decks are selected
     # if not selected_decks:
     #     st.info("Please select at least one deck to find counters")
@@ -637,7 +638,7 @@ def display_counter_picker_sidebar():
     # # Only proceed if button clicked
     # if not find_button:
     #     return
-def analyze_counter():        
+def analyze_counter(selected_decks):        
     with st.spinner("Analyzing counters..."):
         # This collects all matchup data for each meta deck
         counter_data = []
