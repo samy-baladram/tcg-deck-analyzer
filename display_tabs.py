@@ -1754,13 +1754,14 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # # Add a more detailed note about the data
     # st.write("")
     # Display the treemap
-    display_matchup_treemap(deck_name, set_name, working_df)
+    display_matchup_bar_chart(deck_name, set_name, working_df)
     
     # Add some space
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
     # ADDED: Display the bar chart
-    display_matchup_bar_chart(deck_name, set_name, working_df)
+    display_matchup_treemap(deck_name, set_name, working_df)
+    
     
     # Add some space
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
