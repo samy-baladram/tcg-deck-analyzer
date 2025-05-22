@@ -1174,7 +1174,6 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     # Ensure all bins are represented (fill missing with 0)
     all_bins_df = pd.DataFrame({'win_rate_bin': bin_labels})
     bin_data = all_bins_df.merge(bin_data, on='win_rate_bin', how='left').fillna(0)
-    bin_data = bin_data.iloc[::-1].reset_index(drop=True)
     
     # Get colors for each bin using the same gradient
     def get_bin_color(bin_index):
@@ -1183,16 +1182,16 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         
         # Same RGB colors from the gradient
         colors = [
-            (27, 94, 32),      # Very Dark Green (90-99%)
-            (102, 187, 106),   # Green (80-89%)
-            (139, 195, 74),    # Medium Green (70-79%)
-            (156, 204, 101),   # Light Green (60-69%)
-            (205, 220, 57),    # Yellow-Green (50-59%)
-            (255, 235, 59),    # Yellow (40-49%)
-            (255, 183, 77),    # Light Orange (30-39%)
-            (255, 152, 0),     # Orange (20-29%)
-            (253, 126, 20),    # Red-Orange (10-19%)
-            (220, 53, 69)      # Red (0-9%)
+            (220, 53, 69),     # Red (0%)
+            (253, 126, 20),    # Red-Orange (10%)
+            (255, 152, 0),     # Orange (20%)
+            (255, 183, 77),    # Light Orange (30%)
+            (255, 235, 59),    # Yellow (40%)
+            (205, 220, 57),    # Yellow-Green (50%)
+            (156, 204, 101),   # Light Green (60%)
+            (139, 195, 74),    # Medium Green (70%)
+            (102, 187, 106),   # Green (80%)
+            (27, 94, 32)       # Very Dark Green (90-100%)
         ]
         
         return f"rgb({colors[bin_index][0]}, {colors[bin_index][1]}, {colors[bin_index][2]})"
@@ -1209,9 +1208,8 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         marker_color=bar_colors,
         marker_line=dict(width=0),  # No outline
         text=bin_data['meta_share'].apply(lambda x: f"{x:.1f}%" if x > 0 else ""),
-        textfont = dict(size=14),
         textposition='outside',
-        textfont=dict(size=11, color="black"),
+        textfont=dict(size=14, color="black"),
         hovertemplate="<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Matchups: %{customdata}<extra></extra>",
         customdata=bin_data['opponent_name']
     ))
@@ -1693,10 +1691,12 @@ def display_matchup_summary(deck_name, set_name, working_df):
     if working_df.empty or 'meta_share' not in working_df.columns:
         st.info("No matchup data with meta share available.")
         return
-    
+
+    win_upper = 57.5
+    win_lower = 42.5
     # Classify each matchup
     working_df['matchup_type'] = working_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
+        lambda wp: "Favorable" if wp >= win_upper else ("Unfavorable" if wp < win_lower else "Even")
     )
     
     # Calculate total meta share in each category
@@ -1725,13 +1725,12 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display favorable matchups
     with col1:
         st.markdown(f"""
-       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
+            <div style="font-size: 1.1rem; font-weight: bold; ">Unfavorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.8;">{unfavorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
-    
     # Display even matchups
     with col2:
         st.markdown(f"""
@@ -1744,10 +1743,10 @@ def display_matchup_summary(deck_name, set_name, working_df):
     
     # Display unfavorable matchups
     with col3:
-        st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold; ">Unfavorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.8;">{unfavorable_share_norm:.1f}%</div>
+       st.markdown(f"""
+       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
+            <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
