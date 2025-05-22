@@ -147,4 +147,4 @@ def displayed_name_to_markdown(displayed_name):
         name2 = pokemon_names[1] if len(pokemon_names) > 1 else "Pokemon2"
         markdown_parts.append(f"![{name2}]({url2})")
     
-    return " ".join(markdown_parts)
+    return f"![{name1}]({url1})" #" ".join(markdown_parts)
