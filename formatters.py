@@ -107,3 +107,44 @@ def extract_pokemon_urls(displayed_name):
         urls.append(None)
         
     return urls[0], urls[1]  # Return as separate values
+
+def displayed_name_to_markdown(displayed_name):
+    """
+    Convert displayed deck name to markdown format with Pokemon images
+    
+    Args:
+        displayed_name: The deck name to extract Pokemon from
+        
+    Returns:
+        str: Markdown formatted string with Pokemon images
+    """
+    # Get URLs using the existing function
+    url1, url2 = extract_pokemon_urls(displayed_name)
+    
+    # Extract Pokemon names for alt text (reuse logic from extract_pokemon_urls)
+    clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+    parts = re.split(r'[\s/]+', clean_name)
+    suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+    pokemon_names = []
+    
+    for part in parts:
+        part_lower = part.lower()
+        if part_lower and part_lower not in suffixes:
+            if part_lower in POKEMON_EXCEPTIONS:
+                part_lower = POKEMON_EXCEPTIONS[part_lower]
+            pokemon_names.append(part.title())  # Keep original case for display
+            if len(pokemon_names) >= 2:
+                break
+    
+    # Build markdown string
+    markdown_parts = []
+    
+    if url1:
+        name1 = pokemon_names[0] if len(pokemon_names) > 0 else "Pokemon1"
+        markdown_parts.append(f"![{name1}]({url1})")
+    
+    if url2:
+        name2 = pokemon_names[1] if len(pokemon_names) > 1 else "Pokemon2"
+        markdown_parts.append(f"![{name2}]({url2})")
+    
+    return " ".join(markdown_parts)
