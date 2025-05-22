@@ -623,22 +623,17 @@ def display_counter_picker_sidebar():
         help="Choose the decks you want to counter in the meta"
     )
 
-   if not selected_decks:
-        st.session_state.counter_results = None
-        st.session_state.counter_results_decks = None
-        return
-        
     # Button to trigger analysis
     st.session_state.run_counter_analysis = False
     if st.button("Find Counters", type="secondary", use_container_width=True):
-        st.session_state.counter_results = analyze_counter(selected_decks)
-        st.session_state.counter_results_decks = selected_decks.copy()
+        st.session_state.run_counter_analysis = True
+        st.session_state.selected_counter_decks = selected_decks
     
-    # # Only run analysis if button was clicked
-    # if st.session_state.run_counter_analysis and 'selected_counter_decks' in st.session_state:
-    #     analyze_counter(st.session_state.selected_counter_decks)
-    #     # Reset the flag after analysis
-    #     st.session_state.run_counter_analysis = False
+    # Only run analysis if button was clicked
+    if st.session_state.run_counter_analysis and 'selected_counter_decks' in st.session_state:
+        analyze_counter(st.session_state.selected_counter_decks)
+        # Reset the flag after analysis
+        st.session_state.run_counter_analysis = False
 
 def analyze_counter(selected_decks):        
     with st.spinner("Analyzing counters..."):
