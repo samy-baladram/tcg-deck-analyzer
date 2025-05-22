@@ -25,8 +25,16 @@ def display_deck_header(deck_info, results):
     else:
         show_landing_message = False
     
+    # Load and encode the featured image if it exists and we want to show it
+    featured_image_base64 = None
+    if show_landing_message:
+        featured_image_path = "title_banner.png"
+        if os.path.exists(featured_image_path):
+            with open(featured_image_path, "rb") as f:
+                featured_image_base64 = base64.b64encode(f.read()).decode()
+    
     if header_image:
-        # Build the header content with conditional landing message
+        # Build the header content with conditional featured image
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 0.75rem; margin-top:0.25rem">
@@ -35,19 +43,37 @@ def display_deck_header(deck_info, results):
             </div>
             <div style="flex: 1; min-width: 200px; margin-bottom: -0.5rem;">"""
         
-        # Add landing message if this is the first time
-        if show_landing_message:
+        # Add featured image if this is the first time and image exists
+        if show_landing_message and featured_image_base64:
             header_content += f"""
-                <h1 style="margin-bottom: -1.2rem; font-family: 'Nunito', sans-serif; font-weight: 900; line-height: 0.5; color: #C58800; word-wrap: break-word;">🏆 Featured Meta Deck!</h1>"""
-            # header_content = +=f"""
-            #     <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">"""
+                <div style="margin-bottom: 0.5rem;">
+                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 80px;">
+                </div>"""
+        
         # Add the deck name
         header_content += f"""
-                <h2 style="margin: 0rem; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
+                <h2 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
             </div>
         </div>"""
         
         st.markdown(header_content, unsafe_allow_html=True)
+        
+    else:
+        # No header image case
+        st.markdown("""
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
+        """, unsafe_allow_html=True)
+        
+        # Build content for no-image case
+        if show_landing_message and featured_image_base64:
+            st.markdown(f"""
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px;">
+            </div>
+            <h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
         
     else:
         # No header image case
