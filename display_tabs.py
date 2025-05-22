@@ -39,7 +39,7 @@ def display_deck_header(deck_info, results):
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1.5rem; margin-top:0.25rem">
             <div style="margin-right: 1rem; margin-left:1rem; margin-bottom: -20px;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 10px;">
             </div>"""
         
         # Conditional styling based on whether featured image is showing
@@ -50,13 +50,13 @@ def display_deck_header(deck_info, results):
         else:
             # When no featured image, keep normal centering
             header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-bottom: -0.75rem;">"""
+            <div style="flex: 1; min-width: 200px; margin-bottom: -0.75rem; margin-top:0.25rem;">"""
         
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
             header_content += f"""
                 <div style="margin-bottom: -1rem; margin-top: -1.3rem;">
-                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-width: 400px;">
+                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 80px;">
                 </div>"""
         
         # Add the deck name
