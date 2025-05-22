@@ -39,9 +39,9 @@ def display_deck_header(deck_info, results):
         if show_landing_message:
             # header_content += f"""
             #     <h1 style="margin-bottom: -1.2rem; font-family: 'Nunito', sans-serif; font-weight: 900; line-height: 0.5; color: #C58800; word-wrap: break-word;">🏆 Featured Meta Deck!</h1>"""
-            <div style="margin-bottom: -1rem;">
+            header_content = +=f"""
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
-            </div>
+            """
         # Add the deck name
         header_content += f"""
                 <h2 style="margin: 0rem; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
