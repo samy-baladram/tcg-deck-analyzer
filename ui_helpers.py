@@ -693,12 +693,11 @@ def analyze_counter(selected_decks):
                     'matched_decks': matched_decks,
                     'total_selected': len(selected_decks)
                 })
-                counter_df = pd.DataFrame(counter_data).sort_values('average_win_rate', ascending=False)
         
         # # Create DataFrame and sort by average win rate
-        # if counter_data:
-        #     counter_df = pd.DataFrame(counter_data)
-        #     counter_df = counter_df.sort_values('average_win_rate', ascending=False)
+        if counter_data:
+            counter_df = pd.DataFrame(counter_data)
+            counter_df = counter_df.sort_values('average_win_rate', ascending=False)
             
             # Display top 5 counter decks with images and metrics
             st.write("#### Top Counters to Selected Decks")
