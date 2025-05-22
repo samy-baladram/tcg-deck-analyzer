@@ -1065,12 +1065,17 @@ def display_matchup_treemap(deck_name, set_name, working_df):
         # Color by win rate with custom colorscale - FIXED: use 'colors' not 'color'
         marker_colors=treemap_data['win_pct'],
         marker_colorscale=[
-            [0.0, "#DC3545"],    # Red (0% win) - Bootstrap danger
-            [0.3, "#FD7E14"],    # Orange (30% win) - Bootstrap warning  
-            [0.4, "#FFC107"],    # Yellow (40% win) - Bootstrap warning
-            [0.5, "#6C757D"],    # Gray (50% win) - Bootstrap secondary
-            [0.6, "#28A745"],    # Green (60% win) - Bootstrap success
-            [1.0, "#155724"]     # Dark green (100% win) - Dark success
+            [0.0, "rgb(220, 53, 69)"],     # Red (0% win)
+            [0.1, "rgb(253, 126, 20)"],    # Red-Orange (10% win)
+            [0.2, "rgb(255, 152, 0)"],     # Orange (20% win)
+            [0.3, "rgb(255, 183, 77)"],    # Light Orange (30% win)
+            [0.4, "rgb(255, 235, 59)"],    # Yellow (40% win)
+            [0.5, "rgb(205, 220, 57)"],    # Yellow-Green (50% win)
+            [0.6, "rgb(156, 204, 101)"],   # Light Green (60% win)
+            [0.7, "rgb(139, 195, 74)"],    # Medium Green (70% win)
+            [0.8, "rgb(102, 187, 106)"],   # Green (80% win)
+            [0.9, "rgb(76, 175, 80)"],     # Dark Green (90% win)
+            [1.0, "rgb(27, 94, 32)"]       # Very Dark Green (100% win)
         ],
         marker_cmid=50,  # Center colorscale at 50% win rate
         marker_colorbar=dict(
@@ -1100,14 +1105,32 @@ def display_matchup_treemap(deck_name, set_name, working_df):
     # Update layout - FIXED: Make background transparent
     fig.update_layout(
         height=500,
-        margin=dict(t=10, l=10, r=60, b=10),
+        margin=dict(t=0, l=0, r=60, b=0),
         font=dict(size=11),
-        paper_bgcolor='rgba(0,0,0,0)',  # Already transparent
-        plot_bgcolor='rgba(0,0,0,0)',   # Already transparent
-        # ADDED: Remove any remaining background elements
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        template="plotly_white",
         showlegend=False,
-        xaxis=dict(visible=False),
-        yaxis=dict(visible=False)
+        xaxis=dict(
+            visible=False,
+            showgrid=False,
+            showticklabels=False,
+            showline=False,
+            zeroline=False
+        ),
+        yaxis=dict(
+            visible=False,
+            showgrid=False,
+            showticklabels=False,
+            showline=False,
+            zeroline=False
+        )
+    )
+    
+    # Override backgrounds again
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
     )
     
     # Display the treemap
