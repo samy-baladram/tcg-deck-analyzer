@@ -888,7 +888,7 @@ def display_metagame_tab():
             ),
             "Power Index": st.column_config.NumberColumn(
                 "Power Index",
-                help="Performance metric: (Wins + 0.75×Ties - Losses) ÷ √(Total Games). Higher values indicate stronger performance",
+                help="Performance metric: The Wilson score (see sidebar for details). Higher values indicate stronger performance",
                 format="%.2f"
             ),
             "Meta Share %": st.column_config.NumberColumn(
@@ -898,7 +898,7 @@ def display_metagame_tab():
             ),
             "Best Finish Entries": st.column_config.NumberColumn(
                 "Best Finish Entries",
-                help="Number of tournament entries in the 'Best Finishes' section"
+                help="Number of recent tournament entries in the 'Best Finishes' section, decided by [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET)"
             ),
             "Win %": st.column_config.NumberColumn(
                 "Win %",
