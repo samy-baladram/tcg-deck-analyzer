@@ -56,7 +56,7 @@ def display_deck_header(deck_info, results):
         if show_landing_message and featured_image_base64:
             header_content += f"""
                 <div style="margin-bottom: -1.2rem; margin-top: 1.5rem;">
-                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-width: 300px;">
+                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-width: 350px;">
                 </div>"""
         
         # Add the deck name
