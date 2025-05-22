@@ -622,7 +622,8 @@ def display_counter_picker_sidebar():
         default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
         help="Choose the decks you want to counter in the meta"
     )
-    
+    if not selected_decks:
+         return
     # Button to trigger analysis
     find_button = st.button("Find Counters", 
                             type="secondary",
