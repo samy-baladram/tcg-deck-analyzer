@@ -615,7 +615,7 @@ def display_counter_picker_sidebar():
         # Set the deck for analysis - this uses create_deck_selector's logic
         st.session_state.deck_to_analyze = deck_name
         # Force a rerun
-        st.rerun()
+        #st.rerun()
     
     # Multi-select for decks to counter
     selected_decks = st.multiselect(
