@@ -23,7 +23,7 @@ def display_deck_header(deck_info, results):
         st.session_state.first_deck_header_shown = True
         show_landing_message = True
     else:
-        show_landing_message = True #False
+        show_landing_message = False
     
     # Load and encode the featured image if it exists and we want to show it
     featured_image_base64 = None
