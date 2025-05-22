@@ -46,7 +46,7 @@ def display_deck_header(deck_info, results):
         if show_landing_message and featured_image_base64:
             # When featured image is present, push content down
             header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-left: 1rem; font-size:30px; margin-right: 0.5rem;   align-self: flex-end; padding-bottom: 20px;">"""
+            <div style="flex: 1; min-width: 200px; margin-left: 1rem; margin-right: 0.5rem;   align-self: flex-end; padding-bottom: 20px;">"""
         else:
             # When no featured image, keep normal centering
             header_content += f"""
