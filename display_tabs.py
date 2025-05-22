@@ -39,7 +39,7 @@ def display_deck_header(deck_info, results):
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1.2em; margin-top:0.25rem">
             <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -0.8rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; border-radius: 10px;">
             </div>"""
         
         # Conditional styling based on whether featured image is showing
