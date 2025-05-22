@@ -1736,7 +1736,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold;">Even</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #EED600; line-height: 0.8;">{even_share_norm:.1f}%</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #E6CA00; line-height: 0.8;">{even_share_norm:.1f}%</div>
             <div style="font-size: 1rem;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1870,7 +1870,7 @@ def display_matchup_tab(deck_info=None):
     
     # Add matchup column 
     display_df['Matchup'] = display_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
+        lambda wp: "Favorable" if wp >= 62.5 else ("Unfavorable" if wp < 42.5 else "Even")
     )
     
     # Format the record column
