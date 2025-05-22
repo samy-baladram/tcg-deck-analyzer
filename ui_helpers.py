@@ -585,37 +585,36 @@ def display_counter_picker_sidebar():
     
     # Get list of top meta decks to choose from
     meta_decks = []
-    meta_deck_info = {}  # Add this dictionary to store deck info
+    meta_deck_info = {}
     
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Use displayed_name for better user experience
         performance_data = st.session_state.performance_data
         
-        # Store deck info for each deck
         for _, deck in performance_data.iterrows():
             meta_decks.append(deck['displayed_name'])
-            # Store deck info for image generation
             meta_deck_info[deck['displayed_name']] = {
                 'deck_name': deck['deck_name'],
                 'set': deck['set']
             }
         
-        # Limit to top 20 decks
         meta_decks = meta_decks[:20]
     
     if not meta_decks:
         st.warning("No meta deck data available")
         return
     
-    # Check if we should switch to a selected deck
+    # Initialize persistent state for counter picker results
+    if 'counter_picker_results' not in st.session_state:
+        st.session_state.counter_picker_results = None
+    if 'counter_picker_selected_decks' not in st.session_state:
+        st.session_state.counter_picker_selected_decks = None
+    
+    # Check if we should switch to a selected deck (but don't rerun)
     if 'switch_to_deck' in st.session_state:
         deck_name = st.session_state.switch_to_deck
-        # Clear the flag
         del st.session_state['switch_to_deck']
-        # Set the deck for analysis - this uses create_deck_selector's logic
         st.session_state.deck_to_analyze = deck_name
-        # Force a rerun
-        #st.rerun()
+        # Don't call st.rerun() here - let the main app handle the deck switch
     
     # Multi-select for decks to counter
     selected_decks = st.multiselect(
@@ -628,125 +627,79 @@ def display_counter_picker_sidebar():
     # Button to trigger analysis
     find_button = st.button("Find Counters", type="secondary", use_container_width=True)
     
+    # Check if we should clear results (when selection changes)
+    if (st.session_state.counter_picker_selected_decks != selected_decks and 
+        st.session_state.counter_picker_selected_decks is not None):
+        st.session_state.counter_picker_results = None
+    
     # Only proceed if decks are selected
     if not selected_decks:
         st.info("Please select at least one deck to find counters")
+        st.session_state.counter_picker_results = None
         return
     
-    # Only proceed if button clicked
-    if not find_button:
-        return
+    # Only proceed if button clicked OR we have cached results for the same selection
+    if find_button or (st.session_state.counter_picker_results is not None and 
+                       st.session_state.counter_picker_selected_decks == selected_decks):
         
-    with st.spinner("Analyzing counters..."):
-        # This collects all matchup data for each meta deck
-        counter_data = []
-
-        selected_internal_names = []
-        for displayed in selected_decks:
-            for _, meta_deck in st.session_state.performance_data.iterrows():
-                if meta_deck['displayed_name'] == displayed:
-                    selected_internal_names.append(meta_deck['deck_name'])
-
-        # For each possible counter deck in the meta
-        for _, deck in st.session_state.performance_data.iterrows():
-            deck_name = deck['deck_name']
-            set_name = deck['set']
-            displayed_name = deck['displayed_name']
-            
-            # Get this deck's matchups
-            matchups = fetch_matchup_data(deck_name, set_name)
-            
-            if matchups.empty:
-                continue
-            
-            # Initialize variables for weighted average calculation
-            total_weighted_win_rate = 0
-            total_matches = 0
-            matched_decks = 0  # Add this line to initialize matched_decks
-            
-            # Look for matchups against selected decks
-            for _, matchup in matchups.iterrows():
-                if matchup['opponent_deck_name'] in selected_internal_names:
-                    # Get the number of matches for this matchup
-                    match_count = matchup['matches_played']
-                    
-                    # Add to weighted sum (win percentage × number of matches)
-                    total_weighted_win_rate += matchup['win_pct'] * match_count
-                    
-                    # Add to total matches count
-                    total_matches += match_count
-                    
-                    # Still track number of matched decks for filtering
-                    matched_decks += 1
-            
-            # Only include if we found matchups against at least half the selected decks
-            if matched_decks >= len(selected_decks) / 2:
-                # Calculate weighted average: total weighted sum divided by total matches
-                avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
+        # If button was clicked, generate new results
+        if find_button:
+            with st.spinner("Analyzing counters..."):
+                # Store the current selection
+                st.session_state.counter_picker_selected_decks = selected_decks
                 
-                counter_data.append({
-                    'deck_name': deck_name,
-                    'displayed_name': displayed_name,
-                    'set': set_name,
-                    'average_win_rate': avg_win_rate,
-                    'meta_share': deck['share'],
-                    'power_index': deck['power_index'],
-                    'matched_decks': matched_decks,
-                    'total_selected': len(selected_decks)
-                })
+                # Generate counter data (same logic as before)
+                counter_data = []
+                selected_internal_names = []
+                
+                for displayed in selected_decks:
+                    for _, meta_deck in st.session_state.performance_data.iterrows():
+                        if meta_deck['displayed_name'] == displayed:
+                            selected_internal_names.append(meta_deck['deck_name'])
+
+                for _, deck in st.session_state.performance_data.iterrows():
+                    deck_name = deck['deck_name']
+                    set_name = deck['set']
+                    displayed_name = deck['displayed_name']
+                    
+                    matchups = fetch_matchup_data(deck_name, set_name)
+                    
+                    if matchups.empty:
+                        continue
+                    
+                    total_weighted_win_rate = 0
+                    total_matches = 0
+                    matched_decks = 0
+                    
+                    for _, matchup in matchups.iterrows():
+                        if matchup['opponent_deck_name'] in selected_internal_names:
+                            match_count = matchup['matches_played']
+                            total_weighted_win_rate += matchup['win_pct'] * match_count
+                            total_matches += match_count
+                            matched_decks += 1
+                    
+                    if matched_decks >= len(selected_decks) / 2:
+                        avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
+                        
+                        counter_data.append({
+                            'deck_name': deck_name,
+                            'displayed_name': displayed_name,
+                            'set': set_name,
+                            'average_win_rate': avg_win_rate,
+                            'meta_share': deck['share'],
+                            'power_index': deck['power_index'],
+                            'matched_decks': matched_decks,
+                            'total_selected': len(selected_decks)
+                        })
+                
+                # Store results in session state
+                st.session_state.counter_picker_results = counter_data
         
-        # Create DataFrame and sort by average win rate
-        if counter_data:
+        # Display results (either newly generated or cached)
+        if st.session_state.counter_picker_results:
+            counter_data = st.session_state.counter_picker_results
             counter_df = pd.DataFrame(counter_data)
             counter_df = counter_df.sort_values('average_win_rate', ascending=False)
-            
-            # Add Pokemon icon URLs
-            # Define Pokemon exceptions dictionary (for special cases)
-            POKEMON_EXCEPTIONS = {
-                'oricorio': 'oricorio-pom-pom',
-                # Add other exceptions as needed
-            }
-            
-            # Function to extract Pokemon names and create image URLs
-            def extract_pokemon_urls(displayed_name):
-                import re
-                clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-                parts = re.split(r'[\s/]+', clean_name)
-                suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-                pokemon_names = []
-                
-                for part in parts:
-                    part = part.lower()
-                    if part and part not in suffixes:
-                        if part in POKEMON_EXCEPTIONS:
-                            part = POKEMON_EXCEPTIONS[part]
-                        pokemon_names.append(part)
-                        if len(pokemon_names) >= 2:
-                            break
-                
-                urls = []
-                for name in pokemon_names:
-                    urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-                
-                # Ensure we have exactly 2 elements
-                while len(urls) < 2:
-                    urls.append(None)
-                    
-                return urls[0], urls[1]
-            
-            # Apply the function to extract Pokemon image URLs
-            counter_df[['pokemon_url1', 'pokemon_url2']] = counter_df.apply(
-                lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
-                axis=1
-            )
-            
-            # Convert numpy types to Python native types
-            counter_df = counter_df.copy()
-            for col in counter_df.columns:
-                if counter_df[col].dtype == 'int64':
-                    counter_df[col] = counter_df[col].astype(int)
-                elif counter_df[col].dtype == 'float64':
-                    counter_df[col] = counter_df[col].astype(float)
             
             # Display top 5 counter decks with images and metrics
             st.write("#### Top Counters to Selected Decks")
@@ -761,40 +714,7 @@ def display_counter_picker_sidebar():
                     'set': deck['set']
                 }
                 
-                # Preload Pokemon info into session state to help with image generation
-                import cache_manager
-                if 'deck_pokemon_info' not in st.session_state:
-                    st.session_state.deck_pokemon_info = {}
-                
-                if deck['deck_name'] not in st.session_state.deck_pokemon_info:
-                    # Try to get sample deck to extract Pokemon info
-                    sample_deck = cache_manager.get_or_load_sample_deck(deck['deck_name'], deck['set'])
-                    
-                    # This helps create_deck_header_images find the Pokemon
-                    if 'pokemon_cards' in sample_deck:
-                        from image_processor import extract_pokemon_from_deck_name
-                        pokemon_names = extract_pokemon_from_deck_name(deck['deck_name'])
-                        
-                        if pokemon_names:
-                            st.session_state.deck_pokemon_info[deck['deck_name']] = []
-                            
-                            for pokemon_name in pokemon_names[:2]:
-                                # Find matching card in sample deck
-                                for card in sample_deck['pokemon_cards']:
-                                    # Normalize names for comparison
-                                    card_name_norm = card['card_name'].lower().replace(' ', '-')
-                                    pokemon_name_norm = pokemon_name.lower()
-                                    
-                                    if card_name_norm == pokemon_name_norm:
-                                        st.session_state.deck_pokemon_info[deck['deck_name']].append({
-                                            'name': pokemon_name,
-                                            'card_name': card['card_name'],
-                                            'set': card.get('set', ''),
-                                            'num': card.get('num', '')
-                                        })
-                                        break
-                
-                # Generate header image - passing empty results since we've preloaded info
+                # Generate header image
                 header_image = create_deck_header_images(deck_info, None)
                 
                 # Check if this is a top 3 or lower ranked deck
@@ -802,11 +722,9 @@ def display_counter_picker_sidebar():
                 
                 # Adjust column widths and styling based on ranking
                 if is_top_three:
-                    # Top 3 decks get normal layout
                     col1, col2 = st.columns([3, 1])
                     
                     with col1:
-                        # Display the banner image
                         if header_image:
                             st.markdown(f"""
                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: left;">
@@ -814,7 +732,6 @@ def display_counter_picker_sidebar():
                             </div>
                             """, unsafe_allow_html=True)
                         else:
-                            # Placeholder if no image
                             st.markdown("""
                             <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
                                 display: flex; align-items: center; justify-content: center;">
@@ -822,22 +739,20 @@ def display_counter_picker_sidebar():
                             </div>
                             """, unsafe_allow_html=True)
                         
-                        # MODIFIED: Replace text with button, using callback method
+                        # MODIFIED: Use callback without rerun
                         rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
                         button_label = f"{rank_emoji} {deck['displayed_name']}"
                         
-                        # Create a unique key for each button
                         button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
                         st.button(
                             button_label, 
                             key=button_key,
                             type="tertiary",
-                            on_click=set_deck_to_analyze,
+                            on_click=set_deck_to_analyze_no_rerun,
                             args=(deck['deck_name'],)
                         )
                     
                     with col2:
-                        # Display win rate as a big percentage
                         win_rate = deck['average_win_rate']
                         win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                         st.markdown(f"""
@@ -847,11 +762,9 @@ def display_counter_picker_sidebar():
                         </div>
                         """, unsafe_allow_html=True)
                 else:
-                    # 4th and 5th place get smaller layout
                     col1, col2 = st.columns([3.5, 1])
                     
                     with col1:
-                        # Display smaller banner image
                         if header_image:
                             st.markdown(f"""
                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: left;">
@@ -859,7 +772,6 @@ def display_counter_picker_sidebar():
                             </div>
                             """, unsafe_allow_html=True)
                         else:
-                            # Smaller placeholder
                             st.markdown("""
                             <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
                                 display: flex; align-items: center; justify-content: center;">
@@ -867,22 +779,19 @@ def display_counter_picker_sidebar():
                             </div>
                             """, unsafe_allow_html=True)
                         
-                        # MODIFIED: Replace text with button
                         rank_num = f"#{i+1}"
                         button_label = f"{rank_num} {deck['displayed_name']}"
                         
-                        # Create a unique key for each button
                         button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
                         st.button(
                             button_label, 
                             key=button_key,
                             type="tertiary",
-                            on_click=set_deck_to_analyze,
+                            on_click=set_deck_to_analyze_no_rerun,
                             args=(deck['deck_name'],)
                         )
                     
                     with col2:
-                        # Display win rate as a smaller percentage without "win rate" text
                         win_rate = deck['average_win_rate']
                         win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                         st.markdown(f"""
@@ -891,17 +800,23 @@ def display_counter_picker_sidebar():
                         </div>
                         """, unsafe_allow_html=True)
                 
-                # Add a horizontal line between decks
+                # Add divider between decks
                 if i < min(4, len(counter_df) - 1):
-                    # Top 3 get normal divider, 4-5 get thinner divider
                     divider_style = "solid 0.5px"
                     divider_color = "#ddd"
                     st.markdown(f"<hr style='margin-top: -10px; margin-bottom: -10px; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
-            # Add explanation text 
             st.caption("Win rates shown are weighted by number of matches played, providing a more reliable performance indicator against your selected decks. Decks with higher win rates have demonstrated stronger results in tournament play. Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
         else:
             st.warning("No counter data found for the selected decks")
+
+def set_deck_to_analyze_no_rerun(deck_name):
+    """Callback function when counter deck button is clicked - without rerun"""
+    # Set the deck to analyze but don't trigger rerun
+    st.session_state.deck_to_analyze = deck_name
+    
+    # Show a success message
+    st.sidebar.success(f"Deck selected: {deck_name}")
 
 def set_deck_to_analyze(deck_name):
     """Callback function when counter deck button is clicked"""
