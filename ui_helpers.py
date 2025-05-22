@@ -378,7 +378,7 @@ def create_deck_selector():
     
     # Create label and help text
     label_text = f"Current Set: {current_set}"
-    help_text = f"Showing top performing decks. Updated {time_str}."
+    help_text = f"Showing top performing decks, ordered by Power Index (details in sidebar). Updated {time_str}."
 
     # deck_icon_display_names = []
     # for name in deck_display_names:
@@ -505,18 +505,6 @@ def render_sidebar_from_cache():
                 Based on up to {TOURNAMENT_COUNT} tournament results
             </div>
             """, unsafe_allow_html=True)
-            
-            # Add expandable methodology section
-            st.write("")
-            with st.expander("🔍 About the Power Index"):
-                # Format the explanation with the current date and tournament count
-                formatted_explanation = POWER_INDEX_EXPLANATION.format(
-                    tournament_count=TOURNAMENT_COUNT,
-                    current_month_year=current_month_year
-                )
-                
-                # Display the enhanced explanation
-                st.markdown(formatted_explanation)
      
     else:
         st.write("")
@@ -526,7 +514,16 @@ def render_sidebar_from_cache():
     display_counter_picker_sidebar()
     st.markdown("""
     <div style="height: 300px;"></div>
-    """, unsafe_allow_html=True) 
+    """, unsafe_allow_html=True)
+    with st.expander("🔍 About the Power Index"):
+                # Format the explanation with the current date and tournament count
+                formatted_explanation = POWER_INDEX_EXPLANATION.format(
+                    tournament_count=TOURNAMENT_COUNT,
+                    current_month_year=current_month_year
+                )
+                
+                # Display the enhanced explanation
+                st.markdown(formatted_explanation)
     
 def display_deck_update_info(deck_name, set_name):
     """Display when the deck was last updated"""
