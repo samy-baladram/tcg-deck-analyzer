@@ -118,7 +118,7 @@ def render_energy_icons(energy_types, is_typical=False):
     for energy in energy_types:
         # Direct URL to the energy icon
         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
+        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle; ">'
     
     # Add note if these are typical energy types
     archetype_note = ''
@@ -581,7 +581,7 @@ def display_counter_picker_sidebar():
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
         <div style="width:100%; text-align:center; margin:0px 0 0px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px; ">
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -763,7 +763,7 @@ def analyze_counter(selected_decks):
                         st.markdown(f"""
                         <div style="display: flex; align-items: center; margin-bottom: 0rem;">
                             <div style="flex: 1; margin-right: 1rem;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; ">
+                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
                             </div>
                             <div style="text-align: right; min-width: 80px;">
                                 <span style="font-size: 1.4rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
@@ -806,7 +806,7 @@ def analyze_counter(selected_decks):
                         st.markdown(f"""
                         <div style="display: flex; align-items: center; margin-bottom: 0rem;">
                             <div style="flex: 1; margin-right: 1rem;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 85%; max-width: 250px; height: auto; ">
+                                <img src="data:image/png;base64,{header_image}" style="width: 85%; max-width: 250px; height: auto; border-radius: 10px;">
                             </div>
                             <div style="text-align: right; min-width: 60px;">
                                 <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
