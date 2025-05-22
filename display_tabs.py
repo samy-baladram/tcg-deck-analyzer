@@ -67,7 +67,7 @@ def display_deck_header(deck_info, results):
         
         # Add the deck name
         header_content += f"""
-                <h1 style="margin-bottom:-1rem; margin-top:-0.5rem; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name']).rstrip()}</h1>
+                <h1 style="margin-bottom:-1rem; margin-top:-0.5rem; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
             </div>
         </div>"""
         
