@@ -42,7 +42,7 @@ def display_deck_header(deck_info, results):
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0rem; margin: 0.5rem 0 0.5rem 0; text-align: center;">
             <div>
-                <img src="data:image/png;base64,{header_image}" style="max-width: {deck_image_max_width}; width: 100%; height: auto; ">
+                <img src="data:image/png;base64,{header_image}" style="max-width: {deck_image_max_width}; width: 100%; height: auto; border-radius: 10px;">
             </div>
             <div style="min-width: 200px; margin-left: 1rem;">"""
         
@@ -50,7 +50,7 @@ def display_deck_header(deck_info, results):
         if show_landing_message and featured_image_base64:
             header_content += f"""
                 <div style="margin-top: 0.5rem; margin-bottom: -1rem;">
-                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; max-height: 60px;">
+                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; max-height: 60px; border-radius: 10px;">
                 </div>"""
         
         # Add the deck name
@@ -71,7 +71,7 @@ def display_deck_header(deck_info, results):
         if show_landing_message and featured_image_base64:
             st.markdown(f"""
             <div style="text-align: center; margin-bottom: 1rem;">
-                <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px;">
+                <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px; border-radius: 10px;">
             </div>
             <h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
             """, unsafe_allow_html=True)
@@ -126,7 +126,7 @@ def display_deck_header(deck_info, results):
 #         if show_landing_message and featured_image_base64:
 #             header_content += f"""
 #                 <div style="margin-bottom: -1rem; text-align: center; margin-top: 1.5rem;">
-#                     <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 60px;">
+#                     <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 60px; border-radius: 10px;">
 #                 </div>"""
         
 #         # Add the deck name
@@ -147,7 +147,7 @@ def display_deck_header(deck_info, results):
 #         if show_landing_message and featured_image_base64:
 #             st.markdown(f"""
 #             <div style="text-align: center; margin-bottom: 1rem;">
-#                 <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px;">
+#                 <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px; border-radius: 10px;">
 #             </div>
 #             <h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
 #             """, unsafe_allow_html=True)
@@ -1053,7 +1053,7 @@ def display_related_decks_tab(deck_info, results):
                     if header_image:
                         st.markdown(f"""
                         <div style="width: 100%; height: auto; overflow: hidden;  border-radius: 10px 10px 10px 0px; margin-bottom: 0px;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; object-fit: cover; ">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; object-fit: cover; border-radius: 10px;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
