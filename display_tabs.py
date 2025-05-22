@@ -1105,7 +1105,7 @@ def display_matchup_treemap(deck_name, set_name, working_df):
     # Update layout - FIXED: Make background transparent
     fig.update_layout(
         height=500,
-        margin=dict(t=0, l=0, r=60, b=0),
+        margin=dict(t=0, l=10, r=60, b=10),
         font=dict(size=11),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -1217,7 +1217,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     # Update layout - Clean and minimal
     fig.update_layout(
         height=300,
-        margin=dict(t=0, l=0, r=0, b=40),
+        margin=dict(t=0, l=10, r=0, b=30),
         
         # Transparent backgrounds
         paper_bgcolor='rgba(0,0,0,0)',
