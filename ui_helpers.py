@@ -751,7 +751,7 @@ def display_counter_picker_sidebar():
                             button_label, 
                             key=button_key,
                             type="tertiary",
-                            on_click=set_deck_to_analyze_no_rerun,
+                            on_click=set_deck_to_analyze,
                             args=(deck['deck_name'],)
                         )
                     
@@ -790,7 +790,7 @@ def display_counter_picker_sidebar():
                             button_label, 
                             key=button_key,
                             type="tertiary",
-                            on_click=set_deck_to_analyze_no_rerun,
+                            on_click=set_deck_to_analyze,
                             args=(deck['deck_name'],)
                         )
                     
@@ -815,65 +815,12 @@ def display_counter_picker_sidebar():
 
 def set_deck_to_analyze_no_rerun(deck_name):
     """Callback function when counter deck button is clicked - without rerun"""
-    # Set the deck to analyze but don't trigger rerun
     st.session_state.deck_to_analyze = deck_name
-    
-    # Show a success message
-    st.sidebar.success(f"Deck selected: {deck_name}")
+    st.rerun()
+    # # Show a success message
+    # st.sidebar.success(f"Deck selected: {deck_name}")
 
 def set_deck_to_analyze(deck_name):
     """Callback function when counter deck button is clicked"""
     # Set the deck to analyze
     st.session_state.deck_to_analyze = deck_name
-
-def should_render_sidebar():
-    """
-    Determine if sidebar should be fully rendered or just show minimal content
-    
-    Returns:
-        bool: True if sidebar should render, False if should skip
-    """
-    # Skip sidebar rendering if user is actively interacting with main content
-    
-    # Check if we're in the middle of analyzing a deck
-    if st.session_state.get('update_running', False):
-        return False
-    
-    # Check if user just switched decks (give it time to settle)
-    if 'deck_switch_time' in st.session_state:
-        from datetime import datetime, timedelta
-        if datetime.now() - st.session_state.deck_switch_time < timedelta(seconds=1):
-            return False
-    
-    # Check if we're in tab navigation (this is tricky to detect directly)
-    # We can use a combination of factors:
-    
-    # If analyze state exists and we have performance data, it's safe to render
-    if ('analyze' in st.session_state and 
-        'performance_data' in st.session_state and 
-        not st.session_state.performance_data.empty):
-        return True
-    
-    # If we don't have essential data yet, don't render full sidebar
-    if 'performance_data' not in st.session_state:
-        return False
-    
-    return True
-
-def render_minimal_sidebar():
-    """Render a minimal sidebar placeholder during main content interactions"""
-    st.sidebar.markdown("### Loading...")
-    
-    # Show the banner if it exists
-    banner_path = "sidebar_banner.png"
-    if os.path.exists(banner_path):
-        with open(banner_path, "rb") as f:
-            banner_base64 = base64.b64encode(f.read()).decode()
-        st.sidebar.markdown(f"""
-        <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Show minimal content
-    st.sidebar.info("Sidebar updating...")
