@@ -121,8 +121,8 @@ class CardGrid:
         full_size_url = standard_url
         
         # Create basic image HTML
-        img_html = (f"<img src=\"{standard_url}\" "
-                f"style=\"width: 100%; border-radius: {self.border_radius}px; border: 0.5px solid {self.border_color};\">")
+        # img_html = (f"<img src=\"{standard_url}\" "
+        #         f"style=\"width: 100%; border-radius: {self.border_radius}px; border: 0.5px solid {self.border_color};\">")
         img_html = (f"<img src=\"{standard_url}\" "
                 f"style=\"width: 100%;\">")
         
