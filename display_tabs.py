@@ -1029,7 +1029,10 @@ def display_matchup_treemap(deck_name, set_name, working_df):
     
     # Prepare data for treemap
     treemap_data = working_df.copy()
-    
+
+    # ADDED: Sort by win rate (color) first, then by meta share for secondary ordering
+    treemap_data = treemap_data.sort_values(['win_pct', 'meta_share'], ascending=[False, False])
+   
     # Clean opponent names for better display
     treemap_data['clean_name'] = treemap_data['opponent_name'].apply(
         lambda x: x.replace(' (', '<br>(') if len(x) > 15 else x
@@ -1084,21 +1087,27 @@ def display_matchup_treemap(deck_name, set_name, working_df):
         textposition="middle center",
         
         # Hover information
-        customdata=treemap_data['hover_text'],
-        hovertemplate="%{customdata}<extra></extra>",
+        #customdata=treemap_data['hover_text'],
+        #hovertemplate="%{customdata}<extra></extra>",
         
         # Styling
-        marker_line=dict(width=2, color="white"),
+        # Styling - FIXED: Remove white outline
+        marker_line=dict(width=0),  # Changed from width=2, color="white" to width=0
         pathbar_visible=False
+
     ))
     
-    # Update layout
+    # Update layout - FIXED: Make background transparent
     fig.update_layout(
         height=500,
         margin=dict(t=10, l=10, r=60, b=10),
         font=dict(size=11),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
+        paper_bgcolor='rgba(0,0,0,0)',  # Already transparent
+        plot_bgcolor='rgba(0,0,0,0)',   # Already transparent
+        # ADDED: Remove any remaining background elements
+        showlegend=False,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False)
     )
     
     # Display the treemap
@@ -1109,7 +1118,6 @@ def display_matchup_treemap(deck_name, set_name, working_df):
     st.caption(
         "Rectangle size = meta share (how often you'll face this deck). "
         "Color = win rate (red = unfavorable, gray = even, green = favorable). "
-        "Hover for detailed matchup statistics."
     )
     
 # Modify the display_related_decks_tab function in display_tabs.py:
