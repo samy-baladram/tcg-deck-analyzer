@@ -4,6 +4,7 @@
 import re
 from utils import is_set_code, format_set_code
 
+from config import POKEMON_EXCEPTIONS
 def format_deck_name(deck_name):
     """
     Convert deck names from URL format to display format.
