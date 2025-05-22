@@ -1097,27 +1097,67 @@ def display_matchup_treemap(deck_name, set_name, working_df):
 
     ))
     
-    # Update layout - FIXED: Make background transparent
+    # Update layout - ENHANCED: Force complete transparency
     fig.update_layout(
         height=500,
-        margin=dict(t=10, l=10, r=60, b=10),
+        margin=dict(t=0, l=0, r=60, b=0),  # Reduced margins further
         font=dict(size=11),
-        paper_bgcolor='rgba(0,0,0,0)',  # Already transparent
-        plot_bgcolor='rgba(0,0,0,0)',   # Already transparent
-        # ADDED: Remove any remaining background elements
+        
+        # ADDED: Complete background removal
+        paper_bgcolor='rgba(0,0,0,0)',    # Paper background transparent
+        plot_bgcolor='rgba(0,0,0,0)',     # Plot area transparent
+        
+        # ADDED: Force transparent theme
+        template="plotly_white",          # Use white template as base
+        
+        # ADDED: Remove all axes and grids
         showlegend=False,
-        xaxis=dict(visible=False),
-        yaxis=dict(visible=False)
+        xaxis=dict(
+            visible=False,
+            showgrid=False,
+            showticklabels=False,
+            showline=False,
+            zeroline=False
+        ),
+        yaxis=dict(
+            visible=False,
+            showgrid=False,
+            showticklabels=False,
+            showline=False,
+            zeroline=False
+        )
     )
     
-    # Display the treemap
-    from visualizations import display_chart
-    display_chart(fig, key="matchup_treemap")
+    # ADDED: Override the paper and plot bgcolor after layout
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    # Display the treemap with custom config to ensure transparency
+    import streamlit as st
+    
+    # ADDED: Custom config to remove any remaining backgrounds
+    custom_config = {
+        'displayModeBar': False,
+        'staticPlot': True,
+        'displaylogo': False,
+        'toImageButtonOptions': {
+            'format': 'png',
+            'filename': 'matchup_treemap',
+            'height': 500,
+            'width': 700,
+            'scale': 1
+        }
+    }
+    
+    st.plotly_chart(fig, use_container_width=True, config=custom_config, key="matchup_treemap")
     
     # Add explanation
     st.caption(
         "Rectangle size = meta share (how often you'll face this deck). "
         "Color = win rate (red = unfavorable, gray = even, green = favorable). "
+        "Hover for detailed matchup statistics."
     )
     
 # Modify the display_related_decks_tab function in display_tabs.py:
