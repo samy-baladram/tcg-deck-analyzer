@@ -1009,6 +1009,109 @@ def display_metagame_tab():
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
     st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.")
+    # Display the treemap
+    display_matchup_treemap(deck_name, set_name, working_df)
+    
+def display_matchup_treemap(deck_name, set_name, working_df):
+    """
+    Display a treemap showing matchup distribution against the meta
+    
+    Args:
+        deck_name: Current deck name
+        set_name: Current deck set
+        working_df: DataFrame with matchup data already processed
+    """
+    st.write("#### Meta Matchup Distribution")
+    
+    # Check if we have matchup data with meta share
+    if working_df.empty or 'meta_share' not in working_df.columns:
+        st.info("No matchup data with meta share available.")
+        return
+    
+    # Prepare data for treemap
+    treemap_data = working_df.copy()
+    
+    # Clean opponent names for better display
+    treemap_data['clean_name'] = treemap_data['opponent_name'].apply(
+        lambda x: x.replace(' (', '<br>(') if len(x) > 15 else x
+    )
+    
+    # Create hover text
+    treemap_data['hover_text'] = treemap_data.apply(
+        lambda row: f"<b>{row['opponent_name']}</b><br>" +
+                   f"Win Rate: {row['win_pct']:.1f}%<br>" +
+                   f"Record: {row['wins']}-{row['losses']}-{row['ties']}<br>" +
+                   f"Meta Share: {row['meta_share']:.1f}%<br>" +
+                   f"Matches: {row['matches_played']}",
+        axis=1
+    )
+    
+    # Create text for display on rectangles
+    treemap_data['display_text'] = treemap_data.apply(
+        lambda row: f"{row['clean_name']}<br>{row['win_pct']:.0f}%<br>({row['meta_share']:.1f}%)",
+        axis=1
+    )
+    
+    # Create the treemap
+    import plotly.graph_objects as go
+    
+    fig = go.Figure(go.Treemap(
+        labels=treemap_data['clean_name'],
+        values=treemap_data['meta_share'],
+        parents=[""] * len(treemap_data),  # All top-level rectangles
+        
+        # Color by win rate with custom colorscale
+        marker_color=treemap_data['win_pct'],
+        marker_colorscale=[
+            [0.0, "#DC3545"],    # Red (0% win) - Bootstrap danger
+            [0.3, "#FD7E14"],    # Orange (30% win) - Bootstrap warning  
+            [0.4, "#FFC107"],    # Yellow (40% win) - Bootstrap warning
+            [0.5, "#6C757D"],    # Gray (50% win) - Bootstrap secondary
+            [0.6, "#28A745"],    # Green (60% win) - Bootstrap success
+            [1.0, "#155724"]     # Dark green (100% win) - Dark success
+        ],
+        marker_cmid=50,  # Center colorscale at 50% win rate
+        marker_colorbar=dict(
+            title="Win Rate %",
+            thickness=15,
+            len=0.7,
+            x=1.02
+        ),
+        
+        # Text display
+        text=treemap_data['display_text'],
+        textinfo="text",
+        textfont=dict(size=12, color="white"),
+        textposition="middle center",
+        
+        # Hover information
+        customdata=treemap_data['hover_text'],
+        hovertemplate="%{customdata}<extra></extra>",
+        
+        # Styling
+        marker_line=dict(width=2, color="white"),
+        pathbar_visible=False
+    ))
+    
+    # Update layout
+    fig.update_layout(
+        height=500,
+        margin=dict(t=10, l=10, r=60, b=10),
+        font=dict(size=11),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    # Display the treemap
+    from visualizations import display_chart
+    display_chart(fig, key="matchup_treemap")
+    
+    # Add explanation
+    st.caption(
+        "Rectangle size = meta share (how often you'll face this deck). "
+        "Color = win rate (red = unfavorable, gray = even, green = favorable). "
+        "Hover for detailed matchup statistics."
+    )
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
