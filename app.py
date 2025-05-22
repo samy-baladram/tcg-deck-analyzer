@@ -206,12 +206,7 @@ selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
 with st.sidebar:
-    # Add a check to prevent sidebar updates during main content interactions
-    if ui_helpers.should_render_sidebar():
-        ui_helpers.render_sidebar_from_cache()
-    else:
-        # Show a minimal placeholder during main content interactions
-        ui_helpers.render_minimal_sidebar()
+    ui_helpers.render_sidebar_from_cache()
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
