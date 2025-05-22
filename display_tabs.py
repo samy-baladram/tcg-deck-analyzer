@@ -1140,7 +1140,7 @@ def display_matchup_treemap(deck_name, set_name, working_df):
     # Add explanation
     st.caption(
         "Rectangle size = meta share (how often you'll face this deck). "
-        "Color = win rate (red = unfavorable, gray = even, green = favorable). "
+        "Color = win rate (red = unfavorable, yellow = even, green = favorable). "
     )
 
 def display_matchup_bar_chart(deck_name, set_name, working_df):
@@ -1209,7 +1209,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         marker_line=dict(width=0),  # No outline
         text=bin_data['meta_share'].apply(lambda x: f"{x:.1f}%" if x > 0 else ""),
         textposition='outside',
-        textfont=dict(size=14, color="black"),
+        textfont=dict(size=15, color="black"),
         hovertemplate="<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Matchups: %{customdata}<extra></extra>",
         customdata=bin_data['opponent_name']
     ))
@@ -1226,16 +1226,16 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         # Clean axes
         xaxis=dict(
             title="Win Rate Range",
-            title_font=dict(size=15),
-            tickfont=dict(size=13),
+            title_font=dict(size=16),
+            tickfont=dict(size=16),
             showgrid=False,
             showline=False,
             zeroline=False
         ),
         yaxis=dict(
             title="Meta Share %",
-            title_font=dict(size=15),
-            tickfont=dict(size=13),
+            title_font=dict(size=16),
+            tickfont=dict(size=16),
             showgrid=False,
             showline=False,
             zeroline=False,
@@ -1720,7 +1720,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         unfavorable_share_norm = 0
     
     # Columns
-    col1, col2, col3, col4 = st.columns([1,1,1,2])
+    col1, col2, col3 = st.columns([1,1,1])
     
     # Display favorable matchups
     with col1:
@@ -1750,8 +1750,8 @@ def display_matchup_summary(deck_name, set_name, working_df):
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
-    with col4:    
-        st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
+        
+    st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), or unfavorable (<{win_lower}% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     # # Add a more detailed note about the data
     # st.write("")
     # Display the treemap
