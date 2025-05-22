@@ -757,6 +757,7 @@ def analyze_counter(selected_decks):
                 
                 # Adjust column widths and styling based on ranking
                 if is_top_three:
+                    win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                     if header_image:
                         st.markdown(f"""
                         <div style="display: flex; align-items: center; margin-bottom: 1rem;">
