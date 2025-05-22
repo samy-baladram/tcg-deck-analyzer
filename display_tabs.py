@@ -42,7 +42,7 @@ def display_deck_header(deck_info, results):
         
         # Add the deck name
         header_content += f"""
-                <h2 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
+                <h2 style="margin-top: -2rem; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
             </div>
         </div>"""
         
