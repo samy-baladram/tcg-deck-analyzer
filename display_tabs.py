@@ -38,7 +38,7 @@ def display_deck_header(deck_info, results):
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1.5rem; margin-top:0.25rem">
-            <div style="margin-right: 1rem; margin-bottom: -20px;">
+            <div style="margin-right: 1rem; margin-left:0.5rem; margin-bottom: -20px;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
             </div>"""
         
