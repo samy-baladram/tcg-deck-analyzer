@@ -614,8 +614,6 @@ def display_counter_picker_sidebar():
         del st.session_state['switch_to_deck']
         # Set the deck for analysis - this uses create_deck_selector's logic
         st.session_state.deck_to_analyze = deck_name
-        # Force a rerun
-        #st.rerun()
     
     # Multi-select for decks to counter
     selected_decks = st.multiselect(
@@ -626,17 +624,20 @@ def display_counter_picker_sidebar():
     )
     
     # Button to trigger analysis
-    find_button = st.button("Find Counters", type="secondary", use_container_width=True)
+    find_button = st.button("Find Counters", 
+                            type="secondary",
+                            on_click=analyze_counter,
+                            use_container_width=True)
     
     # # Only proceed if decks are selected
     # if not selected_decks:
     #     st.info("Please select at least one deck to find counters")
     #     return
     
-    # Only proceed if button clicked
-    if not find_button:
-        return
-        
+    # # Only proceed if button clicked
+    # if not find_button:
+    #     return
+def analyze_counter():        
     with st.spinner("Analyzing counters..."):
         # This collects all matchup data for each meta deck
         counter_data = []
