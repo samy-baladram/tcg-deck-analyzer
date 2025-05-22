@@ -28,7 +28,7 @@ def display_deck_header(deck_info, results):
     # Load and encode the featured image if it exists and we want to show it
     featured_image_base64 = None
     if show_landing_message:
-        featured_image_path = "title_banner.png"
+        featured_image_path = "featured_banner.png"
         if os.path.exists(featured_image_path):
             with open(featured_image_path, "rb") as f:
                 featured_image_base64 = base64.b64encode(f.read()).decode()
