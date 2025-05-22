@@ -607,40 +607,45 @@ def display_counter_picker_sidebar():
         st.warning("No meta deck data available")
         return
     
-    # Check if we should switch to a selected deck
-    if 'switch_to_deck' in st.session_state:
-        deck_name = st.session_state.switch_to_deck
-        # Clear the flag
-        del st.session_state['switch_to_deck']
-        # Set the deck for analysis - this uses create_deck_selector's logic
-        st.session_state.deck_to_analyze = deck_name
+        # Initialize state
+    if 'show_counter_picker' not in st.session_state:
+        st.session_state.show_counter_picker = False
     
-    # Multi-select for decks to counter
+    # Simple button to show/hide the counter picker
+    if not st.session_state.show_counter_picker:
+        if st.button("🎯 Find Counter Decks", type="primary", use_container_width=True):
+            st.session_state.show_counter_picker = True
+            st.rerun()
+        return
+    
+    # Close button
+    if st.button("✕ Close Counter Picker", type="secondary", use_container_width=True):
+        st.session_state.show_counter_picker = False
+        if 'counter_results' in st.session_state:
+            del st.session_state['counter_results']
+        st.rerun()
+    
+    # Now show the multiselect (only when toggled on)
     selected_decks = st.multiselect(
         "Select decks you want to counter:",
         options=meta_decks,
         default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
         help="Choose the decks you want to counter in the meta"
     )
-    if not selected_decks:
-         return
-    # Button to trigger analysis
-    find_button = st.button("Find Counters", 
-                            type="secondary",
-                            on_click=analyze_counter(selected_decks),
-                            use_container_width=True)
-    if not find_button:
-         return
-
-    #return selected_decks
-    # # Only proceed if decks are selected
-    # if not selected_decks:
-    #     st.info("Please select at least one deck to find counters")
-    #     return
     
-    # # Only proceed if button clicked
-    # if not find_button:
-    #     return
+    if not selected_decks:
+        st.info("Please select at least one deck to find counters")
+        return
+    
+    # Find Counters button
+    if st.button("Find Counters", type="secondary", use_container_width=True):
+        # Store results in session state
+        st.session_state.counter_results = analyze_counters(selected_decks)
+    
+    # Display results if they exist
+    if 'counter_results' in st.session_state and st.session_state.counter_results:
+        display_results(st.session_state.counter_results)
+        
 def analyze_counter(selected_decks):        
     with st.spinner("Analyzing counters..."):
         # This collects all matchup data for each meta deck
