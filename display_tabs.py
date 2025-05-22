@@ -18,24 +18,51 @@ def display_deck_header(deck_info, results):
     """Display the deck header with image and text that wraps properly"""
     header_image = create_deck_header_images(deck_info, results)
     
+    # Check if this is the first time showing a deck header
+    if 'first_deck_header_shown' not in st.session_state:
+        st.session_state.first_deck_header_shown = True
+        show_landing_message = True
+    else:
+        show_landing_message = False
+    
     if header_image:
-        st.markdown(f"""
+        # Build the header content with conditional landing message
+        header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 0.75rem; margin-top:0.25rem">
             <div style="margin-right: 1rem; margin-bottom: -0.5rem;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
             </div>
-            <div style="flex: 1; min-width: 200px; margin-bottom: -0.5rem;">
+            <div style="flex: 1; min-width: 200px; margin-bottom: -0.5rem;">"""
+        
+        # Add landing message if this is the first time
+        if show_landing_message:
+            header_content += f"""
+                <h1 style="margin: 0 0 0.5rem 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; color: #FFD700; word-wrap: break-word;">🏆 Currently meta!</h1>"""
+        
+        # Add the deck name
+        header_content += f"""
                 <h2 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
             </div>
-        </div>
-        """, unsafe_allow_html=True)
+        </div>"""
+        
+        st.markdown(header_content, unsafe_allow_html=True)
+        
     else:
+        # No header image case
         st.markdown("""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         """, unsafe_allow_html=True)
-        st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
         
+        # Build content for no-image case
+        if show_landing_message:
+            st.markdown(f"""
+            <h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; color: #FFD700; word-wrap: break-word; margin-bottom: 0.5rem;">🏆 Currently meta!</h1>
+            <h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""<h1 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
+            
 # In display_card_usage_tab function in display_tabs.py
 def display_card_usage_tab(results, total_decks, variant_df):
     """Display the Card Usage tab with energy-colored charts based on deck energy types"""
