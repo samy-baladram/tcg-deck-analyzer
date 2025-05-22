@@ -37,7 +37,7 @@ def display_deck_header(deck_info, results):
         # Simplified centered layout
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0rem; margin: 1rem 0 0rem 0; text-align: center;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0rem; margin: 0.5rem 0 0rem 0; text-align: center;">
             <div>
                 <img src="data:image/png;base64,{header_image}" style="max-width: 400px; width: 100%; height: auto; border-radius: 10px;">
             </div>
@@ -46,7 +46,7 @@ def display_deck_header(deck_info, results):
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
             header_content += f"""
-                <div style="margin-bottom: -0.5rem;">
+                <div style="margin-top: 0.5rem; margin-bottom: -1rem;">
                     <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; max-height: 60px;">
                 </div>"""
         
