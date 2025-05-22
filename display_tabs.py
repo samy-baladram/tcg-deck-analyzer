@@ -37,7 +37,7 @@ def display_deck_header(deck_info, results):
         # Build the header content with conditional featured image
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1.2em; margin-top:0.25rem">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1em; margin-top:0.25rem">
             <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -0.8rem;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 350px; height: auto; border-radius: 10px;">
             </div>"""
@@ -61,7 +61,7 @@ def display_deck_header(deck_info, results):
         
         # Add the deck name
         header_content += f"""
-                <h2 style="margin-bottom: -20px; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
+                <h2 style="font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
             </div>
         </div>"""
         
