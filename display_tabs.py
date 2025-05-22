@@ -1496,7 +1496,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         </div>
         """, unsafe_allow_html=True)
     with col4:    
-        st.caption(f"This shows how much of the current meta has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
+        st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     # # Add a more detailed note about the data
     # st.write("")
     
