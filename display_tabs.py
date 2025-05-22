@@ -1175,23 +1175,26 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     all_bins_df = pd.DataFrame({'win_rate_bin': bin_labels})
     bin_data = all_bins_df.merge(bin_data, on='win_rate_bin', how='left').fillna(0)
     
-    # Get colors for each bin using the same gradient
+    # CHANGED: Reverse the order (100% to 0%)
+    bin_data = bin_data.iloc[::-1].reset_index(drop=True)
+    
+    # Get colors for each bin using the same gradient  
     def get_bin_color(bin_index):
-        # Map bin index (0-9) to color scale position (0.0-1.0)
-        position = bin_index / 9
+        # CHANGED: Reverse the color mapping to match the reversed order
+        # bin_index 0 should now be darkest green (90-99%), bin_index 9 should be red (0-9%)
         
-        # Same RGB colors from the gradient
+        # Same RGB colors from the gradient (but reversed)
         colors = [
-            (220, 53, 69),     # Red (0%)
-            (253, 126, 20),    # Red-Orange (10%)
-            (255, 152, 0),     # Orange (20%)
-            (255, 183, 77),    # Light Orange (30%)
-            (255, 235, 59),    # Yellow (40%)
-            (205, 220, 57),    # Yellow-Green (50%)
-            (156, 204, 101),   # Light Green (60%)
-            (139, 195, 74),    # Medium Green (70%)
-            (102, 187, 106),   # Green (80%)
-            (27, 94, 32)       # Very Dark Green (90-100%)
+            (27, 94, 32),      # Very Dark Green (90-99%)
+            (102, 187, 106),   # Green (80-89%)
+            (139, 195, 74),    # Medium Green (70-79%)
+            (156, 204, 101),   # Light Green (60-69%)
+            (205, 220, 57),    # Yellow-Green (50-59%)
+            (255, 235, 59),    # Yellow (40-49%)
+            (255, 183, 77),    # Light Orange (30-39%)
+            (255, 152, 0),     # Orange (20-29%)
+            (253, 126, 20),    # Red-Orange (10-19%)
+            (220, 53, 69)      # Red (0-9%)
         ]
         
         return f"rgb({colors[bin_index][0]}, {colors[bin_index][1]}, {colors[bin_index][2]})"
@@ -1226,16 +1229,16 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         # Clean axes
         xaxis=dict(
             title="Win Rate Range",
-            title_font=dict(size=12),
-            tickfont=dict(size=10),
+            title_font=dict(size=14),
+            tickfont=dict(size=12),
             showgrid=False,
             showline=False,
             zeroline=False
         ),
         yaxis=dict(
             title="Meta Share %",
-            title_font=dict(size=12),
-            tickfont=dict(size=10),
+            title_font=dict(size=14),
+            tickfont=dict(size=12),
             showgrid=False,
             showline=False,
             zeroline=False,
@@ -1691,10 +1694,13 @@ def display_matchup_summary(deck_name, set_name, working_df):
     if working_df.empty or 'meta_share' not in working_df.columns:
         st.info("No matchup data with meta share available.")
         return
+
+    win_lower = 42.5
+    win_upper = 57.5
     
     # Classify each matchup
     working_df['matchup_type'] = working_df['win_pct'].apply(
-        lambda wp: "Favorable" if wp >= 60 else ("Unfavorable" if wp < 40 else "Even")
+        lambda wp: "Favorable" if wp >= win_upper else ("Unfavorable" if wp < win_lower else "Even")
     )
     
     # Calculate total meta share in each category
@@ -1750,17 +1756,16 @@ def display_matchup_summary(deck_name, set_name, working_df):
         </div>
         """, unsafe_allow_html=True)
     with col4:    
-        st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥60% win rate), even (40-60% win rate), or unfavorable (<40% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
+        st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), or unfavorable (<{win_lower}% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     # # Add a more detailed note about the data
     # st.write("")
+    # ADDED: Display the bar chart
+    display_matchup_bar_chart(deck_name, set_name, working_df)
+    # Add some space
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     # Display the treemap
     display_matchup_treemap(deck_name, set_name, working_df)
     
-    # Add some space
-    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-    
-    # ADDED: Display the bar chart
-    display_matchup_bar_chart(deck_name, set_name, working_df)
     
     # Add some space
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
