@@ -1142,6 +1142,127 @@ def display_matchup_treemap(deck_name, set_name, working_df):
         "Rectangle size = meta share (how often you'll face this deck). "
         "Color = win rate (red = unfavorable, gray = even, green = favorable). "
     )
+
+def display_matchup_bar_chart(deck_name, set_name, working_df):
+    """
+    Display a bar chart showing win rate distribution with 10 bins
+    
+    Args:
+        deck_name: Current deck name
+        set_name: Current deck set  
+        working_df: DataFrame with matchup data already processed
+    """
+    
+    # Check if we have matchup data
+    if working_df.empty:
+        st.info("No matchup data available for bar chart.")
+        return
+    
+    # Create 10 bins for win rates (0-10%, 10-20%, etc.)
+    bins = list(range(0, 101, 10))  # [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    bin_labels = [f"{i}-{i+9}%" for i in range(0, 100, 10)]
+    
+    # Assign each matchup to a bin and sum meta shares
+    working_df['win_rate_bin'] = pd.cut(working_df['win_pct'], bins=bins, labels=bin_labels, include_lowest=True)
+    
+    # Aggregate meta share by bin
+    bin_data = working_df.groupby('win_rate_bin', observed=True).agg({
+        'meta_share': 'sum',
+        'opponent_name': 'count'  # Count of matchups in each bin
+    }).reset_index()
+    
+    # Ensure all bins are represented (fill missing with 0)
+    all_bins_df = pd.DataFrame({'win_rate_bin': bin_labels})
+    bin_data = all_bins_df.merge(bin_data, on='win_rate_bin', how='left').fillna(0)
+    
+    # Get colors for each bin using the same gradient
+    def get_bin_color(bin_index):
+        # Map bin index (0-9) to color scale position (0.0-1.0)
+        position = bin_index / 9
+        
+        # Same RGB colors from the gradient
+        colors = [
+            (220, 53, 69),     # Red (0%)
+            (253, 126, 20),    # Red-Orange (10%)
+            (255, 152, 0),     # Orange (20%)
+            (255, 183, 77),    # Light Orange (30%)
+            (255, 235, 59),    # Yellow (40%)
+            (205, 220, 57),    # Yellow-Green (50%)
+            (156, 204, 101),   # Light Green (60%)
+            (139, 195, 74),    # Medium Green (70%)
+            (102, 187, 106),   # Green (80%)
+            (27, 94, 32)       # Very Dark Green (90-100%)
+        ]
+        
+        return f"rgb({colors[bin_index][0]}, {colors[bin_index][1]}, {colors[bin_index][2]})"
+    
+    # Create colors list for all bars
+    bar_colors = [get_bin_color(i) for i in range(10)]
+    
+    # Create the bar chart
+    import plotly.graph_objects as go
+    
+    fig = go.Figure(go.Bar(
+        x=bin_data['win_rate_bin'],
+        y=bin_data['meta_share'],
+        marker_color=bar_colors,
+        marker_line=dict(width=0),  # No outline
+        text=bin_data['meta_share'].apply(lambda x: f"{x:.1f}%" if x > 0 else ""),
+        textposition='outside',
+        textfont=dict(size=11, color="black"),
+        hovertemplate="<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Matchups: %{customdata}<extra></extra>",
+        customdata=bin_data['opponent_name']
+    ))
+    
+    # Update layout - Clean and minimal
+    fig.update_layout(
+        height=300,
+        margin=dict(t=10, l=0, r=0, b=50),
+        
+        # Transparent backgrounds
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        
+        # Clean axes
+        xaxis=dict(
+            title="Win Rate Range",
+            title_font=dict(size=12),
+            tickfont=dict(size=10),
+            showgrid=False,
+            showline=False,
+            zeroline=False
+        ),
+        yaxis=dict(
+            title="Meta Share %",
+            title_font=dict(size=12),
+            tickfont=dict(size=10),
+            showgrid=False,
+            showline=False,
+            zeroline=False,
+            range=[0, max(bin_data['meta_share']) * 1.1] if max(bin_data['meta_share']) > 0 else [0, 10]
+        ),
+        
+        # Remove legend and other elements
+        showlegend=False,
+        font=dict(size=11)
+    )
+    
+    # Display the chart
+    import streamlit as st
+    
+    custom_config = {
+        'displayModeBar': False,
+        'staticPlot': True,
+        'displaylogo': False,
+    }
+    
+    st.plotly_chart(fig, use_container_width=True, config=custom_config, key="matchup_bar_chart")
+    
+    # Add explanation
+    st.caption(
+        "Shows how much of the meta falls into each win rate range. "
+        "Higher bars in green ranges = more favorable meta coverage."
+    )
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
@@ -1635,6 +1756,15 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Display the treemap
     display_matchup_treemap(deck_name, set_name, working_df)
     
+    # Add some space
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+    
+    # ADDED: Display the bar chart
+    display_matchup_bar_chart(deck_name, set_name, working_df)
+    
+    # Add some space
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+
 
 def display_matchup_tab(deck_info=None):
     """
