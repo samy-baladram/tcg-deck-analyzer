@@ -447,8 +447,8 @@ def find_pokemon_images(deck_info, analysis_results=None):
 
 ##################
 def lightweight_ai_sharpen_pil(pil_image, sharpen_strength=1.5, contrast_boost=1.2):
-    """
-    Lightweight AI-style image sharpening applied to PIL image
+        """
+    Lightweight AI-style image sharpening using PIL only (no OpenCV)
     
     Args:
         pil_image (PIL.Image): Input PIL image
@@ -465,22 +465,19 @@ def lightweight_ai_sharpen_pil(pil_image, sharpen_strength=1.5, contrast_boost=1
     else:
         img = pil_image
     
-    # Convert to OpenCV format
-    cv_img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+    # Step 1: Apply unsharp mask effect using PIL
+    blurred = img.filter(ImageFilter.GaussianBlur(radius=2.0))
     
-    # Apply unsharp mask (mimics AI sharpening)
-    gaussian_blur = cv2.GaussianBlur(cv_img, (0, 0), 2.0)
-    unsharp_mask = cv2.addWeighted(cv_img, sharpen_strength, gaussian_blur, -sharpen_strength + 1, 0)
+    # Step 2: Enhance sharpness
+    enhancer = ImageEnhance.Sharpness(img)
+    sharpened = enhancer.enhance(sharpen_strength)
     
-    # Apply bilateral filter for noise reduction
-    bilateral = cv2.bilateralFilter(unsharp_mask, 9, 75, 75)
+    # Step 3: Apply contrast enhancement
+    enhancer = ImageEnhance.Contrast(sharpened)
+    contrasted = enhancer.enhance(contrast_boost)
     
-    # Convert back to PIL
-    enhanced = Image.fromarray(cv2.cvtColor(bilateral, cv2.COLOR_BGR2RGB))
-    
-    # Apply contrast enhancement
-    enhancer = ImageEnhance.Contrast(enhanced)
-    final_image = enhancer.enhance(contrast_boost)
+    # Step 4: Final detail enhancement
+    final_image = contrasted.filter(ImageFilter.DETAIL)
     
     return final_image
 
