@@ -50,12 +50,12 @@ def display_deck_header(deck_info, results):
         else:
             # When no featured image, keep normal centering
             header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-bottom: -0.5rem;">"""
+            <div style="flex: 1; min-width: 200px; margin-bottom: -0.75rem;">"""
         
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
             header_content += f"""
-                <div style="margin-bottom: -1.5rem; margin-top: 20px;">
+                <div style="margin-bottom: -1.5rem; margin-top: -0.5rem;">
                     <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 80px;">
                 </div>"""
         
