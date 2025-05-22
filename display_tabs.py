@@ -38,11 +38,11 @@ def display_deck_header(deck_info, results):
         # Add landing message if this is the first time
         if show_landing_message:
             header_content += f"""
-                <h1 style="margin: 0 -2rem 0.5rem 0; font-family: 'Nunito', sans-serif; font-weight: 900; line-height: 0.5; color: #C58800; word-wrap: break-word;">🏆 Currently meta!</h1>"""
+                <h1 style="margin-bottom: -2rem; font-family: 'Nunito', sans-serif; font-weight: 900; line-height: 0.5; color: #C58800; word-wrap: break-word;">🏆 Featured Meta Deck!</h1>"""
         
         # Add the deck name
         header_content += f"""
-                <h2 style="margin-top: -2rem; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
+                <h2 style="margin: 0rem; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h2>
             </div>
         </div>"""
         
