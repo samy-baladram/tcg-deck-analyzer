@@ -12,6 +12,12 @@ from utils import is_set_code
 GAP_RATIO = -0.1
 EDGE_CUTOFF = 0.02
 GRADIENT_RATIO = 0.15
+import requests
+from PIL import Image, ImageFilter, ImageEnhance
+from io import BytesIO
+import cv2
+import numpy as np
+import base64
 
 # Simple utility functions
 def get_base64_image(path):
@@ -438,13 +444,54 @@ def find_pokemon_images(deck_info, analysis_results=None):
     
     return pil_images
 
-def create_deck_header_images(deck_info, analysis_results=None):
+
+##################
+def lightweight_ai_sharpen_pil(pil_image, sharpen_strength=1.5, contrast_boost=1.2):
+    """
+    Lightweight AI-style image sharpening applied to PIL image
+    
+    Args:
+        pil_image (PIL.Image): Input PIL image
+        sharpen_strength (float): Sharpening intensity (1.0-3.0)
+        contrast_boost (float): Contrast enhancement (1.0-2.0)
+    
+    Returns:
+        PIL.Image: Enhanced image
+    """
+    
+    # Convert to RGB if needed
+    if pil_image.mode != 'RGB':
+        img = pil_image.convert('RGB')
+    else:
+        img = pil_image
+    
+    # Convert to OpenCV format
+    cv_img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+    
+    # Apply unsharp mask (mimics AI sharpening)
+    gaussian_blur = cv2.GaussianBlur(cv_img, (0, 0), 2.0)
+    unsharp_mask = cv2.addWeighted(cv_img, sharpen_strength, gaussian_blur, -sharpen_strength + 1, 0)
+    
+    # Apply bilateral filter for noise reduction
+    bilateral = cv2.bilateralFilter(unsharp_mask, 9, 75, 75)
+    
+    # Convert back to PIL
+    enhanced = Image.fromarray(cv2.cvtColor(bilateral, cv2.COLOR_BGR2RGB))
+    
+    # Apply contrast enhancement
+    enhancer = ImageEnhance.Contrast(enhanced)
+    final_image = enhancer.enhance(contrast_boost)
+    
+    return final_image
+
+def create_deck_header_images(deck_info, analysis_results=None, enable_ai_enhancement=True):
     """
     Create header images for a deck based on Pokémon in the deck name.
     
     Args:
         deck_info: Dictionary containing deck information
         analysis_results: Optional DataFrame of analysis results
+        enable_ai_enhancement: Whether to apply AI sharpening to final result (default: True)
         
     Returns:
         A single base64 encoded merged image, or None if no images found
@@ -477,16 +524,27 @@ def create_deck_header_images(deck_info, analysis_results=None):
         cutoff_percentage=cutoff_percentage
     )
     
-    # Apply gradient to the merged image
-    merged_with_gradient = apply_vertical_gradient(merged_image)
+    # Apply AI enhancement to the final merged result (ONLY ONCE HERE)
+    if enable_ai_enhancement:
+        try:
+            enhanced_merged = lightweight_ai_sharpen_pil(
+                merged_image,
+                sharpen_strength=1.3,  # Good balance for final image
+                contrast_boost=1.1     # Subtle contrast boost
+            )
+            merged_image = enhanced_merged
+        except Exception as e:
+            print(f"AI enhancement failed: {e}")
+            # Continue with original merged image
     
     # Convert to base64
     buffered = BytesIO()
-    merged_with_gradient.save(buffered, format="PNG")
+    merged_image.save(buffered, format="PNG")
     img_base64 = base64.b64encode(buffered.getvalue()).decode()
     
     return img_base64
 
+#####################
 # Add a simple in-memory cache for thumbnails
 _thumbnail_cache = {}
 
