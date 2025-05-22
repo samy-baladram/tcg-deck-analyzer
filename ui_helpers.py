@@ -473,7 +473,7 @@ def render_sidebar_from_cache():
     if not st.session_state.show_decks:
     
         # Debug button to show/hide decks
-        if st.button("See now!", type="tertiary", use_container_width=True):
+        if st.button("See now!", type="secondary", use_container_width=True):
             st.session_state.show_decks = True
             #st.session_state.show_decks = not st.session_state.show_decks
             st.rerun()
