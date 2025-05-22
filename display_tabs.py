@@ -1736,7 +1736,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold;">Even</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fda700; line-height: 0.8;">{even_share_norm:.1f}%</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #EED600; line-height: 0.8;">{even_share_norm:.1f}%</div>
             <div style="font-size: 1rem;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
