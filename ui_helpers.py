@@ -170,8 +170,7 @@ def create_deck_options():
         for _, deck in top_performing_decks.iterrows():
             power_index = round(deck['power_index'], 2)
             # Format: "Deck Name (Power Index)"
-            #display_name = deck['displayed_name']
-            display_name = f"{displayed_name_to_markdown(deck['displayed_name'])} {deck['displayed_name']}"
+            display_name = deck['displayed_name']
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
@@ -380,11 +379,16 @@ def create_deck_selector():
     # Create label and help text
     label_text = f"Current Set: {current_set}"
     help_text = f"Showing top performing decks. Updated {time_str}."
-    
+
+    deck_icon_display_names = []
+    for name in deck_display_names:
+        deck_icon_display_names.append(displayed_name_to_markdown(name))
+
     # Display the selectbox
     selected_option = st.selectbox(
         label_text,
-        deck_display_names,
+        deck_icon_display_names,
+        #deck_display_names,
         index=st.session_state.selected_deck_index,
         placeholder="Select a deck to analyze...",
         help=help_text,
