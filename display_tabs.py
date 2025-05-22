@@ -934,7 +934,7 @@ def display_metagame_tab():
         'total_losses': 'Losses',
         'total_ties': 'Ties',
         'win_rate': 'Win %',
-        'power_index': 'Score',
+        'power_index': 'Index',
     }
     
     # Create final display dataframe
@@ -971,7 +971,7 @@ def display_metagame_tab():
                 help="Deck archetype name"
             ),
             "Index": st.column_config.NumberColumn(
-                "Score",
+                "Index",
                 help="Performance metric: The Wilson score (see sidebar for details). Higher values indicate stronger performance",
                 format="%.2f"
             ),
