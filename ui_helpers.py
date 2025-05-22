@@ -822,3 +822,34 @@ def set_deck_to_analyze(deck_name):
     """Callback function when counter deck button is clicked"""
     # Set the deck to analyze
     st.session_state.deck_to_analyze = deck_name
+
+def is_main_content_active():
+    """
+    Check if user is actively interacting with main content
+    
+    Returns:
+        bool: True if main content is active, False otherwise
+    """
+    # Check various indicators that main content is being used
+    
+    # If we're analyzing or updating
+    if st.session_state.get('update_running', False):
+        return True
+    
+    # If we just switched decks (within last 2 seconds)
+    if 'deck_switch_time' in st.session_state:
+        from datetime import datetime, timedelta
+        if datetime.now() - st.session_state.deck_switch_time < timedelta(seconds=2):
+            return True
+    
+    # If we're in the middle of loading deck data
+    if 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+        set_name = st.session_state.analyze.get('set_name', 'A3')
+        cache_key = f"full_deck_{deck_name}_{set_name}"
+        
+        # If deck is being analyzed but not yet cached
+        if cache_key not in st.session_state.get('analyzed_deck_cache', {}):
+            return True
+    
+    return False
