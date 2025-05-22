@@ -761,7 +761,7 @@ def analyze_counter(selected_decks):
                     win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
                     if header_image:
                         st.markdown(f"""
-                        <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
                             <div style="flex: 1; margin-right: 1rem;">
                                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
                             </div>
@@ -801,49 +801,46 @@ def analyze_counter(selected_decks):
                         args=(deck['deck_name'],)
                     )
                 else:
-                    # 4th and 5th place get smaller layout
-                    col1, col2 = st.columns([3.5, 1])
-                    
-                    with col1:
-                        # Display smaller banner image
-                        if header_image:
-                            st.markdown(f"""
-                            <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: left;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 90%; height: auto; border-radius: 8px;">
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            # Smaller placeholder
-                            st.markdown("""
-                            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
-                                display: flex; align-items: center; justify-content: center;">
-                                <span style="color: #888; font-size: 0.9rem;">No image</span>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        # MODIFIED: Replace text with button
-                        rank_num = f"#{i+1}"
-                        button_label = f"{rank_num} {deck['displayed_name']}"
-                        
-                        # Create a unique key for each button
-                        button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
-                        st.button(
-                            button_label, 
-                            key=button_key,
-                            type="tertiary",
-                            on_click=set_deck_to_analyze,
-                            args=(deck['deck_name'],)
-                        )
-                    
-                    with col2:
-                        # Display win rate as a smaller percentage without "win rate" text
-                        win_rate = deck['average_win_rate']
-                        win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
+                    # Combined image and win rate container for 4th/5th place
+                    if header_image:
                         st.markdown(f"""
-                        <div style="text-align: right; width:100%; margin-top:0.5em;">
-                            <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+                            <div style="flex: 1; margin-right: 1rem;">
+                                <img src="data:image/png;base64,{header_image}" style="width: 90%; max-width: 250px; height: auto; border-radius: 8px;">
+                            </div>
+                            <div style="text-align: right; min-width: 60px;">
+                                <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            </div>
                         </div>
                         """, unsafe_allow_html=True)
+                    else:
+                        # Smaller placeholder
+                        st.markdown(f"""
+                        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+                            <div style="flex: 1; margin-right: 1rem;">
+                                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
+                                    display: flex; align-items: center; justify-content: center;">
+                                    <span style="color: #888; font-size: 0.9rem;">No image</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right; min-width: 60px;">
+                                <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    # Button below the image/win rate container
+                    rank_num = f"#{i+1}"
+                    button_label = f"{rank_num} {deck['displayed_name']}"
+                    
+                    button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
+                    st.button(
+                        button_label, 
+                        key=button_key,
+                        type="tertiary",
+                        on_click=set_deck_to_analyze,
+                        args=(deck['deck_name'],)
+                    )
                 
                 # Add a horizontal line between decks
                 if i < min(4, len(counter_df) - 1):
