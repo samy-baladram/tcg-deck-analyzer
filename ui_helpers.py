@@ -625,7 +625,7 @@ def display_counter_picker_sidebar():
 
     # Button to trigger analysis
     st.session_state.run_counter_analysis = False
-    if st.button("![Pikachu](https://limitless3.nyc3.cdn.digitaloceanspaces.com/pokemon/substitute.png) Find Counters", type="secondary", use_container_width=True):
+    if st.button("Find Counters", type="secondary", use_container_width=True):
         st.session_state.run_counter_analysis = True
         st.session_state.selected_counter_decks = selected_decks
     
