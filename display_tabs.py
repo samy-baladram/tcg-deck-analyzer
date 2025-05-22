@@ -1059,7 +1059,7 @@ def display_matchup_treemap(deck_name, set_name, working_df):
         values=treemap_data['meta_share'],
         parents=[""] * len(treemap_data),  # All top-level rectangles
         
-        # Color by win rate with custom colorscale
+        # Color by win rate with custom colorscale - FIXED: use 'colors' not 'color'
         marker_colors=treemap_data['win_pct'],
         marker_colorscale=[
             [0.0, "#DC3545"],    # Red (0% win) - Bootstrap danger
