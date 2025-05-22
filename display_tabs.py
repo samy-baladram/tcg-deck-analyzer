@@ -37,7 +37,7 @@ def display_deck_header(deck_info, results):
         # Build the header content with conditional featured image
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; margin-top:0.25rem">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 0.5rem; margin-top:0.25rem">
             <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -20px;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
             </div>"""
@@ -46,11 +46,11 @@ def display_deck_header(deck_info, results):
         if show_landing_message and featured_image_base64:
             # When featured image is present, push content down
             header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-bottom: -3rem; align-self: flex-end; padding-bottom: 20px;">"""
+            <div style="flex: 1; min-width: 200px; margin-left: 0.5rem; margin-bottom: -3rem; align-self: flex-end; padding-bottom: 20px;">"""
         else:
             # When no featured image, keep normal centering
             header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-bottom: -0.75rem; margin-top:0.5rem;">"""
+            <div style="flex: 1; min-width: 200px; margin-left: 0.5rem; margin-bottom: -0.75rem; margin-top:0.5rem;">"""
         
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
