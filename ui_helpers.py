@@ -221,9 +221,12 @@ def on_deck_change():
     selection = st.session_state.deck_select
     if selection:
         if 'deck_display_names' not in st.session_state:
-            # Skip if deck_display_names not loaded yet
             return
             
+        # Track when deck switch happens
+        from datetime import datetime
+        st.session_state.deck_switch_time = datetime.now()
+        
         st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
         
         # Set the deck to analyze
@@ -823,33 +826,54 @@ def set_deck_to_analyze(deck_name):
     # Set the deck to analyze
     st.session_state.deck_to_analyze = deck_name
 
-def is_main_content_active():
+def should_render_sidebar():
     """
-    Check if user is actively interacting with main content
+    Determine if sidebar should be fully rendered or just show minimal content
     
     Returns:
-        bool: True if main content is active, False otherwise
+        bool: True if sidebar should render, False if should skip
     """
-    # Check various indicators that main content is being used
+    # Skip sidebar rendering if user is actively interacting with main content
     
-    # If we're analyzing or updating
+    # Check if we're in the middle of analyzing a deck
     if st.session_state.get('update_running', False):
-        return True
+        return False
     
-    # If we just switched decks (within last 2 seconds)
+    # Check if user just switched decks (give it time to settle)
     if 'deck_switch_time' in st.session_state:
         from datetime import datetime, timedelta
-        if datetime.now() - st.session_state.deck_switch_time < timedelta(seconds=2):
-            return True
+        if datetime.now() - st.session_state.deck_switch_time < timedelta(seconds=1):
+            return False
     
-    # If we're in the middle of loading deck data
-    if 'analyze' in st.session_state:
-        deck_name = st.session_state.analyze.get('deck_name', '')
-        set_name = st.session_state.analyze.get('set_name', 'A3')
-        cache_key = f"full_deck_{deck_name}_{set_name}"
-        
-        # If deck is being analyzed but not yet cached
-        if cache_key not in st.session_state.get('analyzed_deck_cache', {}):
-            return True
+    # Check if we're in tab navigation (this is tricky to detect directly)
+    # We can use a combination of factors:
     
-    return False
+    # If analyze state exists and we have performance data, it's safe to render
+    if ('analyze' in st.session_state and 
+        'performance_data' in st.session_state and 
+        not st.session_state.performance_data.empty):
+        return True
+    
+    # If we don't have essential data yet, don't render full sidebar
+    if 'performance_data' not in st.session_state:
+        return False
+    
+    return True
+
+def render_minimal_sidebar():
+    """Render a minimal sidebar placeholder during main content interactions"""
+    st.sidebar.markdown("### Loading...")
+    
+    # Show the banner if it exists
+    banner_path = "sidebar_banner.png"
+    if os.path.exists(banner_path):
+        with open(banner_path, "rb") as f:
+            banner_base64 = base64.b64encode(f.read()).decode()
+        st.sidebar.markdown(f"""
+        <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Show minimal content
+    st.sidebar.info("Sidebar updating...")
