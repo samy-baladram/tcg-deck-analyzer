@@ -61,13 +61,13 @@ def display_deck_header(deck_info, results):
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
             header_content += f"""
-                <div style="margin-bottom: -1rem; text-align: center; margin-top: -1rem;">
+                <div style="margin-bottom: -1rem; text-align: center; margin-top: 0.5rem;">
                     <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 60px;">
                 </div>"""
         
         # Add the deck name
         header_content += f"""
-                <h1 style="margin-bottom:-1rem; margin-top:0.5rem; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
+                <h1 style="margin-bottom:-1rem; margin-top:-0.5rem; text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
             </div>
         </div>"""
         
