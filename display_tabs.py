@@ -850,7 +850,7 @@ def display_metagame_tab():
         'total_losses': 'Losses',
         'total_ties': 'Ties',
         'win_rate': 'Win %',
-        'power_index': 'Power Index',
+        'power_index': 'Score',
     }
     
     # Create final display dataframe
@@ -870,7 +870,7 @@ def display_metagame_tab():
             "Rank": st.column_config.TextColumn(
                 "Rank",
                 help="Position in the meta based on Power Index",
-                width="small"
+                width="20px"
             ),
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
@@ -886,8 +886,8 @@ def display_metagame_tab():
                 "Deck",
                 help="Deck archetype name"
             ),
-            "Power Index": st.column_config.NumberColumn(
-                "Power Index",
+            "Score": st.column_config.NumberColumn(
+                "Score",
                 help="Performance metric: The Wilson score (see sidebar for details). Higher values indicate stronger performance",
                 format="%.2f"
             ),
