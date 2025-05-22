@@ -48,7 +48,7 @@ def display_deck_header(deck_info, results):
             <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
             <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 1em; margin-top:0.25rem">
                 <div style="margin-right: 0rem; margin-left:0rem; margin-bottom: -1rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 4500px; height: auto; border-radius: 10px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 450px; height: auto; border-radius: 10px;">
                 </div>"""
             # When featured image is present, push content down
             header_content += f"""
