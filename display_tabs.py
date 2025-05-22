@@ -35,7 +35,7 @@ def display_deck_header(deck_info, results):
     
     if header_image:
         # Conditional max-width for deck header image
-        deck_image_max_width = "600px" if show_landing_message and featured_image_base64 else "400px"
+        deck_image_max_width = "800px" if show_landing_message and featured_image_base64 else "500px"
         
         # Simplified centered layout
         header_content = f"""
