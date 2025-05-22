@@ -1123,7 +1123,7 @@ def display_matchup_treemap(deck_name, set_name, working_df):
             showgrid=False,
             showticklabels=False,
             showline=False,
-            zeroline=False
+            zeroline=False,
         )
     )
     
@@ -1239,7 +1239,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             showgrid=False,
             showline=False,
             zeroline=False,
-            range=[0, max(bin_data['meta_share']) * 1.1] if max(bin_data['meta_share']) > 0 else [0, 10]
+            range=[0, 50]
         ),
         
         # Remove legend and other elements
