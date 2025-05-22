@@ -129,15 +129,15 @@ div[data-baseweb="tag"] * {
     border-color: #00A0FF !important;
 }
 
-/* Change primary color to blue */
-div[data-baseweb="select"] > div {
-    border-color: #00A0FF !important;
-}
+# /* Change primary color to blue */
+# div[data-baseweb="select"] > div {
+#     border-color: #00A0FF !important;
+# }
 
-/* Selected option */
-div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #00A0FF !important;
-}
+# /* Selected option */
+# div[data-baseweb="select"] [aria-selected="true"] {
+#     background-color: #00A0FF !important;
+# }
 
 /* Hover effect */
 div[role="option"]:hover {
