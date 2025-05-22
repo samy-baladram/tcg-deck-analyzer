@@ -30,7 +30,7 @@ def format_deck_name(deck_name):
             if i + 1 < len(parts) and is_set_code(parts[i + 1]):
                 set_code = parts[i + 1]
                 formatted = format_set_code(set_code)
-                word += f" ({formatted})"
+                word += " " #f" ({formatted})"
                 i += 2
             else:
                 i += 1
