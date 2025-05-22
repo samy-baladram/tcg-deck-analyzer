@@ -447,7 +447,7 @@ def find_pokemon_images(deck_info, analysis_results=None):
 
 ##################
 def lightweight_ai_sharpen_pil(pil_image, sharpen_strength=1.5, contrast_boost=1.2):
-        """
+    """
     Lightweight AI-style image sharpening using PIL only (no OpenCV)
     
     Args:
