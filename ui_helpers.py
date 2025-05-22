@@ -592,7 +592,7 @@ def display_counter_picker_sidebar():
         performance_data = st.session_state.performance_data
         
         # Store deck info for each deck
-        for *, deck in performance*data.iterrows():
+        for _, deck in performance_data.iterrows():
             meta_decks.append(deck['displayed_name'])
             # Store deck info for image generation
             meta_deck_info[deck['displayed_name']] = {
@@ -627,10 +627,11 @@ def display_counter_picker_sidebar():
     # Button to trigger analysis
     find_button = st.button("Find Counters", 
                             type="secondary",
-                            #on_click=analyze_counter(selected_decks),
+                            on_click=analyze_counter(selected_decks),
                             use_container_width=True)
     if not find_button:
          return
+
     #return selected_decks
     # # Only proceed if decks are selected
     # if not selected_decks:
@@ -640,7 +641,6 @@ def display_counter_picker_sidebar():
     # # Only proceed if button clicked
     # if not find_button:
     #     return
-        
 def analyze_counter(selected_decks):        
     with st.spinner("Analyzing counters..."):
         # This collects all matchup data for each meta deck
