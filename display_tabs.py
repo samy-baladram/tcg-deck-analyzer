@@ -2,7 +2,7 @@
 """Functions for rendering the tabs in the main content area"""
 
 import streamlit as st
-from formatters import format_deck_name
+from formatters import format_deck_name, extract_pokemon_urls
 from related_decks import find_related_decks
 from image_processor import create_deck_header_images
 from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart, ENERGY_COLORS
@@ -799,40 +799,6 @@ def display_metagame_tab():
     display_df['power_index'] = display_df['power_index'].round(2)
 
     # Extract Pokémon names and create image URLs
-    def extract_pokemon_urls(displayed_name):
-        # Remove content in parentheses and clean
-        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        
-        # Split by spaces and slashes
-        parts = re.split(r'[\s/]+', clean_name)
-        
-        # Filter out suffixes
-        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-        pokemon_names = []
-        
-        for part in parts:
-            part = part.lower()
-            if part and part not in suffixes:
-                # Apply exceptions
-                if part in POKEMON_EXCEPTIONS:
-                    part = POKEMON_EXCEPTIONS[part]
-                
-                pokemon_names.append(part)
-                
-                # Limit to 2 Pokémon
-                if len(pokemon_names) >= 2:
-                    break
-        
-        # Create URLs
-        urls = []
-        for name in pokemon_names:
-            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-            
-        # Ensure we have exactly 2 elements
-        while len(urls) < 2:
-            urls.append(None)
-            
-        return urls[0], urls[1]  # Return as separate values
     
     # Apply the function to extract Pokémon image URLs
     display_df[['pokemon_url1', 'pokemon_url2']] = display_df.apply(
