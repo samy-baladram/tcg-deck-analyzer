@@ -46,7 +46,7 @@ def display_deck_header(deck_info, results):
         if show_landing_message and featured_image_base64:
             # When featured image is present, push content down
             header_content += f"""
-            <div style="flex: 1; min-width: 200px; margin-bottom: -2rem; align-self: flex-end; padding-bottom: 20px;">"""
+            <div style="flex: 1; min-width: 200px; margin-bottom: -3rem; align-self: flex-end; padding-bottom: 20px;">"""
         else:
             # When no featured image, keep normal centering
             header_content += f"""
@@ -56,7 +56,7 @@ def display_deck_header(deck_info, results):
         if show_landing_message and featured_image_base64:
             header_content += f"""
                 <div style="margin-bottom: -1rem; margin-top: -1.2rem;">
-                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 65px;">
+                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; width: auto; max-height: 70px;">
                 </div>"""
         
         # Add the deck name
