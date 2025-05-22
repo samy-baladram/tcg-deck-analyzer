@@ -170,7 +170,7 @@ def create_deck_options():
         for _, deck in top_performing_decks.iterrows():
             power_index = round(deck['power_index'], 2)
             # Format: "Deck Name (Power Index)"
-            display_name = f"{deck['displayed_name']} ({power_index})"
+            display_name = f"{deck['displayed_name']}"
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
@@ -408,7 +408,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
         rank_symbol = circled_numbers[rank]
     
     # Create a plain text expander title with the rank and power index
-    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']}  ({power_index})", expanded=expanded):
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
         # Get sample deck data
         deck_name = deck['deck_name']
         
