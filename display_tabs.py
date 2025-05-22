@@ -42,7 +42,7 @@ def display_deck_header(deck_info, results):
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
         <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0rem; margin: 0.5rem 0 0.5rem 0; text-align: center;">
             <div>
-                <img src="data:image/png;base64,{header_image}" style="max-width: {deck_image_max_width}; width: 100%; height: auto; border-radius: 10px;">
+                <img src="data:image/png;base64,{header_image}" style="max-width: {deck_image_max_width}; width: 100%; height: auto; ">
             </div>
             <div style="min-width: 200px; margin-left: 1rem;">"""
         
