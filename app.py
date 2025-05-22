@@ -205,17 +205,9 @@ ui_helpers.display_banner("title_banner.png")
 selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
-# with st.sidebar:
-#     ui_helpers.render_sidebar_from_cache()  # You'll need to create this function
-# Sidebar rendering with interaction detection
 with st.sidebar:
-    # Only render sidebar if not in the middle of main content interaction
-    if not ui_helpers.is_main_content_active():
-        ui_helpers.render_sidebar_from_cache()
-    else:
-        # Just show static content during main interactions
-        st.markdown("### PTCGP Meta Decks")
-        st.info("Sidebar paused during analysis")
+    ui_helpers.render_sidebar_from_cache()  # You'll need to create this function
+
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
