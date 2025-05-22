@@ -845,11 +845,11 @@ def display_metagame_tab():
         'rank': 'Rank',
         'displayed_name': 'Deck',
         'share': 'Meta Share %',
+        'tournaments_played': 'Best Finishes',
         'total_wins': 'Wins',
         'total_losses': 'Losses',
         'total_ties': 'Ties',
         'win_rate': 'Win %',
-        'tournaments_played': 'Best Finish Entries',
         'power_index': 'Power Index',
     }
     
@@ -874,12 +874,12 @@ def display_metagame_tab():
             ),
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
-                help="First Pokémon in the deck",
+                help="First archetype Pokémon in the deck",
                 width="20px",
             ),
             "Icon2": st.column_config.ImageColumn(
                 "Icon 2",
-                help="Second Pokémon in the deck",
+                help="Second archetype Pokémon in the deck",
                 width="20px",
             ),
             "Deck": st.column_config.TextColumn(
@@ -896,13 +896,13 @@ def display_metagame_tab():
                 help="Percentage representation of this deck in the overall competitive metagame",
                 format="%.2f%%"
             ),
-            "Best Finish Entries": st.column_config.NumberColumn(
-                "Best Finish Entries",
+            "Best Finishes": st.column_config.NumberColumn(
+                "Best Finishes",
                 help="Number of recent tournament entries in the 'Best Finishes' section, decided by [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET)"
             ),
             "Win %": st.column_config.NumberColumn(
                 "Win %",
-                help="Percentage of matches won out of total matches played",
+                help="Percentage of matches won out of all recorded 'Best Finishes' matches",
                 format="%.1f%%"
             ),
             "Wins": st.column_config.NumberColumn(
