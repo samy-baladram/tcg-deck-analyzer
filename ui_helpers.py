@@ -170,7 +170,7 @@ def create_deck_options():
         for _, deck in top_performing_decks.iterrows():
             power_index = round(deck['power_index'], 2)
             # Format: "Deck Name (Power Index)"
-            display_name = displayed_name_to_markdown(deck['displayed_name'])
+            display_name = f"{displayed_name_to_markdown(deck['displayed_name'])} {deck['displayed_name']}"
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
