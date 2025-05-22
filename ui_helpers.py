@@ -158,25 +158,34 @@ def load_initial_data():
 
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
-    # Initialize deck display names and mapping
     deck_display_names = []
     deck_name_mapping = {}
+    deck_markdown_mapping = {}  # Separate mapping for markdown
     
     # First try to use performance data
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Get top 30 decks from performance data
         top_performing_decks = st.session_state.performance_data #.head(30)
         
-        for _, deck in top_performing_decks.iterrows():
+        for _, deck in top_performing_decks.iterrows():  # Fixed syntax
             power_index = round(deck['power_index'], 2)
-            # Format: "Deck Name (Power Index)"
-            #display_name = deck['displayed_name']
-            display_name = f"{displayed_name_to_markdown(deck['displayed_name'])} {deck['displayed_name']}"
-            deck_display_names.append(display_name)
-            deck_name_mapping[display_name] = {
+            
+            # Create original name and markdown version
+            original_name = deck['displayed_name']
+            markdown_version = f"{displayed_name_to_markdown(original_name)} {original_name}"
+            
+            # Add markdown version to display list
+            deck_display_names.append(markdown_version)
+            
+            # Use original name as key for clean mapping
+            deck_name_mapping[original_name] = {
                 'deck_name': deck['deck_name'],
                 'set': deck['set']
             }
+            
+            # Map markdown version back to original name
+            deck_markdown_mapping[markdown_version] = original_name
+            
     # If no performance data, use deck list
     else:
         # Ensure deck_list exists in session state
@@ -192,13 +201,18 @@ def create_deck_options():
             from config import MIN_META_SHARE
             popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
             
-            for _, row in popular_decks.iterrows():
-                display_name = format_deck_option(row['deck_name'], row['share'])
-                deck_display_names.append(display_name)
-                deck_name_mapping[display_name] = {
+            for _, row in popular_decks.iterrows():  # Fixed syntax
+                original_name = format_deck_option(row['deck_name'], row['share'])
+                
+                # For deck list, we might not have markdown, so just use original
+                deck_display_names.append(original_name)
+                deck_name_mapping[original_name] = {
                     'deck_name': row['deck_name'],
                     'set': row['set']
                 }
+                # No markdown mapping needed for this case
+                deck_markdown_mapping[original_name] = original_name
+                
         except Exception as e:
             # If anything goes wrong, provide default options
             print(f"Error creating deck options: {e}")
@@ -208,9 +222,11 @@ def create_deck_options():
                 'deck_name': 'example-deck',
                 'set': 'A3'
             }
+            deck_markdown_mapping[display_name] = display_name
     
-    # Store mapping in session state
+    # Store both mappings in session state
     st.session_state.deck_name_mapping = deck_name_mapping
+    st.session_state.deck_markdown_mapping = deck_markdown_mapping
     
     return deck_display_names, deck_name_mapping
 
@@ -224,12 +240,18 @@ def on_deck_change():
         if 'deck_display_names' not in st.session_state:
             # Skip if deck_display_names not loaded yet
             return
+        
+        # Convert markdown selection back to original name
+        if 'deck_markdown_mapping' in st.session_state and selection in st.session_state.deck_markdown_mapping:
+            original_name = st.session_state.deck_markdown_mapping[selection]
+        else:
+            original_name = selection
             
         st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
         
-        # Set the deck to analyze
-        if 'deck_name_mapping' in st.session_state:
-            deck_info = st.session_state.deck_name_mapping[selection]
+        # Set the deck to analyze using original name
+        if 'deck_name_mapping' in st.session_state and original_name in st.session_state.deck_name_mapping:
+            deck_info = st.session_state.deck_name_mapping[original_name]
             st.session_state.analyze = {
                 'deck_name': deck_info['deck_name'],
                 'set_name': deck_info['set'],
