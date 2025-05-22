@@ -139,73 +139,170 @@ def display_banner(img_path, max_width=900):
     </div>
     """, unsafe_allow_html=True)
 
-def load_initial_data():
-    """Load only essential initial data for fast app startup"""
-    # Initialize minimal caches first
-    cache_manager.init_caches()
+# def load_initial_data():
+#     """Load only essential initial data for fast app startup"""
+#     # Initialize minimal caches first
+#     cache_manager.init_caches()
     
-    # Initialize session state variables
-    if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = 0  # Pre-select first option (index 0)
+#     # Initialize session state variables
+#     if 'selected_deck_index' not in st.session_state:
+#         st.session_state.selected_deck_index = 0  # Pre-select first option (index 0)
         
-    if 'deck_to_analyze' not in st.session_state:
-        st.session_state.deck_to_analyze = None
+#     if 'deck_to_analyze' not in st.session_state:
+#         st.session_state.deck_to_analyze = None
+    
+#     # Initialize deck list if not already loaded
+#     if 'deck_list' not in st.session_state:
+#         st.session_state.deck_list = get_deck_list()
+#         st.session_state.fetch_time = datetime.now()
+
+# def create_deck_options():
+#     """Create deck options for dropdown from performance data or fallback to deck list"""
+#     # Initialize deck display names and mapping
+#     deck_display_names = []
+#     deck_name_mapping = {}
+    
+#     # First try to use performance data
+#     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+#         # Get top 30 decks from performance data
+#         top_performing_decks = st.session_state.performance_data #.head(30)
+        
+#         for _, deck in top_performing_decks.iterrows():
+#             power_index = round(deck['power_index'], 2)
+#             # Format: "Deck Name (Power Index)"
+#             display_name = deck['displayed_name']
+#             deck_display_names.append(display_name)
+#             deck_name_mapping[display_name] = {
+#                 'deck_name': deck['deck_name'],
+#                 'set': deck['set']
+#             }
+#     # If no performance data, use deck list
+#     else:
+#         # Ensure deck_list exists in session state
+#         if 'deck_list' not in st.session_state:
+#             # Load deck list with spinner
+#             with st.spinner("Loading deck list..."):
+#                 from scraper import get_deck_list
+#                 st.session_state.deck_list = get_deck_list()
+#                 st.session_state.fetch_time = datetime.now()
+                
+#         # Now we're sure deck_list exists, use it
+#         try:
+#             from config import MIN_META_SHARE
+#             popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
+            
+#             for _, row in popular_decks.iterrows():
+#                 display_name = format_deck_option(row['deck_name'], row['share'])
+#                 deck_display_names.append(display_name)
+#                 deck_name_mapping[display_name] = {
+#                     'deck_name': row['deck_name'],
+#                     'set': row['set']
+#                 }
+#         except Exception as e:
+#             # If anything goes wrong, provide default options
+#             print(f"Error creating deck options: {e}")
+#             display_name = "Example Deck (1.0)"
+#             deck_display_names.append(display_name)
+#             deck_name_mapping[display_name] = {
+#                 'deck_name': 'example-deck',
+#                 'set': 'A3'
+#             }
+    
+#     # Store mapping in session state
+#     st.session_state.deck_name_mapping = deck_name_mapping
+    
+#     return deck_display_names, deck_name_mapping
+
+# def on_deck_change():
+#     """Handle deck dropdown selection change"""
+#     if 'deck_select' not in st.session_state:
+#         return
+        
+#     selection = st.session_state.deck_select
+#     if selection:
+#         if 'deck_display_names' not in st.session_state:
+#             # Skip if deck_display_names not loaded yet
+#             return
+            
+#         st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
+        
+#         # Set the deck to analyze
+#         if 'deck_name_mapping' in st.session_state:
+#             deck_info = st.session_state.deck_name_mapping[selection]
+#             st.session_state.analyze = {
+#                 'deck_name': deck_info['deck_name'],
+#                 'set_name': deck_info['set'],
+#             }
+            
+#             # Track player-tournament mapping for this deck to enable efficient updates
+#             cache_manager.track_player_tournament_mapping(
+#                 deck_info['deck_name'], 
+#                 deck_info['set']
+#             )
+#     else:
+#         st.session_state.selected_deck_index = None
+def load_initial_data():
+    """Load initial data required for the app"""
+    # Initialize caches - this now handles comprehensive updates
+    cache_manager.init_caches()
     
     # Initialize deck list if not already loaded
     if 'deck_list' not in st.session_state:
         st.session_state.deck_list = get_deck_list()
         st.session_state.fetch_time = datetime.now()
+    
+    # Get the performance data from session state (already loaded by init_caches)
+    if 'performance_data' not in st.session_state:
+        # Only load if not already in session state
+        performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data()
+        st.session_state.performance_data = performance_df
+        st.session_state.performance_fetch_time = performance_timestamp
+    
+    # Initialize card usage data if not already loaded (similar approach)
+    if 'card_usage_data' not in st.session_state:
+        st.session_state.card_usage_data = cache_manager.aggregate_card_usage()
+    
+    # Initialize selected deck if not exists
+    if 'selected_deck_index' not in st.session_state:
+        st.session_state.selected_deck_index = None
+        
+    # Initialize deck_to_analyze if not exists
+    if 'deck_to_analyze' not in st.session_state:
+        st.session_state.deck_to_analyze = None
 
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
-    # Initialize deck display names and mapping
-    deck_display_names = []
-    deck_name_mapping = {}
-    
-    # First try to use performance data
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Get top 30 decks from performance data
-        top_performing_decks = st.session_state.performance_data #.head(30)
+        top_performing_decks = st.session_state.performance_data.head(30)
+        
+        # Create dropdown options with the same format as sidebar
+        deck_display_names = []
+        deck_name_mapping = {}  # Maps display name to original name
         
         for _, deck in top_performing_decks.iterrows():
             power_index = round(deck['power_index'], 2)
             # Format: "Deck Name (Power Index)"
-            display_name = deck['displayed_name']
+            display_name = f"{deck['displayed_name']} ({power_index})"
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
                 'set': deck['set']
             }
-    # If no performance data, use deck list
     else:
-        # Ensure deck_list exists in session state
-        if 'deck_list' not in st.session_state:
-            # Load deck list with spinner
-            with st.spinner("Loading deck list..."):
-                from scraper import get_deck_list
-                st.session_state.deck_list = get_deck_list()
-                st.session_state.fetch_time = datetime.now()
-                
-        # Now we're sure deck_list exists, use it
-        try:
-            from config import MIN_META_SHARE
-            popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
-            
-            for _, row in popular_decks.iterrows():
-                display_name = format_deck_option(row['deck_name'], row['share'])
-                deck_display_names.append(display_name)
-                deck_name_mapping[display_name] = {
-                    'deck_name': row['deck_name'],
-                    'set': row['set']
-                }
-        except Exception as e:
-            # If anything goes wrong, provide default options
-            print(f"Error creating deck options: {e}")
-            display_name = "Example Deck (1.0)"
+        # Fallback to original method if performance data isn't available
+        popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
+        
+        # Create deck options with formatted names and store mapping
+        deck_display_names = []
+        deck_name_mapping = {}  # Maps display name to original name
+        
+        for _, row in popular_decks.iterrows():
+            display_name = format_deck_option(row['deck_name'], row['share'])
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
-                'deck_name': 'example-deck',
-                'set': 'A3'
+                'deck_name': row['deck_name'],
+                'set': row['set']
             }
     
     # Store mapping in session state
@@ -215,30 +312,22 @@ def create_deck_options():
 
 def on_deck_change():
     """Handle deck dropdown selection change"""
-    if 'deck_select' not in st.session_state:
-        return
-        
     selection = st.session_state.deck_select
     if selection:
-        if 'deck_display_names' not in st.session_state:
-            # Skip if deck_display_names not loaded yet
-            return
-            
         st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
         
         # Set the deck to analyze
-        if 'deck_name_mapping' in st.session_state:
-            deck_info = st.session_state.deck_name_mapping[selection]
-            st.session_state.analyze = {
-                'deck_name': deck_info['deck_name'],
-                'set_name': deck_info['set'],
-            }
-            
-            # Track player-tournament mapping for this deck to enable efficient updates
-            cache_manager.track_player_tournament_mapping(
-                deck_info['deck_name'], 
-                deck_info['set']
-            )
+        deck_info = st.session_state.deck_name_mapping[selection]
+        st.session_state.analyze = {
+            'deck_name': deck_info['deck_name'],
+            'set_name': deck_info['set'],
+        }
+        
+        # Track player-tournament mapping for this deck to enable efficient updates
+        cache_manager.track_player_tournament_mapping(
+            deck_info['deck_name'], 
+            deck_info['set']
+        )
     else:
         st.session_state.selected_deck_index = None
 
