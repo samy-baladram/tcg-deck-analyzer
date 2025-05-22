@@ -1209,7 +1209,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         marker_line=dict(width=0),  # No outline
         text=bin_data['meta_share'].apply(lambda x: f"{x:.1f}%" if x > 0 else ""),
         textposition='outside',
-        textfont=dict(size=15, color="black"),
+        textfont=dict(size=15),
         hovertemplate="<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Matchups: %{customdata}<extra></extra>",
         customdata=bin_data['opponent_name']
     ))
@@ -1217,7 +1217,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     # Update layout - Clean and minimal
     fig.update_layout(
         height=300,
-        margin=dict(t=10, l=0, r=0, b=50),
+        margin=dict(t=0, l=0, r=0, b=40),
         
         # Transparent backgrounds
         paper_bgcolor='rgba(0,0,0,0)',
