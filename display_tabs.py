@@ -41,12 +41,12 @@ def display_deck_header(deck_info, results):
             <div>
                 <img src="data:image/png;base64,{header_image}" style="max-width: 400px; width: 100%; height: auto; border-radius: 10px;">
             </div>
-            <div style="min-width: 200px;">"""
+            <div style="min-width: 200px; margin-left: 1rem;">"""
         
         # Add featured image if this is the first time and image exists
         if show_landing_message and featured_image_base64:
             header_content += f"""
-                <div style="margin-bottom: 0.5rem;">
+                <div style="margin-bottom: -0.5rem;">
                     <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; max-height: 60px;">
                 </div>"""
         
