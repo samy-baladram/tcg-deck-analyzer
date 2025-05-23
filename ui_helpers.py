@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from formatters import format_deck_name, format_deck_option, displayed_name_to_markdown
+from formatters import format_deck_name, format_deck_option
 from utils import calculate_time_ago
 from scraper import get_popular_decks_with_performance
 import cache_manager
