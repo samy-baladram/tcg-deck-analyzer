@@ -445,38 +445,38 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             st.caption(f"Power Index: {power_index}")
 
             # 2. ADD 2-COLUMN LAYOUT: Energy + See Details button
-                col1, col2 = st.columns([2, 1])
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                # Get energy types from dedicated cache
+                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                 
-                with col1:
-                    # Get energy types from dedicated cache
-                    energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                # Display energy types if available
+                if energy_types:
+                    # Create compact energy display
+                    energy_html = ""
+                    for energy in energy_types:
+                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+                        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
                     
-                    # Display energy types if available
-                    if energy_types:
-                        # Create compact energy display
-                        energy_html = ""
-                        for energy in energy_types:
-                            energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                            energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
-                        
-                        st.markdown(f"""
-                        <div style="margin-top:5px;">
-                            <div>{energy_html}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        <div style="margin-bottom: 5px;">
-                            <div style="font-size: 0.8rem; color: #888;">No energy data</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                
-                with col2:
-                    # See Details button
-                    if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-                        # Set the deck to analyze
-                        st.session_state.deck_to_analyze = deck['deck_name']
-                        st.rerun()
+                    st.markdown(f"""
+                    <div style="margin-top:5px;">
+                        <div>{energy_html}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown("""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            with col2:
+                # See Details button
+                if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+                    # Set the deck to analyze
+                    st.session_state.deck_to_analyze = deck['deck_name']
+                    st.rerun()
             
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
