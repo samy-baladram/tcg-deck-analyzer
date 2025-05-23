@@ -572,7 +572,7 @@ def render_sidebar_from_cache():
     
         # Only show the button if trending decks are not currently visible
         if not st.session_state.show_trending_decks:
-            if st.button("See More", type="secondary", use_container_width=False, key="trending_button"):
+            if st.button("See More", type="tertiary", use_container_width=False, key="trending_button"):
                 st.session_state.show_trending_decks = True
                 st.rerun()
     
@@ -609,7 +609,7 @@ def render_sidebar_from_cache():
         st.write("")
     
     # Continue with existing code (Counter Picker section)
-    st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin-top: -20px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     display_counter_picker_sidebar()
     st.markdown("<hr style='margin-top: 300px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     with st.expander("🔍 About the Power Index"):
