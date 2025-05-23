@@ -7,7 +7,7 @@ from formatters import format_deck_name, format_deck_option, displayed_name_to_m
 from utils import calculate_time_ago
 from scraper import get_popular_decks_with_performance
 import cache_manager
-from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT
+from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MIN_COUNTER_MATCHES
 import pandas as pd
 import base64
 import os
