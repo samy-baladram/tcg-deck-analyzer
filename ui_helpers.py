@@ -514,8 +514,8 @@ def render_sidebar_from_cache():
             'set': top_deck['set']
         }
         
-        # Generate header image
-        header_image = get_header_image_cached(deck['deck_name'], deck['set'])
+        # FIX: Use top_deck instead of undefined 'deck' variable
+        header_image = get_header_image_cached(top_deck['deck_name'], top_deck['set'])
 
         if header_image:
             st.markdown(f"""
@@ -616,7 +616,7 @@ def render_sidebar_from_cache():
         }
         
         # Generate header image
-        header_image = create_deck_header_images(deck_info, None)
+        header_image = get_header_image_cached(test_deck['deck_name'], test_deck['set'])
 
         if header_image:
             st.markdown(f"""
@@ -932,7 +932,7 @@ def analyze_counter(selected_decks):
                                         break
                 
                 # Generate header image - passing empty results since we've preloaded info
-                header_image = create_deck_header_images(deck_info, None)
+                header_image = get_header_image_cached(deck['deck_name'], deck['set'])
                 
                 # Check if this is a top 3 or lower ranked deck
                 is_top_three = i < 3
