@@ -539,8 +539,8 @@ def analyze_recent_performance(share_threshold=0.6):
         recent_performance = performance[performance['tournament_id'].isin(recent_tournament_ids)]
         
         # Skip if no recent data
-        if recent_performance.empty:
-            continue
+        #if recent_performance.empty:
+        #    continue
         
         # Calculate totals
         total_wins = recent_performance['wins'].sum()
