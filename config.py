@@ -34,6 +34,31 @@ POKEMON_EXCEPTIONS = {
         'lycanroc': 'lycanroc-midnight'
     }
 
+# Pokemon URL mapping exceptions - context-dependent replacements
+POKEMON_URL_EXCEPTIONS = {
+    # Format: 'pokemon_name': {
+    #     'paired_with_pokemon': 'replacement_name',
+    #     'default': 'default_replacement_name'  # optional fallback
+    # }
+    'oricorio': {
+        'greninja': 'oricorio-pom-pom',
+        'default': 'oricorio-pom-pom'  # fallback if no specific pairing found
+    },
+    'lycanroc': {
+        'rampardos': 'lycanroc-midnight',
+        'default': 'lycanroc-midnight'  # fallback
+    },
+    # Add more exceptions as needed
+    # 'rotom': {
+    #     'pikachu': 'rotom-wash',
+    #     'charizard': 'rotom-heat',
+    #     'default': 'rotom-wash'
+    # }
+}
+
+# Pokemon suffixes to filter out
+POKEMON_URL_SUFFIXES = ['ex', 'v', 'vmax', 'vstar', 'gx']
+
 # Chart settings
 CHART_MIN_HEIGHT = 350
 CHART_ROW_HEIGHT = 45
