@@ -460,7 +460,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             deck_html = render_sidebar_deck(
                 sample_deck['pokemon_cards'], 
                 sample_deck['trainer_cards'],
-                card_width=50
+                card_width=60
             )
             
             st.markdown(deck_html, unsafe_allow_html=True)
@@ -557,7 +557,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
             deck_html = render_sidebar_deck(
                 sample_deck['pokemon_cards'], 
                 sample_deck['trainer_cards'],
-                card_width=50
+                card_width=60
             )
             st.markdown(deck_html, unsafe_allow_html=True)
 
