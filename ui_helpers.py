@@ -377,7 +377,7 @@ def create_deck_selector():
     
     # Create label and help text
     label_text = f"Current Set: {current_set}"
-    help_text = f"Showing top performing decks, ordered by Power Index (details in sidebar). Updated {time_str}."
+    help_text = f"Showing decks with meta share ≥ 0.1% and win rate ≥ 45%, ordered by Power Index (details in sidebar).\nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).\nUpdated {time_str}."
 
     # deck_icon_display_names = []
     # for name in deck_display_names:
@@ -386,8 +386,6 @@ def create_deck_selector():
     # Display the selectbox
     selected_option = st.selectbox(
         label_text,
-        #("![Meowscarada](https://r2.limitlesstcg.net/pokemon/gen9/meowscarada.png)","![Meowscarada](https://r2.limitlesstcg.net/pokemon/gen9/meowscarada.png)"),
-        #deck_icon_display_names,
         deck_display_names,
         index=st.session_state.selected_deck_index,
         placeholder="Select a deck to analyze...",
