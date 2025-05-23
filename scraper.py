@@ -8,52 +8,6 @@ import re
 import math
 from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE, MIN_WIN_RATE
 
-
-# def get_deck_list():
-#     """Get all available decks with their share percentages and win rates"""
-#     url = f"{BASE_URL}/decks?game=pocket"
-#     response = requests.get(url)
-#     soup = BeautifulSoup(response.text, 'html.parser')
-    
-#     decks = []
-#     for row in soup.find_all('tr'):
-#         cells = row.find_all('td')
-#         if len(cells) >= 7:
-#             deck_link = cells[2].find('a', href=True)
-            
-#             if deck_link and '/decks/' in deck_link['href'] and 'matchup' not in deck_link['href']:
-#                 href = deck_link['href']
-#                 deck_name = href.split('/decks/')[1].split('?')[0]
-                
-#                 # Extract set name
-#                 set_name = 'A3'  # Default
-#                 if 'set=' in href:
-#                     set_name = href.split('set=')[1].split('&')[0]
-                
-#                 # Extract share percentage (column 4)
-#                 share_text = cells[4].text.strip()
-#                 share = float(share_text.replace('%', '')) if '%' in share_text else 0
-                
-#                 # Extract win rate from multiple columns
-#                 win_rate = 0
-#                 for col_idx in [3, 5, 6, 7]:
-#                     if col_idx < len(cells):
-#                         cell_text = cells[col_idx].text.strip()
-#                         if '%' in cell_text and cell_text != share_text:
-#                             potential_win_rate = float(cell_text.replace('%', '')) if cell_text.replace('%', '').replace('.', '').isdigit() else 0
-#                             if 0 <= potential_win_rate <= 100:
-#                                 win_rate = potential_win_rate
-#                                 break
-                
-#                 decks.append({
-#                     'deck_name': deck_name,
-#                     'set': set_name,
-#                     'share': share,
-#                     'win_rate': win_rate
-#                 })
-    
-#     return pd.DataFrame(decks).sort_values('win_rate', ascending=False)
-
 def get_popular_decks_with_performance(share_threshold=0.0):
     """Get all decks with their share percentages and win rates above threshold"""
     url = f"{BASE_URL}/decks?game=pocket"
@@ -365,7 +319,6 @@ def get_affected_decks(new_tournament_ids, player_tournament_mapping):
 def create_mapping_key(player_id, tournament_id):
     """Create a consistent key for player-tournament mappings"""
     return f"{player_id}:{tournament_id}"
-
 
 def get_deck_performance_data():
     """
