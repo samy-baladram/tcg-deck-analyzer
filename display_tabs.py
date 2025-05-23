@@ -1834,6 +1834,9 @@ def display_matchup_tab(deck_info=None):
         
         # Apply filter
         filtered_df = working_df[working_df['deck_name_lower'].isin(meta_decks_lower)]
+        if filtered_count > 0:
+            st.info(f"Showing {len(filtered_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
+                    f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
         
         # Use filtered data if we found matches
         if not filtered_df.empty:
