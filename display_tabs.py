@@ -10,6 +10,7 @@ from analyzer import build_deck_template
 from card_renderer import render_deck_section, render_option_section
 from energy_utils import get_archetype_from_deck_name, render_energy_icons
 from config import TOURNAMENT_COUNT, POWER_INDEX_EXPLANATION, POKEMON_EXCEPTIONS, MIN_MATCHUP_MATCHES
+from header_image_cache import get_header_image_cached
 import pandas as pd
 import base64
 import os
