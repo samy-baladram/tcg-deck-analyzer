@@ -83,11 +83,75 @@ def get_or_load_sample_deck(deck_name, set_name):
     
     return sample_deck
 
-# Update the get_or_analyze_full_deck function
-def get_or_analyze_full_deck(deck_name, set_name):
-    """Get full analyzed deck from cache or analyze if not cached"""
-    # First check session cache
+def validate_cache_data(cached_data):
+    """Validate that cached data has all required fields"""
+    required_fields = ['results', 'deck_list', 'deck_info', 'total_cards']
+    
+    if not isinstance(cached_data, dict):
+        return False
+        
+    for field in required_fields:
+        if field not in cached_data:
+            return False
+            
+    # Check if results DataFrame is valid
+    results = cached_data.get('results')
+    if results is None or (hasattr(results, 'empty') and results.empty):
+        return False
+        
+    return True
+
+def analyze_deck_fresh(deck_name, set_name):
+    """Perform fresh deck analysis without using any cache"""
+    from analyzer import analyze_deck, build_deck_template
+    
+    print(f"Performing fresh analysis for {deck_name}")
+    
+    # Force fresh collection and analysis
+    results, total_decks, variant_df, energy_types = analyze_deck(deck_name, set_name)
+    deck_list, deck_info, total_cards, options = build_deck_template(results)
+    
+    most_common_energy = get_most_common_energy(deck_name, set_name)
+    
+    analyzed_data = {
+        'results': results,
+        'total_decks': total_decks,
+        'variant_df': variant_df,
+        'deck_list': deck_list,
+        'deck_info': deck_info,
+        'total_cards': total_cards,
+        'options': options,
+        'energy_types': energy_types,
+        'most_common_energy': most_common_energy
+    }
+    
+    # Store in session cache
     cache_key = f"full_deck_{deck_name}_{set_name}"
+    st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
+    
+    return analyzed_data
+
+# Update the get_or_analyze_full_deck function
+def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
+    """Get full analyzed deck from cache or analyze if not cached"""
+    cache_key = f"full_deck_{deck_name}_{set_name}"
+    
+    # If force_refresh is True, skip cache entirely
+    if force_refresh:
+        print(f"Force refreshing analysis for {deck_name}")
+        return analyze_deck_fresh(deck_name, set_name)
+    
+    # Check session cache first
+    if cache_key in st.session_state.analyzed_deck_cache:
+        cached_data = st.session_state.analyzed_deck_cache[cache_key]
+        # Validate cache integrity
+        if validate_cache_data(cached_data):
+            print(f"Found valid {deck_name} in session cache")
+            return cached_data
+        else:
+            print(f"Invalid cache data for {deck_name}, clearing")
+            del st.session_state.analyzed_deck_cache[cache_key]
+            
     if cache_key in st.session_state.analyzed_deck_cache:
         print(f"Found {deck_name} in session cache")
         return st.session_state.analyzed_deck_cache[cache_key]
