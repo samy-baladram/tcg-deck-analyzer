@@ -491,7 +491,7 @@ def render_sidebar_from_cache():
             # Add disclaimer with update time in one line
             performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
             st.markdown(f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
                 <div>Top performers from {current_month_year}</div>
                 <div>Updated {performance_time_str}</div>
             </div>
@@ -541,7 +541,7 @@ def render_sidebar_from_cache():
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
-                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 0px;
+                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
                     display: flex; align-items: center; justify-content: center;">
                     <span style="color: #888; font-size: 0.8rem;">No image</span>
                 </div>
@@ -595,7 +595,7 @@ def render_sidebar_from_cache():
             # Add disclaimer with update time for trending decks
             performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
             st.markdown(f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
                 <div>Most active from {current_month_year}</div>
                 <div>Updated {performance_time_str}</div>
             </div>
