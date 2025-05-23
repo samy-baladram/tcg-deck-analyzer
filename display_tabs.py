@@ -1820,11 +1820,6 @@ def display_matchup_tab(deck_info=None):
     original_count = len(working_df)
     working_df = working_df[working_df['matches_played'] >= MIN_MATCHUP_MATCHES]
     filtered_count = original_count - len(working_df)
-    
-    # ADD THIS: Show filtering info if matchups were removed
-    if filtered_count > 0:
-        st.info(f"Showing {len(working_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
-                f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
 
     # Only apply filtering if we have meta decks and user wants filtering
     if meta_decks and not show_all:
