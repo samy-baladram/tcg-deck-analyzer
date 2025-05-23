@@ -923,7 +923,7 @@ def display_metagame_tab():
 
     # Extract Pokémon names and create image URLs
     display_df[['pokemon_url1', 'pokemon_url2']] = display_df.apply(
-        lambda row: pd.Series(extract_pokemon_urls(row['deck_name'])), 
+        lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
         axis=1
     )
     
