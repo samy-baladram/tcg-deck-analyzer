@@ -238,7 +238,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 </style>
 """, unsafe_allow_html=True)
 
-
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
@@ -258,7 +257,7 @@ if 'analyze' in st.session_state and selected_option:
     if force_refresh:
         st.session_state.force_deck_refresh = False  # Clear the flag
     
-    # Get analyzed deck from cache or analyze it
+    # FIXED: Better error handling and retry logic
     with st.spinner("Analyzing deck..."):
         try:
             analyzed_deck = cache_manager.get_or_analyze_full_deck(
@@ -268,11 +267,27 @@ if 'analyze' in st.session_state and selected_option:
             )
         except Exception as e:
             st.error(f"Error analyzing deck: {str(e)}")
+            print(f"Analysis error for {original_deck_info['deck_name']}: {str(e)}")
             analyzed_deck = None
     
-    # FIX: Add error handling and data validation
+    # FIXED: Better validation and fallback logic
     if analyzed_deck is None:
-        st.error("Failed to analyze the selected deck. Please try selecting a different deck.")
+        st.error("Failed to analyze the selected deck. Attempting to reload...")
+        
+        # Try once more with force refresh
+        try:
+            with st.spinner("Reloading deck data..."):
+                analyzed_deck = cache_manager.get_or_analyze_full_deck(
+                    original_deck_info['deck_name'], 
+                    original_deck_info['set_name'],
+                    force_refresh=True  # Force fresh analysis
+                )
+        except Exception as e:
+            st.error(f"Failed to reload deck data: {str(e)}")
+            analyzed_deck = None
+    
+    if analyzed_deck is None:
+        st.error("Unable to load deck data. Please try selecting a different deck or refresh the page.")
     else:
         # Validate the structure of analyzed_deck and provide defaults
         try:
@@ -281,9 +296,13 @@ if 'analyze' in st.session_state and selected_option:
             total_decks = analyzed_deck.get('total_decks', 0)
             variant_df = analyzed_deck.get('variant_df', None)
             
-            # Additional validation
+            # FIXED: Better validation with specific error messages
             if results is None:
-                st.error("No analysis results available for this deck.")
+                st.error("No analysis results available for this deck. The deck data may be corrupted.")
+                # Try to debug the issue
+                st.write("Debug info - analyzed_deck keys:", list(analyzed_deck.keys()) if analyzed_deck else "None")
+            elif hasattr(results, 'empty') and results.empty:
+                st.error("Analysis results are empty for this deck.")
             else:
                 # Display deck header
                 display_tabs.display_deck_header(original_deck_info, results)
@@ -347,10 +366,14 @@ if 'analyze' in st.session_state and selected_option:
         
         except Exception as e:
             st.error(f"Error displaying deck analysis: {str(e)}")
+            print(f"Display error: {str(e)}")
+            
             # Debug information (remove in production)
             if st.secrets.get("DEBUG_MODE", False):
                 st.write("Debug - analyzed_deck structure:")
                 st.write(analyzed_deck)
+                import traceback
+                st.code(traceback.format_exc())
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
