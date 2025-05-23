@@ -205,15 +205,7 @@ selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
 with st.sidebar:
-    # Check if we're in a deck switching scenario
-    if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
-        # Show minimal content during deck switching
-        st.info("Switching to new deck...")
-        # Clear the flag after showing message
-        st.session_state.deck_to_analyze = None
-    else:
-        # Normal sidebar rendering
-        ui_helpers.render_sidebar_from_cache()
+    ui_helpers.render_sidebar_from_cache()
 
 # Main content area
 # Main content area
