@@ -512,7 +512,7 @@ def render_sidebar_from_cache():
 
         # Only show the button if decks are not currently visible
         if not st.session_state.show_decks:
-            if st.button("See now!", type="tertiary", use_container_width=False):
+            if st.button("See more", type="tertiary", use_container_width=False):
                 st.session_state.show_decks = True
                 st.rerun()
 
@@ -549,7 +549,7 @@ def render_sidebar_from_cache():
         st.write("")
 
     # ADD NEW SECTION: Trending Decks
-    st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+    #st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     
     # Load and encode the trending banner image if it exists
     trending_banner_path = "trending_banner.png"  # You'll need to create this image
