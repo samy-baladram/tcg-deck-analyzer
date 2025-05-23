@@ -13,6 +13,8 @@ ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_
 
 # Tournament count
 TOURNAMENT_COUNT = 70
+MIN_MATCHUP_MATCHES = 5
+MIN_COUNTER_MATCHES = 8
 
 # Display settings
 MIN_META_SHARE = 0.1  # Minimum meta share percentage to display
