@@ -679,10 +679,13 @@ def analyze_counter(selected_decks):
                     # Still track number of matched decks for filtering
                     matched_decks += 1
             
-            # Only include if we found matchups against at least half the selected decks
-            if matched_decks >= len(selected_decks) / 2:
-                # Calculate weighted average: total weighted sum divided by total matches
+            # UPDATE THIS: More strict filtering for counter analysis
+            if (matched_decks >= len(selected_decks) / 2 and 
+                total_matches >= MIN_COUNTER_MATCHES):
                 avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
+                
+                # ADD confidence indicator
+                confidence = 'High' if total_matches >= 20 else 'Medium'
                 
                 counter_data.append({
                     'deck_name': deck_name,
@@ -692,7 +695,9 @@ def analyze_counter(selected_decks):
                     'meta_share': deck['share'],
                     'power_index': deck['power_index'],
                     'matched_decks': matched_decks,
-                    'total_selected': len(selected_decks)
+                    'total_selected': len(selected_decks),
+                    'total_matches': total_matches,  # ADD THIS for transparency
+                    'confidence': confidence  # ADD THIS
                 })
         
         # # Create DataFrame and sort by average win rate
@@ -752,10 +757,18 @@ def analyze_counter(selected_decks):
                 # Check if this is a top 3 or lower ranked deck
                 is_top_three = i < 3
                 
-                # Adjust column widths and styling based on ranking
+                # UPDATE the win rate display sections:
                 if is_top_three:
                     win_rate = deck['average_win_rate']
+                    total_matches = deck['total_matches']
+                    confidence = deck['confidence']
+                    
+                    # Add confidence indicator
+                    confidence_color = "#4FCC20" if confidence == 'High' else "#FDA700"
+                    confidence_text = f"({total_matches} matches, {confidence.lower()} confidence)"
+                    
                     win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
+                    
                     if header_image:
                         st.markdown(f"""
                         <div style="display: flex; align-items: center; margin-bottom: 0rem;">
@@ -764,7 +777,7 @@ def analyze_counter(selected_decks):
                             </div>
                             <div style="text-align: right; min-width: 80px;">
                                 <span style="font-size: 1.4rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                                <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
+                                <div style="font-size: 0.7rem; margin-top: -0.5rem; color: {confidence_color};">{confidence_text}</div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -847,10 +860,24 @@ def analyze_counter(selected_decks):
                     st.markdown(f"<hr style='margin-top: -10px; margin-bottom: -10px; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
             # Add explanation text 
-            st.caption("Win rates shown are weighted by number of matches played, providing a more reliable performance indicator against your selected decks. Decks with higher win rates have demonstrated stronger results in tournament play. Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+            st.caption(f"Win rates are weighted by match count and filtered for reliability "
+                       f"(minimum {MIN_COUNTER_MATCHES} matches per matchup). "
+                       f"Higher confidence = more tournament data available. "
+                       f"Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
         else:
             st.warning("No counter data found for the selected decks")
 
+def get_confidence_indicator(matches, min_threshold):
+    """Get confidence level and color for match count"""
+    if matches >= min_threshold * 3:
+        return "High", "#4FCC20"
+    elif matches >= min_threshold * 2:
+        return "Medium", "#FDA700" 
+    elif matches >= min_threshold:
+        return "Low", "#fd6c6c"
+    else:
+        return "Very Low", "#999"
+        
 def set_deck_to_analyze(deck_name):
     """Callback function when counter deck button is clicked"""
     # Set the deck to analyze
