@@ -443,65 +443,86 @@ def create_deck_selector():
 # In ui_helpers.py - Updated render_deck_in_sidebar function
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
     """Render a single deck in the sidebar with cached components"""
-    power_index = round(deck['power_index'], 2)
-    
-    circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
-    
-    rank_symbol = ""
-    if rank is not None and 0 <= rank <= 10:
-        rank_symbol = circled_numbers[rank]
-    
-    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-        try:
-            # 1. USE CACHED HEADER IMAGE
-            header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-            
-            if header_image:
-                st.markdown(f"""
-                <div style="width: 100%; margin-bottom: 10px;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
-                </div>
-                """, unsafe_allow_html=True)
-            
-            # 2. USE CACHED SAMPLE DECK
-            deck_name = deck['deck_name']
-            sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED TO CACHED VERSION
-            
-            # Render deck view
-            from card_renderer import render_sidebar_deck
-            deck_html = render_sidebar_deck(
-                sample_deck['pokemon_cards'], 
-                sample_deck['trainer_cards'],
-                card_width=60
-            )
-            
-            st.markdown(deck_html, unsafe_allow_html=True)
-
-            # 3. USE CACHED ENERGY TYPES
-            col1, col2 = st.columns([2, 1])
-            
-            with col1:
-                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+    try:
+        power_index = round(deck['power_index'], 2)
+        
+        circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
+        
+        rank_symbol = ""
+        if rank is not None and 0 <= rank <= 10:
+            rank_symbol = circled_numbers[rank]
+        
+        with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+            try:
+                # 1. USE CACHED HEADER IMAGE
+                header_image = get_header_image_cached(deck['deck_name'], deck['set'])
                 
-                if energy_types:
-                    # USE CACHED ENERGY ICON RENDERING
-                    energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
-                    st.markdown(energy_html, unsafe_allow_html=True)
-                else:
-                    st.markdown("""
-                    <div style="margin-bottom: 5px;">
-                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                if header_image:
+                    st.markdown(f"""
+                    <div style="width: 100%; margin-bottom: 10px;">
+                        <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
                     </div>
                     """, unsafe_allow_html=True)
-            
-            with col2:
-                if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-                    st.session_state.deck_to_analyze = deck['deck_name']
-                    st.rerun()
-            st.caption(f"Power Index: {power_index}")
-        except Exception as e:
-            st.warning(f"Unable to load deck preview for {deck_name}")
-            print(f"Error rendering deck in sidebar: {e}")
+                
+                # 2. USE CACHED SAMPLE DECK
+                deck_name = deck['deck_name']
+                
+                # Check if card cache is available before using it
+                if CARD_CACHE_AVAILABLE:
+                    sample_deck = get_sample_deck_cached(deck_name, deck['set'])
+                else:
+                    # Fallback to direct import if cache not available
+                    from scraper import get_sample_deck_for_archetype
+                    pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
+                    sample_deck = {
+                        'pokemon_cards': pokemon_cards,
+                        'trainer_cards': trainer_cards,
+                        'energy_types': energy_types
+                    }
+                
+                # Render deck view
+                from card_renderer import render_sidebar_deck
+                deck_html = render_sidebar_deck(
+                    sample_deck['pokemon_cards'], 
+                    sample_deck['trainer_cards'],
+                    card_width=60
+                )
+                
+                st.markdown(deck_html, unsafe_allow_html=True)
+
+                # 3. USE CACHED ENERGY TYPES
+                col1, col2 = st.columns([2, 1])
+                
+                with col1:
+                    energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                    
+                    if energy_types:
+                        # USE CACHED ENERGY ICON RENDERING
+                        energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
+                        st.markdown(energy_html, unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        <div style="margin-bottom: 5px;">
+                            <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                
+                with col2:
+                    if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+                        st.session_state.deck_to_analyze = deck['deck_name']
+                        st.rerun()
+                st.caption(f"Power Index: {power_index}")
+                
+            except Exception as e:
+                st.warning(f"Unable to load deck preview for {deck_name}")
+                print(f"Error rendering deck in sidebar: {e}")
+                # Show basic info as fallback
+                st.write(f"**{deck['displayed_name']}**")
+                st.caption(f"Power Index: {power_index}")
+                
+    except Exception as e:
+        print(f"Critical error in render_deck_in_sidebar: {e}")
+        st.error("Error loading deck data")
 
 def render_sidebar_from_cache():
     """Render sidebar with aggressive caching"""
@@ -521,6 +542,9 @@ def render_sidebar_from_cache():
     else:
         st.title("Top 10 Meta Decks")
 
+    # Initialize top_deck variable
+    top_deck = None
+    
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         top_deck = st.session_state.performance_data.iloc[0]
         
@@ -540,6 +564,175 @@ def render_sidebar_from_cache():
                 <span style="color: #888; font-size: 0.8rem;">No image</span>
             </div>
             """, unsafe_allow_html=True)
+    
+    # CRITICAL FIX: Only proceed if we have top_deck data
+    if top_deck is not None:
+        # NEW: Add 2-column layout for top deck and See more button
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:         
+            # Button to switch to this deck
+            if st.button(
+                top_deck['displayed_name'], 
+                key="top_deck_button",
+                type="tertiary",
+                use_container_width=False
+            ):
+                # Set the deck to analyze
+                st.session_state.deck_to_analyze = top_deck['deck_name']
+                st.rerun()
+
+        with col2:
+            # Add button to toggle deck visibility for Top 10 Meta Decks
+            if 'show_decks' not in st.session_state:
+                st.session_state.show_decks = False
+
+            # Only show the button if decks are not currently visible
+            if not st.session_state.show_decks:
+                if st.button("See more", type="tertiary", use_container_width=False):
+                    st.session_state.show_decks = True
+                    st.rerun()
+
+        # Only show decks if the button has been clicked
+        if st.session_state.show_decks:
+            # Ensure energy cache is initialized
+            import cache_manager
+            cache_manager.ensure_energy_cache()
+            
+            # Display performance data if it exists
+            if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+                # Get the top 10 performing decks (sorted by Power Index)
+                top_decks = st.session_state.performance_data.head(10)
+                
+                # Render each deck one by one, passing the rank (index + 1)
+                for idx, (_, deck) in enumerate(top_decks.iterrows()):
+                    rank = idx + 1  # Calculate rank (1-based)
+                    render_deck_in_sidebar(deck, rank=rank)
+            
+                # Add disclaimer with update time in one line
+                performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+                st.markdown(f"""
+                <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
+                    <div>Top performers from {current_month_year}</div>
+                    <div>Updated {performance_time_str}</div>
+                </div>
+                <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+                    Based on up to {TOURNAMENT_COUNT} tournament results
+                </div>
+                """, unsafe_allow_html=True)
+                st.write("")
+                st.write("")
+        else:
+            st.write("")
+
+        # ADD NEW SECTION: Trending Decks
+        # Load and encode the trending banner image if it exists
+        trending_banner_path = "trending_banner.png"
+        if os.path.exists(trending_banner_path):
+            with open(trending_banner_path, "rb") as f:
+                trending_banner_base64 = base64.b64encode(f.read()).decode()
+            st.markdown(f"""
+            <div style="width:100%; text-align:center;">
+                <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("### 📈 Trending Decks")
+        
+        # Get the first trending deck
+        test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
+        
+        # Generate header image for trending deck
+        header_image = get_header_image_cached(test_deck['deck_name'], test_deck['set'])
+
+        if header_image:
+            st.markdown(f"""
+            <div style="width: 100%; margin-bottom: -1rem;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                display: flex; align-items: center; justify-content: center;">
+                <span style="color: #888; font-size: 0.8rem;">No image</span>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # NEW: Add 2-column layout for test deck and See More button
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:         
+            # Button to switch to this deck
+            if st.button(
+                test_deck['displayed_name'], 
+                key="test_trending_deck_button",
+                type="tertiary",
+                use_container_width=False
+            ):
+                # Set the deck to analyze
+                st.session_state.deck_to_analyze = test_deck['deck_name']
+                st.rerun()
+
+        with col2:
+            # Add button to toggle trending decks visibility
+            if 'show_trending_decks' not in st.session_state:
+                st.session_state.show_trending_decks = False
+
+            # Only show the button if trending decks are not currently visible
+            if not st.session_state.show_trending_decks:
+                if st.button("See More", type="tertiary", use_container_width=False, key="trending_button"):
+                    st.session_state.show_trending_decks = True
+                    st.rerun()
+
+        # Only show trending decks if the button has been clicked
+        if st.session_state.show_trending_decks:
+            # Ensure energy cache is initialized
+            import cache_manager
+            cache_manager.ensure_energy_cache()
+            
+            # Display performance data if it exists
+            if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+                # Get trending decks (sorted by tournaments_played/Best Finishes)
+                trending_decks = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).head(5)
+                
+                # Render each trending deck one by one, passing the rank (index + 1)
+                for idx, (_, deck) in enumerate(trending_decks.iterrows()):
+                    rank = idx + 1  # Calculate rank (1-based)
+                    render_trending_deck_in_sidebar(deck, rank=rank)
+            
+                # Add disclaimer with update time for trending decks
+                performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+                st.markdown(f"""
+                <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
+                    <div>Most active from {current_month_year}</div>
+                    <div>Updated {performance_time_str}</div>
+                </div>
+                <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+                    Sorted by tournament activity
+                </div>
+                """, unsafe_allow_html=True)
+                st.write("")
+                st.write("")
+        else:
+            st.write("")
+        
+        # Continue with existing code (Counter Picker section)
+        display_counter_picker_sidebar()
+        
+        # Power Index explanation
+        with st.expander("🔍 About the Power Index"):
+            # Format the explanation with the current date and tournament count
+            formatted_explanation = POWER_INDEX_EXPLANATION.format(
+                tournament_count=TOURNAMENT_COUNT,
+                current_month_year=current_month_year
+            )
+            
+            # Display the enhanced explanation
+            st.markdown(formatted_explanation)
+    else:
+        # Fallback if no performance data
+        st.warning("No performance data available")
     
     # Rest of render_sidebar_from_cache remains the same...
     # [Include all the remaining logic but replace any create_deck_header_images calls with get_header_image_cached]
