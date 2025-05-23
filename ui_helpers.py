@@ -540,7 +540,7 @@ def render_sidebar_from_cache():
             
             if header_image:
                 st.markdown(f"""
-                <div style="width: 100%; margin-bottom: 8px;">
+                <div style="width: 100%; margin-bottom: -2rem;">
                     <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 4px;">
                 </div>
                 """, unsafe_allow_html=True)
@@ -565,7 +565,7 @@ def render_sidebar_from_cache():
     
     with col2:
         # Add vertical space to align with the image/button layout
-        st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
+        #st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
         
         # Add button to toggle trending decks visibility
         if 'show_trending_decks' not in st.session_state:
