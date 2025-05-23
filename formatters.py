@@ -74,37 +74,25 @@ def format_card_label(card_name, set_code=None, num=None):
 
 # Extract Pokémon names and create image URLs
 # formatters.py - Updated function
-def extract_pokemon_urls(displayed_name):
+def extract_pokemon_urls(deck_name):
     """
     Extract Pokemon names and create image URLs with context-dependent exceptions.
     Uses config.POKEMON_URL_EXCEPTIONS for pair-based name replacements.
     
     Args:
-        displayed_name: The deck display name to extract Pokemon from
+        deck_name: The deck name to extract Pokemon from (changed from displayed_name)
         
     Returns:
         Tuple of (url1, url2) - Pokemon image URLs
     """
-    import re
-    from config import POKEMON_URL_EXCEPTIONS, POKEMON_URL_SUFFIXES
+    from config import POKEMON_URL_EXCEPTIONS
+    from image_processor import extract_pokemon_from_deck_name
     
-    # Remove content in parentheses and clean
-    clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
+    # Use the unified Pokemon extraction function
+    pokemon_names = extract_pokemon_from_deck_name(deck_name)
     
-    # Split by spaces and slashes
-    parts = re.split(r'[\s/]+', clean_name)
-    
-    # Filter out suffixes and collect Pokemon names
-    pokemon_names = []
-    
-    for part in parts:
-        part = part.lower()
-        if part and part not in POKEMON_URL_SUFFIXES:
-            pokemon_names.append(part)
-            
-            # Limit to 2 Pokémon
-            if len(pokemon_names) >= 2:
-                break
+    # Convert to lowercase and remove spaces/hyphens for URL generation
+    pokemon_names = [name.lower().replace(' ', '').replace('-', '') for name in pokemon_names]
     
     # Apply context-dependent exceptions
     if len(pokemon_names) >= 2:
