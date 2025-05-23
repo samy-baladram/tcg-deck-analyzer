@@ -85,20 +85,51 @@ def get_or_load_sample_deck(deck_name, set_name):
 
 def validate_cache_data(cached_data):
     """Validate that cached data has all required fields"""
-    required_fields = ['results', 'deck_list', 'deck_info', 'total_cards']
+    # UPDATED: Check for the critical fields needed by the app
+    critical_fields = ['results', 'total_decks', 'variant_df']  # These are essential
+    optional_fields = ['deck_list', 'deck_info', 'total_cards', 'options', 'energy_types', 'most_common_energy']
     
     if not isinstance(cached_data, dict):
+        print("Cache validation failed: not a dictionary")
         return False
-        
-    for field in required_fields:
+    
+    # Check critical fields first
+    for field in critical_fields:
         if field not in cached_data:
+            print(f"Cache validation failed: missing critical field {field}")
             return False
             
     # Check if results DataFrame is valid
     results = cached_data.get('results')
-    if results is None or (hasattr(results, 'empty') and results.empty):
+    if results is None:
+        print("Cache validation failed: results is None")
         return False
         
+    if hasattr(results, 'empty') and results.empty:
+        print("Cache validation failed: results DataFrame is empty")
+        return False
+        
+    # Check if results has the expected columns
+    if hasattr(results, 'columns'):
+        expected_columns = ['card_name', 'type', 'pct_total']
+        missing_columns = [col for col in expected_columns if col not in results.columns]
+        if missing_columns:
+            print(f"Cache validation failed: missing columns {missing_columns}")
+            return False
+    
+    # Check variant_df
+    variant_df = cached_data.get('variant_df')
+    if variant_df is None:
+        print("Cache validation failed: variant_df is None")
+        return False
+    
+    # total_decks should be a number
+    total_decks = cached_data.get('total_decks', 0)
+    if not isinstance(total_decks, (int, float)) or total_decks < 0:
+        print(f"Cache validation failed: invalid total_decks value: {total_decks}")
+        return False
+    
+    print("Cache validation passed")
     return True
 
 def analyze_deck_fresh(deck_name, set_name):
@@ -113,21 +144,25 @@ def analyze_deck_fresh(deck_name, set_name):
     
     most_common_energy = get_most_common_energy(deck_name, set_name)
     
+    # Create COMPLETE analyzed data structure
     analyzed_data = {
-        'results': results,
-        'total_decks': total_decks,
-        'variant_df': variant_df,
-        'deck_list': deck_list,
-        'deck_info': deck_info,
-        'total_cards': total_cards,
-        'options': options,
-        'energy_types': energy_types,
-        'most_common_energy': most_common_energy
+        'results': results,                              # CRITICAL: Main analysis results
+        'total_decks': total_decks,                     # CRITICAL: Total deck count  
+        'variant_df': variant_df,                       # CRITICAL: Variant analysis
+        'deck_list': deck_list,                         # Deck template data
+        'deck_info': deck_info,                         # Card info for rendering
+        'total_cards': total_cards,                     # Total cards in template
+        'options': options,                             # Optional cards
+        'energy_types': energy_types,                   # Energy types list
+        'most_common_energy': most_common_energy        # Most common energy combo
     }
     
     # Store in session cache
     cache_key = f"full_deck_{deck_name}_{set_name}"
     st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
+    
+    # Save to disk cache
+    cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df, energy_types)
     
     return analyzed_data
 
@@ -149,44 +184,45 @@ def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
             print(f"Found valid {deck_name} in session cache")
             return cached_data
         else:
-            print(f"Invalid cache data for {deck_name}, clearing")
+            print(f"Invalid cache data for {deck_name}, clearing and regenerating")
             del st.session_state.analyzed_deck_cache[cache_key]
-            
-    if cache_key in st.session_state.analyzed_deck_cache:
-        print(f"Found {deck_name} in session cache")
-        return st.session_state.analyzed_deck_cache[cache_key]
+            # Force fresh analysis since cache is corrupted
+            return analyze_deck_fresh(deck_name, set_name)
     
     # Check card cache for basic deck template data
     cached_deck_data = get_analyzed_deck_cached(deck_name, set_name)
-    if cached_deck_data:
-        print(f"Found basic deck data in card cache for {deck_name}")
+    if cached_deck_data and validate_cache_data(cached_deck_data):
+        print(f"Found valid deck data in card cache for {deck_name}")
         # Store in session cache and return
         st.session_state.analyzed_deck_cache[cache_key] = cached_deck_data
         return cached_deck_data
+    elif cached_deck_data:
+        print(f"Found invalid deck data in card cache for {deck_name}, ignoring")
     
     # Then check disk cache for full analysis
     cached_results, cached_total_decks, cached_variant_df, cached_energy_types = cache_utils.load_analyzed_deck_components(deck_name, set_name)
     
-    if cached_results is not None:
+    if cached_results is not None and not cached_results.empty:
         print(f"Using cached analysis data for {deck_name}")
         
         # Generate the deck template from cached results
+        from analyzer import build_deck_template
         deck_list, deck_info, total_cards, options = build_deck_template(cached_results)
         
         # Calculate most common energy
         most_common_energy = get_most_common_energy(deck_name, set_name)
         
-        # Create cache entry
+        # Create COMPLETE cache entry with ALL required fields
         analyzed_data = {
-            'results': cached_results,
-            'total_decks': cached_total_decks,
-            'variant_df': cached_variant_df,
-            'deck_list': deck_list,
-            'deck_info': deck_info,
-            'total_cards': total_cards,
-            'options': options,
-            'energy_types': cached_energy_types,
-            'most_common_energy': most_common_energy
+            'results': cached_results,                    # CRITICAL: Main analysis results
+            'total_decks': cached_total_decks,           # CRITICAL: Total deck count
+            'variant_df': cached_variant_df,             # CRITICAL: Variant analysis
+            'deck_list': deck_list,                      # Deck template data
+            'deck_info': deck_info,                      # Card info for rendering
+            'total_cards': total_cards,                  # Total cards in template
+            'options': options,                          # Optional cards
+            'energy_types': cached_energy_types,        # Energy types list
+            'most_common_energy': most_common_energy     # Most common energy combo
         }
         
         # Store in session cache
@@ -199,36 +235,7 @@ def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
     
     # If not in any cache, analyze the deck
     print(f"No cache found for {deck_name}, analyzing")
-    
-    # Rest of the analysis logic remains the same...
-    from analyzer import analyze_deck
-    results, total_decks, variant_df, energy_types = analyze_deck(deck_name, set_name)
-    deck_list, deck_info, total_cards, options = build_deck_template(results)
-    
-    most_common_energy = get_most_common_energy(deck_name, set_name)
-    
-    analyzed_data = {
-        'results': results,
-        'total_decks': total_decks,
-        'variant_df': variant_df,
-        'deck_list': deck_list,
-        'deck_info': deck_info,
-        'total_cards': total_cards,
-        'options': options,
-        'energy_types': energy_types,
-        'most_common_energy': most_common_energy
-    }
-    
-    # Store in session cache
-    st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
-    
-    # Store in disk cache
-    cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df, energy_types)
-    
-    # Also save to card cache
-    save_analyzed_deck_to_cache(deck_name, set_name, analyzed_data)
-    
-    return analyzed_data
+    return analyze_deck_fresh(deck_name, set_name)
 
 def aggregate_card_usage(force_update=False):
     """
