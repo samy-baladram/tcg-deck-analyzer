@@ -10,7 +10,7 @@ from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE
 
 
 def get_deck_list():
-    """Get all available decks with their share percentages"""
+    """Get all available decks with their share percentages and win rates"""
     url = f"{BASE_URL}/decks?game=pocket"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -30,14 +30,33 @@ def get_deck_list():
                 if 'set=' in href:
                     set_name = href.split('set=')[1].split('&')[0]
                 
-                # Extract share percentage
+                # Extract share percentage (column 4)
                 share_text = cells[4].text.strip()
                 share = float(share_text.replace('%', '')) if '%' in share_text else 0
+                
+                # Extract win percentage (likely column 5 or 6)
+                # Try column 5 first
+                win_rate = 0
+                if len(cells) > 5:
+                    win_text = cells[5].text.strip()
+                    if '%' in win_text:
+                        try:
+                            win_rate = float(win_text.replace('%', ''))
+                        except ValueError:
+                            # If column 5 fails, try column 6
+                            if len(cells) > 6:
+                                win_text = cells[6].text.strip()
+                                if '%' in win_text:
+                                    try:
+                                        win_rate = float(win_text.replace('%', ''))
+                                    except ValueError:
+                                        win_rate = 0
                 
                 decks.append({
                     'deck_name': deck_name,
                     'set': set_name,
-                    'share': share
+                    'share': share,
+                    'win_rate': win_rate
                 })
     
     return pd.DataFrame(decks).sort_values('share', ascending=False)
