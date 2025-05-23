@@ -12,6 +12,7 @@ import pandas as pd
 import base64
 import os
 from display_tabs import display_counter_picker, fetch_matchup_data, create_deck_header_images
+from header_image_cache import get_header_image_cached
 
 ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
@@ -419,7 +420,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                 'deck_name': deck['deck_name'],
                 'set': deck['set']
             }
-            header_image = create_deck_header_images(deck_info, None)
+            header_image = get_header_image_cached(deck['deck_name'], deck['set'])
             
             if header_image:
                 st.markdown(f"""
@@ -514,7 +515,7 @@ def render_sidebar_from_cache():
         }
         
         # Generate header image
-        header_image = create_deck_header_images(deck_info, None)
+        header_image = get_header_image_cached(deck['deck_name'], deck['set'])
 
         if header_image:
             st.markdown(f"""
