@@ -519,13 +519,8 @@ def render_sidebar_from_cache():
         """, unsafe_allow_html=True)
     else:
         st.markdown("### 📈 Trending Decks")
-
-    # NEW: Add 2-column layout for test deck and See More button
-    col1, col2 = st.columns([3, 1])
     
-    with col1:
-        # Test: Show header image and button for a sample deck
-        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
             # Get the first trending deck for testing
             test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
             
@@ -537,10 +532,10 @@ def render_sidebar_from_cache():
             
             # Generate header image
             header_image = create_deck_header_images(deck_info, None)
-            
+
             if header_image:
                 st.markdown(f"""
-                <div style="width: 100%; margin-bottom: -2rem;">
+                <div style="width: 100%; margin-bottom: -1.5rem;">
                     <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 4px;">
                 </div>
                 """, unsafe_allow_html=True)
@@ -552,6 +547,10 @@ def render_sidebar_from_cache():
                 </div>
                 """, unsafe_allow_html=True)
             
+    # NEW: Add 2-column layout for test deck and See More button
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:         
             # Button to switch to this deck
             if st.button(
                 test_deck['displayed_name'], 
