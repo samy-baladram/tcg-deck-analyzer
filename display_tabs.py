@@ -16,7 +16,11 @@ import os
 
 def display_deck_header(deck_info, results):
     """Display the deck header with image and text that wraps properly"""
-    header_image = create_deck_header_images(deck_info, results)
+    header_image = get_header_image_cached(
+        deck_info['deck_name'], 
+        deck_info.get('set', 'A3'),
+        results
+    )
     
     # Check if this is the first time showing a deck header
     if 'first_deck_header_shown' not in st.session_state:
@@ -1283,7 +1287,7 @@ def display_related_decks_tab(deck_info, results):
             # Display related decks in a simple grid
             st.write("Decks sharing Pokémon with this archetype:")
             
-            # Create a 4-column layout
+            # Create a 3-column layout
             cols = st.columns(3)
             
             # Display each related deck
@@ -1294,19 +1298,16 @@ def display_related_decks_tab(deck_info, results):
                     # Format deck name
                     formatted_name = format_deck_name(deck['deck_name'])
                     
-                    # Create related deck info for image generation
-                    related_deck_info = {
-                        'deck_name': deck['deck_name'],
-                        'set': deck['set']
-                    }
-                    
-                    # Generate header image using pre-loaded Pokémon info
-                    header_image = create_deck_header_images(related_deck_info)
+                    # FIX: Use cached header image function
+                    header_image = get_header_image_cached(
+                        deck['deck_name'], 
+                        deck['set']
+                    )
                     
                     # Display the banner image
                     if header_image:
                         st.markdown(f"""
-                        <div style="width: 100%; height: auto; overflow: hidden;  border-radius: 10px 10px 10px 0px; margin-bottom: 0px;">
+                        <div style="width: 100%; height: auto; overflow: hidden; border-radius: 10px 10px 10px 0px; margin-bottom: 0px;">
                             <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; object-fit: cover; border-radius: 10px;">
                         </div>
                         """, unsafe_allow_html=True)
