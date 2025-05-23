@@ -13,8 +13,12 @@ import base64
 import os
 
 from PIL import Image
-import streamlit as st
-
+try:
+    img = Image.open("favicon.png")
+    img.verify()  # Verify image integrity
+    print("Favicon file is valid")
+except Exception as e:
+    print(f"Favicon file is corrupted: {e}")
 favicon = Image.open("favicon.png")  # PNG format
 
 st.set_page_config(
