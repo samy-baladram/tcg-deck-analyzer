@@ -208,21 +208,12 @@ with st.sidebar:
     ui_helpers.render_sidebar_from_cache()
 
 # Main content area
-# Main content area
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
     
     # Get analyzed deck from cache or analyze it
     with st.spinner("Analyzing deck..."):
         analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
-    
-    # Unpack the results
-    results = analyzed_deck['results']
-    total_decks = analyzed_deck['total_decks']
-    variant_df = analyzed_deck['variant_df']
-    
-    # Display deck header
-    display_tabs.display_deck_header(original_deck_info, results)
     
     # Unpack the results
     results = analyzed_deck['results']
