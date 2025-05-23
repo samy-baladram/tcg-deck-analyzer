@@ -562,32 +562,6 @@ def render_sidebar_from_cache():
         # Generate header image
         header_image = create_deck_header_images(deck_info, None)
         
-        if header_image:
-            # Put the button first (this will be hidden under the banner)
-            if st.button(
-                f"Switch to {banner_deck['displayed_name']}", 
-                key="trending_banner_button",
-                type="secondary",
-                use_container_width=True
-            ):
-                # Set the deck to analyze when banner is clicked
-                st.session_state.deck_to_analyze = banner_deck['deck_name']
-                st.rerun()
-            st.markdown(f"""
-            <div style="width: 100%; margin-top:-4.5rem;  margin-bottom: -3rem; pointer-events: none; z-index: -1;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; pointer-events: none;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 0px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Create 2-column layout for buttons side by side
-
         # Button to switch to this deck (regular button)
         if st.button(
             test_deck['displayed_name'], 
@@ -598,24 +572,40 @@ def render_sidebar_from_cache():
             # Set the deck to analyze (same logic as counter picker)
             st.session_state.deck_to_analyze = test_deck['deck_name']
             st.rerun()
+            
+        if header_image:
+            st.markdown(f"""
+            <div style="width: 100%; margin-top:-2rem;  margin-bottom: -3rem; pointer-events: none;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; pointer-events: none;">
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 0px;
+                display: flex; align-items: center; justify-content: center;">
+                <span style="color: #888; font-size: 0.8rem;">No image</span>
+            </div>
+            """, unsafe_allow_html=True)
 
         # Initialize trending decks visibility state
         if 'show_trending_decks' not in st.session_state:
             st.session_state.show_trending_decks = False
 
         # Determine button text based on current state
-        button_text = "Refresh" if st.session_state.show_trending_decks else "See More"
+        button_text = "" if st.session_state.show_trending_decks else "See More"
+
+        col1, col2 = st.columns([1,3])
+        with col2:                            
+            # Always show the button, but change text after clicking
+            if st.button(button_text, type="tertiary", use_container_width=True, key="trending_button"):
+                if st.session_state.show_trending_decks:
+                    # If already showing, refresh the page
+                    st.rerun()
+                else:
+                    # If not showing, show the trending decks
+                    st.session_state.show_trending_decks = True
+                    st.rerun()
         
-        # Always show the button, but change text after clicking
-        if st.button(button_text, type="tertiary", use_container_width=True, key="trending_button"):
-            if st.session_state.show_trending_decks:
-                # If already showing, refresh the page
-                st.rerun()
-            else:
-                # If not showing, show the trending decks
-                st.session_state.show_trending_decks = True
-                st.rerun()
-    
     # Only show trending decks if the button has been clicked
     if st.session_state.show_trending_decks:
         # Ensure energy cache is initialized
