@@ -8,6 +8,7 @@ import re
 import math
 from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE
 
+MIN_WIN_RATE = 45
 
 # def get_deck_list():
 #     """Get all available decks with their share percentages and win rates"""
@@ -54,14 +55,13 @@ from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE
     
 #     return pd.DataFrame(decks).sort_values('win_rate', ascending=False)
 
-def get_popular_decks_with_performance(share_threshold=0.6):
-    """Get decks that exceed a minimum share percentage with performance metrics."""
+def get_popular_decks_with_performance(share_threshold=0.0):
+    """Get all decks with their share percentages and win rates above threshold"""
     url = f"{BASE_URL}/decks?game=pocket"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
     decks = []
-    rank = 1
     
     for row in soup.find_all('tr'):
         cells = row.find_all('td')
@@ -70,17 +70,6 @@ def get_popular_decks_with_performance(share_threshold=0.6):
             
         deck_link = cells[2].find('a', href=True)
         if not deck_link or '/decks/' not in deck_link['href'] or 'matchup' in deck_link['href']:
-            continue
-            
-        # Extract share percentage
-        share_text = cells[4].text.strip() if len(cells) > 4 else '0%'
-        try:
-            share = float(share_text.replace('%', '')) if '%' in share_text else 0
-        except ValueError:
-            share = 0
-        
-        # Skip decks below the threshold
-        if share < share_threshold:
             continue
             
         href = deck_link['href']
@@ -92,17 +81,39 @@ def get_popular_decks_with_performance(share_threshold=0.6):
         if 'set=' in href:
             set_name = href.split('set=')[1].split('&')[0]
         
+        # Extract share percentage (column 4)
+        share_text = cells[4].text.strip() if len(cells) > 4 else '0%'
+        share = float(share_text.replace('%', '')) if '%' in share_text and share_text.replace('%', '').replace('.', '').isdigit() else 0
+        
+        # Extract win rate from multiple columns
+        win_rate = 0
+        for col_idx in [3, 5, 6, 7]:
+            if col_idx < len(cells):
+                cell_text = cells[col_idx].text.strip()
+                if '%' in cell_text and cell_text != share_text:
+                    potential_win_rate = float(cell_text.replace('%', '')) if cell_text.replace('%', '').replace('.', '').isdigit() else 0
+                    if 0 <= potential_win_rate <= 100:
+                        win_rate = potential_win_rate
+                        break
+        
         decks.append({
-            'rank': rank,
             'deck_name': deck_name,
             'displayed_name': displayed_name,
+            'set': set_name,
             'share': share,
-            'set': set_name
+            'win_rate': win_rate
         })
-        
-        rank += 1
     
-    return pd.DataFrame(decks)
+    # Create DataFrame
+    df = pd.DataFrame(decks)
+    
+    # Apply filtering
+    df = df[(df['share'] >= share_threshold) & (df['win_rate'] >= MIN_WIN_RATE)]
+
+    # Add rank column after sorting (1-based index)
+    df.insert(0, 'rank', range(1, len(df) + 1))
+    
+    return df.sort_values('win_rate', ascending=False)
 
 def get_all_recent_tournaments():
     """Get IDs of all tournaments completed recently."""
