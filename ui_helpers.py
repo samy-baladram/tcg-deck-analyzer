@@ -443,12 +443,11 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
                         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; vertical-align:middle;">'
                     
-                    # st.markdown(f"""
-                    # <div style="margin-bottom: 5px;">
-                    #     <div style="font-size: 0.8rem; margin-bottom: 2px;"><strong>Energy:</strong></div>
-                    #     <div>{energy_html}</div>
-                    # </div>
-                    # """, unsafe_allow_html=True)
+                    st.markdown(f"""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; margin-bottom: 2px;"><strong>Energy: </strong>{energy_html}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
                 else:
                     st.markdown("""
                     <div style="margin-bottom: 5px;">
@@ -1105,12 +1104,11 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
                         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
                     
-                    # st.markdown(f"""
-                    # <div style="margin-bottom: 5px;">
-                    #     <div style="font-size: 0.8rem; margin-bottom: 2px;"><strong>Energy:</strong></div>
-                    #     <div>{energy_html}</div>
-                    # </div>
-                    # """, unsafe_allow_html=True)
+                    st.markdown(f"""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; margin-bottom: 2px;"><strong>Energy: </strong>{energy_html}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
                 else:
                     st.markdown("""
                     <div style="margin-bottom: 5px;">
