@@ -456,7 +456,7 @@ def render_sidebar_from_cache():
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
         <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; ">
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -512,7 +512,7 @@ def render_sidebar_from_cache():
 
         # Only show the button if decks are not currently visible
         if not st.session_state.show_decks:
-            if st.button("See now!", type="tertiary", use_container_width=False):
+            if st.button("See more", type="tertiary", use_container_width=False):
                 st.session_state.show_decks = True
                 st.rerun()
 
