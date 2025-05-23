@@ -1866,7 +1866,7 @@ def display_matchup_tab(deck_info=None):
     
     # Apply the function to extract Pokémon image URLs
     working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
-        lambda row: pd.Series(extract_pokemon_urls(row['opponent_name'])), 
+        lambda row: pd.Series(extract_pokemon_urls(row['opponent_deck_name'])), 
         axis=1
     )
     
