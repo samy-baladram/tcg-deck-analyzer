@@ -229,66 +229,92 @@ if 'analyze' in st.session_state and selected_option:
     with st.spinner("Analyzing deck..."):
         analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
     
-    # Unpack the results
-    results = analyzed_deck['results']
-    total_decks = analyzed_deck['total_decks']
-    variant_df = analyzed_deck['variant_df']
-    
-    # Display deck header
-    display_tabs.display_deck_header(original_deck_info, results)
-    
-    # Create tab container
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
-                                                        "Card Usage",  
-                                                        "Meta Matchups",
-                                                        "Metagame Overview",
-                                                        "Related Decks",
-                                                        "Raw Data"
-                                                        ])
-    
-    with tab1:
-        display_tabs.display_deck_template_tab(results,variant_df)
-         # ADD THIS: Display last update time for the current deck
-        last_update = ui_helpers.display_deck_update_info(
-            original_deck_info['deck_name'], 
-            original_deck_info['set_name']
-        )
-        if last_update:
-            st.caption(last_update)
-       # st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)    
-    
-    with tab2:
-        display_tabs.display_card_usage_tab(results, total_decks, variant_df)
-        st.caption(f"Data of 20 collected decks (with partial energy info). {last_update}")
-        #st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
+    # FIX: Add error handling and data validation
+    if analyzed_deck is None:
+        st.error("Failed to analyze the selected deck. Please try selecting a different deck.")
+    else:
+        # Validate the structure of analyzed_deck and provide defaults
+        try:
+            # Use .get() method with defaults to prevent KeyError
+            results = analyzed_deck.get('results', None)
+            total_decks = analyzed_deck.get('total_decks', 0)
+            variant_df = analyzed_deck.get('variant_df', None)
+            
+            # Additional validation
+            if results is None:
+                st.error("No analysis results available for this deck.")
+            else:
+                # Display deck header
+                display_tabs.display_deck_header(original_deck_info, results)
+                
+                # Create tab container
+                tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
+                                                                    "Card Usage",  
+                                                                    "Meta Matchups",
+                                                                    "Metagame Overview",
+                                                                    "Related Decks",
+                                                                    "Raw Data"
+                                                                    ])
+                
+                with tab1:
+                    # Pass variant_df safely (could be None)
+                    if variant_df is not None:
+                        display_tabs.display_deck_template_tab(results, variant_df)
+                    else:
+                        # Create empty DataFrame if variant_df is None
+                        import pandas as pd
+                        empty_variant_df = pd.DataFrame()
+                        display_tabs.display_deck_template_tab(results, empty_variant_df)
+                    
+                    # ADD THIS: Display last update time for the current deck
+                    last_update = ui_helpers.display_deck_update_info(
+                        original_deck_info['deck_name'], 
+                        original_deck_info['set_name']
+                    )
+                    if last_update:
+                        st.caption(last_update)
+                
+                with tab2:
+                    # Pass variant_df safely
+                    if variant_df is not None:
+                        display_tabs.display_card_usage_tab(results, total_decks, variant_df)
+                    else:
+                        import pandas as pd
+                        empty_variant_df = pd.DataFrame()
+                        display_tabs.display_card_usage_tab(results, total_decks, empty_variant_df)
+                    
+                    if last_update:
+                        st.caption(f"Data of 20 collected decks (with partial energy info). {last_update}")
+                    
+                with tab3:
+                    display_tabs.display_matchup_tab()
+                    
+                with tab4:
+                    display_tabs.display_metagame_tab() 
+                    
+                with tab5:
+                    display_tabs.display_related_decks_tab(original_deck_info, results)
+                    
+                with tab6:
+                    # Pass variant_df safely
+                    if variant_df is not None:
+                        display_tabs.display_raw_data_tab(results, variant_df)
+                    else:
+                        import pandas as pd
+                        empty_variant_df = pd.DataFrame()
+                        display_tabs.display_raw_data_tab(results, empty_variant_df)
         
-    with tab3:
-        display_tabs.display_matchup_tab()
-        #st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
-        
-    with tab4:
-        display_tabs.display_metagame_tab() 
-        #st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
-        
-    with tab5:
-        display_tabs.display_related_decks_tab(original_deck_info, results)
-        #st.markdown("<div style='margin-top: 300px;'></div>", unsafe_allow_html=True)
-        
-    with tab6:
-        display_tabs.display_raw_data_tab(results, variant_df)
-
-    #with tab7:
-     #   display_tabs.display_counter_picker()
+        except Exception as e:
+            st.error(f"Error displaying deck analysis: {str(e)}")
+            # Debug information (remove in production)
+            if st.secrets.get("DEBUG_MODE", False):
+                st.write("Debug - analyzed_deck structure:")
+                st.write(analyzed_deck)
 else:
     st.info("👆 Select a deck from the dropdown to view detailed analysis")
 
 st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
 st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
-#display_tabs.display_counter_picker()
-
-# Load sidebar AFTER main content to ensure main interface loads first
-#ui_helpers.render_sidebar()
-
 
 # Footer
 st.markdown("---")
