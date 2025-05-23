@@ -535,8 +535,8 @@ def render_sidebar_from_cache():
 
             if header_image:
                 st.markdown(f"""
-                <div style="width: 100%; margin-bottom: -1.5rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 4px;">
+                <div style="width: 100%; margin-bottom: -1rem;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px;">
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -572,7 +572,7 @@ def render_sidebar_from_cache():
     
         # Only show the button if trending decks are not currently visible
         if not st.session_state.show_trending_decks:
-            if st.button("See More", type="secondary", use_container_width=True, key="trending_button"):
+            if st.button("See More", type="secondary", use_container_width=False, key="trending_button"):
                 st.session_state.show_trending_decks = True
                 st.rerun()
     
