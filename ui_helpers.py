@@ -520,16 +520,63 @@ def render_sidebar_from_cache():
     else:
         st.markdown("### 📈 Trending Decks")
 
-    # Add button to toggle trending decks visibility
-    if 'show_trending_decks' not in st.session_state:
-        st.session_state.show_trending_decks = False
-
-    # Only show the button if trending decks are not currently visible
-    if not st.session_state.show_trending_decks:
-        if st.button("See More", type="secondary", use_container_width=True, key="trending_button"):
-            st.session_state.show_trending_decks = True
-            st.rerun()
-
+    # NEW: Add 2-column layout for test deck and See More button
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        # Test: Show header image and button for a sample deck
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+            # Get the first trending deck for testing
+            test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
+            
+            # Create deck_info for header image generation
+            deck_info = {
+                'deck_name': test_deck['deck_name'],
+                'set': test_deck['set']
+            }
+            
+            # Generate header image
+            header_image = create_deck_header_images(deck_info, None)
+            
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: 8px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 8px;">
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 8px;
+                    display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #888; font-size: 0.8rem;">No image</span>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Button to switch to this deck
+            if st.button(
+                test_deck['displayed_name'], 
+                key="test_trending_deck_button",
+                type="tertiary",
+                use_container_width=True
+            ):
+                # Set the deck to analyze (same logic as counter picker)
+                st.session_state.deck_to_analyze = test_deck['deck_name']
+                st.rerun()
+    
+    with col2:
+        # Add vertical space to align with the image/button layout
+        st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
+        
+        # Add button to toggle trending decks visibility
+        if 'show_trending_decks' not in st.session_state:
+            st.session_state.show_trending_decks = False
+    
+        # Only show the button if trending decks are not currently visible
+        if not st.session_state.show_trending_decks:
+            if st.button("See More", type="secondary", use_container_width=True, key="trending_button"):
+                st.session_state.show_trending_decks = True
+                st.rerun()
+    
     # Only show trending decks if the button has been clicked
     if st.session_state.show_trending_decks:
         # Ensure energy cache is initialized
