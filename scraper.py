@@ -394,8 +394,8 @@ def get_deck_performance_data():
         recent_performance = performance[performance['tournament_id'].isin(recent_tournament_ids)]
         
         # Skip if no recent data
-        if recent_performance.empty:
-            continue
+        #if recent_performance.empty:
+        #    continue
             
         deck_data.append({
             'deck_name': deck_name,
