@@ -16,6 +16,7 @@ TOURNAMENT_COUNT = 70
 
 # Display settings
 MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
+MIN_WIN_RATE = 45
 
 CHART_COLORS = {
     'pokemon_1': '#81D4FA',  # Light blue
