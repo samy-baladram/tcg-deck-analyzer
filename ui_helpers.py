@@ -540,8 +540,8 @@ def render_sidebar_from_cache():
             
             if header_image:
                 st.markdown(f"""
-                <div style="width: 100%; margin-bottom: -1.5rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 300px; height: auto; border-radius: 4px;">
+                <div style="width: 100%; margin-bottom: -1rem;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px;">
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -557,7 +557,7 @@ def render_sidebar_from_cache():
                 test_deck['displayed_name'], 
                 key="test_trending_deck_button",
                 type="tertiary",
-                use_container_width=False
+                use_container_width=True
             ):
                 # Set the deck to analyze (same logic as counter picker)
                 st.session_state.deck_to_analyze = test_deck['deck_name']
@@ -566,7 +566,6 @@ def render_sidebar_from_cache():
     with col2:
         # Add vertical space to align with the image/button layout
         #st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
-        
         # Add button to toggle trending decks visibility
         if 'show_trending_decks' not in st.session_state:
             st.session_state.show_trending_decks = False
