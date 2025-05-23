@@ -1,6 +1,3 @@
-# ui_helpers.py
-"""UI helper functions for TCG Deck Analyzer"""
-
 import streamlit as st
 from datetime import datetime
 from formatters import format_deck_name, format_deck_option, displayed_name_to_markdown
@@ -13,8 +10,14 @@ import base64
 import os
 from display_tabs import display_counter_picker, fetch_matchup_data
 from header_image_cache import get_header_image_cached
-from card_cache import get_sample_deck_cached  # ADD THIS IMPORT
-
+# ADD: Try to import card cache, but provide fallback if it fails
+try:
+    from card_cache import get_sample_deck_cached
+    CARD_CACHE_AVAILABLE = True
+except ImportError:
+    print("Card cache not available, using fallback")
+    CARD_CACHE_AVAILABLE = False
+    
 ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
 # ADD: Banner image caching
