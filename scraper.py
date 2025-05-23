@@ -6,9 +6,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 import math
-from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE
+from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE, MIN_WIN_RATE
 
-MIN_WIN_RATE = 45
 
 # def get_deck_list():
 #     """Get all available decks with their share percentages and win rates"""
