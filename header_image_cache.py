@@ -52,6 +52,7 @@ def is_cache_valid(cache_entry):
     except:
         return False
 
+# In header_image_cache.py - Update this function
 def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
     """Get header image with aggressive caching"""
     cache_key = get_cache_key(deck_name, set_name)
