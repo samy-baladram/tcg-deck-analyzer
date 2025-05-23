@@ -1999,216 +1999,216 @@ def display_matchup_tab(deck_info=None):
     from formatters import format_deck_name
     formatted_deck_name = format_deck_name(deck_name)
 
-def display_counter_picker():
-    banner_path = "picker_banner.png"
-    if os.path.exists(banner_path):
-        with open(banner_path, "rb") as f:
-            banner_base64 = base64.b64encode(f.read()).decode()
-        st.markdown(f"""
-        <div style="width:100%; text-align:left; margin:0px 0 0px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.subheader("Meta Counter Picker")
+# def display_counter_picker():
+#     banner_path = "picker_banner.png"
+#     if os.path.exists(banner_path):
+#         with open(banner_path, "rb") as f:
+#             banner_base64 = base64.b64encode(f.read()).decode()
+#         st.markdown(f"""
+#         <div style="width:100%; text-align:left; margin:0px 0 0px 0;">
+#             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+#         </div>
+#         """, unsafe_allow_html=True)
+#     else:
+#         st.subheader("Meta Counter Picker")
     
-    # Get list of top meta decks to choose from
-    meta_decks = []
-    meta_deck_info = {}
+#     # Get list of top meta decks to choose from
+#     meta_decks = []
+#     meta_deck_info = {}
     
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        performance_data = st.session_state.performance_data
+#     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+#         performance_data = st.session_state.performance_data
         
-        for _, deck in performance_data.iterrows():
-            meta_decks.append(deck['displayed_name'])
-            meta_deck_info[deck['displayed_name']] = {
-                'deck_name': deck['deck_name'],
-                'set': deck['set']
-            }
+#         for _, deck in performance_data.iterrows():
+#             meta_decks.append(deck['displayed_name'])
+#             meta_deck_info[deck['displayed_name']] = {
+#                 'deck_name': deck['deck_name'],
+#                 'set': deck['set']
+#             }
         
-        # Limit to top 20 decks
-        meta_decks = meta_decks[:20]
+#         # Limit to top 20 decks
+#         meta_decks = meta_decks[:20]
     
-    if not meta_decks:
-        st.warning("No meta deck data available")
-        return
+#     if not meta_decks:
+#         st.warning("No meta deck data available")
+#         return
     
-    # Create 2-column layout for dropdown and button
-    col1, col2 = st.columns([3, 1])
+#     # Create 2-column layout for dropdown and button
+#     col1, col2 = st.columns([3, 1])
     
-    with col1:
-        # Multi-select for decks to counter
-        selected_decks = st.multiselect(
-            "Select decks you want to counter:",
-            options=meta_decks,
-            default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
-            help="Choose the decks you want to counter in the meta"
-        )
+#     with col1:
+#         # Multi-select for decks to counter
+#         selected_decks = st.multiselect(
+#             "Select decks you want to counter:",
+#             options=meta_decks,
+#             default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
+#             help="Choose the decks you want to counter in the meta"
+#         )
     
-    with col2:
-        # Add vertical space to align with the dropdown
-        st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
-        # Button to trigger analysis
-        find_button = st.button("Find Counters", type="secondary", use_container_width=True)
+#     with col2:
+#         # Add vertical space to align with the dropdown
+#         st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+#         # Button to trigger analysis
+#         find_button = st.button("Find Counters", type="secondary", use_container_width=True)
     
-    # Only proceed if decks are selected
-    if not selected_decks:
-        st.info("Please select at least one deck to find counters")
-        return
+#     # Only proceed if decks are selected
+#     if not selected_decks:
+#         st.info("Please select at least one deck to find counters")
+#         return
     
-    # Only proceed if button clicked
-    if not find_button:
-        return
+#     # Only proceed if button clicked
+#     if not find_button:
+#         return
         
-    with st.spinner("Analyzing counters..."):
-        # This collects all matchup data for each meta deck
-        counter_data = []
+#     with st.spinner("Analyzing counters..."):
+#         # This collects all matchup data for each meta deck
+#         counter_data = []
         
-        # Convert from displayed names to internal deck names for matching
-        selected_internal_names = []
-        for displayed in selected_decks:
-            for _, meta_deck in st.session_state.performance_data.iterrows():
-                if meta_deck['displayed_name'] == displayed:
-                    selected_internal_names.append(meta_deck['deck_name'])
+#         # Convert from displayed names to internal deck names for matching
+#         selected_internal_names = []
+#         for displayed in selected_decks:
+#             for _, meta_deck in st.session_state.performance_data.iterrows():
+#                 if meta_deck['displayed_name'] == displayed:
+#                     selected_internal_names.append(meta_deck['deck_name'])
         
-        # For each possible counter deck in the meta
-        for _, deck in st.session_state.performance_data.iterrows():
-            deck_name = deck['deck_name']
-            set_name = deck['set']
-            displayed_name = deck['displayed_name']
+#         # For each possible counter deck in the meta
+#         for _, deck in st.session_state.performance_data.iterrows():
+#             deck_name = deck['deck_name']
+#             set_name = deck['set']
+#             displayed_name = deck['displayed_name']
             
-            # Get this deck's matchups
-            matchups = fetch_matchup_data(deck_name, set_name)
+#             # Get this deck's matchups
+#             matchups = fetch_matchup_data(deck_name, set_name)
             
-            if matchups.empty:
-                continue
+#             if matchups.empty:
+#                 continue
             
-            # Initialize variables for weighted average calculation
-            total_weighted_win_rate = 0
-            total_matches = 0
-            matched_decks = 0
+#             # Initialize variables for weighted average calculation
+#             total_weighted_win_rate = 0
+#             total_matches = 0
+#             matched_decks = 0
             
-            # Look for matchups against selected decks
-            for _, matchup in matchups.iterrows():
-                if matchup['opponent_deck_name'] in selected_internal_names:
-                    # Get the number of matches for this matchup
-                    match_count = matchup['matches_played']
+#             # Look for matchups against selected decks
+#             for _, matchup in matchups.iterrows():
+#                 if matchup['opponent_deck_name'] in selected_internal_names:
+#                     # Get the number of matches for this matchup
+#                     match_count = matchup['matches_played']
                     
-                    # Add to weighted sum (win percentage × number of matches)
-                    total_weighted_win_rate += matchup['win_pct'] * match_count
+#                     # Add to weighted sum (win percentage × number of matches)
+#                     total_weighted_win_rate += matchup['win_pct'] * match_count
                     
-                    # Add to total matches count
-                    total_matches += match_count
+#                     # Add to total matches count
+#                     total_matches += match_count
                     
-                    # Still track number of matched decks for filtering
-                    matched_decks += 1
+#                     # Still track number of matched decks for filtering
+#                     matched_decks += 1
             
-            # Only include if we found matchups against at least half the selected decks
-            if matched_decks >= len(selected_decks) / 2:
-                # Calculate weighted average: total weighted sum divided by total matches
-                avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
+#             # Only include if we found matchups against at least half the selected decks
+#             if matched_decks >= len(selected_decks) / 2:
+#                 # Calculate weighted average: total weighted sum divided by total matches
+#                 avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
                 
-                counter_data.append({
-                    'deck_name': deck_name,
-                    'displayed_name': displayed_name,
-                    'set': set_name,
-                    'average_win_rate': avg_win_rate,
-                    'meta_share': deck['share'],
-                    'power_index': deck['power_index'],
-                })
+#                 counter_data.append({
+#                     'deck_name': deck_name,
+#                     'displayed_name': displayed_name,
+#                     'set': set_name,
+#                     'average_win_rate': avg_win_rate,
+#                     'meta_share': deck['share'],
+#                     'power_index': deck['power_index'],
+#                 })
         
-        # Create DataFrame and sort by average win rate
-        if counter_data:
-            counter_df = pd.DataFrame(counter_data)
-            counter_df = counter_df.sort_values('average_win_rate', ascending=False)
+#         # Create DataFrame and sort by average win rate
+#         if counter_data:
+#             counter_df = pd.DataFrame(counter_data)
+#             counter_df = counter_df.sort_values('average_win_rate', ascending=False)
             
-            # Display top counters header
-            st.write("#### Top Counters to Selected Decks")
+#             # Display top counters header
+#             st.write("#### Top Counters to Selected Decks")
             
-            # Display top 5 counter decks
-            for i in range(min(5, len(counter_df))):
-                deck = counter_df.iloc[i]
+#             # Display top 5 counter decks
+#             for i in range(min(5, len(counter_df))):
+#                 deck = counter_df.iloc[i]
                 
-                # Create deck_info object for header image
-                deck_info = {
-                    'deck_name': deck['deck_name'],
-                    'set': deck['set']
-                }
+#                 # Create deck_info object for header image
+#                 deck_info = {
+#                     'deck_name': deck['deck_name'],
+#                     'set': deck['set']
+#                 }
                 
-                # Generate header image
-                header_image = create_deck_header_images(deck_info, None)
+#                 # Generate header image
+#                 header_image = create_deck_header_images(deck_info, None)
                 
-                # Layout based on ranking
-                if i < 3:  # Top 3 decks
-                    col1, col2, col3 = st.columns([1.5, 2, 1])
+#                 # Layout based on ranking
+#                 if i < 3:  # Top 3 decks
+#                     col1, col2, col3 = st.columns([1.5, 2, 1])
                     
-                    with col1:
-                        if header_image:
-                            st.markdown(f"""
-                            <div style="margin-right: 1rem; width: 100%; text-align: right;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown("""
-                            <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
-                                display: flex; align-items: center; justify-content: center;">
-                                <span style="color: #888;">No image</span>
-                            </div>
-                            """, unsafe_allow_html=True)
+#                     with col1:
+#                         if header_image:
+#                             st.markdown(f"""
+#                             <div style="margin-right: 1rem; width: 100%; text-align: right;">
+#                                 <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
+#                             </div>
+#                             """, unsafe_allow_html=True)
+#                         else:
+#                             st.markdown("""
+#                             <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
+#                                 display: flex; align-items: center; justify-content: center;">
+#                                 <span style="color: #888;">No image</span>
+#                             </div>
+#                             """, unsafe_allow_html=True)
                     
-                    with col2:
-                        rank_emoji = ["🥇", "🥈", "🥉"][i]
-                        st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
+#                     with col2:
+#                         rank_emoji = ["🥇", "🥈", "🥉"][i]
+#                         st.markdown(f"#### {rank_emoji} {deck['displayed_name']}")
                     
-                    with col3:
-                        win_rate = deck['average_win_rate']
-                        win_color = "#4FCC20" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
-                        st.markdown(f"""
-                        <div style="text-align: center;">
-                            <span style="font-size: 2.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                            <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                else:  # 4th and 5th place
-                    col1, col2, col3 = st.columns([1, 2, 0.8])
+#                     with col3:
+#                         win_rate = deck['average_win_rate']
+#                         win_color = "#4FCC20" if win_rate >= 55 else "#fda700" if win_rate < 45 else "#fdc500"
+#                         st.markdown(f"""
+#                         <div style="text-align: center;">
+#                             <span style="font-size: 2.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+#                             <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
+#                         </div>
+#                         """, unsafe_allow_html=True)
+#                 else:  # 4th and 5th place
+#                     col1, col2, col3 = st.columns([1, 2, 0.8])
                     
-                    with col1:
-                        if header_image:
-                            st.markdown(f"""
-                            <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 75%; height: auto; border-radius: 8px;">
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown("""
-                            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
-                                display: flex; align-items: center; justify-content: center;">
-                                <span style="color: #888; font-size: 0.8rem;">No image</span>
-                            </div>
-                            """, unsafe_allow_html=True)
+#                     with col1:
+#                         if header_image:
+#                             st.markdown(f"""
+#                             <div style="margin-right: 1rem; width: 100%; max-width: 250px; text-align: right;">
+#                                 <img src="data:image/png;base64,{header_image}" style="width: 75%; height: auto; border-radius: 8px;">
+#                             </div>
+#                             """, unsafe_allow_html=True)
+#                         else:
+#                             st.markdown("""
+#                             <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
+#                                 display: flex; align-items: center; justify-content: center;">
+#                                 <span style="color: #888; font-size: 0.8rem;">No image</span>
+#                             </div>
+#                             """, unsafe_allow_html=True)
                     
-                    with col2:
-                        rank_num = f"#{i+1}"
-                        st.markdown(f"#### {rank_num} {deck['displayed_name']}")
+#                     with col2:
+#                         rank_num = f"#{i+1}"
+#                         st.markdown(f"#### {rank_num} {deck['displayed_name']}")
                     
-                    with col3:
-                        win_rate = deck['average_win_rate']
-                        win_color = "#4FCC20" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
-                        st.markdown(f"""
-                        <div style="text-align: center;">
-                            <span style="font-size: 1.5rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                        </div>
-                        """, unsafe_allow_html=True)
+#                     with col3:
+#                         win_rate = deck['average_win_rate']
+#                         win_color = "#4FCC20" if win_rate >= 55 else "#fd6c6c" if win_rate < 45 else "#fdc500"
+#                         st.markdown(f"""
+#                         <div style="text-align: center;">
+#                             <span style="font-size: 1.5rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+#                         </div>
+#                         """, unsafe_allow_html=True)
                 
-                # Add divider between decks
-                if i < min(4, len(counter_df) - 1):
-                    divider_margin = "1rem" if i < 3 else "0.6rem"
-                    divider_style = "solid 1px"
-                    divider_color = "#ddd" if i < 3 else "#eee"
-                    st.markdown(f"<hr style='margin: {divider_margin} 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+#                 # Add divider between decks
+#                 if i < min(4, len(counter_df) - 1):
+#                     divider_margin = "1rem" if i < 3 else "0.6rem"
+#                     divider_style = "solid 1px"
+#                     divider_color = "#ddd" if i < 3 else "#eee"
+#                     st.markdown(f"<hr style='margin: {divider_margin} 0; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
             
-            # Add explanation caption
-            st.caption("Higher average win rate indicates better performance against your selected decks. Data is from the current aggregated tournament result in [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
-        else:
-            st.warning("No counter data found for the selected decks")
+#             # Add explanation caption
+#             st.caption("Higher average win rate indicates better performance against your selected decks. Data is from the current aggregated tournament result in [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+#         else:
+#             st.warning("No counter data found for the selected decks")
