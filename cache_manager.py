@@ -910,3 +910,29 @@ def update_matchup_cache(min_share=0.5):
     """Update matchup cache for all decks with at least min_share"""
     import cache_utils
     return cache_utils.update_all_matchups(min_share)
+    
+def clear_deck_cache_on_switch(deck_name, set_name):
+    """Clear all caches for a specific deck when switching"""
+    # Clear session caches
+    cache_key = f"full_deck_{deck_name}_{set_name}"
+    sample_key = f"sample_deck_{deck_name}_{set_name}"
+    energy_key = f"energy_{deck_name}"
+    matchup_key = f"matchup_{deck_name}_{set_name}"
+    
+    # Remove from session state caches
+    caches_to_clear = [
+        ('analyzed_deck_cache', cache_key),
+        ('sample_deck_cache', sample_key),
+        (None, energy_key),  # Direct session state key
+        (None, matchup_key)  # Direct session state key
+    ]
+    
+    for cache_name, key in caches_to_clear:
+        if cache_name:
+            if cache_name in st.session_state and key in st.session_state[cache_name]:
+                del st.session_state[cache_name][key]
+                print(f"Cleared {cache_name}[{key}]")
+        else:
+            if key in st.session_state:
+                del st.session_state[key]
+                print(f"Cleared session state key: {key}")
