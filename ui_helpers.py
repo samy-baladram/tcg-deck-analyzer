@@ -559,65 +559,80 @@ def render_sidebar_from_cache():
             'set': test_deck['set']
         }
         
-        # Generate header image
-        header_image = create_deck_header_images(deck_info, None)
-        
-        if header_image:
-            # Put the button first (this will be hidden under the banner)
-            if st.button(
-                f"Switch to {banner_deck['displayed_name']}", 
-                key="trending_banner_button",
-                type="secondary",
-                use_container_width=True
-            ):
-                # Set the deck to analyze when banner is clicked
-                st.session_state.deck_to_analyze = banner_deck['deck_name']
-                st.rerun()
+# Show header image and button for a sample deck (making the image clickable)
+if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+    # Get the first trending deck for testing
+    test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
+    
+    # Create deck_info for header image generation
+    deck_info = {
+        'deck_name': test_deck['deck_name'],
+        'set': test_deck['set']
+    }
+    
+    # Generate header image
+    header_image = create_deck_header_images(deck_info, None)
+    
+    if header_image:
+        # FORM APPROACH: Make the Pokemon header image clickable
+        with st.form(key="pokemon_header_form"):
+            # Create clickable Pokemon header image using HTML with form submit
             st.markdown(f"""
-            <div style="width: 100%; margin-top:-4.5rem;  margin-bottom: -1rem; pointer-events: none;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; pointer-events: none;">
+            <div style="width: 100%; margin-bottom: -1rem;">
+                <input type="image" src="data:image/png;base64,{header_image}" 
+                       style="width: 100%; height: auto; border-radius: 4px; border: none; cursor: pointer;"
+                       alt="Click to analyze {test_deck['displayed_name']}"
+                       title="Click to analyze {test_deck['displayed_name']}">
             </div>
             """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 0px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Create 2-column layout for buttons side by side
-        col1, col2 = st.columns([1, 1])
-        
-        with col1:
-            # Button to switch to this deck (regular button)
-            if st.button(
-                test_deck['displayed_name'], 
-                key="test_trending_deck_button",
-                type="tertiary",
-                use_container_width=True
-            ):
-                # Set the deck to analyze (same logic as counter picker)
-                st.session_state.deck_to_analyze = test_deck['deck_name']
-                st.rerun()
-
-        with col2:
-            # Initialize trending decks visibility state
-            if 'show_trending_decks' not in st.session_state:
-                st.session_state.show_trending_decks = False
-
-            # Determine button text based on current state
-            button_text = "Refresh" if st.session_state.show_trending_decks else "See More"
             
-            # Always show the button, but change text after clicking
-            if st.button(button_text, type="secondary", use_container_width=True, key="trending_button"):
-                if st.session_state.show_trending_decks:
-                    # If already showing, refresh the page
-                    st.rerun()
-                else:
-                    # If not showing, show the trending decks
-                    st.session_state.show_trending_decks = True
-                    st.rerun()
+            # Hidden submit button
+            pokemon_image_clicked = st.form_submit_button("Submit", type="primary", use_container_width=False)
+        
+        # Handle the Pokemon image click
+        if pokemon_image_clicked:
+            st.session_state.deck_to_analyze = test_deck['deck_name']
+            st.rerun()
+    else:
+        st.markdown("""
+        <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 0px;
+            display: flex; align-items: center; justify-content: center;">
+            <span style="color: #888; font-size: 0.8rem;">No image</span>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Create 2-column layout for buttons side by side
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        # Button to switch to this deck (regular button)
+        if st.button(
+            test_deck['displayed_name'], 
+            key="test_trending_deck_button",
+            type="tertiary",
+            use_container_width=True
+        ):
+            # Set the deck to analyze (same logic as counter picker)
+            st.session_state.deck_to_analyze = test_deck['deck_name']
+            st.rerun()
+
+    with col2:
+        # Initialize trending decks visibility state
+        if 'show_trending_decks' not in st.session_state:
+            st.session_state.show_trending_decks = False
+
+        # Determine button text based on current state
+        button_text = "Refresh" if st.session_state.show_trending_decks else "See More"
+        
+        # Always show the button, but change text after clicking
+        if st.button(button_text, type="secondary", use_container_width=True, key="trending_button"):
+            if st.session_state.show_trending_decks:
+                # If already showing, refresh the page
+                st.rerun()
+            else:
+                # If not showing, show the trending decks
+                st.session_state.show_trending_decks = True
+                st.rerun()
     
     # Only show trending decks if the button has been clicked
     if st.session_state.show_trending_decks:
