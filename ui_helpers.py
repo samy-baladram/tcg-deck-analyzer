@@ -5,7 +5,7 @@ import streamlit as st
 from datetime import datetime
 from formatters import format_deck_name, format_deck_option, displayed_name_to_markdown
 from utils import calculate_time_ago
-from scraper import get_deck_list
+from scraper import get_popular_decks_with_performance
 import cache_manager
 from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT
 import pandas as pd
@@ -153,7 +153,7 @@ def load_initial_data():
     
     # Initialize deck list if not already loaded
     if 'deck_list' not in st.session_state:
-        st.session_state.deck_list = get_deck_list()
+        st.session_state.deck_list = get_popular_decks_with_performance()
         st.session_state.fetch_time = datetime.now()
 
 def create_deck_options():
@@ -182,8 +182,7 @@ def create_deck_options():
         if 'deck_list' not in st.session_state:
             # Load deck list with spinner
             with st.spinner("Loading deck list..."):
-                from scraper import get_deck_list
-                st.session_state.deck_list = get_deck_list()
+                st.session_state.deck_list = get_popular_decks_with_performance()
                 st.session_state.fetch_time = datetime.now()
                 
         # Now we're sure deck_list exists, use it
