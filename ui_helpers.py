@@ -514,7 +514,7 @@ def render_sidebar_from_cache():
             trending_banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
         <div style="width:100%; text-align:center;">
-            <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:-10px;">
+            <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:-5px;">
         </div>
         """, unsafe_allow_html=True)
     else:
