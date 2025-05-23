@@ -15,7 +15,7 @@ ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_
 TOURNAMENT_COUNT = 90
 
 # Display settings
-MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
+MIN_META_SHARE = 0.1  # Minimum meta share percentage to display
 MIN_WIN_RATE = 45
 
 CHART_COLORS = {
