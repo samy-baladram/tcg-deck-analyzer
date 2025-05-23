@@ -73,29 +73,62 @@ def format_card_label(card_name, set_code=None, num=None):
     return card_name
 
 # Extract Pokémon names and create image URLs
+# formatters.py - Updated function
 def extract_pokemon_urls(displayed_name):
+    """
+    Extract Pokemon names and create image URLs with context-dependent exceptions.
+    Uses config.POKEMON_URL_EXCEPTIONS for pair-based name replacements.
+    
+    Args:
+        displayed_name: The deck display name to extract Pokemon from
+        
+    Returns:
+        Tuple of (url1, url2) - Pokemon image URLs
+    """
+    import re
+    from config import POKEMON_URL_EXCEPTIONS, POKEMON_URL_SUFFIXES
+    
     # Remove content in parentheses and clean
     clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
     
     # Split by spaces and slashes
     parts = re.split(r'[\s/]+', clean_name)
     
-    # Filter out suffixes
-    suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
+    # Filter out suffixes and collect Pokemon names
     pokemon_names = []
     
     for part in parts:
         part = part.lower()
-        if part and part not in suffixes:
-            # Apply exceptions
-            if part in POKEMON_EXCEPTIONS:
-                part = POKEMON_EXCEPTIONS[part]
-            
+        if part and part not in POKEMON_URL_SUFFIXES:
             pokemon_names.append(part)
             
             # Limit to 2 Pokémon
             if len(pokemon_names) >= 2:
                 break
+    
+    # Apply context-dependent exceptions
+    if len(pokemon_names) >= 2:
+        # Check if first Pokemon has exceptions based on second Pokemon
+        if pokemon_names[0] in POKEMON_URL_EXCEPTIONS:
+            exceptions = POKEMON_URL_EXCEPTIONS[pokemon_names[0]]
+            if pokemon_names[1] in exceptions:
+                pokemon_names[0] = exceptions[pokemon_names[1]]
+            elif 'default' in exceptions:
+                pokemon_names[0] = exceptions['default']
+        
+        # Check if second Pokemon has exceptions based on first Pokemon
+        if pokemon_names[1] in POKEMON_URL_EXCEPTIONS:
+            exceptions = POKEMON_URL_EXCEPTIONS[pokemon_names[1]]
+            if pokemon_names[0] in exceptions:
+                pokemon_names[1] = exceptions[pokemon_names[0]]
+            elif 'default' in exceptions:
+                pokemon_names[1] = exceptions['default']
+    elif len(pokemon_names) == 1:
+        # Single Pokemon - apply default exception if available
+        if pokemon_names[0] in POKEMON_URL_EXCEPTIONS:
+            exceptions = POKEMON_URL_EXCEPTIONS[pokemon_names[0]]
+            if 'default' in exceptions:
+                pokemon_names[0] = exceptions['default']
     
     # Create URLs
     urls = []
@@ -107,44 +140,3 @@ def extract_pokemon_urls(displayed_name):
         urls.append(None)
         
     return urls[0], urls[1]  # Return as separate values
-
-def displayed_name_to_markdown(displayed_name):
-    """
-    Convert displayed deck name to markdown format with Pokemon images
-    
-    Args:
-        displayed_name: The deck name to extract Pokemon from
-        
-    Returns:
-        str: Markdown formatted string with Pokemon images
-    """
-    # Get URLs using the existing function
-    url1, url2 = extract_pokemon_urls(displayed_name)
-    
-    # Extract Pokemon names for alt text (reuse logic from extract_pokemon_urls)
-    clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-    parts = re.split(r'[\s/]+', clean_name)
-    suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-    pokemon_names = []
-    
-    for part in parts:
-        part_lower = part.lower()
-        if part_lower and part_lower not in suffixes:
-            if part_lower in POKEMON_EXCEPTIONS:
-                part_lower = POKEMON_EXCEPTIONS[part_lower]
-            pokemon_names.append(part.title())  # Keep original case for display
-            if len(pokemon_names) >= 2:
-                break
-    
-    # Build markdown string
-    markdown_parts = []
-    
-    if url1:
-        name1 = pokemon_names[0] if len(pokemon_names) > 0 else "Pokemon1"
-        markdown_parts.append(f"![{name1}]({url1})")
-    
-    if url2:
-        name2 = pokemon_names[1] if len(pokemon_names) > 1 else "Pokemon2"
-        markdown_parts.append(f"![{name2}]({url2})")
-    
-    return " ".join(markdown_parts)
