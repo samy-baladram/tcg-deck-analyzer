@@ -399,7 +399,7 @@ def create_deck_selector():
 
 # In ui_helpers.py - Updated render_deck_in_sidebar function
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
-    """Render a single deck in the sidebar"""
+    """Render a single deck in the sidebar with header image, energy, and details button"""
     # Format power index to 2 decimal places
     power_index = round(deck['power_index'], 2)
     
@@ -413,31 +413,72 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
     
     # Create a plain text expander title with the rank and power index
     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-        # Get sample deck data
-        deck_name = deck['deck_name']
-        
         try:
+            # 1. ADD HEADER IMAGE AT TOP
+            deck_info = {
+                'deck_name': deck['deck_name'],
+                'set': deck['set']
+            }
+            header_image = create_deck_header_images(deck_info, None)
+            
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: 10px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # 2. ADD 2-COLUMN LAYOUT: Energy + See Details button
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                # Get energy types from dedicated cache
+                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                
+                # Display energy types if available
+                if energy_types:
+                    # Create compact energy display
+                    energy_html = ""
+                    for energy in energy_types:
+                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+                        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px; vertical-align:middle;">'
+                    
+                    st.markdown(f"""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; margin-bottom: 2px;"><strong>Energy:</strong></div>
+                        <div>{energy_html}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown("""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            with col2:
+                # See Details button
+                if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+                    # Set the deck to analyze
+                    st.session_state.deck_to_analyze = deck['deck_name']
+                    st.rerun()
+            
+            # 3. CARD GRID (existing functionality)
+            deck_name = deck['deck_name']
             sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
-            
-            # Get energy types from dedicated cache
-            energy_types, is_typical = get_energy_types_for_deck(deck_name)
-            
-            # Display energy types if available
-            if energy_types:
-                energy_html = render_energy_icons(energy_types, is_typical)
-                st.markdown(energy_html, unsafe_allow_html=True)
             
             # Render deck view
             from card_renderer import render_sidebar_deck
             deck_html = render_sidebar_deck(
                 sample_deck['pokemon_cards'], 
                 sample_deck['trainer_cards'],
-                card_width=61
+                card_width=50  # Smaller cards to fit the new layout
             )
             
             # Display the deck
             st.markdown(deck_html, unsafe_allow_html=True)
             st.caption(f"Power Index: {power_index}")
+            
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
@@ -1025,7 +1066,7 @@ def set_deck_to_analyze(deck_name):
 # In ui_helpers.py - Add this new function
 
 def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
-    """Render a single trending deck in the sidebar (sorted by Best Finishes)"""
+    """Render a single trending deck in the sidebar with header image, energy, and details button"""
     # Format tournaments played count
     tournaments_played = deck['tournaments_played']
     
@@ -1034,31 +1075,72 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
     
     # Create a plain text expander title with rocket emoji and tournaments played
     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-        # Get sample deck data
-        deck_name = deck['deck_name']
-        
         try:
+            # 1. ADD HEADER IMAGE AT TOP
+            deck_info = {
+                'deck_name': deck['deck_name'],
+                'set': deck['set']
+            }
+            header_image = create_deck_header_images(deck_info, None)
+            
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: 10px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # 2. ADD 2-COLUMN LAYOUT: Energy + See Details button
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                # Get energy types from dedicated cache
+                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                
+                # Display energy types if available
+                if energy_types:
+                    # Create compact energy display
+                    energy_html = ""
+                    for energy in energy_types:
+                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+                        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px; vertical-align:middle;">'
+                    
+                    st.markdown(f"""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; margin-bottom: 2px;"><strong>Energy:</strong></div>
+                        <div>{energy_html}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown("""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            with col2:
+                # See Details button
+                if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+                    # Set the deck to analyze
+                    st.session_state.deck_to_analyze = deck['deck_name']
+                    st.rerun()
+            
+            # 3. CARD GRID (existing functionality)
+            deck_name = deck['deck_name']
             sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
-            
-            # Get energy types from dedicated cache
-            energy_types, is_typical = get_energy_types_for_deck(deck_name)
-            
-            # Display energy types if available
-            if energy_types:
-                energy_html = render_energy_icons(energy_types, is_typical)
-                st.markdown(energy_html, unsafe_allow_html=True)
             
             # Render deck view
             from card_renderer import render_sidebar_deck
             deck_html = render_sidebar_deck(
                 sample_deck['pokemon_cards'], 
                 sample_deck['trainer_cards'],
-                card_width=61
+                card_width=50  # Smaller cards to fit the new layout
             )
             
             # Display the deck
             st.markdown(deck_html, unsafe_allow_html=True)
             st.caption(f"Best Finishes: {tournaments_played}")
+            
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering trending deck in sidebar: {e}")
