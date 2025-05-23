@@ -19,7 +19,7 @@ favicon = Image.open("favicon.png")  # PNG format
 
 st.set_page_config(
     page_title="PTCGP Deck Analyzer",
-    page_icon=favicon,
+    page_icon="🃏",  # Playing card emoji
     layout="wide"
 )
 
