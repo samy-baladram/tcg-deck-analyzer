@@ -245,8 +245,13 @@ ui_helpers.display_banner("title_banner.png")
 selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
-with st.sidebar:
-    ui_helpers.render_sidebar_from_cache()
+if not st.session_state.get('deck_switching', False):
+    with st.sidebar:
+        ui_helpers.render_sidebar_from_cache()
+else:
+    # Fill sidebar with minimal content to prevent collapse
+    with st.sidebar:
+        st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
