@@ -462,28 +462,25 @@ def render_sidebar_from_cache():
     else:
         st.title("Top 10 Meta Decks")
 
-    # Add debug button to toggle deck visibility
+    # Add debug button to toggle deck visibility for Top 10 Meta Decks
     if 'show_decks' not in st.session_state:
         st.session_state.show_decks = False
 
     # Only show the button if decks are not currently visible
     if not st.session_state.show_decks:
-    
-        # Debug button to show/hide decks
         if st.button("See now!", type="secondary", use_container_width=True):
             st.session_state.show_decks = True
-            #st.session_state.show_decks = not st.session_state.show_decks
             st.rerun()
+
     # Only show decks if the button has been clicked
     if st.session_state.show_decks:
-        
         # Ensure energy cache is initialized
         import cache_manager
         cache_manager.ensure_energy_cache()
         
         # Display performance data if it exists
         if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-            # Get the top 10 performing decks
+            # Get the top 10 performing decks (sorted by Power Index)
             top_decks = st.session_state.performance_data.head(10)
             
             # Render each deck one by one, passing the rank (index + 1)
@@ -504,23 +501,80 @@ def render_sidebar_from_cache():
             """, unsafe_allow_html=True)
             st.write("")
             st.write("")
-     
     else:
         st.write("")
-        #st.info(f"No tournament performance data available for {current_month_year}")
+
+    # ADD NEW SECTION: Trending Decks
     st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
-    # Display counter picker directly (no container)
+    
+    # Load and encode the trending banner image if it exists
+    trending_banner_path = "trending_banner.png"  # You'll need to create this image
+    if os.path.exists(trending_banner_path):
+        with open(trending_banner_path, "rb") as f:
+            trending_banner_base64 = base64.b64encode(f.read()).decode()
+        st.markdown(f"""
+        <div style="width:100%; text-align:center; margin:0px 0 5px 0;">
+            <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("### 📈 Trending Decks")
+
+    # Add button to toggle trending decks visibility
+    if 'show_trending_decks' not in st.session_state:
+        st.session_state.show_trending_decks = False
+
+    # Only show the button if trending decks are not currently visible
+    if not st.session_state.show_trending_decks:
+        if st.button("See More", type="secondary", use_container_width=True, key="trending_button"):
+            st.session_state.show_trending_decks = True
+            st.rerun()
+
+    # Only show trending decks if the button has been clicked
+    if st.session_state.show_trending_decks:
+        # Ensure energy cache is initialized
+        import cache_manager
+        cache_manager.ensure_energy_cache()
+        
+        # Display performance data if it exists
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+            # Get trending decks (sorted by tournaments_played/Best Finishes)
+            trending_decks = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).head(5)
+            
+            # Render each trending deck one by one, passing the rank (index + 1)
+            for idx, (_, deck) in enumerate(trending_decks.iterrows()):
+                rank = idx + 1  # Calculate rank (1-based)
+                render_trending_deck_in_sidebar(deck, rank=rank)
+        
+            # Add disclaimer with update time for trending decks
+            performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+            st.markdown(f"""
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; font-size: 0.85rem;">
+                <div>Most active from {current_month_year}</div>
+                <div>Updated {performance_time_str}</div>
+            </div>
+            <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+                Sorted by tournament activity
+            </div>
+            """, unsafe_allow_html=True)
+            st.write("")
+            st.write("")
+    else:
+        st.write("")
+    
+    # Continue with existing code (Counter Picker section)
+    st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     display_counter_picker_sidebar()
     st.markdown("<hr style='margin-top: 300px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     with st.expander("🔍 About the Power Index"):
-                # Format the explanation with the current date and tournament count
-                formatted_explanation = POWER_INDEX_EXPLANATION.format(
-                    tournament_count=TOURNAMENT_COUNT,
-                    current_month_year=current_month_year
-                )
-                
-                # Display the enhanced explanation
-                st.markdown(formatted_explanation)
+        # Format the explanation with the current date and tournament count
+        formatted_explanation = POWER_INDEX_EXPLANATION.format(
+            tournament_count=TOURNAMENT_COUNT,
+            current_month_year=current_month_year
+        )
+        
+        # Display the enhanced explanation
+        st.markdown(formatted_explanation)
     
 def display_deck_update_info(deck_name, set_name):
     """Display when the deck was last updated"""
@@ -882,3 +936,44 @@ def set_deck_to_analyze(deck_name):
     """Callback function when counter deck button is clicked"""
     # Set the deck to analyze
     st.session_state.deck_to_analyze = deck_name
+
+# In ui_helpers.py - Add this new function
+
+def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
+    """Render a single trending deck in the sidebar (sorted by Best Finishes)"""
+    # Format tournaments played count
+    tournaments_played = deck['tournaments_played']
+    
+    # Use rocket emoji for all trending deck ranks
+    rank_symbol = "🚀"
+    
+    # Create a plain text expander title with rocket emoji and tournaments played
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+        # Get sample deck data
+        deck_name = deck['deck_name']
+        
+        try:
+            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
+            
+            # Get energy types from dedicated cache
+            energy_types, is_typical = get_energy_types_for_deck(deck_name)
+            
+            # Display energy types if available
+            if energy_types:
+                energy_html = render_energy_icons(energy_types, is_typical)
+                st.markdown(energy_html, unsafe_allow_html=True)
+            
+            # Render deck view
+            from card_renderer import render_sidebar_deck
+            deck_html = render_sidebar_deck(
+                sample_deck['pokemon_cards'], 
+                sample_deck['trainer_cards'],
+                card_width=61
+            )
+            
+            # Display the deck
+            st.markdown(deck_html, unsafe_allow_html=True)
+            st.caption(f"Best Finishes: {tournaments_played}")
+        except Exception as e:
+            st.warning(f"Unable to load deck preview for {deck_name}")
+            print(f"Error rendering trending deck in sidebar: {e}")
