@@ -251,7 +251,8 @@ if not st.session_state.get('deck_switching', False):
 else:
     # Fill sidebar with minimal content to prevent collapse
     with st.sidebar:
-        st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
+        st.write("")
+        #st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
