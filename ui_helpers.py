@@ -519,8 +519,8 @@ def render_sidebar_from_cache():
             with open(trending_banner_path, "rb") as f:
                 trending_banner_base64 = base64.b64encode(f.read()).decode()
             st.markdown(f"""
-            <div style="width:100%; text-align:center;  margin-bottom: 1rem; pointer-events: none;">
-                <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px; pointer-events: none;">
+            <div style="width:100%; text-align:center;  margin-bottom: 1rem; ">
+                <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px; ">
             </div>
             """, unsafe_allow_html=True)
         else:
@@ -574,8 +574,8 @@ def render_sidebar_from_cache():
                 st.session_state.deck_to_analyze = banner_deck['deck_name']
                 st.rerun()
             st.markdown(f"""
-            <div style="width: 100%; margin-top:-4.5rem; pointer-events: none; margin-bottom: -1rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px;">
+            <div style="width: 100%; margin-top:-4.5rem;  margin-bottom: -1rem; pointer-events: none;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; pointer-events: none;">
             </div>
             """, unsafe_allow_html=True)
         else:
