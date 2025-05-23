@@ -1134,71 +1134,6 @@ def update_energy_cache(deck_name, energy_types):
     else:
         st.session_state.energy_combinations[deck_name][combo_key] = 1
 
-def display_counter_picker_sidebar():
-    banner_path = "picker_banner.png"
-    if os.path.exists(banner_path):
-        with open(banner_path, "rb") as f:
-            banner_base64 = base64.b64encode(f.read()).decode()
-        st.markdown(f"""
-        <div style="width:100%; text-align:center; margin:0px 0 0px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px; ">
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.subheader("Meta Counter Picker")
-    
-    # Get list of top meta decks to choose from
-    meta_decks = []
-    meta_deck_info = {}  # Add this dictionary to store deck info
-    
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Use displayed_name for better user experience
-        performance_data = st.session_state.performance_data
-        
-        # Store deck info for each deck
-        for _, deck in performance_data.iterrows():
-            meta_decks.append(deck['displayed_name'])
-            # Store deck info for image generation
-            meta_deck_info[deck['displayed_name']] = {
-                'deck_name': deck['deck_name'],
-                'set': deck['set']
-            }
-        
-        # Limit to top 20 decks
-        meta_decks = meta_decks[:20]
-    
-    if not meta_decks:
-        st.warning("No meta deck data available")
-        return
-    
-    # Check if we should switch to a selected deck
-    if 'switch_to_deck' in st.session_state:
-        deck_name = st.session_state.switch_to_deck
-        # Clear the flag
-        del st.session_state['switch_to_deck']
-        # Set the deck for analysis - this uses create_deck_selector's logic
-        st.session_state.deck_to_analyze = deck_name
-    
-    # Multi-select for decks to counter
-    selected_decks = st.multiselect(
-        "Select decks you want to counter:",
-        options=meta_decks,
-        default=meta_decks[:3] if len(meta_decks) >= 3 else meta_decks,
-        help="Choose the decks you want to counter in the meta"
-    )
-
-    # Button to trigger analysis
-    st.session_state.run_counter_analysis = False
-    if st.button("Find Counters", type="secondary", use_container_width=True):
-        st.session_state.run_counter_analysis = True
-        st.session_state.selected_counter_decks = selected_decks
-    
-    # Only run analysis if button was clicked
-    if st.session_state.run_counter_analysis and 'selected_counter_decks' in st.session_state:
-        analyze_counter(st.session_state.selected_counter_decks)
-        # Reset the flag after analysis
-        st.session_state.run_counter_analysis = False
-
 def analyze_counter(selected_decks):
     """Analyze counter decks with cached header images"""
     counter_data = []
@@ -1258,19 +1193,22 @@ def analyze_counter(selected_decks):
             deck = counter_df.iloc[i]
             
             # USE CACHED HEADER IMAGE
-            header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
+            header_image = get_header_image_cached(deck['deck_name'], deck['set'])
             
+            # FIXED: Handle all 5 decks, not just top 3
+            win_rate = deck['average_win_rate']
+            total_matches = deck['total_matches']
+            confidence = deck['confidence']
+            
+            confidence_color = "#4FCC20" if confidence == 'High' else "#FDA700"
+            confidence_text = f"({total_matches} matches, {confidence.lower()} confidence)"
+            win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
+            
+            # Display layout for top 3 (larger) vs 4th-5th (smaller)
             is_top_three = i < 3
             
             if is_top_three:
-                win_rate = deck['average_win_rate']
-                total_matches = deck['total_matches']
-                confidence = deck['confidence']
-                
-                confidence_color = "#4FCC20" if confidence == 'High' else "#FDA700"
-                confidence_text = f"({total_matches} matches, {confidence.lower()} confidence)"
-                win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
-                
+                # Top 3 decks - larger layout
                 if header_image:
                     st.markdown(f"""
                     <div style="display: flex; align-items: center; margin-bottom: 0rem;">
@@ -1284,22 +1222,41 @@ def analyze_counter(selected_decks):
                     </div>
                     """, unsafe_allow_html=True)
                 
-                rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
+                rank_emoji = ["🥇", "🥈", "🥉"][i]
                 button_label = f"{rank_emoji} {deck['displayed_name']}"
                 
-                button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
-                st.button(
-                    button_label, 
-                    key=button_key,
-                    type="tertiary",
-                    on_click=set_deck_to_analyze,
-                    args=(deck['deck_name'],)
-                )
+            else:
+                # 4th and 5th decks - smaller layout
+                if header_image:
+                    st.markdown(f"""
+                    <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+                        <div style="flex: 1; margin-right: 1rem;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 180px; height: auto; border-radius: 8px;">
+                        </div>
+                        <div style="text-align: right; min-width: 70px;">
+                            <span style="font-size: 1.1rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <div style="font-size: 0.65rem; margin-top: -0.3rem; color: {confidence_color};">{confidence_text}</div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                rank_emoji = f"#{i+1}"
+                button_label = f"{rank_emoji} {deck['displayed_name']}"
             
-            # Add divider between decks
+            # Button for all decks (both top 3 and 4th-5th)
+            button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
+            st.button(
+                button_label, 
+                key=button_key,
+                type="tertiary",
+                on_click=set_deck_to_analyze,
+                args=(deck['deck_name'],)
+            )
+            
+            # Add divider between decks (except after the last one)
             if i < min(4, len(counter_df) - 1):
                 divider_style = "solid 0.5px"
-                divider_color = "#ddd"
+                divider_color = "#ddd" if is_top_three else "#eee"
                 st.markdown(f"<hr style='margin-top: -10px; margin-bottom: -10px; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
         
         st.caption(f"Win rates are weighted by match count and filtered for reliability "
