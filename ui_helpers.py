@@ -512,16 +512,6 @@ def render_sidebar_from_cache():
         # Get the first trending deck for the banner
         banner_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
         
-        # Put the button first (this will be hidden under the banner)
-        if st.button(
-            f"Switch to {banner_deck['displayed_name']}", 
-            key="trending_banner_button",
-            type="tertiary",
-            use_container_width=True
-        ):
-            # Set the deck to analyze when banner is clicked
-            st.session_state.deck_to_analyze = banner_deck['deck_name']
-            st.rerun()
         
         # Then overlay the banner image with negative margin to cover the button
         trending_banner_path = "trending_banner.png"
@@ -529,14 +519,14 @@ def render_sidebar_from_cache():
             with open(trending_banner_path, "rb") as f:
                 trending_banner_base64 = base64.b64encode(f.read()).decode()
             st.markdown(f"""
-            <div style="width:100%; text-align:center; margin-top: -3rem; margin-bottom: -1rem; pointer-events: none;">
+            <div style="width:100%; text-align:center;  margin-bottom: -1rem; pointer-events: none;">
                 <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px; pointer-events: none;">
             </div>
             """, unsafe_allow_html=True)
         else:
             # Fallback with deck name overlay
             st.markdown(f"""
-            <div style="width:100%; text-align:center; margin-top: -3rem; margin-bottom: -1rem; pointer-events: none;">
+            <div style="width:100%; text-align:center;  margin-bottom: -1rem; pointer-events: none;">
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                            padding: 20px; border-radius: 10px; color: white; pointer-events: none;">
                     <h3 style="margin: 0; pointer-events: none;">🚀 Trending Decks</h3>
@@ -573,8 +563,18 @@ def render_sidebar_from_cache():
         header_image = create_deck_header_images(deck_info, None)
         
         if header_image:
+            # Put the button first (this will be hidden under the banner)
+            if st.button(
+                f"Switch to {banner_deck['displayed_name']}", 
+                key="trending_banner_button",
+                type="secondary",
+                use_container_width=True
+            ):
+                # Set the deck to analyze when banner is clicked
+                st.session_state.deck_to_analyze = banner_deck['deck_name']
+                st.rerun()
             st.markdown(f"""
-            <div style="width: 100%; margin-bottom: -1rem;">
+            <div style="width: 100%; margin-top:-3rem; margin-bottom: -1rem;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px;">
             </div>
             """, unsafe_allow_html=True)
