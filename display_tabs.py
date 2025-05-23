@@ -769,7 +769,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         core_cards_header = f"""##### Meta Essentials ({total_cards} Cards)""" + f"""<span style="font-size: 1rem; font-weight: normal;">&emsp; Energy: {energy_html}{archetype_note}</span>"""
     else:
         # Just "Core Cards" if no energy found
-        core_cards_header = "##### Meta Essentials ({total_cards} Cards):"
+        core_cards_header = f"##### Meta Essentials ({total_cards} Cards):"
     
     # Display the header
     st.write(core_cards_header, unsafe_allow_html=True)
