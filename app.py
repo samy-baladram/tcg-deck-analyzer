@@ -205,32 +205,32 @@ selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
 with st.sidebar:
-    # Check if we're switching decks or analyzing
-    if st.session_state.get('analyzing_deck', False):
-        # Show empty/minimal content during analysis
-        st.empty()
-        # Or just show a simple message
-        # st.info("Loading...")
+    # Check if we're in a deck switching scenario
+    if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
+        # Show minimal content during deck switching
+        st.info("Switching to new deck...")
+        # Clear the flag after showing message
+        st.session_state.deck_to_analyze = None
     else:
         # Normal sidebar rendering
         ui_helpers.render_sidebar_from_cache()
 
 # Main content area
+# Main content area
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
-    
-    # Check if we need to start analyzing
-    if not st.session_state.get('analyzing_deck', False):
-        # Set analyzing flag and trigger rerun
-        st.session_state.analyzing_deck = True
-        st.rerun()
     
     # Get analyzed deck from cache or analyze it
     with st.spinner("Analyzing deck..."):
         analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
     
-    # Clear analyzing flag after analysis
-    st.session_state.analyzing_deck = False
+    # Unpack the results
+    results = analyzed_deck['results']
+    total_decks = analyzed_deck['total_decks']
+    variant_df = analyzed_deck['variant_df']
+    
+    # Display deck header
+    display_tabs.display_deck_header(original_deck_info, results)
     
     # Unpack the results
     results = analyzed_deck['results']
