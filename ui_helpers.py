@@ -455,8 +455,8 @@ def render_sidebar_from_cache():
         with open(banner_path, "rb") as f:
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
-        <div style="width:100%; text-align:center; margin:-20px 0 5px 0;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; ">
+        <div style="width:100%; text-align:center;">
+            <img src="data:image/png;base64,{banner_path}" style="width:100%; max-width:350px; margin-bottom:0px;">
         </div>
         """, unsafe_allow_html=True)
     else:
