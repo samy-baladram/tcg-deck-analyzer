@@ -861,7 +861,8 @@ def display_counter_picker_sidebar():
             st.session_state.counter_selected_decks = selected_decks.copy()
 
     # Display results from session state (persists across reruns)
-    if 'counter_analysis_results' in st.session_state and st.session_state.counter_analysis_results:
+    if ('counter_analysis_results' in st.session_state and 
+        not st.session_state.counter_analysis_results.empty):  # Changed this line
         display_counter_results(st.session_state.counter_analysis_results)
     elif selected_decks:
         st.info("Click 'Find Counters' to analyze")
