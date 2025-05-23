@@ -74,21 +74,13 @@ if 'cache_initialized' not in st.session_state:
     if st.secrets.get("DEBUG_MODE", False):
         stats = get_cache_stats()
         print(f"Header image cache: {stats}")
-        
-# Add this check after state initialization but before UI rendering
-if 'switch_to_deck' in st.session_state:
-    deck_name = st.session_state.switch_to_deck
-    # Clear the flag
-    del st.session_state['switch_to_deck']
-    # Set the deck to analyze
-    st.session_state.deck_to_analyze = deck_name
-    # Let the normal flow handle the rest
 
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
     st.session_state.app_state['initial_data_loaded'] = True
 
+# FIXED: Better deck switching logic
 if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
     target_deck = st.session_state.deck_to_analyze
     
@@ -98,9 +90,21 @@ if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
             deck_info = st.session_state.deck_name_mapping[display_name]
             if deck_info['deck_name'] == target_deck:
                 
-                # Clear cache for this deck before switching
-                import cache_manager
-                cache_manager.clear_deck_cache_on_switch(deck_info['deck_name'], deck_info['set'])
+                # Check if this is actually a different deck from current selection
+                current_deck = st.session_state.get('analyze', {})
+                is_different_deck = (
+                    current_deck.get('deck_name') != deck_info['deck_name'] or 
+                    current_deck.get('set_name') != deck_info['set']
+                )
+                
+                # Only clear cache if it's actually a different deck
+                if is_different_deck:
+                    print(f"Switching from {current_deck.get('deck_name', 'None')} to {deck_info['deck_name']}")
+                    # Clear cache for the NEW deck to force fresh analysis
+                    import cache_manager
+                    cache_manager.clear_deck_cache_on_switch(deck_info['deck_name'], deck_info['set'])
+                else:
+                    print(f"Staying on same deck: {deck_info['deck_name']}")
                 
                 # Update selection
                 st.session_state.selected_deck_index = i
