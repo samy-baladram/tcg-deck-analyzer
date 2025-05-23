@@ -15,13 +15,13 @@ import os
 from PIL import Image
 import streamlit as st
 
-favicon = Image.open("favicon.png")  # PNG format
+# favicon = Image.open("favicon.png")  # PNG format
 
-st.set_page_config(
-    page_title="PTCGP Deck Analyzer",
-    page_icon=favicon,
-    layout="wide"
-)
+# st.set_page_config(
+#     page_title="PTCGP Deck Analyzer",
+#     page_icon=favicon,
+#     layout="wide"
+# )
 
 # Add background from repository
 background.add_app_background()
