@@ -13,30 +13,12 @@ import base64
 import os
 
 from PIL import Image
-def setup_favicon():
-    """Setup favicon with fallback options"""
-    favicon_path = "favicon.png"
-    
-    # Method 1: Try PIL Image
-    try:
-        if os.path.exists(favicon_path):
-            favicon = Image.open(favicon_path)
-            # Ensure it's in a compatible format
-            if favicon.mode not in ['RGB', 'RGBA']:
-                favicon = favicon.convert('RGBA')
-            return favicon
-    except Exception as e:
-        print(f"PIL favicon failed: {e}")
-    
-    # Method 2: Fallback to emoji
-    return "🎮"
 
-# Apply favicon
-favicon = setup_favicon()
+favicon = Image.open("favicon.png").convert('RGBA')
 
 st.set_page_config(
     page_title="PTCGP Deck Analyzer",
-    page_icon=favicon,  # Playing card emoji
+    page_icon=favicon,
     layout="wide"
 )
 
