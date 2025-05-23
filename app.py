@@ -89,6 +89,30 @@ if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
     st.session_state.app_state['initial_data_loaded'] = True
 
+if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
+    target_deck = st.session_state.deck_to_analyze
+    
+    # Find the matching display name and index
+    if 'deck_display_names' in st.session_state and 'deck_name_mapping' in st.session_state:
+        for i, display_name in enumerate(st.session_state.deck_display_names):
+            deck_info = st.session_state.deck_name_mapping[display_name]
+            if deck_info['deck_name'] == target_deck:
+                
+                # Clear cache for this deck before switching
+                import cache_manager
+                cache_manager.clear_deck_cache_on_switch(deck_info['deck_name'], deck_info['set'])
+                
+                # Update selection
+                st.session_state.selected_deck_index = i
+                st.session_state.analyze = {
+                    'deck_name': deck_info['deck_name'],
+                    'set_name': deck_info['set'],
+                }
+                
+                # Clear the deck_to_analyze flag
+                st.session_state.deck_to_analyze = None
+                break
+                
 # In app.py, after loading initial data but before UI rendering
 if 'deck_display_names' in st.session_state and st.session_state.deck_display_names:
     # If we have deck options but no analysis yet, set up the first deck
@@ -225,9 +249,22 @@ with st.sidebar:
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
     
+    # Check if we need to force refresh (e.g., after deck switch)
+    force_refresh = st.session_state.get('force_deck_refresh', False)
+    if force_refresh:
+        st.session_state.force_deck_refresh = False  # Clear the flag
+    
     # Get analyzed deck from cache or analyze it
     with st.spinner("Analyzing deck..."):
-        analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
+        try:
+            analyzed_deck = cache_manager.get_or_analyze_full_deck(
+                original_deck_info['deck_name'], 
+                original_deck_info['set_name'],
+                force_refresh=force_refresh
+            )
+        except Exception as e:
+            st.error(f"Error analyzing deck: {str(e)}")
+            analyzed_deck = None
     
     # FIX: Add error handling and data validation
     if analyzed_deck is None:
