@@ -521,7 +521,7 @@ def render_sidebar_from_cache():
         st.markdown("### 📈 Trending Decks")
 
     # NEW: Add 2-column layout for test deck and See More button
-    col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns([3, 1])
     
     with col1:
         # Test: Show header image and button for a sample deck
@@ -541,12 +541,12 @@ def render_sidebar_from_cache():
             if header_image:
                 st.markdown(f"""
                 <div style="width: 100%; margin-bottom: 8px;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 8px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 4px;">
                 </div>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
-                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 8px;
+                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; margin-bottom: 0px;
                     display: flex; align-items: center; justify-content: center;">
                     <span style="color: #888; font-size: 0.8rem;">No image</span>
                 </div>
@@ -557,7 +557,7 @@ def render_sidebar_from_cache():
                 test_deck['displayed_name'], 
                 key="test_trending_deck_button",
                 type="tertiary",
-                use_container_width=True
+                use_container_width=False
             ):
                 # Set the deck to analyze (same logic as counter picker)
                 st.session_state.deck_to_analyze = test_deck['deck_name']
