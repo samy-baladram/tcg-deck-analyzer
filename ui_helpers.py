@@ -792,9 +792,12 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                     """, unsafe_allow_html=True)
             
             with col2:
-                if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-                    st.session_state.deck_to_analyze = deck['deck_name']
-                    st.rerun()
+                if st.button("Details", 
+                            key=f"counter_details_{deck['deck_name']}_{i}", 
+                            type="tertiary", 
+                            use_container_width=True,
+                            on_click=lambda deck_name=deck['deck_name']: setattr(st.session_state, 'deck_to_analyze', deck_name)):
+                    pass  # Button logic handled in on_click
             
             st.caption(f"Best Finishes: {tournaments_played}")
             
