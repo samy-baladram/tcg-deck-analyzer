@@ -462,15 +462,59 @@ def render_sidebar_from_cache():
     else:
         st.title("Top 10 Meta Decks")
 
-    # Add debug button to toggle deck visibility for Top 10 Meta Decks
-    if 'show_decks' not in st.session_state:
-        st.session_state.show_decks = False
+    # UPDATED: Add the same configuration as trending section for Top 10 Meta Decks
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Get the first top deck (highest Power Index)
+        top_deck = st.session_state.performance_data.iloc[0]
+        
+        # Create deck_info for header image generation
+        deck_info = {
+            'deck_name': top_deck['deck_name'],
+            'set': top_deck['set']
+        }
+        
+        # Generate header image
+        header_image = create_deck_header_images(deck_info, None)
 
-    # Only show the button if decks are not currently visible
-    if not st.session_state.show_decks:
-        if st.button("See now!", type="secondary", use_container_width=True):
-            st.session_state.show_decks = True
+        if header_image:
+            st.markdown(f"""
+            <div style="width: 100%; margin-bottom: -1rem;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                display: flex; align-items: center; justify-content: center;">
+                <span style="color: #888; font-size: 0.8rem;">No image</span>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # NEW: Add 2-column layout for top deck and See now button (same as trending)
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:         
+        # Button to switch to this deck
+        if st.button(
+            top_deck['displayed_name'], 
+            key="top_deck_button",
+            type="tertiary",
+            use_container_width=False
+        ):
+            # Set the deck to analyze (same logic as counter picker)
+            st.session_state.deck_to_analyze = top_deck['deck_name']
             st.rerun()
+
+    with col2:
+        # Add debug button to toggle deck visibility for Top 10 Meta Decks
+        if 'show_decks' not in st.session_state:
+            st.session_state.show_decks = False
+
+        # Only show the button if decks are not currently visible
+        if not st.session_state.show_decks:
+            if st.button("See now!", type="tertiary", use_container_width=False):
+                st.session_state.show_decks = True
+                st.rerun()
 
     # Only show decks if the button has been clicked
     if st.session_state.show_decks:
@@ -521,61 +565,58 @@ def render_sidebar_from_cache():
         st.markdown("### 📈 Trending Decks")
     
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-            # Get the first trending deck for testing
-            test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
-            
-            # Create deck_info for header image generation
-            deck_info = {
-                'deck_name': test_deck['deck_name'],
-                'set': test_deck['set']
-            }
-            
-            # Generate header image
-            header_image = create_deck_header_images(deck_info, None)
+        # Get the first trending deck for testing
+        test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
+        
+        # Create deck_info for header image generation
+        deck_info = {
+            'deck_name': test_deck['deck_name'],
+            'set': test_deck['set']
+        }
+        
+        # Generate header image
+        header_image = create_deck_header_images(deck_info, None)
 
-            if header_image:
-                st.markdown(f"""
-                <div style="width: 100%; margin-bottom: -1rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                    display: flex; align-items: center; justify-content: center;">
-                    <span style="color: #888; font-size: 0.8rem;">No image</span>
-                </div>
-                """, unsafe_allow_html=True)
-            
+        if header_image:
+            st.markdown(f"""
+            <div style="width: 100%; margin-bottom: -1rem;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                display: flex; align-items: center; justify-content: center;">
+                <span style="color: #888; font-size: 0.8rem;">No image</span>
+            </div>
+            """, unsafe_allow_html=True)
+        
     # NEW: Add 2-column layout for test deck and See More button
     col1, col2 = st.columns([3, 1])
     
     with col1:         
-            # Button to switch to this deck
-            if st.button(
-                test_deck['displayed_name'], 
-                key="test_trending_deck_button",
-                type="tertiary",
-                use_container_width=False
-            ):
-                # Set the deck to analyze (same logic as counter picker)
-                st.session_state.deck_to_analyze = test_deck['deck_name']
-                st.rerun()
-    
+        # Button to switch to this deck
+        if st.button(
+            test_deck['displayed_name'], 
+            key="test_trending_deck_button",
+            type="tertiary",
+            use_container_width=False
+        ):
+            # Set the deck to analyze (same logic as counter picker)
+            st.session_state.deck_to_analyze = test_deck['deck_name']
+            st.rerun()
+
     with col2:
-        # Add vertical space to align with the image/button layout
-        #st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
-        
         # Add button to toggle trending decks visibility
         if 'show_trending_decks' not in st.session_state:
             st.session_state.show_trending_decks = False
-    
+
         # Only show the button if trending decks are not currently visible
         if not st.session_state.show_trending_decks:
             if st.button("See More", type="tertiary", use_container_width=False, key="trending_button"):
                 st.session_state.show_trending_decks = True
                 st.rerun()
-    
+
     # Only show trending decks if the button has been clicked
     if st.session_state.show_trending_decks:
         # Ensure energy cache is initialized
@@ -609,10 +650,7 @@ def render_sidebar_from_cache():
         st.write("")
     
     # Continue with existing code (Counter Picker section)
-    
-    #st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     display_counter_picker_sidebar()
-    #st.markdown("<hr style='margin-top: 300px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     with st.expander("🔍 About the Power Index"):
         # Format the explanation with the current date and tournament count
         formatted_explanation = POWER_INDEX_EXPLANATION.format(
