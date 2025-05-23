@@ -536,7 +536,7 @@ def render_sidebar_from_cache():
             if header_image:
                 st.markdown(f"""
                 <div style="width: 100%; margin-bottom: -1rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 5px solid #000; border-radius: 4px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 5px solid #000; border-radius: 8px;">
                 </div>
                 """, unsafe_allow_html=True)
             else:
