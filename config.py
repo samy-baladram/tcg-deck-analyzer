@@ -74,6 +74,45 @@ CATEGORY_LABELS = ['Tech', 'Standard', 'Core']
 # Flexible core thresholds
 FLEXIBLE_CORE_THRESHOLD = 25
 
+# Pokemon name patterns for multi-word recognition
+POKEMON_NAME_PATTERNS = {
+    # Regional prefixes that create multi-word Pokemon
+    'REGIONAL_PREFIXES': ['alolan', 'galarian', 'hisuian', 'paldean'],
+    
+    # Single-word form prefixes
+    'FORM_PREFIXES': ['mega', 'primal', 'ultra'],
+    
+    # Multi-word form prefixes
+    'MULTI_WORD_FORM_PREFIXES': ['origin-forme', 'white-striped', 'dusk-mane', 'dawn-wings'],
+    
+    # Paradox prefixes (future Pokemon start with "iron-")
+    'PARADOX_PREFIXES': ['iron'],
+    
+    # Special multi-word base names that don't follow standard patterns
+    'SPECIAL_MULTIWORD': {
+        # Tapu series
+        'tapu-koko', 'tapu-lele', 'tapu-bulu', 'tapu-fini',
+        
+        # Ancient Paradox Pokemon
+        'great-tusk', 'scream-tail', 'brute-bonnet', 'flutter-mane',
+        'slither-wing', 'sandy-shocks', 'roaring-moon', 'walking-wake',
+        'gouging-fire', 'raging-bolt',
+        
+        # Classic multi-word Pokemon
+        'mr-mime', 'mime-jr', 'type-null', 'ho-oh',
+        'nidoran-m', 'nidoran-f', 'porygon-z',
+        
+        # Gen 7 dragons
+        'jangmo-o', 'hakamo-o', 'kommo-o',
+        
+        # Gen 9 legends
+        'wo-chien', 'chien-pao', 'ting-lu', 'chi-yu',
+        'koraidon', 'miraidon'
+    },
+    
+    # Pokemon suffixes
+    'POKEMON_SUFFIXES': ['ex', 'v', 'vmax', 'vstar', 'gx', 'sp']
+}
 # Text for sidebar
 # POWER_INDEX_EXPLANATION = """
 # #### Power Index: How We Rank the Best Decks
