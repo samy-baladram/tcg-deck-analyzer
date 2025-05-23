@@ -12,6 +12,7 @@ import background
 import base64
 import os
 from header_image_cache import clear_expired_cache, get_cache_stats
+from card_cache import clear_expired_cache as clear_card_cache
 
 from PIL import Image
 
@@ -66,6 +67,7 @@ initialize_matchup_cache()
 if 'cache_initialized' not in st.session_state:
     # Clean expired cache on app start
     clear_expired_cache()
+    clear_card_cache()     # Card data
     st.session_state.cache_initialized = True
     
     # Optional: Display cache stats in development
