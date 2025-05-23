@@ -12,7 +12,7 @@ CACHE_TTL = 7200  # 1 hour in seconds
 ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_recent_performance
 
 # Tournament count
-TOURNAMENT_COUNT = 70
+TOURNAMENT_COUNT = 90
 
 # Display settings
 MIN_META_SHARE = 0.5  # Minimum meta share percentage to display
