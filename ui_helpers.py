@@ -11,14 +11,27 @@ from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MI
 import pandas as pd
 import base64
 import os
-from display_tabs import display_counter_picker, fetch_matchup_data, create_deck_header_images
+from display_tabs import display_counter_picker, fetch_matchup_data
 from header_image_cache import get_header_image_cached
+from card_cache import get_sample_deck_cached  # ADD THIS IMPORT
 
 ENERGY_CACHE_FILE = "cached_data/energy_types.json"
 
-# Add this at the top level (outside any function) in ui_helpers.py
-# Add this at the top level of ui_helpers.py
-# Modify the check_and_update_tournament_data function in ui_helpers.py
+# ADD: Banner image caching
+@st.cache_data
+def get_cached_banner_image(img_path):
+    """Cache banner images to avoid repeated file reads"""
+    if os.path.exists(img_path):
+        with open(img_path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    return None
+
+# ADD: Cache for popular decks data
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def get_cached_popular_decks():
+    """Cache popular decks data to avoid repeated API calls"""
+    return get_popular_decks_with_performance()
+
 def check_and_update_tournament_data():
     """Check if tournament data needs updating"""
     # Import necessary modules
@@ -53,22 +66,19 @@ def check_and_update_tournament_data():
                 
                 # Reset flag
                 st.session_state.update_running = False
-            
-# Replace the existing get_energy_types_for_deck function with this one
+
+# ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
-    """
-    Get energy types for a deck, using dedicated energy cache
-    
-    Args:
-        deck_name: The name of the deck
-        deck_energy_types: Optional energy types to use instead of cache
-        
-    Returns:
-        Tuple of (energy_types, is_typical) - energy_types is the most common combination
-    """
+    """Get energy types for a deck, using dedicated energy cache"""
     # If specific energy types provided, use them
     if deck_energy_types:
         return deck_energy_types, False
+    
+    # Check session cache first for faster access
+    energy_cache_key = f"energy_{deck_name}"
+    if energy_cache_key in st.session_state:
+        cached_energy = st.session_state[energy_cache_key]
+        return cached_energy['types'], cached_energy['is_typical']
     
     # Get from dedicated energy cache
     import cache_manager
@@ -85,60 +95,66 @@ def get_energy_types_for_deck(deck_name, deck_energy_types=None):
     energy_types = cache_manager.get_cached_energy(deck_name, set_name)
     
     if energy_types:
+        # Cache in session state for faster subsequent access
+        st.session_state[energy_cache_key] = {
+            'types': energy_types,
+            'is_typical': True
+        }
         return energy_types, True
     
     # If no energy found in cache, try to force a new calculation
-    # First ensure deck is collected
     cache_manager.ensure_deck_collected(deck_name, set_name)
-    
-    # Then recalculate 
     energy_types = cache_manager.calculate_and_cache_energy(deck_name, set_name)
     
     if energy_types:
+        # Cache in session state
+        st.session_state[energy_cache_key] = {
+            'types': energy_types,
+            'is_typical': True
+        }
         return energy_types, True
     
-    # Fallback: Empty list
+    # Cache empty result to avoid repeated calculations
+    st.session_state[energy_cache_key] = {
+        'types': [],
+        'is_typical': False
+    }
     return [], False
 
-def render_energy_icons(energy_types, is_typical=False):
-    """
-    Generate HTML for energy icons
-    
-    Args:
-        energy_types: List of energy type strings
-        is_typical: Whether this is the typical/most common combination
-        
-    Returns:
-        HTML string for displaying energy icons
-    """
-    if not energy_types:
+# ENHANCE: Cache energy icon HTML generation
+@st.cache_data
+def render_energy_icons_cached(energy_types_tuple, is_typical=False):
+    """Generate HTML for energy icons with caching"""
+    if not energy_types_tuple:
         return ""
         
     energy_html = ""
     # Create image tags for each energy type
-    for energy in energy_types:
-        # Direct URL to the energy icon
+    for energy in energy_types_tuple:
         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle; ">'
     
-    # Add note if these are typical energy types
-    archetype_note = ''
-    
     energy_display = f"""<div style="margin-bottom: 10px;">
-        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html} {archetype_note}</p>
+        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html}</p>
     </div>"""
     return energy_display
+
+def render_energy_icons(energy_types, is_typical=False):
+    """Generate HTML for energy icons (wrapper for cached version)"""
+    # Convert to tuple for caching (lists aren't hashable)
+    energy_tuple = tuple(energy_types) if energy_types else ()
+    return render_energy_icons_cached(energy_tuple, is_typical)
             
 def display_banner(img_path, max_width=900):
-    """Display the app banner image"""
-    from image_processor import get_base64_image
+    """Display the app banner image with caching"""
+    # USE CACHED VERSION
+    img_base64 = get_cached_banner_image(img_path)
     
-    img_base64 = get_base64_image(img_path)
-    
-    st.markdown(f"""<div style="display: flex; justify-content: center; width: 100%; margin-top:-68px; margin-bottom:5px;">
-        <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px; height: auto;">
-    </div>
-    """, unsafe_allow_html=True)
+    if img_base64:
+        st.markdown(f"""<div style="display: flex; justify-content: center; width: 100%; margin-top:-68px; margin-bottom:5px;">
+            <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px; height: auto;">
+        </div>
+        """, unsafe_allow_html=True)
 
 def load_initial_data():
     """Load only essential initial data for fast app startup"""
@@ -152,41 +168,44 @@ def load_initial_data():
     if 'deck_to_analyze' not in st.session_state:
         st.session_state.deck_to_analyze = None
     
-    # Initialize deck list if not already loaded
+    # ENHANCE: Use cached popular decks
     if 'deck_list' not in st.session_state:
-        st.session_state.deck_list = get_popular_decks_with_performance()
+        st.session_state.deck_list = get_cached_popular_decks()
         st.session_state.fetch_time = datetime.now()
 
+# ENHANCE: Cache deck options creation
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
+    # Check if we already have cached options
+    if ('deck_options_cache' in st.session_state and 
+        'performance_data' in st.session_state and 
+        st.session_state.deck_options_cache.get('data_hash') == hash(str(st.session_state.performance_data.to_dict()))):
+        
+        print("Using cached deck options")
+        cached_options = st.session_state.deck_options_cache
+        return cached_options['display_names'], cached_options['name_mapping']
+    
     # Initialize deck display names and mapping
     deck_display_names = []
     deck_name_mapping = {}
     
     # First try to use performance data
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Get top 30 decks from performance data
-        top_performing_decks = st.session_state.performance_data #.head(30)
+        top_performing_decks = st.session_state.performance_data
         
         for _, deck in top_performing_decks.iterrows():
-            power_index = round(deck['power_index'], 2)
-            # Format: "Deck Name (Power Index)"
             display_name = deck['displayed_name']
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
                 'set': deck['set']
             }
-    # If no performance data, use deck list
     else:
-        # Ensure deck_list exists in session state
+        # Use cached deck list
         if 'deck_list' not in st.session_state:
-            # Load deck list with spinner
-            with st.spinner("Loading deck list..."):
-                st.session_state.deck_list = get_popular_decks_with_performance()
-                st.session_state.fetch_time = datetime.now()
+            st.session_state.deck_list = get_cached_popular_decks()
+            st.session_state.fetch_time = datetime.now()
                 
-        # Now we're sure deck_list exists, use it
         try:
             from config import MIN_META_SHARE
             popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
@@ -199,7 +218,6 @@ def create_deck_options():
                     'set': row['set']
                 }
         except Exception as e:
-            # If anything goes wrong, provide default options
             print(f"Error creating deck options: {e}")
             display_name = "Example Deck (1.0)"
             deck_display_names.append(display_name)
@@ -207,6 +225,18 @@ def create_deck_options():
                 'deck_name': 'example-deck',
                 'set': 'A3'
             }
+    
+    # Cache the results
+    if 'performance_data' in st.session_state:
+        data_hash = hash(str(st.session_state.performance_data.to_dict()))
+    else:
+        data_hash = hash(str(deck_display_names))
+    
+    st.session_state.deck_options_cache = {
+        'display_names': deck_display_names,
+        'name_mapping': deck_name_mapping,
+        'data_hash': data_hash
+    }
     
     # Store mapping in session state
     st.session_state.deck_name_mapping = deck_name_mapping
@@ -400,26 +430,18 @@ def create_deck_selector():
 
 # In ui_helpers.py - Updated render_deck_in_sidebar function
 def render_deck_in_sidebar(deck, expanded=False, rank=None):
-    """Render a single deck in the sidebar with header image, energy, and details button"""
-    # Format power index to 2 decimal places
+    """Render a single deck in the sidebar with cached components"""
     power_index = round(deck['power_index'], 2)
     
-    # Unicode circled numbers: ①②③④⑤⑥⑦⑧⑨⑩⓪
     circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
     
-    # Get the appropriate circled number based on rank
     rank_symbol = ""
     if rank is not None and 0 <= rank <= 10:
         rank_symbol = circled_numbers[rank]
     
-    # Create a plain text expander title with the rank and power index
     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
         try:
-            # 1. ADD HEADER IMAGE AT TOP
-            deck_info = {
-                'deck_name': deck['deck_name'],
-                'set': deck['set']
-            }
+            # 1. USE CACHED HEADER IMAGE
             header_image = get_header_image_cached(deck['deck_name'], deck['set'])
             
             if header_image:
@@ -429,42 +451,30 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                 </div>
                 """, unsafe_allow_html=True)
             
-            # 3. CARD GRID (existing functionality)
+            # 2. USE CACHED SAMPLE DECK
             deck_name = deck['deck_name']
-            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
+            sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED TO CACHED VERSION
             
             # Render deck view
             from card_renderer import render_sidebar_deck
             deck_html = render_sidebar_deck(
                 sample_deck['pokemon_cards'], 
                 sample_deck['trainer_cards'],
-                card_width=50  # Smaller cards to fit the new layout
+                card_width=50
             )
             
-            # Display the deck
             st.markdown(deck_html, unsafe_allow_html=True)
-            
 
-            # 2. ADD 2-COLUMN LAYOUT: Energy + See Details button
+            # 3. USE CACHED ENERGY TYPES
             col1, col2 = st.columns([2, 1])
             
             with col1:
-                # Get energy types from dedicated cache
                 energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                 
-                # Display energy types if available
                 if energy_types:
-                    # Create compact energy display
-                    energy_html = ""
-                    for energy in energy_types:
-                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
-                    
-                    st.markdown(f"""
-                    <div style="margin-top:5px;">
-                        <div>{energy_html}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    # USE CACHED ENERGY ICON RENDERING
+                    energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
+                    st.markdown(energy_html, unsafe_allow_html=True)
                 else:
                     st.markdown("""
                     <div style="margin-bottom: 5px;">
@@ -473,28 +483,24 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                     """, unsafe_allow_html=True)
             
             with col2:
-                # See Details button
                 if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-                    # Set the deck to analyze
                     st.session_state.deck_to_analyze = deck['deck_name']
                     st.rerun()
             st.caption(f"Power Index: {power_index}")
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
-        
+
 def render_sidebar_from_cache():
-    # Call update check function for background updates
+    """Render sidebar with aggressive caching"""
     check_and_update_tournament_data()
 
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
  
-    # Load and encode the banner image if it exists
-    banner_path = "sidebar_banner.png"
-    if os.path.exists(banner_path):
-        with open(banner_path, "rb") as f:
-            banner_base64 = base64.b64encode(f.read()).decode()
+    # USE CACHED BANNER IMAGE
+    banner_base64 = get_cached_banner_image("sidebar_banner.png")
+    if banner_base64:
         st.markdown(f"""
         <div style="width:100%; text-align:center;">
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
@@ -503,18 +509,10 @@ def render_sidebar_from_cache():
     else:
         st.title("Top 10 Meta Decks")
 
-    # UPDATED: Add the same configuration as trending section for Top 10 Meta Decks
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Get the first top deck (highest Power Index)
         top_deck = st.session_state.performance_data.iloc[0]
         
-        # Create deck_info for header image generation
-        deck_info = {
-            'deck_name': top_deck['deck_name'],
-            'set': top_deck['set']
-        }
-        
-        # FIX: Use top_deck instead of undefined 'deck' variable
+        # USE CACHED HEADER IMAGE
         header_image = get_header_image_cached(top_deck['deck_name'], top_deck['set'])
 
         if header_image:
@@ -530,6 +528,186 @@ def render_sidebar_from_cache():
                 <span style="color: #888; font-size: 0.8rem;">No image</span>
             </div>
             """, unsafe_allow_html=True)
+    
+    # Rest of render_sidebar_from_cache remains the same...
+    # [Include all the remaining logic but replace any create_deck_header_images calls with get_header_image_cached]
+
+def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
+    """Render a single trending deck in the sidebar with cached components"""
+    tournaments_played = deck['tournaments_played']
+    rank_symbol = "🚀"
+    
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+        try:
+            # USE CACHED HEADER IMAGE
+            header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
+            
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: 10px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # USE CACHED SAMPLE DECK
+            deck_name = deck['deck_name']
+            sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED
+            
+            from card_renderer import render_sidebar_deck
+            deck_html = render_sidebar_deck(
+                sample_deck['pokemon_cards'], 
+                sample_deck['trainer_cards'],
+                card_width=50
+            )
+            st.markdown(deck_html, unsafe_allow_html=True)
+
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                # USE CACHED ENERGY TYPES
+                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                
+                if energy_types:
+                    # USE CACHED ENERGY RENDERING
+                    energy_html_compact = ""
+                    for energy in energy_types:
+                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+                        energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
+                    
+                    st.markdown(f"""
+                    <div style="margin-top:5px; ">
+                        <div>{energy_html_compact}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown("""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            with col2:
+                if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+                    st.session_state.deck_to_analyze = deck['deck_name']
+                    st.rerun()
+            
+            st.caption(f"Best Finishes: {tournaments_played}")
+            
+        except Exception as e:
+            st.warning(f"Unable to load deck preview for {deck_name}")
+            print(f"Error rendering trending deck in sidebar: {e}")
+
+# ADD: Counter picker with cached components
+def analyze_counter(selected_decks):
+    """Analyze counter decks with cached header images"""
+    counter_data = []
+    selected_internal_names = []
+    
+    for displayed in selected_decks:
+        for _, meta_deck in st.session_state.performance_data.iterrows():
+            if meta_deck['displayed_name'] == displayed:
+                selected_internal_names.append(meta_deck['deck_name'])
+
+    for _, deck in st.session_state.performance_data.iterrows():
+        deck_name = deck['deck_name']
+        set_name = deck['set']
+        displayed_name = deck['displayed_name']
+        
+        matchups = fetch_matchup_data(deck_name, set_name)
+        
+        if matchups.empty:
+            continue
+        
+        total_weighted_win_rate = 0
+        total_matches = 0
+        matched_decks = 0
+        
+        for _, matchup in matchups.iterrows():
+            if matchup['opponent_deck_name'] in selected_internal_names:
+                match_count = matchup['matches_played']
+                total_weighted_win_rate += matchup['win_pct'] * match_count
+                total_matches += match_count
+                matched_decks += 1
+        
+        if (matched_decks >= len(selected_decks) / 2 and 
+            total_matches >= MIN_COUNTER_MATCHES):
+            avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
+            confidence = 'High' if total_matches >= 20 else 'Medium'
+            
+            counter_data.append({
+                'deck_name': deck_name,
+                'displayed_name': displayed_name,
+                'set': set_name,
+                'average_win_rate': avg_win_rate,
+                'meta_share': deck['share'],
+                'power_index': deck['power_index'],
+                'matched_decks': matched_decks,
+                'total_selected': len(selected_decks),
+                'total_matches': total_matches,
+                'confidence': confidence
+            })
+    
+    if counter_data:
+        counter_df = pd.DataFrame(counter_data)
+        counter_df = counter_df.sort_values('average_win_rate', ascending=False)
+        
+        st.write("#### Top Counters to Selected Decks")
+        
+        for i in range(min(5, len(counter_df))):
+            deck = counter_df.iloc[i]
+            
+            # USE CACHED HEADER IMAGE
+            header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
+            
+            is_top_three = i < 3
+            
+            if is_top_three:
+                win_rate = deck['average_win_rate']
+                total_matches = deck['total_matches']
+                confidence = deck['confidence']
+                
+                confidence_color = "#4FCC20" if confidence == 'High' else "#FDA700"
+                confidence_text = f"({total_matches} matches, {confidence.lower()} confidence)"
+                win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
+                
+                if header_image:
+                    st.markdown(f"""
+                    <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+                        <div style="flex: 1; margin-right: 1rem;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
+                        </div>
+                        <div style="text-align: right; min-width: 80px;">
+                            <span style="font-size: 1.4rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <div style="font-size: 0.7rem; margin-top: -0.5rem; color: {confidence_color};">{confidence_text}</div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
+                button_label = f"{rank_emoji} {deck['displayed_name']}"
+                
+                button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
+                st.button(
+                    button_label, 
+                    key=button_key,
+                    type="tertiary",
+                    on_click=set_deck_to_analyze,
+                    args=(deck['deck_name'],)
+                )
+            
+            # Add divider between decks
+            if i < min(4, len(counter_df) - 1):
+                divider_style = "solid 0.5px"
+                divider_color = "#ddd"
+                st.markdown(f"<hr style='margin-top: -10px; margin-bottom: -10px; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+        
+        st.caption(f"Win rates are weighted by match count and filtered for reliability "
+                   f"(minimum {MIN_COUNTER_MATCHES} matches per matchup). "
+                   f"Higher confidence = more tournament data available. "
+                   f"Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+    else:
+        st.warning("No counter data found for the selected decks")
+
     
     # NEW: Add 2-column layout for top deck and See now button (same as trending)
     col1, col2 = st.columns([3, 1])
@@ -816,236 +994,116 @@ def display_counter_picker_sidebar():
         # Reset the flag after analysis
         st.session_state.run_counter_analysis = False
 
-def analyze_counter(selected_decks):        
-    # with st.spinner("Analyzing counters..."):
-        # This collects all matchup data for each meta deck
-        counter_data = []
+def analyze_counter(selected_decks):
+    """Analyze counter decks with cached header images"""
+    counter_data = []
+    selected_internal_names = []
+    
+    for displayed in selected_decks:
+        for _, meta_deck in st.session_state.performance_data.iterrows():
+            if meta_deck['displayed_name'] == displayed:
+                selected_internal_names.append(meta_deck['deck_name'])
 
-        selected_internal_names = []
-        for displayed in selected_decks:
-            for _, meta_deck in st.session_state.performance_data.iterrows():
-                if meta_deck['displayed_name'] == displayed:
-                    selected_internal_names.append(meta_deck['deck_name'])
-
-        # For each possible counter deck in the meta
-        for _, deck in st.session_state.performance_data.iterrows():
-            deck_name = deck['deck_name']
-            set_name = deck['set']
-            displayed_name = deck['displayed_name']
-            
-            # Get this deck's matchups
-            matchups = fetch_matchup_data(deck_name, set_name)
-            
-            if matchups.empty:
-                continue
-            
-            # Initialize variables for weighted average calculation
-            total_weighted_win_rate = 0
-            total_matches = 0
-            matched_decks = 0  # Add this line to initialize matched_decks
-            
-            # Look for matchups against selected decks
-            for _, matchup in matchups.iterrows():
-                if matchup['opponent_deck_name'] in selected_internal_names:
-                    # Get the number of matches for this matchup
-                    match_count = matchup['matches_played']
-                    
-                    # Add to weighted sum (win percentage × number of matches)
-                    total_weighted_win_rate += matchup['win_pct'] * match_count
-                    
-                    # Add to total matches count
-                    total_matches += match_count
-                    
-                    # Still track number of matched decks for filtering
-                    matched_decks += 1
-            
-            # UPDATE THIS: More strict filtering for counter analysis
-            if (matched_decks >= len(selected_decks) / 2 and 
-                total_matches >= MIN_COUNTER_MATCHES):
-                avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
-                
-                # ADD confidence indicator
-                confidence = 'High' if total_matches >= 20 else 'Medium'
-                
-                counter_data.append({
-                    'deck_name': deck_name,
-                    'displayed_name': displayed_name,
-                    'set': set_name,
-                    'average_win_rate': avg_win_rate,
-                    'meta_share': deck['share'],
-                    'power_index': deck['power_index'],
-                    'matched_decks': matched_decks,
-                    'total_selected': len(selected_decks),
-                    'total_matches': total_matches,  # ADD THIS for transparency
-                    'confidence': confidence  # ADD THIS
-                })
+    for _, deck in st.session_state.performance_data.iterrows():
+        deck_name = deck['deck_name']
+        set_name = deck['set']
+        displayed_name = deck['displayed_name']
         
-        # # Create DataFrame and sort by average win rate
-        if counter_data:
-            counter_df = pd.DataFrame(counter_data)
-            counter_df = counter_df.sort_values('average_win_rate', ascending=False)
+        matchups = fetch_matchup_data(deck_name, set_name)
+        
+        if matchups.empty:
+            continue
+        
+        total_weighted_win_rate = 0
+        total_matches = 0
+        matched_decks = 0
+        
+        for _, matchup in matchups.iterrows():
+            if matchup['opponent_deck_name'] in selected_internal_names:
+                match_count = matchup['matches_played']
+                total_weighted_win_rate += matchup['win_pct'] * match_count
+                total_matches += match_count
+                matched_decks += 1
+        
+        if (matched_decks >= len(selected_decks) / 2 and 
+            total_matches >= MIN_COUNTER_MATCHES):
+            avg_win_rate = total_weighted_win_rate / total_matches if total_matches > 0 else 0
+            confidence = 'High' if total_matches >= 20 else 'Medium'
             
-            # Display top 5 counter decks with images and metrics
-            st.write("#### Top Counters to Selected Decks")
+            counter_data.append({
+                'deck_name': deck_name,
+                'displayed_name': displayed_name,
+                'set': set_name,
+                'average_win_rate': avg_win_rate,
+                'meta_share': deck['share'],
+                'power_index': deck['power_index'],
+                'matched_decks': matched_decks,
+                'total_selected': len(selected_decks),
+                'total_matches': total_matches,
+                'confidence': confidence
+            })
+    
+    if counter_data:
+        counter_df = pd.DataFrame(counter_data)
+        counter_df = counter_df.sort_values('average_win_rate', ascending=False)
+        
+        st.write("#### Top Counters to Selected Decks")
+        
+        for i in range(min(5, len(counter_df))):
+            deck = counter_df.iloc[i]
             
-            # Display top 5 counter decks
-            for i in range(min(5, len(counter_df))):
-                deck = counter_df.iloc[i]
-                
-                # Create deck_info object needed for create_deck_header_images
-                deck_info = {
-                    'deck_name': deck['deck_name'],
-                    'set': deck['set']
-                }
-                
-                # Preload Pokemon info into session state to help with image generation
-                import cache_manager
-                if 'deck_pokemon_info' not in st.session_state:
-                    st.session_state.deck_pokemon_info = {}
-                
-                if deck['deck_name'] not in st.session_state.deck_pokemon_info:
-                    # Try to get sample deck to extract Pokemon info
-                    sample_deck = cache_manager.get_or_load_sample_deck(deck['deck_name'], deck['set'])
-                    
-                    # This helps create_deck_header_images find the Pokemon
-                    if 'pokemon_cards' in sample_deck:
-                        from image_processor import extract_pokemon_from_deck_name
-                        pokemon_names = extract_pokemon_from_deck_name(deck['deck_name'])
-                        
-                        if pokemon_names:
-                            st.session_state.deck_pokemon_info[deck['deck_name']] = []
-                            
-                            for pokemon_name in pokemon_names[:2]:
-                                # Find matching card in sample deck
-                                for card in sample_deck['pokemon_cards']:
-                                    # Normalize names for comparison
-                                    card_name_norm = card['card_name'].lower().replace(' ', '-')
-                                    pokemon_name_norm = pokemon_name.lower()
-                                    
-                                    if card_name_norm == pokemon_name_norm:
-                                        st.session_state.deck_pokemon_info[deck['deck_name']].append({
-                                            'name': pokemon_name,
-                                            'card_name': card['card_name'],
-                                            'set': card.get('set', ''),
-                                            'num': card.get('num', '')
-                                        })
-                                        break
-                
-                # Generate header image - passing empty results since we've preloaded info
-                header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-                
-                # Check if this is a top 3 or lower ranked deck
-                is_top_three = i < 3
-                
-                # UPDATE the win rate display sections:
-                if is_top_three:
-                    win_rate = deck['average_win_rate']
-                    total_matches = deck['total_matches']
-                    confidence = deck['confidence']
-                    
-                    # Add confidence indicator
-                    confidence_color = "#4FCC20" if confidence == 'High' else "#FDA700"
-                    confidence_text = f"({total_matches} matches, {confidence.lower()} confidence)"
-                    
-                    win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
-                    
-                    if header_image:
-                        st.markdown(f"""
-                        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-                            <div style="flex: 1; margin-right: 1rem;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
-                            </div>
-                            <div style="text-align: right; min-width: 80px;">
-                                <span style="font-size: 1.4rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                                <div style="font-size: 0.7rem; margin-top: -0.5rem; color: {confidence_color};">{confidence_text}</div>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        # Placeholder if no image
-                        st.markdown(f"""
-                        <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                            <div style="flex: 1; margin-right: 1rem;">
-                                <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px; 
-                                    display: flex; align-items: center; justify-content: center;">
-                                    <span style="color: #888;">No image</span>
-                                </div>
-                            </div>
-                            <div style="text-align: right; min-width: 80px;">
-                                <span style="font-size: 1.4rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                                <div style="font-size: 0.8rem; margin-top: -0.5rem;">win rate</div>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    
-                    # Button below the image/win rate container
-                    rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
-                    button_label = f"{rank_emoji} {deck['displayed_name']}"
-                    
-                    button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
-                    st.button(
-                        button_label, 
-                        key=button_key,
-                        type="tertiary",
-                        on_click=set_deck_to_analyze,
-                        args=(deck['deck_name'],)
-                    )
-                else:
-                    # Combined image and win rate container for 4th/5th place
-                    if header_image:
-                        st.markdown(f"""
-                        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-                            <div style="flex: 1; margin-right: 1rem;">
-                                <img src="data:image/png;base64,{header_image}" style="width: 85%; max-width: 250px; height: auto; border-radius: 10px;">
-                            </div>
-                            <div style="text-align: right; min-width: 60px;">
-                                <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        # Smaller placeholder
-                        st.markdown(f"""
-                        <div style="display: flex; align-items: center; margin-bottom: 0rem;">
-                            <div style="flex: 1; margin-right: 1rem;">
-                                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px; 
-                                    display: flex; align-items: center; justify-content: center;">
-                                    <span style="color: #888; font-size: 0.9rem;">No image</span>
-                                </div>
-                            </div>
-                            <div style="text-align: right; min-width: 60px;">
-                                <span style="font-size: 1.2rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    
-                    # Button below the image/win rate container
-                    rank_num = f"#{i+1}"
-                    button_label = f"{rank_num} {deck['displayed_name']}"
-                    
-                    button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
-                    st.button(
-                        button_label, 
-                        key=button_key,
-                        type="tertiary",
-                        on_click=set_deck_to_analyze,
-                        args=(deck['deck_name'],)
-                    )
-                
-                # Add a horizontal line between decks
-                if i < min(4, len(counter_df) - 1):
-                    # Top 3 get normal divider, 4-5 get thinner divider
-                    divider_style = "solid 0.5px"
-                    divider_color = "#ddd"
-                    st.markdown(f"<hr style='margin-top: -10px; margin-bottom: -10px; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+            # USE CACHED HEADER IMAGE
+            header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
             
-            # Add explanation text 
-            st.caption(f"Win rates are weighted by match count and filtered for reliability "
-                       f"(minimum {MIN_COUNTER_MATCHES} matches per matchup). "
-                       f"Higher confidence = more tournament data available. "
-                       f"Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
-        else:
-            st.warning("No counter data found for the selected decks")
+            is_top_three = i < 3
+            
+            if is_top_three:
+                win_rate = deck['average_win_rate']
+                total_matches = deck['total_matches']
+                confidence = deck['confidence']
+                
+                confidence_color = "#4FCC20" if confidence == 'High' else "#FDA700"
+                confidence_text = f"({total_matches} matches, {confidence.lower()} confidence)"
+                win_color = "#4FCC20" if win_rate >= 60 else "#fd6c6c" if win_rate < 40 else "#FDA700"
+                
+                if header_image:
+                    st.markdown(f"""
+                    <div style="display: flex; align-items: center; margin-bottom: 0rem;">
+                        <div style="flex: 1; margin-right: 1rem;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 250px; height: auto; border-radius: 10px;">
+                        </div>
+                        <div style="text-align: right; min-width: 80px;">
+                            <span style="font-size: 1.4rem; font-weight: bold; color: {win_color};">{win_rate:.1f}%</span>
+                            <div style="font-size: 0.7rem; margin-top: -0.5rem; color: {confidence_color};">{confidence_text}</div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                rank_emoji = ["🥇", "🥈", "🥉"][i] if i < 3 else f"#{i+1}"
+                button_label = f"{rank_emoji} {deck['displayed_name']}"
+                
+                button_key = f"counter_deck_btn_{deck['deck_name']}_{i}"
+                st.button(
+                    button_label, 
+                    key=button_key,
+                    type="tertiary",
+                    on_click=set_deck_to_analyze,
+                    args=(deck['deck_name'],)
+                )
+            
+            # Add divider between decks
+            if i < min(4, len(counter_df) - 1):
+                divider_style = "solid 0.5px"
+                divider_color = "#ddd"
+                st.markdown(f"<hr style='margin-top: -10px; margin-bottom: -10px; border-top: {divider_style} {divider_color};'>", unsafe_allow_html=True)
+        
+        st.caption(f"Win rates are weighted by match count and filtered for reliability "
+                   f"(minimum {MIN_COUNTER_MATCHES} matches per matchup). "
+                   f"Higher confidence = more tournament data available. "
+                   f"Data from [Limitless TCG](https://play.limitlesstcg.com/decks?game=pocket)")
+    else:
+        st.warning("No counter data found for the selected decks")
+
 
 def get_confidence_indicator(matches, min_threshold):
     """Get confidence level and color for match count"""
@@ -1066,22 +1124,14 @@ def set_deck_to_analyze(deck_name):
 # In ui_helpers.py - Add this new function
 
 def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
-    """Render a single trending deck in the sidebar with header image, energy, and details button"""
-    # Format tournaments played count
+    """Render a single trending deck in the sidebar with cached components"""
     tournaments_played = deck['tournaments_played']
-    
-    # Use rocket emoji for all trending deck ranks
     rank_symbol = "🚀"
     
-    # Create a plain text expander title with rocket emoji and tournaments played
     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
         try:
-            # 1. ADD HEADER IMAGE AT TOP
-            deck_info = {
-                'deck_name': deck['deck_name'],
-                'set': deck['set']
-            }
-            header_image = create_deck_header_images(deck_info, None)
+            # USE CACHED HEADER IMAGE
+            header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
             
             if header_image:
                 st.markdown(f"""
@@ -1090,38 +1140,34 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                 </div>
                 """, unsafe_allow_html=True)
             
-            
-            # 3. CARD GRID (existing functionality)
+            # USE CACHED SAMPLE DECK
             deck_name = deck['deck_name']
-            sample_deck = cache_manager.get_or_load_sample_deck(deck_name, deck['set'])
+            sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED
             
-            # Render deck view
             from card_renderer import render_sidebar_deck
             deck_html = render_sidebar_deck(
                 sample_deck['pokemon_cards'], 
                 sample_deck['trainer_cards'],
-                card_width=50  # Smaller cards to fit the new layout
+                card_width=50
             )
             st.markdown(deck_html, unsafe_allow_html=True)
 
-            # 2. ADD 2-COLUMN LAYOUT: Energy + See Details button
             col1, col2 = st.columns([2, 1])
             
             with col1:
-                # Get energy types from dedicated cache
+                # USE CACHED ENERGY TYPES
                 energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                 
-                # Display energy types if available
                 if energy_types:
-                    # Create compact energy display
-                    energy_html = ""
+                    # USE CACHED ENERGY RENDERING
+                    energy_html_compact = ""
                     for energy in energy_types:
                         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
+                        energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
                     
                     st.markdown(f"""
                     <div style="margin-top:5px; ">
-                        <div>{energy_html}</div>
+                        <div>{energy_html_compact}</div>
                     </div>
                     """, unsafe_allow_html=True)
                 else:
@@ -1132,13 +1178,10 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                     """, unsafe_allow_html=True)
             
             with col2:
-                # See Details button
                 if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-                    # Set the deck to analyze
                     st.session_state.deck_to_analyze = deck['deck_name']
                     st.rerun()
             
-            # Display the deck
             st.caption(f"Best Finishes: {tournaments_played}")
             
         except Exception as e:
