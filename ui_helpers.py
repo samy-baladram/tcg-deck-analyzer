@@ -574,7 +574,7 @@ def render_sidebar_from_cache():
                 st.session_state.deck_to_analyze = banner_deck['deck_name']
                 st.rerun()
             st.markdown(f"""
-            <div style="width: 100%; margin-top:-4.5rem;  margin-bottom: -1rem; pointer-events: none; z-index: -1;">
+            <div style="width: 100%; margin-top:-4.5rem;  margin-bottom: -3rem; pointer-events: none; z-index: -1;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; pointer-events: none;">
             </div>
             """, unsafe_allow_html=True)
@@ -592,13 +592,12 @@ def render_sidebar_from_cache():
         if st.button(
             test_deck['displayed_name'], 
             key="test_trending_deck_button",
-            type="tertiary",
+            type="secondary",
             use_container_width=True
         ):
             # Set the deck to analyze (same logic as counter picker)
             st.session_state.deck_to_analyze = test_deck['deck_name']
             st.rerun()
-
 
         # Initialize trending decks visibility state
         if 'show_trending_decks' not in st.session_state:
@@ -608,7 +607,7 @@ def render_sidebar_from_cache():
         button_text = "Refresh" if st.session_state.show_trending_decks else "See More"
         
         # Always show the button, but change text after clicking
-        if st.button(button_text, type="secondary", use_container_width=True, key="trending_button"):
+        if st.button(button_text, type="tertiary", use_container_width=True, key="trending_button"):
             if st.session_state.show_trending_decks:
                 # If already showing, refresh the page
                 st.rerun()
