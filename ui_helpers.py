@@ -550,29 +550,38 @@ def render_sidebar_from_cache():
             </div>
             """, unsafe_allow_html=True)
         
-        # Button to switch to this deck
-        if st.button(
-            test_deck['displayed_name'], 
-            key="test_trending_deck_button",
-            type="tertiary",
-            use_container_width=False
-        ):
-            # Set the deck to analyze (same logic as counter picker)
-            st.session_state.deck_to_analyze = test_deck['deck_name']
-            st.rerun()
+        # NEW: Create 2-column layout for buttons side by side
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            # Button to switch to this deck
+            if st.button(
+                test_deck['displayed_name'], 
+                key="test_trending_deck_button",
+                type="tertiary",
+                use_container_width=True
+            ):
+                # Set the deck to analyze (same logic as counter picker)
+                st.session_state.deck_to_analyze = test_deck['deck_name']
+                st.rerun()
 
+        with col2:
+            # Initialize trending decks visibility state
+            if 'show_trending_decks' not in st.session_state:
+                st.session_state.show_trending_decks = False
 
-    # Add vertical space to align with the image/button layout
-    #st.markdown("<div style='height: 60px;'></div>", unsafe_allow_html=True)
-    # Add button to toggle trending decks visibility
-    if 'show_trending_decks' not in st.session_state:
-        st.session_state.show_trending_decks = False
-
-    # Only show the button if trending decks are not currently visible
-    if not st.session_state.show_trending_decks:
-        if st.button("See More", type="secondary", use_container_width=False, key="trending_button"):
-            st.session_state.show_trending_decks = True
-            st.rerun()
+            # Determine button text based on current state
+            button_text = "Refresh" if st.session_state.show_trending_decks else "See More"
+            
+            # Always show the button, but change text after clicking
+            if st.button(button_text, type="secondary", use_container_width=True, key="trending_button"):
+                if st.session_state.show_trending_decks:
+                    # If already showing, refresh the page
+                    st.rerun()
+                else:
+                    # If not showing, show the trending decks
+                    st.session_state.show_trending_decks = True
+                    st.rerun()
     
     # Only show trending decks if the button has been clicked
     if st.session_state.show_trending_decks:
