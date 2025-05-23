@@ -460,7 +460,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                 if header_image:
                     st.markdown(f"""
                     <div style="width: 100%; margin-bottom: 10px;">
-                        <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
+                        <img src="data:image/png;base64,{header_image}" style="width: 110%; height: auto; border: 1px solid #ddd; margin-left: -5%;">
                     </div>
                     """, unsafe_allow_html=True)
                 
