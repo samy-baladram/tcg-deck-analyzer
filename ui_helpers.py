@@ -246,32 +246,41 @@ def create_deck_options():
     
     return deck_display_names, deck_name_mapping
 
+# Fix 2: Update ui_helpers.py - Fix the deck selection callback
 def on_deck_change():
-    """Handle deck dropdown selection change"""
+    """Handle deck dropdown selection change with proper cache clearing"""
     if 'deck_select' not in st.session_state:
         return
         
     selection = st.session_state.deck_select
     if selection:
         if 'deck_display_names' not in st.session_state:
-            # Skip if deck_display_names not loaded yet
             return
             
-        st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
+        # Get the new deck info
+        new_deck_info = st.session_state.deck_name_mapping[selection]
+        new_deck_name = new_deck_info['deck_name']
+        new_set_name = new_deck_info['set']
         
-        # Set the deck to analyze
-        if 'deck_name_mapping' in st.session_state:
-            deck_info = st.session_state.deck_name_mapping[selection]
+        # Check if this is actually a different deck
+        current_deck = st.session_state.get('analyze', {})
+        if (current_deck.get('deck_name') != new_deck_name or 
+            current_deck.get('set_name') != new_set_name):
+            
+            # Clear caches for the new deck to force fresh analysis
+            import cache_manager
+            cache_manager.clear_deck_cache_on_switch(new_deck_name, new_set_name)
+            
+            # Update selection index
+            st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
+            
+            # Set the new deck to analyze
             st.session_state.analyze = {
-                'deck_name': deck_info['deck_name'],
-                'set_name': deck_info['set'],
+                'deck_name': new_deck_name,
+                'set_name': new_set_name,
             }
             
-            # Track player-tournament mapping for this deck to enable efficient updates
-            cache_manager.track_player_tournament_mapping(
-                deck_info['deck_name'], 
-                deck_info['set']
-            )
+            print(f"Switched to deck: {new_deck_name}")
     else:
         st.session_state.selected_deck_index = None
 
