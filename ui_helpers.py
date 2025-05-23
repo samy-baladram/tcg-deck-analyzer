@@ -507,48 +507,22 @@ def render_sidebar_from_cache():
     # ADD NEW SECTION: Trending Decks
     st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     
-    # TRICK: Make the trending banner clickable by overlaying it on a button
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        # Get the first trending deck for the banner
-        banner_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
-        
-        
-        # Then overlay the banner image with negative margin to cover the button
-        trending_banner_path = "trending_banner.png"
-        if os.path.exists(trending_banner_path):
-            with open(trending_banner_path, "rb") as f:
-                trending_banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""
-            <div style="width:100%; text-align:center;  margin-bottom: 1rem; ">
-                <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px; ">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            # Fallback with deck name overlay
-            st.markdown(f"""
-            <div style="width:100%; text-align:center;  margin-bottom: -1rem; pointer-events: none;">
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                           padding: 20px; border-radius: 10px; color: white; pointer-events: none;">
-                    <h3 style="margin: 0; pointer-events: none;">🚀 Trending Decks</h3>
-                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; pointer-events: none;">Click to analyze: {banner_deck['displayed_name']}</p>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+    # Load and encode the trending banner image if it exists
+    trending_banner_path = "trending_banner.png"  # You'll need to create this image
+    if os.path.exists(trending_banner_path):
+        with open(trending_banner_path, "rb") as f:
+            trending_banner_base64 = base64.b64encode(f.read()).decode()
+        st.markdown(f"""
+        <div style="width:100%; text-align:center; margin:0px 0 5px 0;">
+            <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        # Original non-clickable banner if no performance data
-        trending_banner_path = "trending_banner.png"
-        if os.path.exists(trending_banner_path):
-            with open(trending_banner_path, "rb") as f:
-                trending_banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""
-            <div style="width:100%; text-align:center; margin:0px 0 5px 0;">
-                <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("### 📈 Trending Decks")
+        st.markdown("### 📈 Trending Decks")
 
-    # Show header image and button for a sample deck (keeping as regular buttons)
+    # NEW: Add 2-column layout for test deck and See More button
+
+    # Test: Show header image and button for a sample deck
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         # Get the first trending deck for testing
         test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
@@ -562,21 +536,10 @@ def render_sidebar_from_cache():
         # Generate header image
         header_image = create_deck_header_images(deck_info, None)
         
-        # Button to switch to this deck (regular button)
-        if st.button(
-            test_deck['displayed_name'], 
-            key="test_trending_deck_button",
-            type="secondary",
-            use_container_width=True
-        ):
-            # Set the deck to analyze (same logic as counter picker)
-            st.session_state.deck_to_analyze = test_deck['deck_name']
-            st.rerun()
-            
         if header_image:
             st.markdown(f"""
-            <div style="width: 100%; margin-top:-2rem;  margin-bottom: -3rem; pointer-events: none;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; pointer-events: none;">
+            <div style="width: 100%; margin-bottom: -1rem;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px;">
             </div>
             """, unsafe_allow_html=True)
         else:
@@ -586,18 +549,32 @@ def render_sidebar_from_cache():
                 <span style="color: #888; font-size: 0.8rem;">No image</span>
             </div>
             """, unsafe_allow_html=True)
+        
+        # NEW: Create 2-column layout for buttons side by side
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            # Button to switch to this deck
+            if st.button(
+                test_deck['displayed_name'], 
+                key="test_trending_deck_button",
+                type="tertiary",
+                use_container_width=True
+            ):
+                # Set the deck to analyze (same logic as counter picker)
+                st.session_state.deck_to_analyze = test_deck['deck_name']
+                st.rerun()
 
-        # Initialize trending decks visibility state
-        if 'show_trending_decks' not in st.session_state:
-            st.session_state.show_trending_decks = False
+        with col2:
+            # Initialize trending decks visibility state
+            if 'show_trending_decks' not in st.session_state:
+                st.session_state.show_trending_decks = False
 
-        # Determine button text based on current state
-        button_text = "" if st.session_state.show_trending_decks else "See More"
-
-        col1, col2 = st.columns([1,3])
-        with col2:                            
+            # Determine button text based on current state
+            button_text = "Refresh" if st.session_state.show_trending_decks else "See More"
+            
             # Always show the button, but change text after clicking
-            if st.button(button_text, type="tertiary", use_container_width=True, key="trending_button"):
+            if st.button(button_text, type="secondary", use_container_width=True, key="trending_button"):
                 if st.session_state.show_trending_decks:
                     # If already showing, refresh the page
                     st.rerun()
@@ -605,7 +582,7 @@ def render_sidebar_from_cache():
                     # If not showing, show the trending decks
                     st.session_state.show_trending_decks = True
                     st.rerun()
-        
+    
     # Only show trending decks if the button has been clicked
     if st.session_state.show_trending_decks:
         # Ensure energy cache is initialized
