@@ -460,7 +460,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                 if header_image:
                     st.markdown(f"""
                     <div style="width: 100%; margin-bottom: 10px;">
-                        <img src="data:image/png;base64,{header_image}" style="width: 110%; height: auto; border: 1px solid #ddd; margin-left: -5%;">
+                        <img src="data:image/png;base64,{header_image}" style="width: 110%; height: auto; border: 1px solid #000; margin-left: -5%;">
                     </div>
                     """, unsafe_allow_html=True)
                 
@@ -750,7 +750,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
             if header_image:
                 st.markdown(f"""
                 <div style="width: 100%; margin-bottom: 10px;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #000; border-radius: 6px;">
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -951,7 +951,7 @@ def analyze_counter_with_expanders(selected_decks):
                     if header_image:
                         st.markdown(f"""
                         <div style="width: 100%; margin-bottom: 10px;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 110%; height: auto; border: 1px solid #ddd; margin-left: -5%;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 110%; height: auto; border: 1px solid #000; margin-left: -5%;">
                         </div>
                         """, unsafe_allow_html=True)
                     
@@ -1087,7 +1087,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
             if header_image:
                 st.markdown(f"""
                 <div style="width: 100%; margin-bottom: 10px;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 110%; height: auto; border: 1px solid #ddd; margin-left: -5%;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 110%; height: auto; border: 1px solid #000; margin-left: -5%;">
                 </div>
                 """, unsafe_allow_html=True)
             
