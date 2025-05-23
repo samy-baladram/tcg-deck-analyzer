@@ -205,15 +205,29 @@ selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
 with st.sidebar:
-    ui_helpers.render_sidebar_from_cache()
+    # Check if we're switching decks or analyzing
+    if st.session_state.get('analyzing_deck', False):
+        # Show empty/minimal content during analysis
+        st.empty()
+        # Or just show a simple message
+        # st.info("Loading...")
+    else:
+        # Normal sidebar rendering
+        ui_helpers.render_sidebar_from_cache()
 
 # Main content area
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
     
+    # Set analyzing flag to prevent sidebar rendering
+    st.session_state.analyzing_deck = True
+    
     # Get analyzed deck from cache or analyze it
     with st.spinner("Analyzing deck..."):
         analyzed_deck = cache_manager.get_or_analyze_full_deck(original_deck_info['deck_name'], original_deck_info['set_name'])
+    
+    # Clear analyzing flag after analysis
+    st.session_state.analyzing_deck = False
     
     # Unpack the results
     results = analyzed_deck['results']
