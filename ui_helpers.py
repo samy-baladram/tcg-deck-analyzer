@@ -444,7 +444,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
                     
                     st.markdown(f"""
-                    <div style="margin-bottom: 5px;">
+                    <div style="margin-top:5px; margin-bottom: 5px;">
                         <div>{energy_html}</div>
                     </div>
                     """, unsafe_allow_html=True)
@@ -1105,7 +1105,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
                     
                     st.markdown(f"""
-                    <div style="margin-bottom: 5px;">
+                    <div style="margin-top:5px; margin-bottom: 5px;">
                         <div>{energy_html}</div>
                     </div>
                     """, unsafe_allow_html=True)
