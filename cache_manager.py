@@ -10,6 +10,9 @@ from analyzer import analyze_deck, build_deck_template, create_tournament_deck_m
 from scraper import get_all_recent_tournaments, get_new_tournament_ids, get_affected_decks, analyze_recent_performance, get_sample_deck_for_archetype
 from config import MIN_META_SHARE
 
+# In cache_manager.py - Add this import at the top
+from card_cache import get_sample_deck_cached, save_analyzed_deck_to_cache, get_analyzed_deck_cached
+
 def init_caches():
     """
     Initialize all necessary caches in session state without network calls.
@@ -60,43 +63,54 @@ def init_caches():
         # Mark as loaded
         st.session_state.first_load = True
 
+# Update the get_or_load_sample_deck function
+def get_or_load_sample_deck(deck_name, set_name):
+    """Get sample deck from cache or load if not cached"""
+    # Use cached version
+    sample_deck = get_sample_deck_cached(deck_name, set_name)
+    
+    # If no energy types in sample deck, try to get from other caches
+    if not sample_deck.get('energy_types'):
+        # Try to get energy types from analyzed deck cache
+        analyzed_key = f"full_deck_{deck_name}_{set_name}"
+        if analyzed_key in st.session_state.analyzed_deck_cache:
+            energy_types = st.session_state.analyzed_deck_cache[analyzed_key].get('energy_types', [])
+            most_common_energy = st.session_state.analyzed_deck_cache[analyzed_key].get('most_common_energy', [])
+            
+            # Update sample deck with energy info
+            sample_deck['energy_types'] = energy_types
+            sample_deck['most_common_energy'] = most_common_energy
+    
+    return sample_deck
+
+# Update the get_or_analyze_full_deck function
 def get_or_analyze_full_deck(deck_name, set_name):
     """Get full analyzed deck from cache or analyze if not cached"""
     # First check session cache
     cache_key = f"full_deck_{deck_name}_{set_name}"
     if cache_key in st.session_state.analyzed_deck_cache:
         print(f"Found {deck_name} in session cache")
-        
-        # Try to load collected decks metadata if not already loaded
-        load_collected_decks_metadata(deck_name, set_name)
-        
         return st.session_state.analyzed_deck_cache[cache_key]
     
-    # Then check disk cache
+    # Check card cache for basic deck template data
+    cached_deck_data = get_analyzed_deck_cached(deck_name, set_name)
+    if cached_deck_data:
+        print(f"Found basic deck data in card cache for {deck_name}")
+        # Store in session cache and return
+        st.session_state.analyzed_deck_cache[cache_key] = cached_deck_data
+        return cached_deck_data
+    
+    # Then check disk cache for full analysis
     cached_results, cached_total_decks, cached_variant_df, cached_energy_types = cache_utils.load_analyzed_deck_components(deck_name, set_name)
     
     if cached_results is not None:
-        print(f"Using cached data for {deck_name}")
-        
-        # Try to load collected decks metadata if not already loaded
-        load_collected_decks_metadata(deck_name, set_name)
+        print(f"Using cached analysis data for {deck_name}")
         
         # Generate the deck template from cached results
         deck_list, deck_info, total_cards, options = build_deck_template(cached_results)
         
-        # Try to get the most common energy combination from disk or collected decks
-        most_common_energy = []
-        deck_key = f"{deck_name}_{set_name}"
-        
-        # Check if we already have collected decks to calculate most common energy
-        if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
-            collected_data = st.session_state.collected_decks[deck_key]
-            if 'decks' in collected_data and collected_data['decks']:
-                most_common_energy = calculate_most_common_energy(collected_data['decks'])
-        
-        # If no collected decks, use cached energy types
-        if not most_common_energy and cached_energy_types:
-            most_common_energy = cached_energy_types
+        # Calculate most common energy
+        most_common_energy = get_most_common_energy(deck_name, set_name)
         
         # Create cache entry
         analyzed_data = {
@@ -107,36 +121,28 @@ def get_or_analyze_full_deck(deck_name, set_name):
             'deck_info': deck_info,
             'total_cards': total_cards,
             'options': options,
-            'energy_types': cached_energy_types,  # All energy types
-            'most_common_energy': most_common_energy  # Most common combination
+            'energy_types': cached_energy_types,
+            'most_common_energy': most_common_energy
         }
         
         # Store in session cache
         st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
+        
+        # Also save to card cache for faster future access
+        save_analyzed_deck_to_cache(deck_name, set_name, analyzed_data)
+        
         return analyzed_data
     
     # If not in any cache, analyze the deck
     print(f"No cache found for {deck_name}, analyzing")
     
-    # Analyze the deck (now returns energy types too)
+    # Rest of the analysis logic remains the same...
+    from analyzer import analyze_deck
     results, total_decks, variant_df, energy_types = analyze_deck(deck_name, set_name)
     deck_list, deck_info, total_cards, options = build_deck_template(results)
     
-    # Calculate most common energy combination
-    most_common_energy = []
-    deck_key = f"{deck_name}_{set_name}"
+    most_common_energy = get_most_common_energy(deck_name, set_name)
     
-    # Check if we have collected decks to calculate most common energy
-    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
-        collected_data = st.session_state.collected_decks[deck_key]
-        if 'decks' in collected_data and collected_data['decks']:
-            most_common_energy = calculate_most_common_energy(collected_data['decks'])
-    
-    # If no collected decks, use all energy types
-    if not most_common_energy and energy_types:
-        most_common_energy = energy_types
-    
-    # Create cache entry
     analyzed_data = {
         'results': results,
         'total_decks': total_decks,
@@ -145,8 +151,8 @@ def get_or_analyze_full_deck(deck_name, set_name):
         'deck_info': deck_info,
         'total_cards': total_cards,
         'options': options,
-        'energy_types': energy_types,  # All energy types
-        'most_common_energy': most_common_energy  # Most common combination
+        'energy_types': energy_types,
+        'most_common_energy': most_common_energy
     }
     
     # Store in session cache
@@ -155,50 +161,10 @@ def get_or_analyze_full_deck(deck_name, set_name):
     # Store in disk cache
     cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df, energy_types)
     
+    # Also save to card cache
+    save_analyzed_deck_to_cache(deck_name, set_name, analyzed_data)
+    
     return analyzed_data
-
-def get_or_load_sample_deck(deck_name, set_name):
-    """Get sample deck from cache or load if not cached"""
-    cache_key = f"sample_deck_{deck_name}_{set_name}"
-    
-    # Check if sample deck is in cache
-    if cache_key in st.session_state.sample_deck_cache:
-        return st.session_state.sample_deck_cache[cache_key]
-    
-    # Try to load energy types from analyzed deck cache first
-    energy_types = []
-    most_common_energy = []
-    analyzed_key = f"full_deck_{deck_name}_{set_name}"
-    
-    if analyzed_key in st.session_state.analyzed_deck_cache:
-        energy_types = st.session_state.analyzed_deck_cache[analyzed_key].get('energy_types', [])
-        most_common_energy = st.session_state.analyzed_deck_cache[analyzed_key].get('most_common_energy', [])
-    
-    # If no energy types in analyzed cache, try to load from disk
-    if not energy_types:
-        # Check if we have analyzed deck components on disk
-        _, _, _, disk_energy_types = cache_utils.load_analyzed_deck_components(deck_name, set_name)
-        energy_types = disk_energy_types
-    
-    # If still no energy types, load sample deck (which might have energy types)
-    pokemon_cards, trainer_cards, deck_energy_types = get_sample_deck_for_archetype(deck_name, set_name)
-    
-    # Use energy types from deck if available, otherwise use what we found earlier
-    if deck_energy_types:
-        energy_types = deck_energy_types
-        # If no most_common_energy yet, use deck_energy_types as fallback
-        if not most_common_energy:
-            most_common_energy = deck_energy_types
-    
-    # Store in cache
-    st.session_state.sample_deck_cache[cache_key] = {
-        'pokemon_cards': pokemon_cards,
-        'trainer_cards': trainer_cards,
-        'energy_types': energy_types,
-        'most_common_energy': most_common_energy
-    }
-    
-    return st.session_state.sample_deck_cache[cache_key]
 
 def aggregate_card_usage(force_update=False):
     """
