@@ -442,7 +442,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
             
             # Display the deck
             st.markdown(deck_html, unsafe_allow_html=True)
-            st.caption(f"Power Index: {power_index}")
+            
 
             # 2. ADD 2-COLUMN LAYOUT: Energy + See Details button
             col1, col2 = st.columns([2, 1])
@@ -477,7 +477,7 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                     # Set the deck to analyze
                     st.session_state.deck_to_analyze = deck['deck_name']
                     st.rerun()
-            
+            st.caption(f"Power Index: {power_index}")
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering deck in sidebar: {e}")
@@ -1101,6 +1101,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                 sample_deck['trainer_cards'],
                 card_width=50  # Smaller cards to fit the new layout
             )
+            st.markdown(deck_html, unsafe_allow_html=True)
 
             # 2. ADD 2-COLUMN LAYOUT: Energy + See Details button
             col1, col2 = st.columns([2, 1])
@@ -1137,7 +1138,6 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                     st.rerun()
             
             # Display the deck
-            st.markdown(deck_html, unsafe_allow_html=True)
             st.caption(f"Best Finishes: {tournaments_played}")
             
         except Exception as e:
