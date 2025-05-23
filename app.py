@@ -219,8 +219,11 @@ with st.sidebar:
 if 'analyze' in st.session_state and selected_option:
     original_deck_info = st.session_state.analyze
     
-    # Set analyzing flag to prevent sidebar rendering
-    st.session_state.analyzing_deck = True
+    # Check if we need to start analyzing
+    if not st.session_state.get('analyzing_deck', False):
+        # Set analyzing flag and trigger rerun
+        st.session_state.analyzing_deck = True
+        st.rerun()
     
     # Get analyzed deck from cache or analyze it
     with st.spinner("Analyzing deck..."):
