@@ -59,7 +59,7 @@ def get_deck_list():
                     'win_rate': win_rate
                 })
     
-    return pd.DataFrame(decks).sort_values('share', ascending=False)
+    return pd.DataFrame(decks).sort_values('win_rate', ascending=False)
 
 def get_popular_decks_with_performance(share_threshold=0.6):
     """Get decks that exceed a minimum share percentage with performance metrics."""
