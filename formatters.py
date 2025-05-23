@@ -85,14 +85,27 @@ def extract_pokemon_urls(deck_name):
     Returns:
         Tuple of (url1, url2) - Pokemon image URLs
     """
-    from config import POKEMON_URL_EXCEPTIONS
+    from config import POKEMON_URL_EXCEPTIONS, POKEMON_URL_SUFFIXES
     from image_processor import extract_pokemon_from_deck_name
     
     # Use the unified Pokemon extraction function
     pokemon_names = extract_pokemon_from_deck_name(deck_name)
     
-    # Convert to lowercase and remove spaces/hyphens for URL generation
-    pokemon_names = [name.lower().replace(' ', '').replace('-', '') for name in pokemon_names]
+    # Convert spaces back to hyphens and make lowercase for URL generation
+    pokemon_names = [name.lower().replace(' ', '-') for name in pokemon_names]
+    
+    # Remove Pokemon suffixes (ex, v, vmax, vstar, gx, sp)
+    cleaned_names = []
+    for name in pokemon_names:
+        # Split by hyphens to check each part
+        parts = name.split('-')
+        # Filter out suffixes
+        filtered_parts = [part for part in parts if part not in POKEMON_URL_SUFFIXES]
+        # Rejoin with hyphens
+        cleaned_name = '-'.join(filtered_parts)
+        cleaned_names.append(cleaned_name)
+    
+    pokemon_names = cleaned_names
     
     # Apply context-dependent exceptions
     if len(pokemon_names) >= 2:
@@ -127,4 +140,4 @@ def extract_pokemon_urls(deck_name):
     while len(urls) < 2:
         urls.append(None)
         
-    return urls[0], urls[1]  # Return as separate values
+    return urls[0], urls[1]
