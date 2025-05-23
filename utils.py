@@ -19,6 +19,7 @@ def calculate_time_ago(fetch_time):
 
 def is_set_code(part):
     """Check if a string matches the set code pattern"""
+    import re
     # NEW pattern - handles P-A, A3, A2a, etc.
     set_pattern = re.compile(r'^[a-z]+\-?[a-z0-9]*[a-z]?$', re.IGNORECASE)
     return bool(set_pattern.match(part))
