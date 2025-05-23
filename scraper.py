@@ -34,23 +34,16 @@ def get_deck_list():
                 share_text = cells[4].text.strip()
                 share = float(share_text.replace('%', '')) if '%' in share_text else 0
                 
-                # Extract win percentage (likely column 5 or 6)
-                # Try column 5 first
+                # Extract win rate from multiple columns
                 win_rate = 0
-                if len(cells) > 5:
-                    win_text = cells[5].text.strip()
-                    if '%' in win_text:
-                        try:
-                            win_rate = float(win_text.replace('%', ''))
-                        except ValueError:
-                            # If column 5 fails, try column 6
-                            if len(cells) > 6:
-                                win_text = cells[6].text.strip()
-                                if '%' in win_text:
-                                    try:
-                                        win_rate = float(win_text.replace('%', ''))
-                                    except ValueError:
-                                        win_rate = 0
+                for col_idx in [3, 5, 6, 7]:
+                    if col_idx < len(cells):
+                        cell_text = cells[col_idx].text.strip()
+                        if '%' in cell_text and cell_text != share_text:
+                            potential_win_rate = float(cell_text.replace('%', '')) if cell_text.replace('%', '').replace('.', '').isdigit() else 0
+                            if 0 <= potential_win_rate <= 100:
+                                win_rate = potential_win_rate
+                                break
                 
                 decks.append({
                     'deck_name': deck_name,
