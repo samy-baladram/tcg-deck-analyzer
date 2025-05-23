@@ -11,6 +11,7 @@ from config import MIN_META_SHARE
 import background
 import base64
 import os
+from header_image_cache import clear_expired_cache, get_cache_stats
 
 from PIL import Image
 
@@ -61,6 +62,17 @@ def initialize_matchup_cache():
 # Call the initialization function
 initialize_matchup_cache()
 
+# Add cache initialization after other initialization
+if 'cache_initialized' not in st.session_state:
+    # Clean expired cache on app start
+    clear_expired_cache()
+    st.session_state.cache_initialized = True
+    
+    # Optional: Display cache stats in development
+    if st.secrets.get("DEBUG_MODE", False):
+        stats = get_cache_stats()
+        print(f"Header image cache: {stats}")
+        
 # Add this check after state initialization but before UI rendering
 if 'switch_to_deck' in st.session_state:
     deck_name = st.session_state.switch_to_deck
