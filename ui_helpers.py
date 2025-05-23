@@ -609,10 +609,10 @@ def render_sidebar_from_cache():
         st.write("")
     
     # Continue with existing code (Counter Picker section)
-    st.markdown("<div style='margin-top: -2rem;'></div>", unsafe_allow_html=True)
-    st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+    
+    #st.markdown("<hr style='margin-top: 0px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     display_counter_picker_sidebar()
-    st.markdown("<hr style='margin-top: 300px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
+    #st.markdown("<hr style='margin-top: 300px; margin-bottom: 25px; border: 0; border-top: 0.5px solid;'>", unsafe_allow_html=True)
     with st.expander("🔍 About the Power Index"):
         # Format the explanation with the current date and tournament count
         formatted_explanation = POWER_INDEX_EXPLANATION.format(
