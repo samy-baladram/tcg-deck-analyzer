@@ -1754,14 +1754,14 @@ def display_matchup_summary(deck_name, set_name, working_df):
     st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), or unfavorable (<{win_lower}% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     # # Add a more detailed note about the data
     # st.write("")
-    # Display the treemap
+    # Display the bar chart
     display_matchup_bar_chart(deck_name, set_name, working_df)
     
     # Add some space
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
-    # ADDED: Display the bar chart
-    display_matchup_treemap(deck_name, set_name, working_df)
+    # ADDED: Display the treemap
+    #display_matchup_treemap(deck_name, set_name, working_df)
     
     
     # Add some space
