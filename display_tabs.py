@@ -905,12 +905,12 @@ def display_metagame_tab():
     # Create a cleaned, displayable version of the data
     display_df = performance_df.copy()
 
-    # Add rank column
-    display_df.insert(0, 'rank', range(1, len(display_df) + 1))
+    # Add rank column - FIX: Keep as integers initially
+    display_df['rank_int'] = range(1, len(display_df) + 1)
 
-    # Add an indicator emoji for the current deck
-    display_df['rank'] = display_df.apply(
-        lambda row: f"➡️ {row['rank']}" if row['deck_name'] == current_deck_name else row['rank'], 
+    # Add an indicator for the current deck - FIX: Create separate column
+    display_df['rank_display'] = display_df.apply(
+        lambda row: f"➡️ {row['rank_int']}" if row['deck_name'] == current_deck_name else str(row['rank_int']), 
         axis=1
     )
     
@@ -922,16 +922,14 @@ def display_metagame_tab():
     display_df['power_index'] = display_df['power_index'].round(2)
 
     # Extract Pokémon names and create image URLs
-    
-    # Apply the function to extract Pokémon image URLs
     display_df[['pokemon_url1', 'pokemon_url2']] = display_df.apply(
         lambda row: pd.Series(extract_pokemon_urls(row['displayed_name'])), 
         axis=1
     )
     
-    # Select and rename columns for display
+    # Select and rename columns for display - FIX: Use rank_display
     display_cols = {
-        'rank': 'Rank',
+        'rank_display': 'Rank',  # Changed from 'rank'
         'displayed_name': 'Deck',
         'share': 'Meta Share %',
         'tournaments_played': 'Best Finishes',
@@ -943,7 +941,6 @@ def display_metagame_tab():
     }
     
     # Create final display dataframe
-    
     final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
     
     # Add Pokémon image columns
@@ -956,7 +953,7 @@ def display_metagame_tab():
         use_container_width=True,
         height=850,
         column_config={
-            "Rank": st.column_config.TextColumn(
+            "Rank": st.column_config.TextColumn(  # FIX: Change to TextColumn
                 "Rank",
                 help="Position in the meta based on Power Index",
                 width="20px"
