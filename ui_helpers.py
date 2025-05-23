@@ -450,13 +450,13 @@ def render_sidebar_from_cache():
     current_month_year = datetime.now().strftime("%B %Y")
  
     # Load and encode the banner image if it exists
-    banner_path = "sidebar_banner.png"
-    if os.path.exists(banner_path):
-        with open(banner_path, "rb") as f:
-            banner_base64 = base64.b64encode(f.read()).decode()
+    top10_banner_path = "sidebar_banner.png"  # You'll need to create this image
+    if os.path.exists(top10_banner_path):
+        with open(top10_banner_path, "rb") as f:
+            top10_banner_path_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
         <div style="width:100%; text-align:center;">
-            <img src="data:image/png;base64,{banner_path}" style="width:100%; max-width:350px; margin-bottom:0px;">
+            <img src="data:image/png;base64,{top10_banner_path_base64}" style="width:100%; max-width:350px; margin-bottom:0px;">
         </div>
         """, unsafe_allow_html=True)
     else:
