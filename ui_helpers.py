@@ -718,7 +718,7 @@ def render_sidebar_from_cache():
         display_counter_picker_sidebar()
         
         # Power Index explanation
-        st.markdown("<hr style='margin:25px;  border: 0.5px solid #aaa;'>")
+        st.markdown("<hr style='margin:25px;  border: 0.5px solid #aaa;'>", unsafe_allow_html=True)
         with st.expander("🔍 About the Power Index"):
             # Format the explanation with the current date and tournament count
             formatted_explanation = POWER_INDEX_EXPLANATION.format(
@@ -810,7 +810,7 @@ def display_counter_picker_sidebar():
         with open(banner_path, "rb") as f:
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
-        <div style="width:100%; text-align:center; ">
+        <div style="width:100%; text-align:center; margin-top:-30px;">
                 <hr style='margin-bottom:15px; border: 0.5px solid #aaa;'>
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
