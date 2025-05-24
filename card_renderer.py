@@ -41,13 +41,13 @@ class CardGrid:
         self.cards_html = []
         return self
         
-    def add_card(self, card_name, set_code, num, count=1, usage_pct=None):
+    def add_card(self, card_name, set_code, num, count=1, usage_pct=None, card_data=None):
         """Add a card to the grid, repeating it 'count' times"""
         formatted_num = format_card_number(num) if num else ""
         
         # Generate HTML for each copy of the card
         for _ in range(count):
-            card_html = self._generate_card_html(card_name, set_code, formatted_num, usage_pct)
+            card_html = self._generate_card_html(card_name, set_code, formatted_num, usage_pct, card_data)
             self.cards_html.append(card_html)
         
         return self
@@ -94,14 +94,14 @@ class CardGrid:
         
         return self
     
-    def _generate_card_html(self, card_name, set_code, formatted_num, usage_pct=None):
+    def _generate_card_html(self, card_name, set_code, formatted_num, usage_pct=None, card_data=None):
         """Generate HTML for a single card"""
         # Card container
         card_html = f"<div style=\"width: {self.card_width}px; margin-bottom: {self.margin_bottom}px;\" title=\"{card_name}\">"
         
         # Card image or fallback
         if set_code and formatted_num:
-            card_html += self._generate_image_html(set_code, formatted_num)
+            card_html += self._generate_image_html(set_code, formatted_num, card_data)
         else:
             card_html += self._generate_fallback_html(card_name)
         
@@ -112,22 +112,21 @@ class CardGrid:
         card_html += "</div>"
         return card_html
     
-    def _generate_image_html(self, set_code, formatted_num):
+    def _generate_image_html(self, set_code, formatted_num, card_data=None):
         """Generate HTML for card image with hover effect"""
         # Standard card image URL
         standard_url = f"{CardConfig.IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp"
         
-        # Same URL for full size (or you could use a different size if available)
-        full_size_url = standard_url
-        
         # Create basic image HTML
         img_html = (f"<img src=\"{standard_url}\" "
                 f"style=\"width: 100%; border-radius: {self.border_radius}px; border: 0.5px solid {self.border_color};\">")
-        # img_html = (f"<img src=\"{standard_url}\" "
-        #         f"style=\"width: 100%;\">")
         
-        # Enhance with hover effect
-        enhanced_html = enhance_card_image_html(img_html, full_size_url)
+        # Enhance with hover effect and clickability
+        # Pass card_data if available for better set/num handling
+        if card_data:
+            enhanced_html = enhance_card_image_html(img_html, standard_url, card_data)
+        else:
+            enhanced_html = enhance_card_image_html(img_html, standard_url)
         
         return enhanced_html
     
@@ -393,33 +392,43 @@ def add_card_hover_effect():
     import streamlit as st
     st.markdown(hover_js, unsafe_allow_html=True)
 
-def enhance_card_image_html(img_html, full_size_url=None):
+def enhance_card_image_html(img_html, full_size_url=None, card_data=None):
     """
     Enhance an image HTML string to make it clickable.
-    Links to the Limitless TCG card page rather than the image itself.
+    Links to the Limitless TCG card page using card data or URL parsing.
     
     Parameters:
     img_html: HTML string containing an img tag
     full_size_url: Optional URL to a full-size version of the image
+    card_data: Optional dict with 'set' and 'num' fields (preferred method)
     
     Returns:
     Enhanced HTML string with clickable functionality to card page
     """
-    # Extract set_code and card number from the image URL
-    import re
-    src_match = re.search(r'src="[^"]+/([A-Za-z0-9]+)/\1_(\d+)_EN\.webp"', img_html)
-    
-    if src_match:
-        set_code = src_match.group(1)
-        card_num = src_match.group(2)
-        
-        # Remove leading zeros from card number to match the format
-        card_num = card_num.lstrip('0')
+    # Method 1: Use card_data if provided (preferred)
+    if card_data and card_data.get('set') and card_data.get('num'):
+        set_code = card_data['set']
+        card_num = str(card_data['num']).lstrip('0')  # Remove leading zeros
         
         # Create the card page URL
         card_page_url = f"https://pocket.limitlesstcg.com/cards/{set_code}/{card_num}"
         
-        # Wrap the image in an anchor tag with the card page URL
+        # Wrap the image in an anchor tag
+        enhanced_html = f'<a href="{card_page_url}" target="_blank" style="cursor: pointer;">{img_html}</a>'
+        return enhanced_html
+    
+    # Method 2: Fallback to URL parsing (existing method)
+    import re
+    src_match = re.search(r'src="[^"]+/([A-Za-z0-9-]+)/\1_(\d+)_EN\.webp"', img_html)
+    
+    if src_match:
+        set_code = src_match.group(1)
+        card_num = src_match.group(2).lstrip('0')  # Remove leading zeros
+        
+        # Create the card page URL
+        card_page_url = f"https://pocket.limitlesstcg.com/cards/{set_code}/{card_num}"
+        
+        # Wrap the image in an anchor tag
         enhanced_html = f'<a href="{card_page_url}" target="_blank" style="cursor: pointer;">{img_html}</a>'
         return enhanced_html
     
