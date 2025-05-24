@@ -782,17 +782,17 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
             with col1:
                 # USE CACHED ENERGY TYPES
                 energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
-                
+
                 if energy_types:
                     # USE CACHED ENERGY RENDERING
                     energy_html_compact = ""
                     for energy in energy_types:
                         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                        energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
+                        energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px;">'
                     
                     st.markdown(f"""
-                    <div style="margin-top:5px; ">
-                        <div>{energy_html_compact}</div>
+                    <div style="margin-top:5px; margin-bottom:-5px;">
+                        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
                     </div>
                     """, unsafe_allow_html=True)
                     st.caption(f"Best Finishes: {tournaments_played}")
