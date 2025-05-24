@@ -108,7 +108,7 @@ POKEMON_NAME_PATTERNS = {
     'FORM_PREFIXES': ['mega', 'primal', 'ultra'],
     
     # Multi-word form prefixes
-    'MULTI_WORD_FORM_PREFIXES': ['origin-forme', 'white-striped', 'dusk-mane', 'dawn-wings'],
+    'MULTI_WORD_FORM_PREFIXES': ['origin-forme', 'white-striped',  'dawn-wings'],
     
     # Paradox prefixes (future Pokemon start with "iron-")
     'PARADOX_PREFIXES': ['iron'],
