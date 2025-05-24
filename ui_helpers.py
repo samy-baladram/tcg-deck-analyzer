@@ -633,7 +633,7 @@ def render_sidebar_from_cache():
                 trending_banner_base64 = base64.b64encode(f.read()).decode()
             st.markdown(f"""
             <div style="width:100%; text-align:center; ">
-                <hr style='margin-bottom:5px; border: 0.5px solid #ddd;'>
+                <hr style='margin-bottom:5px; border: 0.5px solid #aaa;'>
                 <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
             </div>
             """, unsafe_allow_html=True)
@@ -816,7 +816,7 @@ def display_counter_picker_sidebar():
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
         <div style="width:100%; text-align:center; ">
-                <hr style='margin-bottom:5px; border: 0.5px solid #ddd;'>
+                <hr style='margin-bottom:5px; border: 0.5px solid #aaa;'>
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
         """, unsafe_allow_html=True)
@@ -961,7 +961,7 @@ def display_counter_results(counter_df):
                 if header_image:
                     st.markdown(f"""
                     <div style="width: 100%; margin-bottom: 10px;">
-                        <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px;">
+                        <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #aaa; border-radius: 6px;">
                     </div>
                     """, unsafe_allow_html=True)
                 
