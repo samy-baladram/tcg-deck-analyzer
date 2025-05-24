@@ -750,69 +750,83 @@ def render_sidebar_from_cache():
     
 def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
     """Render a single trending deck in the sidebar with cached components"""
-    tournaments_played = deck['tournaments_played']
-    rank_symbol = "🚀"
-    
-    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-        try:
-            # USE CACHED HEADER IMAGE
-            header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
-            
-            if header_image:
-                st.markdown(f"""
-                <div style="width: 100%; margin-bottom: 10px;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto;">
-                </div>
-                """, unsafe_allow_html=True)
-            
-            # USE CACHED SAMPLE DECK
-            deck_name = deck['deck_name']
-            sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED
-            
-            from card_renderer import render_sidebar_deck
-            deck_html = render_sidebar_deck(
-                sample_deck['pokemon_cards'], 
-                sample_deck['trainer_cards'],
-                card_width=60
-            )
-            st.markdown(deck_html, unsafe_allow_html=True)
-
-            col1, col2 = st.columns([2, 1])
-            
-            with col1:
-                # USE CACHED ENERGY TYPES
-                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
-
-                if energy_types:
-                    # USE CACHED ENERGY RENDERING
-                    energy_html_compact = ""
-                    for energy in energy_types:
-                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                        energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px;">'
-                    
+    try:
+        tournaments_played = deck['tournaments_played']
+        
+        # Keep the rocket emoji for trending decks
+        rank_symbol = "🚀"
+        
+        with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+            try:
+                # 1. USE CACHED HEADER IMAGE
+                header_image = get_header_image_cached(deck['deck_name'], deck['set'])
+                
+                if header_image:
                     st.markdown(f"""
-                    <div style="margin-top:5px; margin-bottom:-5px;">
-                        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
+                    <div style="width: 100%; margin-bottom: 10px;">
+                        <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
                     </div>
                     """, unsafe_allow_html=True)
-                    st.caption(f"Best Finishes: {tournaments_played}")
+                
+                # 2. USE CACHED SAMPLE DECK
+                deck_name = deck['deck_name']
+                
+                # Check if card cache is available before using it
+                if CARD_CACHE_AVAILABLE:
+                    sample_deck = get_sample_deck_cached(deck_name, deck['set'])
                 else:
-                    st.markdown("""
-                    <div style="margin-bottom: 5px;">
-                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-            
-            with col2:
-                if st.button("Details", 
-                            key=f"counter_details_{deck['deck_name']}_{i}", 
-                            type="tertiary", 
-                            use_container_width=True,
-                            on_click=lambda deck_name=deck['deck_name']: setattr(st.session_state, 'deck_to_analyze', deck_name)):
-                    pass  # Button logic handled in on_click            
-        except Exception as e:
-            st.warning(f"Unable to load deck preview for {deck_name}")
-            print(f"Error rendering trending deck in sidebar: {e}")
+                    # Fallback to direct import if cache not available
+                    from scraper import get_sample_deck_for_archetype
+                    pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
+                    sample_deck = {
+                        'pokemon_cards': pokemon_cards,
+                        'trainer_cards': trainer_cards,
+                        'energy_types': energy_types
+                    }
+                
+                # Render deck view
+                from card_renderer import render_sidebar_deck
+                deck_html = render_sidebar_deck(
+                    sample_deck['pokemon_cards'], 
+                    sample_deck['trainer_cards'],
+                    card_width=60
+                )
+                
+                st.markdown(deck_html, unsafe_allow_html=True)
+
+                # 3. USE CACHED ENERGY TYPES (SAME FORMAT AS TOP 10 META)
+                col1, col2 = st.columns([2, 1])
+                
+                with col1:
+                    energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                    
+                    if energy_types:
+                        # USE CACHED ENERGY ICON RENDERING (SAME AS TOP 10 META)
+                        energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
+                        st.markdown(energy_html, unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        <div style="margin-bottom: 5px;">
+                            <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    st.caption(f"Best Finishes: {tournaments_played}")    
+                
+                with col2:
+                    if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+                        st.session_state.deck_to_analyze = deck['deck_name']
+                        st.rerun()
+                
+            except Exception as e:
+                st.warning(f"Unable to load deck preview for {deck_name}")
+                print(f"Error rendering trending deck in sidebar: {e}")
+                # Show basic info as fallback
+                st.write(f"**{deck['displayed_name']}**")
+                st.caption(f"Best Finishes: {tournaments_played}")
+                
+    except Exception as e:
+        print(f"Critical error in render_trending_deck_in_sidebar: {e}")
+        st.error("Error loading deck data")
 
 def display_counter_picker_sidebar():
     """Display counter picker in sidebar with expander format"""
@@ -968,12 +982,22 @@ def display_counter_results(counter_df):
                 if header_image:
                     st.markdown(f"""
                     <div style="width: 100%; margin-bottom: 10px;">
-                        <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 1px solid #aaa; border-radius: 6px;">
+                        <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
                     </div>
                     """, unsafe_allow_html=True)
                 
                 # USE CACHED SAMPLE DECK
-                sample_deck = get_sample_deck_cached(deck['deck_name'], deck['set'])
+                if CARD_CACHE_AVAILABLE:
+                    sample_deck = get_sample_deck_cached(deck['deck_name'], deck['set'])
+                else:
+                    # Fallback to direct import if cache not available
+                    from scraper import get_sample_deck_for_archetype
+                    pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck['deck_name'], deck['set'])
+                    sample_deck = {
+                        'pokemon_cards': pokemon_cards,
+                        'trainer_cards': trainer_cards,
+                        'energy_types': energy_types
+                    }
                 
                 if sample_deck:
                     from card_renderer import render_sidebar_deck
@@ -984,14 +1008,15 @@ def display_counter_results(counter_df):
                     )
                     st.markdown(deck_html, unsafe_allow_html=True)
 
-                # Energy types and Details button
+                # Energy types and Details button (SAME FORMAT AS TOP 10 META)
                 col1, col2 = st.columns([2, 1])
                 
                 with col1:
-                    # USE CACHED ENERGY TYPES
+                    # USE CACHED ENERGY TYPES (SAME AS TOP 10 META)
                     energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                     
                     if energy_types:
+                        # USE CACHED ENERGY ICON RENDERING (SAME AS TOP 10 META)
                         energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
                         st.markdown(energy_html, unsafe_allow_html=True)
                     else:
@@ -1000,6 +1025,7 @@ def display_counter_results(counter_df):
                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
                         </div>
                         """, unsafe_allow_html=True)
+                    
                     # Details as caption at bottom
                     total_matches = deck['total_matches']
                     confidence = deck['confidence']
@@ -1014,11 +1040,12 @@ def display_counter_results(counter_df):
                         st.session_state.deck_to_analyze = deck['deck_name']
                         st.rerun()
                 
-                
-                
             except Exception as e:
                 st.warning(f"Unable to load counter deck preview")
                 print(f"Error rendering counter deck in sidebar: {e}")
+                # Show basic info as fallback
+                st.write(f"**{deck['displayed_name']}**")
+                st.caption(f"Win Rate: {win_rate_display}")
     
     # Overall caption
     st.caption(f"Win rates weighted by match count • Minimum {MIN_COUNTER_MATCHES} matches required • Data from Limitless TCG")
@@ -1227,67 +1254,67 @@ def set_deck_to_analyze(deck_name):
 
 # In ui_helpers.py - Add this new function
 
-def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
-    """Render a single trending deck in the sidebar with cached components"""
-    tournaments_played = deck['tournaments_played']
-    rank_symbol = "🚀"
+# def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
+#     """Render a single trending deck in the sidebar with cached components"""
+#     tournaments_played = deck['tournaments_played']
+#     rank_symbol = "🚀"
     
-    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-        try:
-            # USE CACHED HEADER IMAGE
-            header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
+#     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+#         try:
+#             # USE CACHED HEADER IMAGE
+#             header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
             
-            if header_image:
-                st.markdown(f"""
-                <div style="width: 100%; margin-bottom: 10px;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
-                </div>
-                """, unsafe_allow_html=True)
+#             if header_image:
+#                 st.markdown(f"""
+#                 <div style="width: 100%; margin-bottom: 10px;">
+#                     <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
+#                 </div>
+#                 """, unsafe_allow_html=True)
             
-            # USE CACHED SAMPLE DECK
-            deck_name = deck['deck_name']
-            sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED
+#             # USE CACHED SAMPLE DECK
+#             deck_name = deck['deck_name']
+#             sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED
             
-            from card_renderer import render_sidebar_deck
-            deck_html = render_sidebar_deck(
-                sample_deck['pokemon_cards'], 
-                sample_deck['trainer_cards'],
-                card_width=50
-            )
-            st.markdown(deck_html, unsafe_allow_html=True)
+#             from card_renderer import render_sidebar_deck
+#             deck_html = render_sidebar_deck(
+#                 sample_deck['pokemon_cards'], 
+#                 sample_deck['trainer_cards'],
+#                 card_width=50
+#             )
+#             st.markdown(deck_html, unsafe_allow_html=True)
 
-            col1, col2 = st.columns([2, 1])
+#             col1, col2 = st.columns([2, 1])
             
-            with col1:
-                # USE CACHED ENERGY TYPES
-                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+#             with col1:
+#                 # USE CACHED ENERGY TYPES
+#                 energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                 
-                if energy_types:
-                    # USE CACHED ENERGY RENDERING
-                    energy_html_compact = ""
-                    for energy in energy_types:
-                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                        energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
+#                 if energy_types:
+#                     # USE CACHED ENERGY RENDERING
+#                     energy_html_compact = ""
+#                     for energy in energy_types:
+#                         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+#                         energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
                     
-                    st.markdown(f"""
-                    <div style="margin-top:5px; ">
-                        <div>{energy_html_compact}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.markdown("""
-                    <div style="margin-bottom: 5px;">
-                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+#                     st.markdown(f"""
+#                     <div style="margin-top:5px; ">
+#                         <div>{energy_html_compact}</div>
+#                     </div>
+#                     """, unsafe_allow_html=True)
+#                 else:
+#                     st.markdown("""
+#                     <div style="margin-bottom: 5px;">
+#                         <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+#                     </div>
+#                     """, unsafe_allow_html=True)
             
-            with col2:
-                if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-                    st.session_state.deck_to_analyze = deck['deck_name']
-                    st.rerun()
+#             with col2:
+#                 if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+#                     st.session_state.deck_to_analyze = deck['deck_name']
+#                     st.rerun()
             
-            st.caption(f"Best Finishes: {tournaments_played}")
+#             st.caption(f"Best Finishes: {tournaments_played}")
             
-        except Exception as e:
-            st.warning(f"Unable to load deck preview for {deck_name}")
-            print(f"Error rendering trending deck in sidebar: {e}")
+#         except Exception as e:
+#             st.warning(f"Unable to load deck preview for {deck_name}")
+#             print(f"Error rendering trending deck in sidebar: {e}")
