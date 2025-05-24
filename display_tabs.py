@@ -440,6 +440,21 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     # Track exact Pokemon names already shown to avoid duplicates
     shown_pokemon_names = set()
     
+    # Function to get Pokemon base name for similarity checking
+    def get_pokemon_base_word(name):
+        """Get the first significant word from Pokemon name for similarity checking"""
+        # Remove common suffixes and get first word
+        name = name.lower()
+        suffixes = [' ex', ' v', ' vmax', ' vstar', ' gx']
+        for suffix in suffixes:
+            if name.endswith(suffix):
+                name = name[:-len(suffix)]
+        # Return first word (handles most evolution cases)
+        return name.split()[0]
+    
+    # Track base names to promote diversity
+    shown_base_words = set()
+    
     # Limit the variants to show (to avoid overwhelming UI)
     max_variants = 5  # Show at most 5 variants
     variants_shown = 0  # Counter for actual variants shown
@@ -458,6 +473,11 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
         if pokemon_name.lower() in shown_pokemon_names:
             continue
         
+        # Check for similar base names (diversity filter)
+        base_word = get_pokemon_base_word(pokemon_name)
+        if base_word in shown_base_words:
+            continue
+        
         # Create a formatted title with set and number info
         variant_title = f"{pokemon_name} ({set_code}-{num}) Variant" if set_code and num else f"{pokemon_name} Variant"
         
@@ -472,6 +492,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
             if deck_num is not None:
                 shown_deck_nums.add(deck_num)
                 shown_pokemon_names.add(pokemon_name.lower())
+                shown_base_words.add(base_word)  # Track base word for diversity
                 variants_shown += 1
 
 def ensure_deck_collection_data(deck_name, set_name):
