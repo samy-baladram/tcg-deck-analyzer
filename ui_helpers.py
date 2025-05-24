@@ -506,12 +506,12 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
                         </div>
                         """, unsafe_allow_html=True)
+                    st.caption(f"Power Index: {power_index}")    
                 
                 with col2:
                     if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
                         st.session_state.deck_to_analyze = deck['deck_name']
                         st.rerun()
-                st.caption(f"Power Index: {power_index}")
                 
             except Exception as e:
                 st.warning(f"Unable to load deck preview for {deck_name}")
@@ -630,8 +630,8 @@ def render_sidebar_from_cache():
             with open(trending_banner_path, "rb") as f:
                 trending_banner_base64 = base64.b64encode(f.read()).decode()
             st.markdown(f"""
-            <div style="width:100%; text-align:center;margin-top:-30px; ">
-                <hr style='margin-bottom:10px;  border: 0.5px solid #aaa;'>
+            <div style="width:100%; text-align:center;">
+                <hr style='margin-bottom:15px;  border: 0.5px solid #aaa;'>
                 <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
             </div>
             """, unsafe_allow_html=True)
@@ -718,6 +718,7 @@ def render_sidebar_from_cache():
         display_counter_picker_sidebar()
         
         # Power Index explanation
+        <hr style='margin:25px;  border: 0.5px solid #aaa;'>
         with st.expander("🔍 About the Power Index"):
             # Format the explanation with the current date and tournament count
             formatted_explanation = POWER_INDEX_EXPLANATION.format(
@@ -781,6 +782,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                         <div>{energy_html_compact}</div>
                     </div>
                     """, unsafe_allow_html=True)
+                    st.caption(f"Best Finishes: {tournaments_played}")
                 else:
                     st.markdown("""
                     <div style="margin-bottom: 5px;">
@@ -794,10 +796,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                             type="tertiary", 
                             use_container_width=True,
                             on_click=lambda deck_name=deck['deck_name']: setattr(st.session_state, 'deck_to_analyze', deck_name)):
-                    pass  # Button logic handled in on_click
-            
-            st.caption(f"Best Finishes: {tournaments_played}")
-            
+                    pass  # Button logic handled in on_click            
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering trending deck in sidebar: {e}")
@@ -811,8 +810,8 @@ def display_counter_picker_sidebar():
         with open(banner_path, "rb") as f:
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
-        <div style="width:100%; text-align:center; margin-top:-30px; ">
-                <hr style='margin-bottom:10px; border: 0.5px solid #aaa;'>
+        <div style="width:100%; text-align:center; ">
+                <hr style='margin-bottom:15px; border: 0.5px solid #aaa;'>
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
         """, unsafe_allow_html=True)
@@ -862,10 +861,10 @@ def display_counter_picker_sidebar():
     if ('counter_analysis_results' in st.session_state and 
         not st.session_state.counter_analysis_results.empty):  # Changed this line
         display_counter_results(st.session_state.counter_analysis_results)
-    elif selected_decks:
-        st.info("Click 'Find Counters' to analyze")
-    else:
-        st.info("Select decks above to find counters")
+    # elif selected_decks:
+    #     st.info("Click 'Find Counters' to analyze")
+    # else:
+    #     st.info("Select decks above to find counters")
 
 def analyze_counter_get_data(selected_decks):
     """Get counter analysis data without displaying (for persistence)"""
@@ -989,20 +988,21 @@ def display_counter_results(counter_df):
                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
                         </div>
                         """, unsafe_allow_html=True)
+                    # Details as caption at bottom
+                    total_matches = deck['total_matches']
+                    confidence = deck['confidence']
+                    matched_decks = deck['matched_decks']
+                    total_selected = deck['total_selected']
+                    
+                    confidence_emoji = "🟢" if confidence == 'High' else "🟡"
+                    st.caption(f"{confidence_emoji} {total_matches} matches, {confidence.lower()} confidence • Counters {matched_decks}/{total_selected} selected decks")                        
                 
                 with col2:
                     if st.button("Details", key=f"counter_details_{deck['deck_name']}_{i}", type="tertiary", use_container_width=True):
                         st.session_state.deck_to_analyze = deck['deck_name']
                         st.rerun()
                 
-                # Details as caption at bottom
-                total_matches = deck['total_matches']
-                confidence = deck['confidence']
-                matched_decks = deck['matched_decks']
-                total_selected = deck['total_selected']
                 
-                confidence_emoji = "🟢" if confidence == 'High' else "🟡"
-                st.caption(f"{confidence_emoji} {total_matches} matches, {confidence.lower()} confidence • Counters {matched_decks}/{total_selected} selected decks")
                 
             except Exception as e:
                 st.warning(f"Unable to load counter deck preview")
