@@ -469,8 +469,8 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
             st.write(f"→ SKIPPED: {pokemon_name} already shown")
             continue
         
-        # This variant will be shown
-        st.write(f"→ SHOWING: {pokemon_name} (variants shown: {variants_shown + 1}/{max_variants})")
+        # This variant will be attempted
+        st.write(f"→ ATTEMPTING: {pokemon_name} (current variants shown: {variants_shown}/{max_variants})")
         
         # Create a formatted title with set and number info
         variant_title = f"{pokemon_name} ({set_code}-{num}) Variant" if set_code and num else f"{pokemon_name} Variant"
@@ -486,10 +486,10 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
             if deck_num is not None:
                 shown_deck_nums.add(deck_num)
                 shown_pokemon_names.add(pokemon_name.lower())
-                variants_shown += 1
-                st.write(f"→ SUCCESS: Found deck #{deck_num} for {pokemon_name}")
+                variants_shown += 1  # FIXED: Only increment when deck is actually found
+                st.write(f"→ SUCCESS: Found deck #{deck_num} for {pokemon_name} (total shown: {variants_shown})")
             else:
-                st.write(f"→ WARNING: No suitable deck found for {pokemon_name}")
+                st.write(f"→ FAILED: No suitable deck found for {pokemon_name} (total shown: {variants_shown})")
     
     # DEBUG: Final summary
     st.write("**DEBUG: Final summary:**")
