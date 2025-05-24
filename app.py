@@ -239,7 +239,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 """, unsafe_allow_html=True)
 
 # Display banner
-ui_helpers.display_banner("title_banner.png")
+ui_helpers.display_banner("title_banner3.png")
 
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
