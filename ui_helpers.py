@@ -809,9 +809,9 @@ def display_counter_picker_sidebar():
     if os.path.exists(banner_path):
         with open(banner_path, "rb") as f:
             banner_base64 = base64.b64encode(f.read()).decode()
+        st.markdown("<hr style='margin:20px;  border: 0.5px solid #aaa;'>", unsafe_allow_html=True)    
         st.markdown(f"""
-        <div style="width:100%; text-align:center; margin-top:-40px;">
-                <hr style='margin-bottom:15px; border: 0.5px solid #aaa;'>
+        <div style="width:100%; text-align:center;">
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
         """, unsafe_allow_html=True)
