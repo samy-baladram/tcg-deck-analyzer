@@ -444,44 +444,28 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     max_variants = 5  # Show at most 5 variants
     variants_shown = 0  # Counter for actual variants shown
     
-    # DEBUG: Show all available variant Pokemon
-    st.write("**DEBUG: Available variant Pokemon:**")
-    for idx, (_, pokemon) in enumerate(different_pokemon.iterrows()):
-        st.write(f"- {idx + 1}. {pokemon['card_name']} ({pokemon.get('set', 'No set')}-{pokemon.get('num', 'No num')})")
-    
-    st.write("**DEBUG: Processing variants:**")
-    
     # For each different Pokemon, check if we should show a variant
     for idx, (_, pokemon) in enumerate(different_pokemon.iterrows()):
         pokemon_name = pokemon['card_name']
         set_code = pokemon.get('set', '')
         num = pokemon.get('num', '')
         
-        st.write(f"**Processing #{idx + 1}: {pokemon_name}**")
-        
         # Check if we've already shown enough variants
         if variants_shown >= max_variants:
-            st.write(f"→ SKIPPED: Already shown {max_variants} variants (max limit reached)")
             continue
             
         # Skip if we already showed this exact Pokemon name
         if pokemon_name.lower() in shown_pokemon_names:
-            st.write(f"→ SKIPPED: {pokemon_name} already shown")
             continue
-        
-        # MOVED: Check if we can find a suitable deck BEFORE creating expander
-        st.write(f"→ CHECKING: {pokemon_name} (current variants shown: {variants_shown}/{max_variants})")
         
         # Create a set of Pokemon to avoid (other variants)
         other_variants = set(name for name in variant_pokemon_names if name.lower() != pokemon_name.lower())
         
-        # Pre-check if we can find a suitable deck
+        # Pre-check if we can find a suitable deck BEFORE creating expander
         deck_num = render_optimal_variant_deck(pokemon, other_variants, shown_deck_nums, energy_types, is_typical, check_only=True)
         
         # ONLY create expander if we found a suitable deck
         if deck_num is not None:
-            st.write(f"→ SHOWING: {pokemon_name} - suitable deck found")
-            
             # Create a formatted title with set and number info
             variant_title = f"{pokemon_name} ({set_code}-{num}) Variant" if set_code and num else f"{pokemon_name} Variant"
             
@@ -494,16 +478,6 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
                     shown_deck_nums.add(actual_deck_num)
                     shown_pokemon_names.add(pokemon_name.lower())
                     variants_shown += 1
-                    st.write(f"→ SUCCESS: Displayed deck #{actual_deck_num} for {pokemon_name} (total variants shown: {variants_shown})")
-        else:
-            st.write(f"→ SKIPPED: No suitable deck found for {pokemon_name}")
-    
-    # DEBUG: Final summary
-    st.write("**DEBUG: Final summary:**")
-    st.write(f"- Total available variants: {len(different_pokemon)}")
-    st.write(f"- Variants actually shown: {variants_shown}")
-    st.write(f"- Pokemon names shown: {list(shown_pokemon_names)}")
-    st.write(f"- Deck numbers used: {list(shown_deck_nums)}")
 
 def ensure_deck_collection_data(deck_name, set_name):
     """Ensure deck collection data is available, efficiently using cache"""
