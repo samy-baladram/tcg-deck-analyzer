@@ -318,6 +318,78 @@ def display_deck_template_tab(results, variant_df=None):
     with outer_col2:
         display_deck_composition(deck_info, energy_types, is_typical, total_cards, options, variant_df)
 
+# def display_variant_decks(deck_info, energy_types, is_typical, options):
+#     """Display the main sample deck and any variant decks containing other Pokémon options"""
+#     # Check if options is empty or None
+#     if options is None or options.empty:
+#         st.write("#### Sample Deck")
+#         render_sample_deck(energy_types, is_typical)
+#         return
+    
+#     # Get Pokemon options that have different names from core Pokemon
+#     pokemon_options = options[options['type'] == 'Pokemon'].copy()
+    
+#     # If no Pokemon options, just show the sample deck
+#     if pokemon_options.empty:
+#         st.write("#### Sample Deck")
+#         render_sample_deck(energy_types, is_typical)
+#         return
+    
+#     # Get core Pokemon names for comparison
+#     core_pokemon_names = set()
+#     for card in deck_info.get('Pokemon', []):
+#         core_pokemon_names.add(card.get('name', '').lower())
+    
+#     # Filter options to only include Pokemon with different names
+#     different_pokemon = pokemon_options[~pokemon_options['card_name'].str.lower().isin(core_pokemon_names)]
+    
+#     # If no different Pokemon in options, just show the standard sample deck
+#     if different_pokemon.empty:
+#         st.write("#### Sample Deck")
+#         render_sample_deck(energy_types, is_typical)
+#         return
+    
+#     # Get the variant Pokémon names
+#     variant_pokemon_names = set(different_pokemon['card_name'].str.lower())
+    
+#     # Ensure we have deck collection data before proceeding
+#     if 'analyze' in st.session_state:
+#         deck_name = st.session_state.analyze.get('deck_name', '')
+#         set_name = st.session_state.analyze.get('set_name', '')
+#         ensure_deck_collection_data(deck_name, set_name)
+    
+#     # Display the original sample deck (without variants) in an expander
+#     with st.expander("Sample Deck", expanded=True):
+#         render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical)
+    
+#     # Track decks we've already shown to avoid duplicates
+#     shown_deck_nums = set()
+    
+#     # Limit the variants to show (to avoid overwhelming UI)
+#     max_variants = 5  # Show at most 5 variants
+    
+#     # For each different Pokemon, show a variant deck in an expander
+#     for idx, (_, pokemon) in enumerate(different_pokemon.iterrows()):
+#         if idx >= max_variants:
+#             break
+            
+#         pokemon_name = pokemon['card_name']
+#         set_code = pokemon.get('set', '')
+#         num = pokemon.get('num', '')
+        
+#         # Create a formatted title with set and number info
+#         variant_title = f"{pokemon_name} ({set_code}-{num}) Variant" if set_code and num else f"{pokemon_name} Variant"
+        
+#         with st.expander(variant_title, expanded=False):
+#             # Create a set of Pokémon to avoid (other variants)
+#             other_variants = set(name for name in variant_pokemon_names if name.lower() != pokemon_name.lower())
+            
+#             # Render a deck with this Pokémon but preferably without other variants
+#             deck_num = render_optimal_variant_deck(pokemon, other_variants, shown_deck_nums, energy_types, is_typical)
+            
+#             # If we found a deck, add it to the shown list
+#             if deck_num is not None:
+#                 shown_deck_nums.add(deck_num)
 def display_variant_decks(deck_info, energy_types, is_typical, options):
     """Display the main sample deck and any variant decks containing other Pokémon options"""
     # Check if options is empty or None
@@ -349,7 +421,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
         render_sample_deck(energy_types, is_typical)
         return
     
-    # Get the variant Pokémon names
+    # Get the variant Pokemon names
     variant_pokemon_names = set(different_pokemon['card_name'].str.lower())
     
     # Ensure we have deck collection data before proceeding
@@ -365,31 +437,42 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     # Track decks we've already shown to avoid duplicates
     shown_deck_nums = set()
     
+    # NEW: Track exact Pokemon names already shown to avoid duplicates
+    shown_pokemon_names = set()
+    
     # Limit the variants to show (to avoid overwhelming UI)
     max_variants = 5  # Show at most 5 variants
+    variants_shown = 0  # Counter for actual variants shown
     
     # For each different Pokemon, show a variant deck in an expander
     for idx, (_, pokemon) in enumerate(different_pokemon.iterrows()):
-        if idx >= max_variants:
+        # NEW: Check if we've already shown enough variants
+        if variants_shown >= max_variants:
             break
             
         pokemon_name = pokemon['card_name']
         set_code = pokemon.get('set', '')
         num = pokemon.get('num', '')
         
+        # NEW: Skip if we already showed this exact Pokemon name
+        if pokemon_name.lower() in shown_pokemon_names:
+            continue
+        
         # Create a formatted title with set and number info
         variant_title = f"{pokemon_name} ({set_code}-{num}) Variant" if set_code and num else f"{pokemon_name} Variant"
         
         with st.expander(variant_title, expanded=False):
-            # Create a set of Pokémon to avoid (other variants)
+            # Create a set of Pokemon to avoid (other variants)
             other_variants = set(name for name in variant_pokemon_names if name.lower() != pokemon_name.lower())
             
-            # Render a deck with this Pokémon but preferably without other variants
+            # Render a deck with this Pokemon but preferably without other variants
             deck_num = render_optimal_variant_deck(pokemon, other_variants, shown_deck_nums, energy_types, is_typical)
             
-            # If we found a deck, add it to the shown list
+            # If we found a deck, add it to the shown lists
             if deck_num is not None:
                 shown_deck_nums.add(deck_num)
+                shown_pokemon_names.add(pokemon_name.lower())  # NEW: Track exact Pokemon name
+                variants_shown += 1  # NEW: Increment counter
 
 def ensure_deck_collection_data(deck_name, set_name):
     """Ensure deck collection data is available, efficiently using cache"""
