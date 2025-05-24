@@ -633,6 +633,7 @@ def render_sidebar_from_cache():
                 trending_banner_base64 = base64.b64encode(f.read()).decode()
             st.markdown(f"""
             <div style="width:100%; text-align:center;">
+                <hr style='margin: 1px; border: 0.5px solid #ddd;'>
                 <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
             </div>
             """, unsafe_allow_html=True)
@@ -815,6 +816,7 @@ def display_counter_picker_sidebar():
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""
         <div style="width:100%; text-align:center; margin:0px 0 0px 0;">
+            <hr style='margin: 1px; border: 0.5px solid #ddd;'>
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
         """, unsafe_allow_html=True)
