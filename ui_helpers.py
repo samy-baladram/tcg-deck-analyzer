@@ -137,7 +137,7 @@ def render_energy_icons_cached(energy_types_tuple, is_typical=False):
         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
         energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle; ">'
     
-    energy_display = f"""<div style="margin-bottom: 10px;">
+    energy_display = f"""<div style="margin-bottom: -5px;">
         <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html}</p>
     </div>"""
     return energy_display
