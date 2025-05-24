@@ -654,6 +654,10 @@ def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums
         best_match = sorted(exact_matches, key=lambda x: x[1], reverse=True)[0]
         best_deck, _, best_deck_num = best_match
     
+    # NEW: If check_only mode, just return whether we found a deck
+    if check_only:
+        return best_deck_num
+        
     # Render the chosen deck
     if best_deck:
         # Prepare cards for rendering
