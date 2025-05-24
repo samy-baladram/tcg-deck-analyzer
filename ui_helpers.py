@@ -629,7 +629,7 @@ def render_sidebar_from_cache():
             with open(trending_banner_path, "rb") as f:
                 trending_banner_base64 = base64.b64encode(f.read()).decode()
             st.markdown(f"""<div style="width:100%; text-align:center;">
-                <hr style='margin-bottom:20px;  border: 0.5px solid #aaa; margin-top:-25px;'>
+                <hr style='margin-bottom:20px;  border: 0.5px solid rgba(217,14,59,0.2); margin-top:-25px;'>
                 <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
             </div>
             """, unsafe_allow_html=True)
@@ -716,7 +716,7 @@ def render_sidebar_from_cache():
         display_counter_picker_sidebar()
         
         # Power Index explanation
-        st.markdown("<hr style='margin:25px;  border: 0.5px solid #aaa;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='margin:25px;  border: 0.5px solid rgba(217,14,59,0.2);'>", unsafe_allow_html=True)
         with st.expander("🔍 About the Power Index"):
             # Format the explanation with the current date and tournament count
             formatted_explanation = POWER_INDEX_EXPLANATION.format(
@@ -808,7 +808,7 @@ def display_counter_picker_sidebar():
         with open(banner_path, "rb") as f:
             banner_base64 = base64.b64encode(f.read()).decode()
         st.markdown(f"""<div style="width:100%; text-align:center;">
-            <hr style='margin-bottom:20px;  border: 0.5px solid #aaa; margin-top:-25px;'>
+            <hr style='margin-bottom:20px;  border: 0.5px solid rgba(217,14,59,0.2); margin-top:-25px;'>
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
         </div>
         """, unsafe_allow_html=True)
