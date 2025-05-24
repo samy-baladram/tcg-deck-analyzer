@@ -877,7 +877,7 @@ def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
     # Main analysis data
     st.write("#### Card Usage Data")
-    st.dataframe(results, height=1000, use_container_width=True)
+    st.dataframe(results, use_container_width=True)
     
     # Variant analysis data
     if not variant_df.empty:
@@ -1894,7 +1894,7 @@ def display_matchup_tab(deck_info=None):
         st.dataframe(
             styled_df,
             use_container_width=True,
-            height=850,
+            #height=850,
             column_config={
                 "Rank": st.column_config.NumberColumn(
                     "#",
@@ -1950,7 +1950,7 @@ def display_matchup_tab(deck_info=None):
         st.dataframe(
             basic_df,
             use_container_width=True,
-            height=850,
+            #height=850,
             column_config={
                 "Win %": st.column_config.NumberColumn(
                     "Win %",
