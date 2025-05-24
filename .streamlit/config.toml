@@ -1,0 +1,6 @@
+[theme]
+# Primary color (blue theme to match your app)
+primaryColor = "#00A0FF"
+
+# Set dark mode as default
+base = "dark"
