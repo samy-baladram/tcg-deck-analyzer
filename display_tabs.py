@@ -1838,31 +1838,6 @@ def display_matchup_tab(deck_info=None):
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
        
-    # Function to extract Pokémon names and create image URLs
-    def extract_pokemon_urls(displayed_name):
-        clean_name = re.sub(r'\([^)]*\)', '', displayed_name).strip()
-        parts = re.split(r'[\s/]+', clean_name)
-        suffixes = ['ex', 'v', 'vmax', 'vstar', 'gx']
-        pokemon_names = []
-        
-        for part in parts:
-            part = part.lower()
-            if part and part not in suffixes:
-                if part in POKEMON_EXCEPTIONS:
-                    part = POKEMON_EXCEPTIONS[part]
-                pokemon_names.append(part)
-                if len(pokemon_names) >= 2:
-                    break
-        
-        urls = []
-        for name in pokemon_names:
-            urls.append(f"https://r2.limitlesstcg.net/pokemon/gen9/{name}.png")
-        
-        # Ensure we have exactly 2 elements
-        while len(urls) < 2:
-            urls.append(None)
-            
-        return urls[0], urls[1]
     
     # Apply the function to extract Pokémon image URLs
     working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
