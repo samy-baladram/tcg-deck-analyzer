@@ -556,7 +556,7 @@ def ensure_deck_collection_data(deck_name, set_name):
     has_data = 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks and st.session_state.collected_decks[deck_key]['decks']
     return has_data
     
-def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums, energy_types, is_typical):
+def render_optimal_variant_deck(variant_pokemon, other_variants, shown_deck_nums, energy_types, is_typical, check_only=False):
     """Find and render the best deck for this variant Pokémon"""
     # Early exit if no analyzed deck
     if 'analyze' not in st.session_state:
