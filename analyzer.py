@@ -505,8 +505,8 @@ def analyze_variants(result_df, all_cards_df):
         card_variants = result_df[result_df['card_name'] == card_name]
         
         # For now, handle up to 2 variants (most common case)
-        if len(card_variants) > 2:
-            st.warning(f"Warning: {card_name} has more than 2 variants. Only first 2 will be analyzed.")
+        # if len(card_variants) > 2:
+        #     st.warning(f"Warning: {card_name} has more than 2 variants. Only first 2 will be analyzed.")
         
         # Get variant IDs
         variant_list = []
