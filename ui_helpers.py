@@ -630,7 +630,7 @@ def render_sidebar_from_cache():
             with open(trending_banner_path, "rb") as f:
                 trending_banner_base64 = base64.b64encode(f.read()).decode()
             st.markdown(f"""
-            <div style="width:100%; text-align:center; margin-top:0px;">
+            <div style="width:100%; text-align:center; margin-top:-30px;">
                 <hr style='margin-bottom:15px;  border: 0.5px solid #aaa;'>
                 <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
             </div>
