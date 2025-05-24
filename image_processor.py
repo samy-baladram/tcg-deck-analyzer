@@ -39,6 +39,29 @@ def format_card_number(num):
     
     return num
 
+def get_card_image_url_from_data(card):
+    """
+    Generate card image URL directly from card data (set and num fields)
+    
+    Args:
+        card: Dictionary with 'set' and 'num' fields
+        
+    Returns:
+        String URL or None if missing data
+    """
+    set_code = card.get('set', '').strip()
+    card_num = card.get('num', '').strip()
+    
+    if not set_code or not card_num:
+        return None
+    
+    # Format the card number
+    formatted_num = format_card_number(card_num)
+    
+    # Generate URL using existing IMAGE_BASE_URL
+    from config import IMAGE_BASE_URL
+    return f"{IMAGE_BASE_URL}/{set_code}/{set_code}_{formatted_num}_EN.webp"
+    
 # Core processing functions
 def fetch_and_crop_image(set_code, number):
     """
