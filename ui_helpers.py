@@ -534,8 +534,7 @@ def render_sidebar_from_cache():
     # USE CACHED BANNER IMAGE
     banner_base64 = get_cached_banner_image("sidebar_banner.png")
     if banner_base64:
-        st.markdown(f"""
-        <div style="width:100%; text-align:center;">
+        st.markdown(f"""<div style="width:100%; text-align:center;">
             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
         </div>
         """, unsafe_allow_html=True)
