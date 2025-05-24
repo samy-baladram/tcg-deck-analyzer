@@ -586,11 +586,17 @@ def render_sidebar_from_cache():
             if 'show_decks' not in st.session_state:
                 st.session_state.show_decks = False
 
-            # Only show the button if decks are not currently visible
-            if not st.session_state.show_decks:
-                if st.button("See more", type="tertiary", use_container_width=False):
-                    st.session_state.show_decks = True
-                    st.rerun()
+            # # Only show the button if decks are not currently visible
+            # if not st.session_state.show_decks:
+            #     if st.button("See more", type="tertiary", use_container_width=False):
+            #         st.session_state.show_decks = True
+            #         st.rerun()
+            
+            # Always show the button, but change text based on state
+            button_text = "Close" if st.session_state.show_decks else "See more"
+            if st.button(button_text, type="tertiary", use_container_width=False, key="meta_toggle_button"):
+                st.session_state.show_decks = not st.session_state.show_decks
+                st.rerun()
 
         # Only show decks if the button has been clicked
         if st.session_state.show_decks:
@@ -677,10 +683,16 @@ def render_sidebar_from_cache():
                 st.session_state.show_trending_decks = False
 
             # Only show the button if trending decks are not currently visible
-            if not st.session_state.show_trending_decks:
-                if st.button("See More", type="tertiary", use_container_width=False, key="trending_button"):
-                    st.session_state.show_trending_decks = True
-                    st.rerun()
+            # if not st.session_state.show_trending_decks:
+            #     if st.button("See More", type="tertiary", use_container_width=False, key="trending_button"):
+            #         st.session_state.show_trending_decks = True
+            #         st.rerun()
+            
+            # Always show the button, but change text based on state
+            button_text = "Close" if st.session_state.show_trending_decks else "See More"
+            if st.button(button_text, type="tertiary", use_container_width=False, key="trending_button"):
+                st.session_state.show_trending_decks = not st.session_state.show_trending_decks
+                st.rerun()
 
         # Only show trending decks if the button has been clicked
         if st.session_state.show_trending_decks:
@@ -730,9 +742,6 @@ def render_sidebar_from_cache():
         # Fallback if no performance data
         st.warning("No performance data available")
     
-    # Rest of render_sidebar_from_cache remains the same...
-    # [Include all the remaining logic but replace any create_deck_header_images calls with get_header_image_cached]
-
 def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
     """Render a single trending deck in the sidebar with cached components"""
     tournaments_played = deck['tournaments_played']
