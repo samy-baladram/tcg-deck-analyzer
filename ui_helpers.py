@@ -620,8 +620,6 @@ def render_sidebar_from_cache():
                     Based on up to {TOURNAMENT_COUNT} tournament results
                 </div>
                 """, unsafe_allow_html=True)
-                st.write("")
-                st.write("")
         else:
             st.write("")
 
@@ -713,8 +711,6 @@ def render_sidebar_from_cache():
                     Sorted by tournament activity
                 </div>
                 """, unsafe_allow_html=True)
-                st.write("")
-                st.write("")
         else:
             st.write("")
         
