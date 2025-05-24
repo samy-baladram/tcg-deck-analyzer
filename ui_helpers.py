@@ -718,7 +718,7 @@ def render_sidebar_from_cache():
         display_counter_picker_sidebar()
         
         # Power Index explanation
-        <hr style='margin:25px;  border: 0.5px solid #aaa;'>
+        st.markdown("<hr style='margin:25px;  border: 0.5px solid #aaa;'>")
         with st.expander("🔍 About the Power Index"):
             # Format the explanation with the current date and tournament count
             formatted_explanation = POWER_INDEX_EXPLANATION.format(
