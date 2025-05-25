@@ -48,6 +48,9 @@ POKEMON_URL_EXCEPTIONS = {
         'rampardos': 'lycanroc-midnight',
         'default': 'lycanroc-midnight'  # fallback
     },
+    'alolan-raichu': {
+        'default': 'raichu-alola'  # fallback
+    },
     # Add more exceptions as needed
     # 'rotom': {
     #     'pikachu': 'rotom-wash',
@@ -93,7 +96,7 @@ IMAGE_GRADIENT = {
 }
 
 # Category thresholds
-CATEGORY_BINS = [-1, 25, 70, 100]
+CATEGORY_BINS = [-1, 25, 80, 100]
 CATEGORY_LABELS = ['Tech', 'Standard', 'Core']
 
 # Flexible core thresholds
