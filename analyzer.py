@@ -301,23 +301,19 @@ def create_tournament_deck_mapping(decks_data):
     return tournament_map
 
 def update_deck_analysis(deck_name, set_name, new_tournament_ids):
-    """
-    Update deck analysis by incorporating data from new tournaments
+    """Update deck analysis by incorporating data from new tournaments"""
     
-    Args:
-        deck_name: Name of the deck archetype
-        set_name: Set code (e.g., "A3")
-        new_tournament_ids: List of new tournament IDs to analyze
-        
-    Returns:
-        Boolean indicating success
-    """
-    # Check if decks have already been collected
     deck_key = f"{deck_name}_{set_name}"
     
+    # Show status
+    status = st.empty()
+    status.text(f"Updating analysis for {deck_name}...")
+    
     if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
-        # If no existing data, just do a full analysis
+        # If no existing data, clear cache and do full analysis
+        clear_deck_cache_on_switch(deck_name, set_name)  # ADD THIS
         analyze_deck(deck_name, set_name)
+        status.empty()
         return True
     
     # Get existing collected data
@@ -326,13 +322,17 @@ def update_deck_analysis(deck_name, set_name, new_tournament_ids):
     existing_energy_types = set(collected_data['all_energy_types'])
     
     # Get new decks from specified tournaments
+    status.text(f"Fetching new data for {deck_name} from {len(new_tournament_ids)} tournaments...")
     new_decks, new_energy_types, new_total = collect_decks_by_tournaments(
         deck_name, set_name, new_tournament_ids
     )
     
     if not new_decks:
-        # No new data to add
+        status.empty()
         return False
+    
+    # Show updating status
+    status.text(f"Updating {deck_name} with {len(new_decks)} new decks...")
     
     # Merge energy types
     all_energy_types = existing_energy_types.union(new_energy_types)
@@ -353,9 +353,19 @@ def update_deck_analysis(deck_name, set_name, new_tournament_ids):
         'total_decks': total_decks
     }
     
+    # CLEAR CACHE BEFORE REANALYSIS - THIS IS THE KEY FIX
+    clear_deck_cache_on_switch(deck_name, set_name)
+    
+    # Force refresh if this is the currently selected deck
+    if ('analyze' in st.session_state and 
+        st.session_state.analyze.get('deck_name') == deck_name):
+        st.session_state.force_deck_refresh = True
+    
     # Rerun analysis with the combined dataset
-    # This will reuse the stored decks rather than fetching again
+    status.text(f"Running analysis on combined data for {deck_name}...")
     analyze_deck(deck_name, set_name)
+    
+    status.empty()
     return True
 
 def analyze_deck(deck_name, set_name="A3"):
