@@ -1372,6 +1372,12 @@ def render_hidden_gem_in_sidebar(deck, expanded=False, rank=None):
     """Render a single hidden gem deck in the sidebar with cached components"""
     win_rate = deck['win_rate']
     meta_share = deck['share']
+    
+    # Get the record data
+    wins = deck.get('total_wins', 0)
+    losses = deck.get('total_losses', 0)
+    ties = deck.get('total_ties', 0)
+    
     rank_symbol = "💎"
     
     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
@@ -1416,13 +1422,16 @@ def render_hidden_gem_in_sidebar(deck, expanded=False, rank=None):
                         <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
                     </div>
                     """, unsafe_allow_html=True)
-                    st.caption(f"Win Rate: {win_rate:.1f}% • Share: {meta_share:.2f}%")
+                    # Updated caption with record
+                    st.caption(f"Win Rate: {win_rate:.1f}% ({wins}-{losses}-{ties}) • Share: {meta_share:.2f}%")
                 else:
                     st.markdown("""
                     <div style="margin-bottom: 5px;">
                         <div style="font-size: 0.8rem; color: #888;">No energy data</div>
                     </div>
                     """, unsafe_allow_html=True)
+                    # Caption even without energy data
+                    st.caption(f"Win Rate: {win_rate:.1f}% ({wins}-{losses}-{ties}) • Share: {meta_share:.2f}%")
             
             with col2:
                 if st.button("Details", 
