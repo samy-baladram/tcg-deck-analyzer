@@ -96,7 +96,7 @@ IMAGE_GRADIENT = {
 }
 
 # Category thresholds
-CATEGORY_BINS = [-1, 25, 80, 100]
+CATEGORY_BINS = [-1, 25, 79, 100]
 CATEGORY_LABELS = ['Tech', 'Standard', 'Core']
 
 # Flexible core thresholds
