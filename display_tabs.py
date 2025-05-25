@@ -243,9 +243,24 @@ def display_card_usage_tab(results, total_decks, variant_df):
             display_chart(fig, key="usage_trainer_chart")
         else:
             st.info("No Trainer cards found")
-    if last_update:
-        # FIXED: Use the actual total_decks variable instead of hardcoded "20"
-        st.caption(f"Data of {total_decks} collected decks (with partial energy info). {last_update}")
+    # ADD THIS: Calculate last_update inside the function
+    from ui_helpers import display_deck_update_info
+    
+    # Get current deck info from session state
+    if 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+        set_name = st.session_state.analyze.get('set_name', 'A3')
+        
+        # Get the last update info
+        last_update = display_deck_update_info(deck_name, set_name)
+        
+        if last_update:
+            st.caption(f"Data of {total_decks} collected decks (with partial energy info). {last_update}")
+        else:
+            st.caption(f"Data of {total_decks} collected decks (with partial energy info).")
+    else:
+        # Fallback if no deck is selected
+        st.caption(f"Data of {total_decks} collected decks (with partial energy info).")
 
 
 # Simplified energy analysis function that calls the parts from display_energy_debug_tab
