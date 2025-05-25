@@ -1950,10 +1950,6 @@ def display_matchup_tab(deck_info=None):
         # Apply filter
         filtered_df = working_df[working_df['deck_name_lower'].isin(meta_decks_lower)]
         
-        if filtered_count > 0:
-            st.info(f"Showing {len(filtered_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
-                    f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
-        
         # Use filtered data if we found matches
         if not filtered_df.empty:
             working_df = filtered_df.drop(columns=['deck_name_lower'])
@@ -2098,6 +2094,9 @@ def display_matchup_tab(deck_info=None):
         )
     
     # Add some space between summary and table
+    if filtered_count > 0:
+            st.info(f"Showing {len(filtered_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
+                    f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
