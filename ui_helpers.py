@@ -542,27 +542,28 @@ def render_sidebar_from_cache():
         st.title("Top 10 Meta Decks")
 
     # Initialize top_deck variable
-    top_deck = None
-    
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        top_deck = st.session_state.performance_data.iloc[0]
+    with st.spinner("Loading top meta decks..."):
+        top_deck = None
         
-        # USE CACHED HEADER IMAGE
-        header_image = get_header_image_cached(top_deck['deck_name'], top_deck['set'])
-
-        if header_image:
-            st.markdown(f"""
-            <div style="width: 100%; margin-bottom: -1rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
-            </div>
-            """, unsafe_allow_html=True)
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+            top_deck = st.session_state.performance_data.iloc[0]
+            
+            # USE CACHED HEADER IMAGE
+            header_image = get_header_image_cached(top_deck['deck_name'], top_deck['set'])
+    
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: -1rem;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                    display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #888; font-size: 0.8rem;">No image</span>
+                </div>
+                """, unsafe_allow_html=True)
     
     # CRITICAL FIX: Only proceed if we have top_deck data
     if top_deck is not None:
@@ -632,38 +633,39 @@ def render_sidebar_from_cache():
             st.write("")
 
         # ADD NEW SECTION: Trending Decks
+        with st.spinner("Loading trending decks..."):
         # Load and encode the trending banner image if it exists
-        trending_banner_path = "trending_banner.png"
-        if os.path.exists(trending_banner_path):
-            with open(trending_banner_path, "rb") as f:
-                trending_banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""<div style="width:100%; text-align:center;">
-                <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
-                <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("### 📈 Trending Decks")
-        
-        # Get the first trending deck
-        test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
-        
-        # Generate header image for trending deck
-        header_image = get_header_image_cached(test_deck['deck_name'], test_deck['set'])
-
-        if header_image:
-            st.markdown(f"""
-            <div style="width: 100%; margin-bottom: -1rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
-            </div>
-            """, unsafe_allow_html=True)
+            trending_banner_path = "trending_banner.png"
+            if os.path.exists(trending_banner_path):
+                with open(trending_banner_path, "rb") as f:
+                    trending_banner_base64 = base64.b64encode(f.read()).decode()
+                st.markdown(f"""<div style="width:100%; text-align:center;">
+                    <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+                    <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("### 📈 Trending Decks")
+            
+            # Get the first trending deck
+            test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
+            
+            # Generate header image for trending deck
+            header_image = get_header_image_cached(test_deck['deck_name'], test_deck['set'])
+    
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: -1rem;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                    display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #888; font-size: 0.8rem;">No image</span>
+                </div>
+                """, unsafe_allow_html=True)
         
         # NEW: Add 2-column layout for test deck and See More button
         col1, col2 = st.columns([3, 1])
@@ -731,58 +733,59 @@ def render_sidebar_from_cache():
             st.write("")
 
         # ADD NEW SECTION: Hidden Gems Decks
-        gems_banner_path = "gems_banner.png"
-        if os.path.exists(gems_banner_path):
-            with open(gems_banner_path, "rb") as f:
-                gems_banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""<div style="width:100%; text-align:center;">
-                <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
-                <img src="data:image/png;base64,{gems_banner_base64}" style="width:100%; max-width:350px;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("### 💎 Hidden Gems")
-        
-        # Calculate win_rate if it doesn't exist, then filter for hidden gems
-        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-            perf_data = st.session_state.performance_data.copy()
-
-            perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
-
-            # Calculate win_rate if not present
-            if 'win_rate' not in perf_data.columns:
-                perf_data['win_rate'] = (
-                    (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
-                    (perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']) * 100
-                ).fillna(0)
-            
-            # Filter for hidden gems
-            hidden_gems = perf_data[
-                (perf_data['share'] >= 0.05) & 
-                (perf_data['share'] <= 0.5) & 
-                (perf_data['win_rate'] >= 55) &
-                (perf_data['total_games'] >= 20)  # NEW: Minimum 20 total games
-            ].sort_values('win_rate', ascending=False)
-        
-        if not hidden_gems.empty:
-            first_gem = hidden_gems.iloc[0]
-            
-            # Generate header image for hidden gem deck
-            header_image = get_header_image_cached(first_gem['deck_name'], first_gem['set'])
-    
-            if header_image:
-                st.markdown(f"""
-                <div style="width: 100%; margin-bottom: -1rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+        with st.spinner("Loading hidden gems..."):
+            gems_banner_path = "gems_banner.png"
+            if os.path.exists(gems_banner_path):
+                with open(gems_banner_path, "rb") as f:
+                    gems_banner_base64 = base64.b64encode(f.read()).decode()
+                st.markdown(f"""<div style="width:100%; text-align:center;">
+                    <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+                    <img src="data:image/png;base64,{gems_banner_base64}" style="width:100%; max-width:350px;">
                 </div>
                 """, unsafe_allow_html=True)
             else:
-                st.markdown("""
-                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                    display: flex; align-items: center; justify-content: center;">
-                    <span style="color: #888; font-size: 0.8rem;">No image</span>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown("### 💎 Hidden Gems")
+            
+            # Calculate win_rate if it doesn't exist, then filter for hidden gems
+            if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+                perf_data = st.session_state.performance_data.copy()
+    
+                perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
+    
+                # Calculate win_rate if not present
+                if 'win_rate' not in perf_data.columns:
+                    perf_data['win_rate'] = (
+                        (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
+                        (perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']) * 100
+                    ).fillna(0)
+                
+                # Filter for hidden gems
+                hidden_gems = perf_data[
+                    (perf_data['share'] >= 0.05) & 
+                    (perf_data['share'] <= 0.5) & 
+                    (perf_data['win_rate'] >= 55) &
+                    (perf_data['total_games'] >= 20)  # NEW: Minimum 20 total games
+                ].sort_values('win_rate', ascending=False)
+            
+            if not hidden_gems.empty:
+                first_gem = hidden_gems.iloc[0]
+                
+                # Generate header image for hidden gem deck
+                header_image = get_header_image_cached(first_gem['deck_name'], first_gem['set'])
+        
+                if header_image:
+                    st.markdown(f"""
+                    <div style="width: 100%; margin-bottom: -1rem;">
+                        <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown("""
+                    <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                        display: flex; align-items: center; justify-content: center;">
+                        <span style="color: #888; font-size: 0.8rem;">No image</span>
+                    </div>
+                    """, unsafe_allow_html=True)
             
             # 2-column layout for gem deck and See More button
             col1, col2 = st.columns([3, 1])
@@ -850,7 +853,8 @@ def render_sidebar_from_cache():
             st.caption("No decks found matching hidden gems criteria")
         
         # Continue with existing code (Counter Picker section)
-        display_counter_picker_sidebar()
+        with st.spinner("Loading counter picker..."):
+            display_counter_picker_sidebar()
         
         # Power Index explanation
         st.markdown("<hr style='margin:25px;  border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
