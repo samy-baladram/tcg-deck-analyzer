@@ -341,9 +341,6 @@ if 'analyze' in st.session_state and selected_option:
                         empty_variant_df = pd.DataFrame()
                         display_tabs.display_card_usage_tab(results, total_decks, empty_variant_df)
                     
-                    if last_update:
-                        st.caption(f"Data of 20 collected decks (with partial energy info). {last_update}")
-                    
                 with tab3:
                     display_tabs.display_matchup_tab()
                     
