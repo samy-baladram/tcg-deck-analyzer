@@ -4,7 +4,7 @@ from formatters import format_deck_name, format_deck_option
 from utils import calculate_time_ago
 from scraper import get_popular_decks_with_performance
 import cache_manager
-from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MIN_COUNTER_MATCHES
+from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MIN_COUNTER_MATCHES, MIN_WIN_RATE
 import pandas as pd
 import base64
 import os
@@ -420,7 +420,7 @@ def create_deck_selector():
     
     # Create label and help text
     label_text = f"Current Set: {current_set}"
-    help_text = f"Showing decks with meta share ≥ 0.1% and win rate ≥ 45%, ordered by Power Index (details in sidebar).\nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).\nUpdated {time_str}."
+    help_text = f"Showing decks with meta share ≥ {MIN_META_SHARE}% and win rate ≥ {MIN_WIN_RATE}%, ordered by Power Index (details in sidebar).\nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).\nUpdated {time_str}."
 
     # deck_icon_display_names = []
     # for name in deck_display_names:
