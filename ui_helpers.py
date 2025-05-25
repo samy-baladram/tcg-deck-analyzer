@@ -618,11 +618,11 @@ def render_sidebar_from_cache():
                 performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
                 st.markdown(f"""
                 <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
-                    <div>Top performers from {current_month_year}</div>
+                    <div>Top performers from the past {TOURNAMENT_COUNT} tournaments</div>
                     <div>Updated {performance_time_str}</div>
                 </div>
                 <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                    Based on up to {TOURNAMENT_COUNT} tournament results
+                    Sorted by their Power Index (see the bottom of sidebar)
                 </div>
                 """, unsafe_allow_html=True)
                 st.write("")
@@ -717,7 +717,7 @@ def render_sidebar_from_cache():
                 performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
                 st.markdown(f"""
                 <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
-                    <div>Most active from {current_month_year}</div>
+                    <div>Most active from the past {TOURNAMENT_COUNT} tournaments</div>
                     <div>Updated {performance_time_str}</div>
                 </div>
                 <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
@@ -746,7 +746,9 @@ def render_sidebar_from_cache():
         # Calculate win_rate if it doesn't exist, then filter for hidden gems
         if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
             perf_data = st.session_state.performance_data.copy()
-            
+
+            perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
+
             # Calculate win_rate if not present
             if 'win_rate' not in perf_data.columns:
                 perf_data['win_rate'] = (
@@ -758,7 +760,8 @@ def render_sidebar_from_cache():
             hidden_gems = perf_data[
                 (perf_data['share'] >= 0.05) & 
                 (perf_data['share'] <= 0.5) & 
-                (perf_data['win_rate'] >= 55)
+                (perf_data['win_rate'] >= 55) &
+                (perf_data['total_games'] >= 20)  # NEW: Minimum 20 total games
             ].sort_values('win_rate', ascending=False)
         
         if not hidden_gems.empty:
@@ -824,11 +827,11 @@ def render_sidebar_from_cache():
                 performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
                 st.markdown(f"""
                 <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
-                    <div>Underrepresented from {current_month_year}</div>
+                    <div>Underrepresented from the past {TOURNAMENT_COUNT} tournaments</div>
                     <div>Updated {performance_time_str}</div>
                 </div>
                 <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                    0.05-0.5% meta share, 55%+ win rate
+                    0.05-0.5% meta share, 55%+ win rate,  20+ games
                 </div>
                 """, unsafe_allow_html=True)
                 st.write("")
