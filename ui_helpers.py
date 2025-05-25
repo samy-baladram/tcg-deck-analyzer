@@ -729,6 +729,111 @@ def render_sidebar_from_cache():
                 st.write("")
         else:
             st.write("")
+
+        # ADD NEW SECTION: Hidden Gems Decks
+        gems_banner_path = "gems_banner.png"
+        if os.path.exists(gems_banner_path):
+            with open(gems_banner_path, "rb") as f:
+                gems_banner_base64 = base64.b64encode(f.read()).decode()
+            st.markdown(f"""<div style="width:100%; text-align:center;">
+                <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+                <img src="data:image/png;base64,{gems_banner_base64}" style="width:100%; max-width:350px;">
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("### 💎 Hidden Gems")
+        
+        # Get the first hidden gem deck
+        hidden_gems = st.session_state.performance_data[
+            (st.session_state.performance_data['share'] >= 0.05) & 
+            (st.session_state.performance_data['share'] <= 0.5) & 
+            (st.session_state.performance_data['win_rate'] >= 55)
+        ].sort_values('win_rate', ascending=False)
+        
+        if not hidden_gems.empty:
+            first_gem = hidden_gems.iloc[0]
+            
+            # Generate header image for hidden gem deck
+            header_image = get_header_image_cached(first_gem['deck_name'], first_gem['set'])
+    
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: -1rem;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                    display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #888; font-size: 0.8rem;">No image</span>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # 2-column layout for gem deck and See More button
+            col1, col2 = st.columns([3, 1])
+            
+            with col1:         
+                # Button to switch to this deck
+                if st.button(
+                    first_gem['displayed_name'], 
+                    key="first_gem_deck_button",
+                    type="tertiary",
+                    use_container_width=False
+                ):
+                    st.session_state.deck_to_analyze = first_gem['deck_name']
+                    st.rerun()
+    
+            with col2:
+                # Add button to toggle hidden gems visibility
+                if 'show_hidden_gems' not in st.session_state:
+                    st.session_state.show_hidden_gems = False
+    
+                # Always show the button, but change text based on state
+                button_text = "Close" if st.session_state.show_hidden_gems else "See More"
+                if st.button(button_text, type="tertiary", use_container_width=False, key="gems_button"):
+                    st.session_state.show_hidden_gems = not st.session_state.show_hidden_gems
+                    st.rerun()
+    
+            # Only show hidden gems if the button has been clicked
+            if st.session_state.show_hidden_gems:
+                # Ensure energy cache is initialized
+                import cache_manager
+                cache_manager.ensure_energy_cache()
+                
+                # Display hidden gems (up to 5)
+                gems_to_show = hidden_gems.head(5)
+                
+                # Render each hidden gem deck one by one, passing the rank (index + 1)
+                for idx, (_, deck) in enumerate(gems_to_show.iterrows()):
+                    rank = idx + 1  # Calculate rank (1-based)
+                    render_hidden_gem_in_sidebar(deck, rank=rank)
+            
+                # Add disclaimer with update time for hidden gems
+                performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+                st.markdown(f"""
+                <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
+                    <div>Underrepresented from {current_month_year}</div>
+                    <div>Updated {performance_time_str}</div>
+                </div>
+                <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+                    0.05-0.5% meta share, 55%+ win rate
+                </div>
+                """, unsafe_allow_html=True)
+                st.write("")
+                st.write("")
+                st.write("")
+            else:
+                st.write("")
+        else:
+            # No hidden gems found - show placeholder
+            st.markdown("""
+            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                display: flex; align-items: center; justify-content: center;">
+                <span style="color: #888; font-size: 0.8rem;">No hidden gems found</span>
+            </div>
+            """, unsafe_allow_html=True)
+            st.caption("No decks found matching hidden gems criteria")
         
         # Continue with existing code (Counter Picker section)
         display_counter_picker_sidebar()
@@ -1252,69 +1357,70 @@ def set_deck_to_analyze(deck_name):
     # Set the deck to analyze
     st.session_state.deck_to_analyze = deck_name
 
-# In ui_helpers.py - Add this new function
-
-# def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
-#     """Render a single trending deck in the sidebar with cached components"""
-#     tournaments_played = deck['tournaments_played']
-#     rank_symbol = "🚀"
+def render_hidden_gem_in_sidebar(deck, expanded=False, rank=None):
+    """Render a single hidden gem deck in the sidebar with cached components"""
+    win_rate = deck['win_rate']
+    meta_share = deck['share']
+    rank_symbol = "💎"
     
-#     with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-#         try:
-#             # USE CACHED HEADER IMAGE
-#             header_image = get_header_image_cached(deck['deck_name'], deck['set'])  # CHANGED
+    with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+        try:
+            # USE CACHED HEADER IMAGE
+            header_image = get_header_image_cached(deck['deck_name'], deck['set'])
             
-#             if header_image:
-#                 st.markdown(f"""
-#                 <div style="width: 100%; margin-bottom: 10px;">
-#                     <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
-#                 </div>
-#                 """, unsafe_allow_html=True)
+            if header_image:
+                st.markdown(f"""
+                <div style="width: 100%; margin-bottom: 10px;">
+                    <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto;">
+                </div>
+                """, unsafe_allow_html=True)
             
-#             # USE CACHED SAMPLE DECK
-#             deck_name = deck['deck_name']
-#             sample_deck = get_sample_deck_cached(deck_name, deck['set'])  # CHANGED
+            # USE CACHED SAMPLE DECK
+            deck_name = deck['deck_name']
+            sample_deck = get_sample_deck_cached(deck_name, deck['set'])
             
-#             from card_renderer import render_sidebar_deck
-#             deck_html = render_sidebar_deck(
-#                 sample_deck['pokemon_cards'], 
-#                 sample_deck['trainer_cards'],
-#                 card_width=50
-#             )
-#             st.markdown(deck_html, unsafe_allow_html=True)
+            from card_renderer import render_sidebar_deck
+            deck_html = render_sidebar_deck(
+                sample_deck['pokemon_cards'], 
+                sample_deck['trainer_cards'],
+                card_width=60
+            )
+            st.markdown(deck_html, unsafe_allow_html=True)
 
-#             col1, col2 = st.columns([2, 1])
+            col1, col2 = st.columns([2, 1])
             
-#             with col1:
-#                 # USE CACHED ENERGY TYPES
-#                 energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
-                
-#                 if energy_types:
-#                     # USE CACHED ENERGY RENDERING
-#                     energy_html_compact = ""
-#                     for energy in energy_types:
-#                         energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-#                         energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:30px; margin-right:2px; vertical-align:middle;">'
+            with col1:
+                # USE CACHED ENERGY TYPES
+                energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+
+                if energy_types:
+                    # USE CACHED ENERGY RENDERING
+                    energy_html_compact = ""
+                    for energy in energy_types:
+                        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+                        energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px;">'
                     
-#                     st.markdown(f"""
-#                     <div style="margin-top:5px; ">
-#                         <div>{energy_html_compact}</div>
-#                     </div>
-#                     """, unsafe_allow_html=True)
-#                 else:
-#                     st.markdown("""
-#                     <div style="margin-bottom: 5px;">
-#                         <div style="font-size: 0.8rem; color: #888;">No energy data</div>
-#                     </div>
-#                     """, unsafe_allow_html=True)
+                    st.markdown(f"""
+                    <div style="margin-top:5px; margin-bottom:-5px;">
+                        <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.caption(f"Win Rate: {win_rate:.1f}% • Share: {meta_share:.2f}%")
+                else:
+                    st.markdown("""
+                    <div style="margin-bottom: 5px;">
+                        <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+                    </div>
+                    """, unsafe_allow_html=True)
             
-#             with col2:
-#                 if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-#                     st.session_state.deck_to_analyze = deck['deck_name']
-#                     st.rerun()
-            
-#             st.caption(f"Best Finishes: {tournaments_played}")
-            
-#         except Exception as e:
-#             st.warning(f"Unable to load deck preview for {deck_name}")
-#             print(f"Error rendering trending deck in sidebar: {e}")
+            with col2:
+                if st.button("Details", 
+                            key=f"gem_details_{deck['deck_name']}_{rank}", 
+                            type="tertiary", 
+                            use_container_width=True):
+                    st.session_state.deck_to_analyze = deck['deck_name']
+                    st.rerun()
+                            
+        except Exception as e:
+            st.warning(f"Unable to load deck preview for {deck_name}")
+            print(f"Error rendering hidden gem deck in sidebar: {e}")
