@@ -1448,7 +1448,7 @@ def display_related_decks_tab(deck_info, results):
                         # Force rerun to trigger the analysis
                         st.rerun()
                         
-            st.write("Decks sharing featured Pokémon with this archetype.")
+            st.caption("Decks sharing featured Pokémon with this archetype.")
     else:
         st.info("Deck list not available. Unable to find related decks.")
 
