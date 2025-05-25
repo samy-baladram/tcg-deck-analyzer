@@ -976,6 +976,8 @@ def display_raw_data_tab(results, variant_df):
         st.write("#### Variant Analysis Data")
         st.dataframe(variant_df, use_container_width=True)
 
+# In display_tabs.py - Fix the display_metagame_tab function
+
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.write("#### Tournament Performance Data")
@@ -1013,11 +1015,23 @@ def display_metagame_tab():
     display_df['share'] = display_df['share'].round(2)
     display_df['power_index'] = display_df['power_index'].round(2)
 
-    # Extract Pokémon names and create image URLs
-    display_df[['pokemon_url1', 'pokemon_url2']] = display_df.apply(
-        lambda row: pd.Series(extract_pokemon_urls(row['deck_name'])), 
-        axis=1
-    )
+    # FIXED: Extract Pokémon names and create image URLs with proper error handling
+    try:
+        # Extract Pokemon URLs for each row
+        pokemon_data = []
+        for _, row in display_df.iterrows():
+            url1, url2 = extract_pokemon_urls(row['deck_name'])
+            pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
+        
+        # Convert to DataFrame and join with display_df
+        pokemon_df = pd.DataFrame(pokemon_data)
+        display_df = pd.concat([display_df.reset_index(drop=True), pokemon_df], axis=1)
+        
+    except Exception as e:
+        st.error(f"Error processing Pokemon URLs: {str(e)}")
+        # Continue without Pokemon images
+        display_df['pokemon_url1'] = None
+        display_df['pokemon_url2'] = None
     
     # Select and rename columns for display - FIX: Use rank_display
     display_cols = {
@@ -1103,7 +1117,6 @@ def display_metagame_tab():
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
     st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.")
-    
     
 def display_matchup_treemap(deck_name, set_name, working_df):
     """
@@ -1859,6 +1872,8 @@ def display_matchup_summary(deck_name, set_name, working_df):
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
 
 
+# In display_tabs.py - Fix the display_matchup_tab function
+
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
@@ -1866,7 +1881,6 @@ def display_matchup_tab(deck_info=None):
     Args:
         deck_info: Dictionary containing deck information (optional)
     """
-    #st.subheader("Matchup Analysis")
     import pandas as pd
     import re
     
@@ -1893,25 +1907,23 @@ def display_matchup_tab(deck_info=None):
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         meta_decks = st.session_state.performance_data['deck_name'].tolist()
     
-    # Show filter option - commented out as requested
-    # show_all = st.checkbox("Show all matchups (unchecked = meta decks only)", value=False)
     # Always filter by default
     show_all = False
     
     # Create a copy to work with
     working_df = matchup_df.copy()
 
-    # Filter out current deck from matchups (ADD THIS LINE)
+    # Filter out current deck from matchups
     working_df = working_df[working_df['opponent_deck_name'] != deck_name]
 
-    # ADD THIS: Filter by minimum matches
+    # Filter by minimum matches
     from config import MIN_MATCHUP_MATCHES
     original_count = len(working_df)
     working_df = working_df[working_df['matches_played'] >= MIN_MATCHUP_MATCHES]
     filtered_count = original_count - len(working_df)
 
-    # Only apply filtering if we have meta decks and user wants filtering
-    if meta_decks and not show_all:
+    # Only apply meta deck filtering if we have meta decks and working_df is not empty
+    if meta_decks and not show_all and not working_df.empty:
         # Add lowercase versions for better matching
         working_df['deck_name_lower'] = working_df['opponent_deck_name'].str.lower()
         meta_decks_lower = [d.lower() for d in meta_decks]
@@ -1919,21 +1931,39 @@ def display_matchup_tab(deck_info=None):
         # Apply filter
         filtered_df = working_df[working_df['deck_name_lower'].isin(meta_decks_lower)]
         
+        if filtered_count > 0:
+            st.info(f"Showing {len(filtered_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
+                    f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
         
         # Use filtered data if we found matches
         if not filtered_df.empty:
-            #st.success(f"Showing {len(filtered_df)} meta deck matchups")
             working_df = filtered_df.drop(columns=['deck_name_lower'])
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
             working_df = working_df.drop(columns=['deck_name_lower'])
-       
     
-    # Apply the function to extract Pokémon image URLs
-    working_df[['pokemon_url1', 'pokemon_url2']] = working_df.apply(
-        lambda row: pd.Series(extract_pokemon_urls(row['opponent_deck_name'])), 
-        axis=1
-    )
+    # FIXED: Only proceed if we still have data after all filtering
+    if working_df.empty:
+        st.warning("No matchup data available after filtering.")
+        return
+    
+    # FIXED: Apply Pokemon URL extraction with proper error handling
+    try:
+        # Extract Pokemon URLs for each row
+        pokemon_data = []
+        for _, row in working_df.iterrows():
+            url1, url2 = extract_pokemon_urls(row['opponent_deck_name'])
+            pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
+        
+        # Convert to DataFrame and join with working_df
+        pokemon_df = pd.DataFrame(pokemon_data)
+        working_df = pd.concat([working_df.reset_index(drop=True), pokemon_df], axis=1)
+        
+    except Exception as e:
+        st.error(f"Error processing Pokemon URLs: {str(e)}")
+        # Continue without Pokemon images
+        working_df['pokemon_url1'] = None
+        working_df['pokemon_url2'] = None
     
     # Create a better formatted display version
     display_df = working_df.copy()
@@ -1951,18 +1981,26 @@ def display_matchup_tab(deck_info=None):
         lambda row: f"{row['wins']}-{row['losses']}-{row['ties']}", axis=1
     )
     
-    # Select and rename columns for display - now including the icon columns
-    formatted_df = pd.DataFrame({
-       # 'Rank': display_df['Rank'],
-        'Icon1': display_df['pokemon_url1'],
-        'Icon2': display_df['pokemon_url2'],
-        'Deck': display_df['opponent_name'],
-        'Matchup': display_df['Matchup'],
-        'Win %': display_df['win_pct'],
-        'Record': display_df['Record'],
-        'Matches': display_df['matches_played'],
-        'Meta Share %': display_df['meta_share']
-    })
+    # FIXED: Create formatted_df with proper error handling
+    try:
+        # Select and rename columns for display - now including the icon columns
+        formatted_df = pd.DataFrame({
+           # 'Rank': display_df['Rank'],
+            'Icon1': display_df['pokemon_url1'],
+            'Icon2': display_df['pokemon_url2'],
+            'Deck': display_df['opponent_name'],
+            'Matchup': display_df['Matchup'],
+            'Win %': display_df['win_pct'],
+            'Record': display_df['Record'],
+            'Matches': display_df['matches_played'],
+            'Meta Share %': display_df['meta_share']
+        })
+    except KeyError as e:
+        st.error(f"Missing required column: {str(e)}")
+        return
+    
+    # Display the enhanced data table with all rows
+    display_matchup_summary(deck_name, set_name, working_df)
     
     # Apply styling for matchups
     def highlight_matchups(val):
@@ -1974,23 +2012,14 @@ def display_matchup_tab(deck_info=None):
         else:
             return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
     
-    # Display the enhanced data table with all rows
-    display_matchup_summary(deck_name, set_name, working_df)
-    
     try:
         # First try with styled dataframe and images
-        styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
+        styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
         st.write("##### Matchup Data")
         st.dataframe(
             styled_df,
             use_container_width=True,
-            #height=850,
             column_config={
-                "Rank": st.column_config.NumberColumn(
-                    "#",
-                    help="Position in the list sorted by Win %",
-                    width="8px",
-                ),
                 "Icon1": st.column_config.ImageColumn(
                     "Icon 1",
                     help="First Pokémon in the deck",
@@ -2030,20 +2059,16 @@ def display_matchup_tab(deck_info=None):
             },
             hide_index=True
         )
-        if filtered_count > 0:
-            st.info(f"Showing {len(filtered_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
-                    f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
     except Exception as e:
         # Fallback to simpler version if there's an issue
         st.error(f"Error displaying styled dataframe with images: {str(e)}")
         st.write("Showing basic version without styling and images:")
         
         # Remove image columns for fallback
-        basic_df = formatted_df.drop(columns=['Icon1', 'Icon2'])
+        basic_df = formatted_df.drop(columns=['Icon1', 'Icon2'], errors='ignore')
         st.dataframe(
             basic_df,
             use_container_width=True,
-            #height=850,
             column_config={
                 "Win %": st.column_config.NumberColumn(
                     "Win %",
@@ -2052,8 +2077,7 @@ def display_matchup_tab(deck_info=None):
             },
             hide_index=True
         )
-    # After working_df is prepared, display the matchup summary
-    #display_matchup_summary(deck_name, set_name, working_df)
+    
     # Add some space between summary and table
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
