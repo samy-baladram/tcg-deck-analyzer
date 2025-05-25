@@ -910,7 +910,9 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         trainer_grid = CardGrid(card_width=65, gap=4)
         trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
         trainer_grid.display()
-    
+
+    st.caption("Meta Essentials: Cards appearing in 80%+ of competitive decks.")
+        
     # Flexible slots section
     remaining = 20 - total_cards
     st.write("<br>", unsafe_allow_html=True)
@@ -980,7 +982,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 trainer_options_grid.add_cards_from_dataframe(trainer_options)
                 trainer_options_grid.display()
-        st.caption("Percentages show how often each card appears in top competitive decks. Higher values indicate more popular choices for your remaining slots.")
+        st.caption("Remaining Slots: Cards appearing in 25-80% of decks, offering flexibility for tech choices. Percentages show how often each card appears in top competitive decks. Higher values indicate more popular choices for your remaining slots.")
     else:
         st.info("No remaining slots available for this deck.")
         
