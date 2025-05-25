@@ -787,70 +787,70 @@ def render_sidebar_from_cache():
                     </div>
                     """, unsafe_allow_html=True)
             
-            # 2-column layout for gem deck and See More button
-            col1, col2 = st.columns([3, 1])
-            
-            with col1:         
-                # Button to switch to this deck
-                if st.button(
-                    first_gem['displayed_name'], 
-                    key="first_gem_deck_button",
-                    type="tertiary",
-                    use_container_width=False
-                ):
-                    st.session_state.deck_to_analyze = first_gem['deck_name']
-                    st.rerun()
-    
-            with col2:
-                # Add button to toggle hidden gems visibility
-                if 'show_hidden_gems' not in st.session_state:
-                    st.session_state.show_hidden_gems = False
-    
-                # Always show the button, but change text based on state
-                button_text = "Close" if st.session_state.show_hidden_gems else "See More"
-                if st.button(button_text, type="tertiary", use_container_width=False, key="gems_button"):
-                    st.session_state.show_hidden_gems = not st.session_state.show_hidden_gems
-                    st.rerun()
-    
-            # Only show hidden gems if the button has been clicked
-            if st.session_state.show_hidden_gems:
-                # Ensure energy cache is initialized
-                import cache_manager
-                cache_manager.ensure_energy_cache()
+                # 2-column layout for gem deck and See More button
+                col1, col2 = st.columns([3, 1])
                 
-                # Display hidden gems (up to 5)
-                gems_to_show = hidden_gems.head(5)
+                with col1:         
+                    # Button to switch to this deck
+                    if st.button(
+                        first_gem['displayed_name'], 
+                        key="first_gem_deck_button",
+                        type="tertiary",
+                        use_container_width=False
+                    ):
+                        st.session_state.deck_to_analyze = first_gem['deck_name']
+                        st.rerun()
+        
+                with col2:
+                    # Add button to toggle hidden gems visibility
+                    if 'show_hidden_gems' not in st.session_state:
+                        st.session_state.show_hidden_gems = False
+        
+                    # Always show the button, but change text based on state
+                    button_text = "Close" if st.session_state.show_hidden_gems else "See More"
+                    if st.button(button_text, type="tertiary", use_container_width=False, key="gems_button"):
+                        st.session_state.show_hidden_gems = not st.session_state.show_hidden_gems
+                        st.rerun()
+        
+                # Only show hidden gems if the button has been clicked
+                if st.session_state.show_hidden_gems:
+                    # Ensure energy cache is initialized
+                    import cache_manager
+                    cache_manager.ensure_energy_cache()
+                    
+                    # Display hidden gems (up to 5)
+                    gems_to_show = hidden_gems.head(5)
+                    
+                    # Render each hidden gem deck one by one, passing the rank (index + 1)
+                    for idx, (_, deck) in enumerate(gems_to_show.iterrows()):
+                        rank = idx + 1  # Calculate rank (1-based)
+                        render_hidden_gem_in_sidebar(deck, rank=rank)
                 
-                # Render each hidden gem deck one by one, passing the rank (index + 1)
-                for idx, (_, deck) in enumerate(gems_to_show.iterrows()):
-                    rank = idx + 1  # Calculate rank (1-based)
-                    render_hidden_gem_in_sidebar(deck, rank=rank)
-            
-                # Add disclaimer with update time for hidden gems
-                performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-                st.markdown(f"""
-                <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
-                    <div>Underrepresented from the past {TOURNAMENT_COUNT} tournaments</div>
-                    <div>Updated {performance_time_str}</div>
-                </div>
-                <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                    0.05-0.5% meta share, 55%+ win rate,  20+ games
+                    # Add disclaimer with update time for hidden gems
+                    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+                    st.markdown(f"""
+                    <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
+                        <div>Underrepresented from the past {TOURNAMENT_COUNT} tournaments</div>
+                        <div>Updated {performance_time_str}</div>
+                    </div>
+                    <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+                        0.05-0.5% meta share, 55%+ win rate,  20+ games
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.write("")
+                    st.write("")
+                    st.write("")
+                else:
+                    st.write("")
+            else:
+                # No hidden gems found - show placeholder
+                st.markdown("""
+                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+                    display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #888; font-size: 0.8rem;">No hidden gems found</span>
                 </div>
                 """, unsafe_allow_html=True)
-                st.write("")
-                st.write("")
-                st.write("")
-            else:
-                st.write("")
-        else:
-            # No hidden gems found - show placeholder
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No hidden gems found</span>
-            </div>
-            """, unsafe_allow_html=True)
-            st.caption("No decks found matching hidden gems criteria")
+                st.caption("No decks found matching hidden gems criteria")
         
         # Continue with existing code (Counter Picker section)
         with st.spinner("Loading counter picker..."):
