@@ -80,7 +80,7 @@ if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
     st.session_state.app_state['initial_data_loaded'] = True
 
-# FIXED: Better deck switching logic
+# In app.py - Better deck switching logic
 if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
     target_deck = st.session_state.deck_to_analyze
     
@@ -97,14 +97,15 @@ if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
                     current_deck.get('set_name') != deck_info['set']
                 )
                 
-                # Only clear cache if it's actually a different deck
-                if is_different_deck:
+                # ALWAYS clear cache when switching via deck_to_analyze
+                if is_different_deck or st.session_state.get('force_refresh', False):
                     print(f"Switching from {current_deck.get('deck_name', 'None')} to {deck_info['deck_name']}")
                     # Clear cache for the NEW deck to force fresh analysis
                     import cache_manager
                     cache_manager.clear_deck_cache_on_switch(deck_info['deck_name'], deck_info['set'])
-                else:
-                    print(f"Staying on same deck: {deck_info['deck_name']}")
+                    
+                    # Set force refresh flag
+                    st.session_state.force_deck_refresh = True
                 
                 # Update selection
                 st.session_state.selected_deck_index = i
