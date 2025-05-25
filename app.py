@@ -80,7 +80,7 @@ if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
     st.session_state.app_state['initial_data_loaded'] = True
 
-# In app.py - Better deck switching logic
+# SIMPLIFIED: Only handle deck switching, no manual cache clearing
 if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
     target_deck = st.session_state.deck_to_analyze
     
@@ -90,22 +90,8 @@ if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
             deck_info = st.session_state.deck_name_mapping[display_name]
             if deck_info['deck_name'] == target_deck:
                 
-                # Check if this is actually a different deck from current selection
-                current_deck = st.session_state.get('analyze', {})
-                is_different_deck = (
-                    current_deck.get('deck_name') != deck_info['deck_name'] or 
-                    current_deck.get('set_name') != deck_info['set']
-                )
-                
-                # ALWAYS clear cache when switching via deck_to_analyze
-                if is_different_deck or st.session_state.get('force_refresh', False):
-                    print(f"Switching from {current_deck.get('deck_name', 'None')} to {deck_info['deck_name']}")
-                    # Clear cache for the NEW deck to force fresh analysis
-                    import cache_manager
-                    cache_manager.clear_deck_cache_on_switch(deck_info['deck_name'], deck_info['set'])
-                    
-                    # Set force refresh flag
-                    st.session_state.force_deck_refresh = True
+                # Just switch decks, no manual cache clearing
+                print(f"Switching to deck: {deck_info['deck_name']}")
                 
                 # Update selection
                 st.session_state.selected_deck_index = i
@@ -113,6 +99,11 @@ if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
                     'deck_name': deck_info['deck_name'],
                     'set_name': deck_info['set'],
                 }
+                
+                # Check if this was triggered by automatic refresh
+                if st.session_state.get('auto_refresh_in_progress', False):
+                    st.session_state.force_deck_refresh = True
+                    del st.session_state.auto_refresh_in_progress
                 
                 # Clear the deck_to_analyze flag
                 st.session_state.deck_to_analyze = None
