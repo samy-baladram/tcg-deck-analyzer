@@ -743,12 +743,23 @@ def render_sidebar_from_cache():
         else:
             st.markdown("### 💎 Hidden Gems")
         
-        # Get the first hidden gem deck
-        hidden_gems = st.session_state.performance_data[
-            (st.session_state.performance_data['share'] >= 0.05) & 
-            (st.session_state.performance_data['share'] <= 0.5) & 
-            (st.session_state.performance_data['win_rate'] >= 55)
-        ].sort_values('win_rate', ascending=False)
+        # Calculate win_rate if it doesn't exist, then filter for hidden gems
+        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+            perf_data = st.session_state.performance_data.copy()
+            
+            # Calculate win_rate if not present
+            if 'win_rate' not in perf_data.columns:
+                perf_data['win_rate'] = (
+                    (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
+                    (perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']) * 100
+                ).fillna(0)
+            
+            # Filter for hidden gems
+            hidden_gems = perf_data[
+                (perf_data['share'] >= 0.05) & 
+                (perf_data['share'] <= 0.5) & 
+                (perf_data['win_rate'] >= 55)
+            ].sort_values('win_rate', ascending=False)
         
         if not hidden_gems.empty:
             first_gem = hidden_gems.iloc[0]
