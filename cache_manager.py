@@ -6,8 +6,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 import cache_utils
-from analyzer import analyze_deck, build_deck_template, create_tournament_deck_mapping, update_deck_analysis, analyze_recent_performance
-from scraper import get_all_recent_tournaments, get_new_tournament_ids, get_affected_decks, get_sample_deck_for_archetype
+from analyzer import analyze_deck, build_deck_template, create_tournament_deck_mapping, update_deck_analysis
+from scraper import get_all_recent_tournaments, get_new_tournament_ids, get_affected_decks, get_sample_deck_for_archetype, analyze_recent_performance
 from config import MIN_META_SHARE
 
 # In cache_manager.py - Add this import at the top
