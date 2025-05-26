@@ -20,8 +20,8 @@ def calculate_time_ago(fetch_time):
 def is_set_code(part):
     """Check if a string matches the set code pattern"""
     import re
-    # Corrected pattern: matches A3, A2a, P-A but NOT pokemon names
-    set_pattern = re.compile(r'^[A-Z][0-9][a-z]?$|^[A-Z]-[A-Z]$', re.IGNORECASE)
+    # Updated pattern to handle all promotional set formats (P-A, P-B, P-C, etc.)
+    set_pattern = re.compile(r'^[A-Z][0-9][a-z]?$|^[A-Z]-[A-Z]$|^[Pp]-[A-Za-z]$', re.IGNORECASE)
     return bool(set_pattern.match(part))
 
 def format_set_code(set_code):
