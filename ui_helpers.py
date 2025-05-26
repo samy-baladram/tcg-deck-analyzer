@@ -869,6 +869,9 @@ def render_sidebar_from_cache():
             
             # Display the enhanced explanation
             st.markdown(formatted_explanation)
+        
+        # ADD THIS NEW SECTION HERE
+        render_about_section()
     else:
         # Fallback if no performance data
         st.warning("No performance data available")
@@ -1453,3 +1456,33 @@ def render_hidden_gem_in_sidebar(deck, expanded=False, rank=None):
         except Exception as e:
             st.warning(f"Unable to load deck preview for {deck_name}")
             print(f"Error rendering hidden gem deck in sidebar: {e}")
+
+def render_about_section():
+    """Render the About & Contact section at the bottom of the sidebar"""
+    with st.expander("🔗 About & Contact", expanded=False):
+        st.markdown("""
+        #### Behind the Scenes
+        
+        Built this during late nights analyzing PTCGP meta shifts. Started as a personal tool to track which energy combinations were actually winning tournaments, then grew into... well, this.
+        
+        The Wilson Score algorithm for Power Index was inspired by Reddit's comment ranking system - seemed fitting for ranking decks too.
+        
+        #### Hit Me Up
+        
+        **Reddit:** [u/Myxas_](https://www.reddit.com/user/Myxas_/)  
+        **Email:** [myxas.draxabalm@gmail.com](mailto:myxas.draxabalm@gmail.com)
+        
+        Always down to discuss meta trends, weird deck ideas, or if something breaks.
+        
+        #### Technical Notes
+        
+        - Scrapes Limitless TCG hourly for fresh tournament data
+        - Aggressive caching minimizes server requests (0.3s delays between calls)
+        - Card images load from CDN with local caching
+        - Energy detection uses pattern matching on deck names
+        - All analysis runs client-side after data collection
+        
+        *Huge respect to Limitless TCG for providing the data foundation. This tool implements rate limiting and caching to be a good citizen of their infrastructure.*
+        
+        *Not affiliated with TPCi or Limitless - just a fan project.*
+        """)
