@@ -303,6 +303,10 @@ def extract_pokemon_from_deck_name(deck_name):
         
         # Check special multi-word names first (exact matches)
         for word_count in range(2, min(5, len(parts) - start_idx + 1)):
+            # FIXED: Skip if we would include a set code in the Pokemon name
+            if any(is_set_code(parts[start_idx + j]) for j in range(word_count)):
+                continue
+                
             potential_name = '-'.join(parts[start_idx:start_idx + word_count]).lower()
             if potential_name in SPECIAL_MULTIWORD:
                 return start_idx + word_count - 1
@@ -313,7 +317,10 @@ def extract_pokemon_from_deck_name(deck_name):
             prefix_len = len(prefix_parts)
             
             if (start_idx + prefix_len < len(parts) and
+                # FIXED: Ensure we don't include set codes in prefix matching
+                not any(is_set_code(parts[start_idx + j]) for j in range(prefix_len)) and
                 '-'.join(parts[start_idx:start_idx + prefix_len]).lower() == prefix and
+                start_idx + prefix_len < len(parts) and
                 not is_set_code(parts[start_idx + prefix_len])):
                 return start_idx + prefix_len  # Include the Pokemon name after prefix
         
@@ -358,7 +365,7 @@ def extract_pokemon_from_deck_name(deck_name):
             current_pokemon = [parts[i]]
             i += 1
         
-        # Check for suffixes
+        # Check for suffixes (but skip if next part is a set code)
         while (i < len(parts) and 
                not is_set_code(parts[i]) and
                parts[i].lower() in POKEMON_SUFFIXES):
