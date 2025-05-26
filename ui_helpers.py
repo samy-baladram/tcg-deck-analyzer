@@ -1465,7 +1465,7 @@ def render_about_section():
         
         Built this during late nights analyzing PTCGP meta shifts. Started as a personal tool to track which meta decks were actually winning tournaments, then grew into... well, this.
         
-        The Wilson Score algorithm for Power Index was inspired by Reddit's comment ranking system - seemed fitting for ranking decks too.
+        The Wilson Score algorithm for Power Index was inspired by Reddit's comment ranking system, seemed fitting for ranking decks too.
         
         #### Hit Me Up
         
