@@ -1463,7 +1463,7 @@ def render_about_section():
         st.markdown("""
         #### Behind the Scenes
         
-        Built this during late nights analyzing PTCGP meta shifts. Started as a personal tool to track which energy combinations were actually winning tournaments, then grew into... well, this.
+        Built this during late nights analyzing PTCGP meta shifts. Started as a personal tool to track which meta decks were actually winning tournaments, then grew into... well, this.
         
         The Wilson Score algorithm for Power Index was inspired by Reddit's comment ranking system - seemed fitting for ranking decks too.
         
@@ -1476,10 +1476,9 @@ def render_about_section():
         
         #### Technical Notes
         
-        - Scrapes Limitless TCG hourly for fresh tournament data
+        - Scrapes Limitless TCG hourly for fresh tournament data (if any)
         - Aggressive caching minimizes server requests (0.3s delays between calls)
         - Card images load from CDN with local caching
-        - Energy detection uses pattern matching on deck names
         - All analysis runs client-side after data collection
         
         *Huge respect to Limitless TCG for providing the data foundation. This tool implements rate limiting and caching to be a good citizen of their infrastructure.*
