@@ -424,13 +424,8 @@ def track_player_tournament_mapping(deck_name, set_name):
         return 0
     
 def update_tournament_tracking():
-    """
-    Update tournament tracking and deck caches
+    """Update tournament tracking and deck caches with automatic invalidation"""
     
-    Returns:
-        Dict with stats on updates performed
-    """
-    # Track update statistics
     stats = {
         'current_tournaments': 0,
         'new_tournaments': 0,
@@ -438,7 +433,6 @@ def update_tournament_tracking():
         'updated_decks': 0
     }
     
-    # Skip spinner for background updates
     # Load previous tournament IDs
     previous_ids = cache_utils.load_tournament_ids()
     
@@ -466,19 +460,66 @@ def update_tournament_tracking():
 
     print(f"Found {len(new_ids)} new tournaments: {new_ids}")
     print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
-  
-    # Update each affected deck
+    
+    # FIXED: Clear all caches for affected decks BEFORE updating
     for deck_name in affected_decks:
-        # For now, assume set_name is 'A3' - could be stored in mapping
         set_name = 'A3'
         
-        # Update the deck analysis
+        # Force clear all caches for this deck
+        clear_all_deck_caches(deck_name, set_name)
+        print(f"Cleared all caches for {deck_name}")
+    
+    # Update each affected deck with fresh analysis
+    for deck_name in affected_decks:
+        set_name = 'A3'
+        
+        # Force refresh analysis (will use cleared caches)
         success = update_deck_analysis(deck_name, set_name, new_ids)
         
         if success:
             stats['updated_decks'] += 1
     
     return stats
+
+def clear_all_deck_caches(deck_name, set_name):
+    """Clear ALL caches for a specific deck to force fresh analysis"""
+    
+    # Clear session caches
+    cache_key = f"full_deck_{deck_name}_{set_name}"
+    sample_key = f"sample_deck_{deck_name}_{set_name}"
+    energy_key = f"energy_{deck_name}_{set_name}"
+    matchup_key = f"matchup_{deck_name}_{set_name}"
+    deck_key = f"{deck_name}_{set_name}"
+    
+    # Clear from all session state caches
+    caches_to_clear = [
+        ('analyzed_deck_cache', cache_key),
+        ('sample_deck_cache', sample_key),
+        ('collected_decks', deck_key),
+        (None, energy_key),
+        (None, matchup_key),
+        (None, f"energy_cache_{deck_name}_{set_name}"),
+    ]
+    
+    for cache_name, key in caches_to_clear:
+        if cache_name:
+            if cache_name in st.session_state and key in st.session_state[cache_name]:
+                del st.session_state[cache_name][key]
+                print(f"Cleared {cache_name}[{key}]")
+        else:
+            if key in st.session_state:
+                del st.session_state[key]
+                print(f"Cleared session state key: {key}")
+    
+    # Clear disk caches
+    cache_utils.clear_deck_cache(deck_name, set_name)
+    
+    # Clear energy utils cache
+    if 'archetype_energy_types' in st.session_state and deck_name in st.session_state.archetype_energy_types:
+        del st.session_state.archetype_energy_types[deck_name]
+    
+    if 'archetype_energy_combos' in st.session_state and deck_name in st.session_state.archetype_energy_combos:
+        del st.session_state.archetype_energy_combos[deck_name]
 
 def update_all_caches():
     """
