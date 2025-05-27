@@ -386,3 +386,11 @@ st.markdown("""<div style="text-align: center; font-size: 0.8em; color: #777; ma
     Limitless TCG's image repository. This tool is intended for educational and analytical purposes only.</p>
     <p>This is an independent, fan-made project and is not affiliated with Limitless TCG, The Pokémon Company, 
     or any other official entities.</p></div>""", unsafe_allow_html=True)
+
+# Rerun button at bottom
+st.markdown("<br><br>", unsafe_allow_html=True)
+col1, col2, col3 = st.columns([2, 1, 2])
+with col2:
+    if st.button("🔄 Rerun", type="tertiary", use_container_width=True, 
+                 help="Refresh the application"):
+        st.rerun()
