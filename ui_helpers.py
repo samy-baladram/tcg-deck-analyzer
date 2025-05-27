@@ -36,39 +36,40 @@ def get_cached_popular_decks():
     return get_popular_decks_with_performance()
 
 def check_and_update_tournament_data():
-    """Check if tournament data needs updating"""
-    # Import necessary modules
+    """Check if tournament data needs updating and trigger deck refresh"""
     from datetime import datetime, timedelta
     from config import CACHE_TTL
     
-    # Check if data is stale
     if 'performance_fetch_time' in st.session_state:
         time_since_update = datetime.now() - st.session_state.performance_fetch_time
-        seconds_until_update = CACHE_TTL - time_since_update.total_seconds()
-        print(f"Seconds until update: {seconds_until_update:.1f}")
         
-        # Update if older than cache TTL
         if time_since_update.total_seconds() > CACHE_TTL:
-            # Update and set flag to prevent multiple updates during rerun
             if not st.session_state.get('update_running', False):
                 st.session_state.update_running = True
-                st.rerun()  # Trigger rerun to show spinner
-            
-            # This will only execute after rerun, with spinner visible
-            with st.spinner("Updating tournament data..."):
-                # Update tournament data
-                performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
                 
-                # Update session state
-                st.session_state.performance_data = performance_df
-                st.session_state.performance_fetch_time = performance_timestamp
-                
-                # Update card usage data
-                card_usage_df = cache_manager.aggregate_card_usage()
-                st.session_state.card_usage_data = card_usage_df
-                
-                # Reset flag
-                st.session_state.update_running = False
+                with st.spinner("Checking for new tournament data..."):
+                    # Update tournament tracking (this will clear affected deck caches)
+                    stats = cache_manager.update_tournament_tracking()
+                    
+                    # Update performance data
+                    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+                    st.session_state.performance_data = performance_df
+                    st.session_state.performance_fetch_time = performance_timestamp
+                    
+                    # Update card usage data
+                    card_usage_df = cache_manager.aggregate_card_usage()
+                    st.session_state.card_usage_data = card_usage_df
+                    
+                    # If new tournaments affected current deck, trigger refresh
+                    if (stats['updated_decks'] > 0 and 'analyze' in st.session_state):
+                        current_deck = st.session_state.analyze.get('deck_name')
+                        st.session_state.deck_to_analyze = current_deck
+                        st.session_state.auto_refresh_in_progress = True
+                    
+                    st.session_state.update_running = False
+                    
+                    if stats['new_tournaments'] > 0:
+                        st.success(f"Updated {stats['updated_decks']} decks with data from {stats['new_tournaments']} new tournaments")
 
 # ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
