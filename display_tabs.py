@@ -2032,7 +2032,7 @@ def display_matchup_tab(deck_info=None):
     
     try:
         # First try with styled dataframe and images
-        styled_df = formatted_df.style.applymap(highlight_matchups, subset=['Matchup'])
+        styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
         st.write("##### Matchup Data")
         st.dataframe(
             styled_df,
