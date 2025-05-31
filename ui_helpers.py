@@ -399,6 +399,7 @@ def create_deck_selector():
     if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
         selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
         deck_info = st.session_state.deck_name_mapping[selected_deck_display]
+        # FIXED: Remove .upper() to maintain original case format (A3a, A3b, etc.)
         current_set = deck_info['set']
     
     # Handle deck_to_analyze if set (e.g., from sidebar selection)
@@ -423,10 +424,6 @@ def create_deck_selector():
     label_text = f"Current Set: {current_set}"
     help_text = f"Showing decks with meta share ≥ {MIN_META_SHARE}% and win rate ≥ {MIN_WIN_RATE}%, ordered by Power Index (details in sidebar).\nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).\nUpdated {time_str}."
 
-    # deck_icon_display_names = []
-    # for name in deck_display_names:
-    #     deck_icon_display_names.append(f"{displayed_name_to_markdown(name)} {name}")
-
     # Display the selectbox
     selected_option = st.selectbox(
         label_text,
@@ -436,7 +433,6 @@ def create_deck_selector():
         help=help_text,
         key="deck_select",
         on_change=on_deck_change,
-        #format_func=lambda x: x  # This ensures the markdown is passed through
     )
     
     return selected_option
