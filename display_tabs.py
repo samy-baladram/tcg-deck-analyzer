@@ -1137,7 +1137,7 @@ def display_metagame_tab():
     # Add a small footnote about data source instead of the full explanation
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
-    st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments in {current_month_year} on Limitless TCG.")
+    st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments on Limitless TCG.")
     
 def display_matchup_treemap(deck_name, set_name, working_df):
     """
