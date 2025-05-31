@@ -51,6 +51,12 @@ POKEMON_URL_EXCEPTIONS = {
     'alolan-raichu': {
         'default': 'raichu-alola'  # fallback
     },
+    'paldean-clodsire': {
+        'default': 'clodsire'  # fallback
+    },
+    'alolan-dugtrio': {
+        'default': 'dugtrio-alola'  # fallback
+    },
     # Add more exceptions as needed
     # 'rotom': {
     #     'pikachu': 'rotom-wash',
