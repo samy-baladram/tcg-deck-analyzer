@@ -399,7 +399,7 @@ def create_deck_selector():
     if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
         selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
         deck_info = st.session_state.deck_name_mapping[selected_deck_display]
-        current_set = deck_info['set'].upper()
+        current_set = deck_info['set']
     
     # Handle deck_to_analyze if set (e.g., from sidebar selection)
     if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
