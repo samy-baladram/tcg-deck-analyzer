@@ -410,9 +410,13 @@ def load_or_update_tournament_data(force_update=False):
 
 #######################################################################################################################
 
-def track_player_tournament_mapping(deck_name, set_name):
+def track_player_tournament_mapping(deck_name, set_name=None):
     """Track player and tournament IDs for a deck"""
     from scraper import get_player_tournament_pairs, create_mapping_key
+    
+    # FIXED: Get current set name if not provided
+    if set_name is None:
+        set_name = get_current_set_name()
     
     try:
         # Get all player-tournament pairs
@@ -482,24 +486,22 @@ def update_tournament_tracking():
     # Find affected deck archetypes
     affected_decks = get_affected_decks(new_ids, mapping)
     stats['affected_decks'] = len(affected_decks)
-
     print(f"Found {len(new_ids)} new tournaments: {new_ids}")
     print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
     
+    # FIXED: Get current set name dynamically
+    current_set = get_current_set_name()
+    
     # FIXED: Clear all caches for affected decks BEFORE updating
     for deck_name in affected_decks:
-        set_name = 'A3'
-        
         # Force clear all caches for this deck
-        clear_all_deck_caches(deck_name, set_name)
-        print(f"Cleared all caches for {deck_name}")
+        clear_all_deck_caches(deck_name, current_set)
+        print(f"Cleared all caches for {deck_name} (set: {current_set})")
     
     # Update each affected deck with fresh analysis
     for deck_name in affected_decks:
-        set_name = 'A3'
-        
         # Force refresh analysis (will use cleared caches)
-        success = update_deck_analysis(deck_name, set_name, new_ids)
+        success = update_deck_analysis(deck_name, current_set, new_ids)
         
         if success:
             stats['updated_decks'] += 1
@@ -547,10 +549,8 @@ def clear_all_deck_caches(deck_name, set_name):
         del st.session_state.archetype_energy_combos[deck_name]
 
 def update_all_caches():
-    """
-    Comprehensive update of all caching systems.
-    """
-    # First, update tournament data - this already calls load_or_update_tournament_data internally
+    """Comprehensive update of all caching systems."""
+    # First, update tournament data
     stats = update_tournament_tracking()
     
     # Get the updated performance data
@@ -561,7 +561,7 @@ def update_all_caches():
         st.session_state.performance_data = performance_df
         st.session_state.performance_fetch_time = performance_timestamp
     
-    # Finally, update card usage data (only if performance data exists)
+    # FIXED: Use current set name for card usage aggregation
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         card_usage_df = aggregate_card_usage(force_update=False)
         st.session_state.card_usage_data = card_usage_df
@@ -1073,3 +1073,25 @@ def clear_deck_cache_on_switch(deck_name, set_name):
             if key in st.session_state:
                 del st.session_state[key]
                 print(f"Cleared session state key: {key}")
+
+def get_current_set_name():
+    """Get the current set name from various sources"""
+    # Try to get from current analysis context
+    if 'analyze' in st.session_state:
+        return st.session_state.analyze.get('set_name', 'A3a')
+    
+    # Try to get from performance data
+    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+        # Get the most common set from performance data
+        sets = st.session_state.performance_data['set'].value_counts()
+        if not sets.empty:
+            return sets.index[0]
+    
+    # Try to get from deck name mapping
+    if 'deck_name_mapping' in st.session_state and st.session_state.deck_name_mapping:
+        # Get set from first deck in mapping
+        first_deck = next(iter(st.session_state.deck_name_mapping.values()))
+        return first_deck.get('set', 'A3a')
+    
+    # Default fallback to current set
+    return 'A3a'
