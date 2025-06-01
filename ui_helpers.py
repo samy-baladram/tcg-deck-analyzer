@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime
 from formatters import format_deck_name
+from scraper import get_popular_decks_with_performance
 from utils import calculate_time_ago
 import cache_manager
 from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MIN_COUNTER_MATCHES, MIN_WIN_RATE
