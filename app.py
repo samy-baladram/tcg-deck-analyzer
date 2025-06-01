@@ -1,19 +1,14 @@
 # app.py
 """Main Streamlit application for TCG Deck Analyzer"""
 
-import streamlit as st
-
 # Import helper modules
+import streamlit as st
 import ui_helpers
 import cache_manager
 import display_tabs
-from config import MIN_META_SHARE
 import background
-import base64
-import os
 from header_image_cache import clear_expired_cache, get_cache_stats
 from card_cache import clear_expired_cache as clear_card_cache
-
 from PIL import Image
     
 favicon = Image.open("favicon.png").convert('RGBA')
