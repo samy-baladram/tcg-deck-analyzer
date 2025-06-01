@@ -999,6 +999,7 @@ def display_raw_data_tab(results, variant_df):
 
 # In display_tabs.py - Fix the display_metagame_tab function
 
+# In display_tabs.py, fix the display_metagame_tab function
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
     st.write("#### Tournament Performance Data")
@@ -1006,6 +1007,10 @@ def display_metagame_tab():
     import re
     
     # Get performance data
+    if 'performance_data' not in st.session_state:
+        st.error("No performance data available in session state.")
+        return
+        
     performance_df = st.session_state.performance_data
     
     if performance_df.empty:
@@ -1030,7 +1035,8 @@ def display_metagame_tab():
     )
     
     # Calculate win rate
-    display_df['win_rate'] = round((display_df['total_wins'] / (display_df['total_wins'] + display_df['total_losses'] + display_df['total_ties'])) * 100, 1)
+    total_games = display_df['total_wins'] + display_df['total_losses'] + display_df['total_ties']
+    display_df['win_rate'] = ((display_df['total_wins'] + 0.5 * display_df['total_ties']) / total_games * 100).fillna(0).round(1)
     
     # Format numerical columns
     display_df['share'] = display_df['share'].round(2)
@@ -1041,8 +1047,12 @@ def display_metagame_tab():
         # Extract Pokemon URLs for each row
         pokemon_data = []
         for _, row in display_df.iterrows():
-            url1, url2 = extract_pokemon_urls(row['deck_name'])
-            pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
+            try:
+                url1, url2 = extract_pokemon_urls(row['deck_name'])
+                pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
+            except Exception as e:
+                print(f"Error extracting Pokemon URLs for {row['deck_name']}: {e}")
+                pokemon_data.append({'pokemon_url1': None, 'pokemon_url2': None})
         
         # Convert to DataFrame and join with display_df
         pokemon_df = pd.DataFrame(pokemon_data)
@@ -1056,7 +1066,7 @@ def display_metagame_tab():
     
     # Select and rename columns for display - FIX: Use rank_display
     display_cols = {
-        'rank_display': 'Rank',  # Changed from 'rank'
+        'rank_display': 'Rank',
         'displayed_name': 'Deck',
         'share': 'Meta Share %',
         'tournaments_played': 'Best Finishes',
@@ -1068,73 +1078,82 @@ def display_metagame_tab():
     }
     
     # Create final display dataframe
-    final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
+    try:
+        final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
+        
+        # Add Pokémon image columns
+        final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
+        final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
+        
+        # Display dataframe with column configuration
+        st.dataframe(
+            final_df,
+            use_container_width=True,
+            height=850,
+            column_config={
+                "Rank": st.column_config.TextColumn(
+                    "Rank",
+                    help="Position in the meta based on Power Index",
+                    width="20px"
+                ),
+                "Icon1": st.column_config.ImageColumn(
+                    "Icon 1",
+                    help="First archetype Pokémon in the deck",
+                    width="20px",
+                ),
+                "Icon2": st.column_config.ImageColumn(
+                    "Icon 2",
+                    help="Second archetype Pokémon in the deck",
+                    width="20px",
+                ),
+                "Deck": st.column_config.TextColumn(
+                    "Deck",
+                    help="Deck archetype name"
+                ),
+                "Index": st.column_config.NumberColumn(
+                    "Index",
+                    help="Performance metric: The Wilson score (see sidebar for details). Higher values indicate stronger performance",
+                    format="%.2f"
+                ),
+                "Meta Share %": st.column_config.NumberColumn(
+                    "Meta Share %",
+                    help="Percentage representation of this deck in the overall competitive metagame",
+                    format="%.2f%%"
+                ),
+                "Best Finishes": st.column_config.NumberColumn(
+                    "Best Finishes",
+                    help="Number of recent tournament entries in the 'Best Finishes' section, decided by [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET)"
+                ),
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    help="Percentage of matches won out of all recorded 'Best Finishes' matches",
+                    format="%.1f%%"
+                ),
+                "Wins": st.column_config.NumberColumn(
+                    "Wins",
+                    help="Total number of wins from all recorded 'Best Finishes' matches"
+                ),
+                "Losses": st.column_config.NumberColumn(
+                    "Losses",
+                    help="Total number of losses from all recorded 'Best Finishes' matches"
+                ),
+                "Ties": st.column_config.NumberColumn(
+                    "Ties",
+                    help="Total number of ties from all recorded 'Best Finishes' matches"
+                )
+            },
+            hide_index=True
+        )
+        
+    except KeyError as e:
+        st.error(f"Missing required column in data: {e}")
+        st.write("Available columns:", list(display_df.columns))
+        return
+    except Exception as e:
+        st.error(f"Error creating display table: {e}")
+        return
     
-    # Add Pokémon image columns
-    final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
-    final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
-    
-    # Display dataframe with column configuration
-    st.dataframe(
-        final_df,
-        use_container_width=True,
-        height=850,
-        column_config={
-            "Rank": st.column_config.TextColumn(  # FIX: Change to TextColumn
-                "Rank",
-                help="Position in the meta based on Power Index",
-                width="20px"
-            ),
-            "Icon1": st.column_config.ImageColumn(
-                "Icon 1",
-                help="First archetype Pokémon in the deck",
-                width="20px",
-            ),
-            "Icon2": st.column_config.ImageColumn(
-                "Icon 2",
-                help="Second archetype Pokémon in the deck",
-                width="20px",
-            ),
-            "Deck": st.column_config.TextColumn(
-                "Deck",
-                help="Deck archetype name"
-            ),
-            "Index": st.column_config.NumberColumn(
-                "Index",
-                help="Performance metric: The Wilson score (see sidebar for details). Higher values indicate stronger performance",
-                format="%.2f"
-            ),
-            "Meta Share %": st.column_config.NumberColumn(
-                "Meta Share %",
-                help="Percentage representation of this deck in the overall competitive metagame",
-                format="%.2f%%"
-            ),
-            "Best Finishes": st.column_config.NumberColumn(
-                "Best Finishes",
-                help="Number of recent tournament entries in the 'Best Finishes' section, decided by [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET)"
-            ),
-            "Win %": st.column_config.NumberColumn(
-                "Win %",
-                help="Percentage of matches won out of all recorded 'Best Finishes' matches",
-                format="%.1f%%"
-            ),
-            "Wins": st.column_config.NumberColumn(
-                "Wins",
-                help="Total number of wins from all recorded 'Best Finishes' matches"
-            ),
-            "Losses": st.column_config.NumberColumn(
-                "Losses",
-                help="Total number of losses from all recorded 'Best Finishes' matches"
-            ),
-            "Ties": st.column_config.NumberColumn(
-                "Ties",
-                help="Total number of ties from all recorded 'Best Finishes' matches"
-            )
-        },
-        hide_index=True
-    )
-    
-    # Add a small footnote about data source instead of the full explanation
+    # Add a small footnote about data source
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
     st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments on Limitless TCG.")
