@@ -7,6 +7,7 @@ IMAGE_BASE_URL = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket"
 
 # Cache settings
 CACHE_TTL = 3600  # 1 hour in seconds
+CURRENT_SET = "A3a"
 
 # Add to config.py
 ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_recent_performance
