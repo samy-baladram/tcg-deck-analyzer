@@ -68,6 +68,7 @@ def get_popular_decks_with_performance(share_threshold=0.0):
     
     return df.sort_values('win_rate', ascending=False)
 
+# In scraper.py, update get_all_recent_tournaments function
 def get_all_recent_tournaments():
     """Get IDs of all tournaments completed recently."""
     tournament_id_set = set()
@@ -82,13 +83,26 @@ def get_all_recent_tournaments():
     url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show={TOURNAMENT_COUNT}"
     
     try:
+        print(f"DEBUG: Fetching tournaments from: {url}")  # Add debug
         response = requests.get(url)
+        print(f"DEBUG: Response status: {response.status_code}")  # Add debug
+        
+        if response.status_code != 200:
+            print(f"DEBUG: Bad response status, trying previous month...")
+            # Try previous month as fallback
+            prev_month = current_date.replace(day=1) - timedelta(days=1)
+            prev_year_month = prev_month.strftime("%Y-%m")
+            url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={prev_year_month}&show={TOURNAMENT_COUNT}"
+            response = requests.get(url)
+        
         soup = BeautifulSoup(response.text, 'html.parser')
         
         # Look for tournament links in anchor tags
+        links_found = 0
         for link in soup.find_all('a', href=True):
             href = link['href']
             if '/tournament/' in href:
+                links_found += 1
                 match = re.search(r'/tournament/([a-zA-Z0-9-_]+)', href)
                 if match and match.group(1) not in tournament_id_set:
                     tournament_slug = match.group(1)
@@ -97,7 +111,6 @@ def get_all_recent_tournaments():
                     is_standard_id = bool(re.match(r'^[0-9a-f]{24}$', tournament_slug))
                     
                     if is_standard_id:
-                        # If it's already in standard format, use it directly
                         tournament_id = tournament_slug
                     else:
                         # If not standard format, scrape the tournament page to find the actual ID
@@ -107,8 +120,12 @@ def get_all_recent_tournaments():
                         tournament_id_set.add(tournament_id)
                         tournament_ids.append(tournament_id)
         
+        print(f"DEBUG: Found {links_found} tournament links, extracted {len(tournament_ids)} valid IDs")  # Add debug
+        
     except Exception as e:
         print(f"Error fetching tournaments: {e}")
+        import traceback
+        print(f"Full traceback: {traceback.format_exc()}")
     
     return tournament_ids
 
@@ -552,3 +569,4 @@ def debug_tournament_data():
             print(f"  Sets found: {popular_decks['set'].unique()}")
     except Exception as e:
         print(f"Error getting popular decks: {e}")
+
