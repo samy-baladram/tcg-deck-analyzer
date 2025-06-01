@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 import math
-from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE, MIN_WIN_RATE
+from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE, MIN_WIN_RATE, CURRENT_SET
 
 def get_popular_decks_with_performance(share_threshold=0.0):
     """Get all decks with their share percentages and win rates above threshold"""
@@ -30,7 +30,7 @@ def get_popular_decks_with_performance(share_threshold=0.0):
         displayed_name = deck_link.text.strip()
         
         # Extract set name
-        set_name = 'A3'  # Default
+        set_name = CURRENT_SET  # Default
         if 'set=' in href:
             set_name = href.split('set=')[1].split('&')[0]
         
@@ -227,7 +227,7 @@ def extract_cards(url):
     return cards, energy_types
 
 # New functions for player-tournament relationship
-def get_player_tournament_pairs(deck_name, set_name="A3"):
+def get_player_tournament_pairs(deck_name, set_name=CURRENT_SET):
     """
     Extract player_id and tournament_id pairs for a deck archetype
     
@@ -362,7 +362,7 @@ def get_deck_performance_data():
 
 ## -- DEPRECATED -- ##
 
-def get_deck_urls(deck_name, set_name="A3"):
+def get_deck_urls(deck_name, set_name=CURRENT_SET):
     """Get URLs for all decklists of a specific archetype"""
     url = f"{BASE_URL}/decks/{deck_name}/?game=POCKET&format=standard&set={set_name}"
     response = requests.get(url)
@@ -380,7 +380,7 @@ def get_deck_urls(deck_name, set_name="A3"):
     
     return urls
 
-def get_sample_deck_for_archetype(deck_name, set_name="A3"):
+def get_sample_deck_for_archetype(deck_name, set_name=CURRENT_SET):
     """Get a sample deck list for a specific archetype from the first available tournament result."""
     # Get the URLs for this deck archetype
     urls = get_deck_urls(deck_name, set_name)
@@ -401,7 +401,7 @@ def get_sample_deck_for_archetype(deck_name, set_name="A3"):
 
 ## -- TO BE MOVED -- ##
 
-def get_deck_performance(deck_name, set_code="A3"):
+def get_deck_performance(deck_name, set_code=CURRENT_SET):
     """Get performance data for a specific deck."""
     url = f"{BASE_URL}/decks/{deck_name}?game=POCKET&format=standard&set={set_code}"
     response = requests.get(url)
