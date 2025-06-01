@@ -282,19 +282,29 @@ def aggregate_card_usage(force_update=False):
                 
                 # Store relevant info for each card
                 for _, card in results.iterrows():
+                    # FIXED: Add safety checks for missing fields
+                    card_name = card.get('card_name', 'Unknown Card')
+                    card_type = card.get('type', 'Unknown')
+                    card_set = card.get('set', '')
+                    card_num = card.get('num', '')
+                    
+                    # Skip cards with missing essential data
+                    if not card_name or card_name == 'Unknown Card':
+                        continue
+                    
                     all_cards.append({
                         'deck_name': deck_name,
                         'deck_share': deck['share'],
-                        'card_name': card['card_name'],
-                        'type': card['type'],
-                        'set': card['set'],
-                        'num': card['num'],
-                        'count_1': card['count_1'],
-                        'count_2': card['count_2'],
-                        'pct_1': card['pct_1'],
-                        'pct_2': card['pct_2'],
-                        'pct_total': card['pct_total'],
-                        'category': card['category'] if 'category' in card else 'Unknown'
+                        'card_name': card_name,
+                        'type': card_type,
+                        'set': card_set,
+                        'num': card_num,
+                        'count_1': card.get('count_1', 0),
+                        'count_2': card.get('count_2', 0),
+                        'pct_1': card.get('pct_1', 0),
+                        'pct_2': card.get('pct_2', 0),
+                        'pct_total': card.get('pct_total', 0),
+                        'category': card.get('category', 'Unknown')
                     })
                 
                 # Save the analyzed deck for future use
@@ -315,23 +325,38 @@ def aggregate_card_usage(force_update=False):
                 
                 # Store relevant info for each card
                 for _, card in results.iterrows():
+                    # FIXED: Add safety checks for missing fields
+                    card_name = card.get('card_name', 'Unknown Card')
+                    card_type = card.get('type', 'Unknown')
+                    card_set = card.get('set', '')
+                    card_num = card.get('num', '')
+                    
+                    # Skip cards with missing essential data
+                    if not card_name or card_name == 'Unknown Card':
+                        continue
+                    
                     all_cards.append({
                         'deck_name': deck_name,
                         'deck_share': deck['share'],
-                        'card_name': card['card_name'],
-                        'type': card['type'],
-                        'set': card['set'],
-                        'num': card['num'],
-                        'count_1': card['count_1'],
-                        'count_2': card['count_2'],
-                        'pct_1': card['pct_1'],
-                        'pct_2': card['pct_2'],
-                        'pct_total': card['pct_total'],
-                        'category': card['category'] if 'category' in card else 'Unknown'
+                        'card_name': card_name,
+                        'type': card_type,
+                        'set': card_set,
+                        'num': card_num,
+                        'count_1': card.get('count_1', 0),
+                        'count_2': card.get('count_2', 0),
+                        'pct_1': card.get('pct_1', 0),
+                        'pct_2': card.get('pct_2', 0),
+                        'pct_total': card.get('pct_total', 0),
+                        'category': card.get('category', 'Unknown')
                     })
         
         # Create DataFrame from all cards
         card_usage_df = pd.DataFrame(all_cards)
+        
+        # FIXED: Add check for empty DataFrame
+        if card_usage_df.empty:
+            print("No card usage data found")
+            return pd.DataFrame()
         
         # Calculate total usage weighted by deck share
         card_usage_summary = card_usage_df.groupby(['card_name', 'type', 'set', 'num']).apply(
