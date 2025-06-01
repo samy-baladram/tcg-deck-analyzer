@@ -525,3 +525,30 @@ def analyze_recent_performance(share_threshold=0.6):
         results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
 
     return results_df
+# Add this temporary debugging function to scraper.py
+def debug_tournament_data():
+    """Debug function to check tournament data loading"""
+    print("=== DEBUGGING TOURNAMENT DATA ===")
+    
+    # Check if we can fetch tournaments
+    tournament_ids = get_all_recent_tournaments()
+    print(f"Found {len(tournament_ids)} tournament IDs: {tournament_ids[:5]}...")
+    
+    # Check if we can get performance data
+    try:
+        performance_data = get_deck_performance_data()
+        print(f"Found {len(performance_data)} deck performance entries")
+        for i, deck in enumerate(performance_data[:3]):
+            print(f"  Deck {i+1}: {deck['deck_name']} (set: {deck['set']})")
+    except Exception as e:
+        print(f"Error getting performance data: {e}")
+    
+    # Check popular decks
+    try:
+        popular_decks = get_popular_decks_with_performance(0.0)
+        print(f"Found {len(popular_decks)} popular decks")
+        if not popular_decks.empty:
+            print(f"  First deck: {popular_decks.iloc[0]['deck_name']}")
+            print(f"  Sets found: {popular_decks['set'].unique()}")
+    except Exception as e:
+        print(f"Error getting popular decks: {e}")
