@@ -143,19 +143,27 @@ def save_energy_types_to_disk():
         # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(ENERGY_CACHE_FILE), exist_ok=True)
         
+        # Initialize session state variables if they don't exist
+        if 'archetype_energy_types' not in st.session_state:
+            st.session_state.archetype_energy_types = {}
+        if 'archetype_energy_combos' not in st.session_state:
+            st.session_state.archetype_energy_combos = {}
+        if 'per_deck_energy' not in st.session_state:
+            st.session_state.per_deck_energy = {}
+        
         # Create a serializable representation of the data
         data_to_save = {
             'archetype_energy_types': {k: list(v) for k, v in st.session_state.archetype_energy_types.items()},
             'archetype_energy_combos': {
                 k: {','.join(sorted(combo)): count for combo, count in v.items()} 
-                for k, v in st.session_state.get('archetype_energy_combos', {}).items()
+                for k, v in st.session_state.archetype_energy_combos.items()
             },
             'per_deck_energy': {
                 archetype: {
                     deck_key: energy_list 
                     for deck_key, energy_list in deck_data.items()
                 }
-                for archetype, deck_data in st.session_state.get('per_deck_energy', {}).items()
+                for archetype, deck_data in st.session_state.per_deck_energy.items()
             },
             'timestamp': datetime.now().isoformat()
         }
