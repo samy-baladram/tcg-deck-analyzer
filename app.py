@@ -16,6 +16,10 @@ from card_cache import clear_expired_cache as clear_card_cache
 
 from PIL import Image
 
+
+from scraper import debug_tournament_data
+debug_tournament_data()
+    
 favicon = Image.open("favicon.png").convert('RGBA')
 
 st.set_page_config(
