@@ -12,7 +12,7 @@ import pandas as pd
 import time
 import streamlit as st
 from scraper import get_deck_urls, extract_cards, get_deck_performance_data
-from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD
+from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD, CURRENT_SET
 from utils import is_flexible_core, calculate_display_usage, format_card_display
 #from energy_utils import store_energy_types
 from cache_utils import save_analyzed_deck_components
@@ -103,7 +103,7 @@ def analyze_recent_performance(raw_performance_data=None):
 # In analyzer.py - Modify analyze_deck function
 # Modify the collect_decks function in analyzer.py to save to disk
 
-def collect_decks(deck_name, set_name="A3"):
+def collect_decks(deck_name, set_name=CURRENT_SET):
     """Collect all decks for an archetype and store their data"""
     # Get all player-tournament pairs instead of just URLs
     from scraper import get_player_tournament_pairs, extract_cards, get_deck_by_player_tournament
@@ -398,7 +398,7 @@ def update_deck_analysis(deck_name, set_name, new_tournament_ids):
     status.empty()
     return True
 
-def analyze_deck(deck_name, set_name="A3"):
+def analyze_deck(deck_name, set_name=CURRENT_SET):
     """Main analysis function for a deck archetype"""
     # Check if decks have already been collected
     deck_key = f"{deck_name}_{set_name}"
