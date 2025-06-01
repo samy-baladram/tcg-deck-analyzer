@@ -1915,6 +1915,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
 
 # In display_tabs.py - Fix the display_matchup_tab function
 
+# In display_tabs.py, fix the display_matchup_tab function
 def display_matchup_tab(deck_info=None):
     """
     Display the Matchup tab with detailed matchup data.
@@ -1963,6 +1964,9 @@ def display_matchup_tab(deck_info=None):
     working_df = working_df[working_df['matches_played'] >= MIN_MATCHUP_MATCHES]
     filtered_count = original_count - len(working_df)
 
+    # FIXED: Initialize filtered_df properly
+    filtered_df = working_df.copy()  # Initialize filtered_df here
+    
     # Only apply meta deck filtering if we have meta decks and working_df is not empty
     if meta_decks and not show_all and not working_df.empty:
         # Add lowercase versions for better matching
@@ -1977,7 +1981,8 @@ def display_matchup_tab(deck_info=None):
             working_df = filtered_df.drop(columns=['deck_name_lower'])
         else:
             st.warning("No matches found with current meta decks. Showing all matchups instead.")
-            working_df = working_df.drop(columns=['deck_name_lower'])
+            working_df = working_df.drop(columns=['deck_name_lower'], errors='ignore')
+            filtered_df = working_df.copy()  # Reset filtered_df to working_df
     
     # FIXED: Only proceed if we still have data after all filtering
     if working_df.empty:
@@ -1989,8 +1994,12 @@ def display_matchup_tab(deck_info=None):
         # Extract Pokemon URLs for each row
         pokemon_data = []
         for _, row in working_df.iterrows():
-            url1, url2 = extract_pokemon_urls(row['opponent_deck_name'])
-            pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
+            try:
+                url1, url2 = extract_pokemon_urls(row['opponent_deck_name'])
+                pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
+            except Exception as e:
+                print(f"Error extracting Pokemon URLs for {row['opponent_deck_name']}: {e}")
+                pokemon_data.append({'pokemon_url1': None, 'pokemon_url2': None})
         
         # Convert to DataFrame and join with working_df
         pokemon_df = pd.DataFrame(pokemon_data)
@@ -2022,7 +2031,6 @@ def display_matchup_tab(deck_info=None):
     try:
         # Select and rename columns for display - now including the icon columns
         formatted_df = pd.DataFrame({
-           # 'Rank': display_df['Rank'],
             'Icon1': display_df['pokemon_url1'],
             'Icon2': display_df['pokemon_url2'],
             'Deck': display_df['opponent_name'],
@@ -2034,6 +2042,7 @@ def display_matchup_tab(deck_info=None):
         })
     except KeyError as e:
         st.error(f"Missing required column: {str(e)}")
+        st.write("Available columns:", list(display_df.columns))
         return
     
     # Display the enhanced data table with all rows
@@ -2092,7 +2101,7 @@ def display_matchup_tab(deck_info=None):
                     "Meta Share %",
                     help="Percentage representation of this deck in the overall competitive metagame",
                     format="%.2f%%"
-            ),
+                ),
             },
             hide_index=True
         )
@@ -2117,14 +2126,11 @@ def display_matchup_tab(deck_info=None):
     
     # Add some space between summary and table
     if filtered_count > 0:
-            st.info(f"Showing {len(filtered_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
-                    f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
+        st.info(f"Showing {len(working_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches. "
+                f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
-    # Add explanation
-    from formatters import format_deck_name
-    formatted_deck_name = format_deck_name(deck_name)
 
 # def display_counter_picker():
 #     banner_path = "picker_banner.png"
