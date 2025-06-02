@@ -375,7 +375,12 @@ def update_deck_analysis(deck_name, set_name, new_tournament_ids):
     # Show status
     status = st.empty()
     status.text(f"Re-analyzing {deck_name} with new tournament data...")
-    
+
+    # FORCE DELETE collected decks to ensure fresh collection
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        del st.session_state.collected_decks[deck_key]
+        print(f"Force deleted collected decks for {deck_name}")
+        
     # Since caches are cleared, force fresh collection and analysis
     status.text(f"Collecting fresh data for {deck_name}...")
     all_decks, all_energy_types, total_decks = collect_decks(deck_name, set_name)
