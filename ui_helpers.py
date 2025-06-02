@@ -197,8 +197,8 @@ def create_deck_options():
     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
         top_performing_decks = st.session_state.performance_data
         
-        for _, deck in top_performing_decks.iterrows():
-            display_name = deck['displayed_name']
+        for rank, (_, deck) in enumerate(top_performing_decks.iterrows(), 1):  # ADD rank starting from 1
+            display_name = f"{rank} - {deck['displayed_name']}"  # ADD rank prefix
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': deck['deck_name'],
@@ -214,8 +214,8 @@ def create_deck_options():
             from config import MIN_META_SHARE
             popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
             
-            for _, row in popular_decks.iterrows():
-                display_name = format_deck_option(row['deck_name'], row['share'])
+            for rank, (_, row) in enumerate(popular_decks.iterrows(), 1):  # ADD rank starting from 1
+                display_name = f"{rank}. {format_deck_option(row['deck_name'], row['share'])}"  # ADD rank prefix
                 deck_display_names.append(display_name)
                 deck_name_mapping[display_name] = {
                     'deck_name': row['deck_name'],
@@ -223,14 +223,14 @@ def create_deck_options():
                 }
         except Exception as e:
             print(f"Error creating deck options: {e}")
-            display_name = "Example Deck (1.0)"
+            display_name = "1. Example Deck (1.0)"  # ADD rank prefix
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': 'example-deck',
                 'set': 'A3'
             }
     
-    # Cache the results
+    # Cache the results (rest stays the same)
     if 'performance_data' in st.session_state:
         data_hash = hash(str(st.session_state.performance_data.to_dict()))
     else:
