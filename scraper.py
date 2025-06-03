@@ -7,6 +7,7 @@ import pandas as pd
 import re
 import math
 from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE, MIN_WIN_RATE, CURRENT_SET
+import streamlit as st
 
 def get_popular_decks_with_performance(share_threshold=0.0):
     """Get all decks with their share percentages and win rates above threshold"""
