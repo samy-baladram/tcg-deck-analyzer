@@ -174,6 +174,8 @@ def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
     # If force_refresh is True, skip cache entirely
     if force_refresh:
         print(f"Force refreshing analysis for {deck_name}")
+        # CLEAR ALL CACHES FIRST
+        clear_all_deck_caches(deck_name, set_name)
         return analyze_deck_fresh(deck_name, set_name)
     
     # Check session cache first
@@ -185,21 +187,11 @@ def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
             return cached_data
         else:
             print(f"Invalid cache data for {deck_name}, clearing and regenerating")
-            del st.session_state.analyzed_deck_cache[cache_key]
-            # Force fresh analysis since cache is corrupted
+            # CRITICAL FIX: Clear ALL caches, not just session
+            clear_all_deck_caches(deck_name, set_name)
             return analyze_deck_fresh(deck_name, set_name)
     
-    # Check card cache for basic deck template data
-    cached_deck_data = get_analyzed_deck_cached(deck_name, set_name)
-    if cached_deck_data and validate_cache_data(cached_deck_data):
-        print(f"Found valid deck data in card cache for {deck_name}")
-        # Store in session cache and return
-        st.session_state.analyzed_deck_cache[cache_key] = cached_deck_data
-        return cached_deck_data
-    elif cached_deck_data:
-        print(f"Found invalid deck data in card cache for {deck_name}, ignoring")
-    
-    # Then check disk cache for full analysis
+    # Check disk cache for full analysis
     cached_results, cached_total_decks, cached_variant_df, cached_energy_types = cache_utils.load_analyzed_deck_components(deck_name, set_name)
     
     if cached_results is not None and not cached_results.empty:
@@ -214,24 +206,26 @@ def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
         
         # Create COMPLETE cache entry with ALL required fields
         analyzed_data = {
-            'results': cached_results,                    # CRITICAL: Main analysis results
-            'total_decks': cached_total_decks,           # CRITICAL: Total deck count
-            'variant_df': cached_variant_df,             # CRITICAL: Variant analysis
-            'deck_list': deck_list,                      # Deck template data
-            'deck_info': deck_info,                      # Card info for rendering
-            'total_cards': total_cards,                  # Total cards in template
-            'options': options,                          # Optional cards
-            'energy_types': cached_energy_types,        # Energy types list
-            'most_common_energy': most_common_energy     # Most common energy combo
+            'results': cached_results,                    
+            'total_decks': cached_total_decks,           
+            'variant_df': cached_variant_df,             
+            'deck_list': deck_list,                      
+            'deck_info': deck_info,                      
+            'total_cards': total_cards,                  
+            'options': options,                          
+            'energy_types': cached_energy_types,        
+            'most_common_energy': most_common_energy     
         }
         
-        # Store in session cache
-        st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
-        
-        # Also save to card cache for faster future access
-        save_analyzed_deck_to_cache(deck_name, set_name, analyzed_data)
-        
-        return analyzed_data
+        # Validate before storing
+        if validate_cache_data(analyzed_data):
+            # Store in session cache
+            st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
+            return analyzed_data
+        else:
+            print(f"Disk cache data invalid for {deck_name}, forcing fresh analysis")
+            clear_all_deck_caches(deck_name, set_name)
+            return analyze_deck_fresh(deck_name, set_name)
     
     # If not in any cache, analyze the deck
     print(f"No cache found for {deck_name}, analyzing")
