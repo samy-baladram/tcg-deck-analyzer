@@ -51,7 +51,7 @@ def initialize_matchup_cache():
         st.session_state.matchup_cache_initialized = True
 
 # Call the initialization function
-initialize_matchup_cache()
+#initialize_matchup_cache()
 
 # Add cache initialization after other initialization
 if 'cache_initialized' not in st.session_state:
