@@ -48,6 +48,9 @@ def check_and_update_tournament_data():
                 st.session_state.update_running = True
                 
                 with st.spinner("Checking for new tournament data..."):
+                    # CRITICAL FIX: Get old tournament count before update
+                    old_performance_count = len(st.session_state.performance_data) if 'performance_data' in st.session_state else 0
+                    
                     # Update tournament tracking (this will clear affected deck caches)
                     stats = cache_manager.update_tournament_tracking()
                     
@@ -56,20 +59,27 @@ def check_and_update_tournament_data():
                     st.session_state.performance_data = performance_df
                     st.session_state.performance_fetch_time = performance_timestamp
                     
+                    # Check if deck count changed (indicating new tournaments)
+                    new_performance_count = len(performance_df)
+                    
+                    # If deck count changed or tournaments were updated, force refresh current deck
+                    if (new_performance_count != old_performance_count or stats['updated_decks'] > 0):
+                        if 'analyze' in st.session_state:
+                            current_deck = st.session_state.analyze.get('deck_name')
+                            if current_deck:
+                                print(f"Forcing refresh of current deck {current_deck} due to tournament update")
+                                st.session_state.deck_to_analyze = current_deck
+                                st.session_state.auto_refresh_in_progress = True
+                                st.session_state.force_deck_refresh = True
+                    
                     # Update card usage data
                     card_usage_df = cache_manager.aggregate_card_usage()
                     st.session_state.card_usage_data = card_usage_df
                     
-                    # If new tournaments affected current deck, trigger refresh
-                    if (stats['updated_decks'] > 0 and 'analyze' in st.session_state):
-                        current_deck = st.session_state.analyze.get('deck_name')
-                        st.session_state.deck_to_analyze = current_deck
-                        st.session_state.auto_refresh_in_progress = True
-                    
                     st.session_state.update_running = False
                     
-                    if stats['new_tournaments'] > 0:
-                        st.success(f"Updated {stats['updated_decks']} decks with data from {stats['new_tournaments']} new tournaments")
+                    if stats['new_tournaments'] > 0 or new_performance_count != old_performance_count:
+                        st.success(f"Updated with new tournament data: {old_performance_count} → {new_performance_count} decks")
 
 # ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
