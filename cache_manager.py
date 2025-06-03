@@ -508,32 +508,39 @@ def update_tournament_tracking():
         'updated_decks': 0
     }
     
+    print("DEBUG: Starting update_tournament_tracking()")  # ADD THIS
+    
     # Load previous tournament IDs
     previous_ids = cache_utils.load_tournament_ids()
+    print(f"DEBUG: Loaded {len(previous_ids)} previous tournament IDs")  # ADD THIS
     
     # Get current tournament IDs
     current_ids = get_all_recent_tournaments()
     stats['current_tournaments'] = len(current_ids)
+    print(f"DEBUG: Found {len(current_ids)} current tournament IDs")  # ADD THIS
     
     # Find new tournament IDs
     new_ids = get_new_tournament_ids(previous_ids)
     stats['new_tournaments'] = len(new_ids)
+    print(f"DEBUG: Found {len(new_ids)} NEW tournament IDs: {new_ids}")  # ADD THIS
     
     # If no new tournaments, nothing to do
     if not new_ids:
+        print("DEBUG: No new tournaments found, skipping deck updates")  # ADD THIS
         return stats
     
     # Save updated tournament IDs
     cache_utils.save_tournament_ids(current_ids)
+    print("DEBUG: Saved updated tournament IDs")  # ADD THIS
     
     # Load player-tournament mapping
     mapping = cache_utils.load_player_tournament_mapping()
+    print(f"DEBUG: Loaded player-tournament mapping with {len(mapping)} entries")  # ADD THIS
     
     # Find affected deck archetypes
     affected_decks = get_affected_decks(new_ids, mapping)
     stats['affected_decks'] = len(affected_decks)
-    print(f"Found {len(new_ids)} new tournaments: {new_ids}")
-    print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
+    print(f"DEBUG: Found {len(affected_decks)} affected decks: {affected_decks}")  # ADD THIS
     
     # FIXED: Get current set name dynamically
     current_set = get_current_set_name()
