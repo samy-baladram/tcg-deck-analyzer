@@ -502,56 +502,48 @@ def update_tournament_tracking():
         'updated_decks': 0
     }
     
-    print("DEBUG: Starting update_tournament_tracking()")  # ADD THIS
-    
     # Load previous tournament IDs
     previous_ids = cache_utils.load_tournament_ids()
-    print(f"DEBUG: Loaded {len(previous_ids)} previous tournament IDs")  # ADD THIS
     
     # Get current tournament IDs
     current_ids = get_all_recent_tournaments()
     stats['current_tournaments'] = len(current_ids)
-    print(f"DEBUG: Found {len(current_ids)} current tournament IDs")  # ADD THIS
     
     # Find new tournament IDs
     new_ids = get_new_tournament_ids(previous_ids)
     stats['new_tournaments'] = len(new_ids)
-    print(f"DEBUG: Found {len(new_ids)} NEW tournament IDs: {new_ids}")  # ADD THIS
     
     # If no new tournaments, nothing to do
     if not new_ids:
-        print("DEBUG: No new tournaments found, skipping deck updates")  # ADD THIS
         return stats
     
     # Save updated tournament IDs
     cache_utils.save_tournament_ids(current_ids)
-    print("DEBUG: Saved updated tournament IDs")  # ADD THIS
     
     # Load player-tournament mapping
     mapping = cache_utils.load_player_tournament_mapping()
-    print(f"DEBUG: Loaded player-tournament mapping with {len(mapping)} entries")  # ADD THIS
     
     # Find affected deck archetypes
     affected_decks = get_affected_decks(new_ids, mapping)
     stats['affected_decks'] = len(affected_decks)
-    print(f"DEBUG: Found {len(affected_decks)} affected decks: {affected_decks}")  # ADD THIS
+    print(f"Found {len(new_ids)} new tournaments: {new_ids}")
+    print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
     
-    # FIXED: Get current set name dynamically
+    # Get current set name dynamically
     current_set = get_current_set_name()
-    
-    # FIXED: Clear all caches for affected decks BEFORE updating
-    for deck_name in affected_decks:
-        # Force clear all caches for this deck
-        clear_all_deck_caches(deck_name, current_set)
-        print(f"Cleared all caches for {deck_name} (set: {current_set})")
     
     # Update each affected deck with fresh analysis
     for deck_name in affected_decks:
-        # Force refresh analysis (will use cleared caches)
+        print(f"Updating {deck_name} due to new tournament data...")
+        
+        # Force complete cache clear and refresh
         success = update_deck_analysis(deck_name, current_set, new_ids)
         
         if success:
             stats['updated_decks'] += 1
+            print(f"Successfully updated {deck_name}")
+        else:
+            print(f"Failed to update {deck_name}")
     
     return stats
 
