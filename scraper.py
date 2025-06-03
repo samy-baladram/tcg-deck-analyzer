@@ -489,6 +489,7 @@ def get_deck_performance(deck_name, set_code=CURRENT_SET):
 def analyze_recent_performance(share_threshold=0.6):
     """Analyze the recent performance of popular decks."""
     # Get popular decks above threshold
+    import streamlit as st
     popular_decks = get_popular_decks_with_performance(share_threshold=share_threshold)
     
     # Get recent tournament IDs
@@ -545,6 +546,7 @@ def analyze_recent_performance(share_threshold=0.6):
         results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
 
     return results_df
+    
 # Add this temporary debugging function to scraper.py
 def debug_tournament_data():
     """Debug function to check tournament data loading"""
