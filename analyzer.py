@@ -28,7 +28,7 @@ def analyze_recent_performance(raw_performance_data=None):
     print(f"🔄 Running analyze_recent_performance() version {ALGORITHM_VERSION}")
     
     import math
-    
+    import streamlit as st
     if raw_performance_data is None:
         # Import from scraper if not provided
         from scraper import get_deck_performance_data
