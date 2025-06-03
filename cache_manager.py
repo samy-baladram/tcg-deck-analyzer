@@ -383,8 +383,11 @@ def load_or_update_tournament_data(force_update=False):
         if force_update or performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(seconds=CACHE_TTL):
             print("Updating tournament data...")
             
+            # CRITICAL: Store old deck count for comparison
+            old_deck_count = len(performance_df) if not performance_df.empty else 0
+            
             # Update tournament tracking
-            update_stats = update_tournament_tracking()
+            stats = update_tournament_tracking()
             
             # Force fresh analysis of performance data
             try:
@@ -398,6 +401,21 @@ def load_or_update_tournament_data(force_update=False):
                 if not performance_df.empty:
                     # Save to cache
                     cache_utils.save_tournament_performance_data(performance_df)
+                    
+                    # NEW: Check if deck count changed significantly
+                    new_deck_count = len(performance_df)
+                    if new_deck_count != old_deck_count:
+                        print(f"Deck count changed: {old_deck_count} → {new_deck_count}")
+                        
+                        # Force refresh of currently selected deck
+                        if 'analyze' in st.session_state:
+                            current_deck = st.session_state.analyze.get('deck_name')
+                            if current_deck:
+                                print(f"Forcing cache clear for current deck: {current_deck}")
+                                # Clear all caches for the current deck
+                                clear_all_deck_caches(current_deck, st.session_state.analyze.get('set_name', 'A3a'))
+                                st.session_state.force_deck_refresh = True
+                    
                     print(f"Successfully loaded {len(performance_df)} decks")
                 else:
                     print("Still no performance data available")
