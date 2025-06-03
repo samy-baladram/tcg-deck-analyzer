@@ -541,11 +541,21 @@ def update_tournament_tracking():
     # Load player-tournament mapping
     mapping = cache_utils.load_player_tournament_mapping()
     
+    # DEBUG: Print mapping info
+    print(f"Player-tournament mapping has {len(mapping)} entries")
+    if not mapping:
+        print("WARNING: Player-tournament mapping is empty! This means affected decks won't be detected.")
+    
     # Find affected deck archetypes
     affected_decks = get_affected_decks(new_ids, mapping)
     stats['affected_decks'] = len(affected_decks)
     print(f"Found {len(new_ids)} new tournaments: {new_ids}")
     print(f"Found {len(affected_decks)} affected decks: {affected_decks}")
+    
+    # NEW: If no affected decks found but we have new tournaments, force update popular decks
+    if not affected_decks and new_ids:
+        print("No specific affected decks found, but new tournaments detected. Will force refresh current deck.")
+        # This will be handled by the deck count change detection
     
     # Get current set name dynamically
     current_set = get_current_set_name()
