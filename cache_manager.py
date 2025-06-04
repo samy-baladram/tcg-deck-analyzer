@@ -572,6 +572,22 @@ def update_tournament_tracking():
             print(f"Successfully updated {deck_name}")
         else:
             print(f"Failed to update {deck_name}")
+
+    # SIMPLE APPROACH: If new tournaments found, refresh ALL analyzed decks
+    if new_ids:
+        print(f"Found {len(new_ids)} new tournaments, refreshing all analyzed decks")
+        
+        # Get all currently analyzed decks
+        if 'analyzed_deck_cache' in st.session_state:
+            for cache_key in list(st.session_state.analyzed_deck_cache.keys()):
+                if cache_key.startswith('full_deck_'):
+                    # Extract deck name and set from cache key
+                    parts = cache_key.replace('full_deck_', '').rsplit('_', 1)
+                    if len(parts) == 2:
+                        deck_name, set_name = parts
+                        clear_all_deck_caches(deck_name, set_name)
+                        print(f"Cleared caches for {deck_name} due to new tournaments")
+                        stats['updated_decks'] += 1
     
     return stats
 
