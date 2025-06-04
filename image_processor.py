@@ -277,99 +277,100 @@ def merge_header_images(img1, img2, gap_ratio=GAP_RATIO, cutoff_percentage=0.7):
 # image_processor.py - Updated function
 def extract_pokemon_from_deck_name(deck_name):
     """
-    Extract Pokemon names from deck name
-    Handles cases with and without set codes as separators
-    Uses pattern-based recognition for multi-word Pokemon names
-    Depends on config.POKEMON_NAME_PATTERNS for all Pokemon name data
+    Extract Pokemon names from deck name by first removing all set codes.
+    Much simpler approach: strip set codes first, then extract Pokemon names.
+    
+    Args:
+        deck_name: The deck name to extract Pokemon from
+        
+    Returns:
+        List of up to 2 Pokemon names
     """
     from config import POKEMON_NAME_PATTERNS
     from utils import is_set_code
     
+    # STEP 1: Split deck name into parts
+    parts = deck_name.split('-')
+    
+    # STEP 2: Rejoin split promotional codes (p-a, p-b, etc.)
+    rejoined_parts = []
+    i = 0
+    
+    while i < len(parts):
+        current_part = parts[i]
+        
+        # Check if this might be a split promotional set code
+        if (current_part.lower() == 'p' and 
+            i + 1 < len(parts) and 
+            len(parts[i + 1]) == 1 and 
+            parts[i + 1].isalpha()):
+            # Rejoin p-a, p-b, etc.
+            rejoined = f"{current_part}-{parts[i + 1]}"
+            rejoined_parts.append(rejoined)
+            i += 2  # Skip the next part since we consumed it
+        else:
+            rejoined_parts.append(current_part)
+            i += 1
+    
+    # STEP 3: Remove ALL set codes (A3, A3a, P-A, etc.)
+    pokemon_only_parts = [part for part in rejoined_parts if not is_set_code(part)]
+    
+    # STEP 4: Remove standalone 'p' and other non-Pokemon artifacts
+    clean_parts = []
+    for part in pokemon_only_parts:
+        # Remove standalone 'p' (likely partial promotional codes)
+        if part.lower() == 'p':
+            continue
+        
+        # Remove very short non-alphabetic parts
+        if len(part) == 1 and not part.isalpha():
+            continue
+            
+        clean_parts.append(part)
+    
+    # STEP 5: Extract Pokemon from cleaned parts
     # Load patterns from config
     REGIONAL_PREFIXES = POKEMON_NAME_PATTERNS['REGIONAL_PREFIXES']
     FORM_PREFIXES = POKEMON_NAME_PATTERNS['FORM_PREFIXES']
-    MULTI_WORD_FORM_PREFIXES = POKEMON_NAME_PATTERNS['MULTI_WORD_FORM_PREFIXES']
     PARADOX_PREFIXES = POKEMON_NAME_PATTERNS['PARADOX_PREFIXES']
-    SPECIAL_MULTIWORD = POKEMON_NAME_PATTERNS['SPECIAL_MULTIWORD']
     POKEMON_SUFFIXES = POKEMON_NAME_PATTERNS['POKEMON_SUFFIXES']
     
     def is_multiword_pokemon_start(parts, start_idx):
-        """
-        Check if position starts a multi-word Pokemon and return the end index
-        Returns None if not a multi-word Pokemon, otherwise returns end index
-        """
+        """Check if this position starts a multi-word Pokemon"""
         if start_idx >= len(parts):
             return None
         
-        # Check special multi-word names first (exact matches)
-        for word_count in range(2, min(5, len(parts) - start_idx + 1)):
-            # FIXED: Skip if we would include a set code in the Pokemon name
-            if any(is_set_code(parts[start_idx + j]) for j in range(word_count)):
-                continue
-                
-            potential_name = '-'.join(parts[start_idx:start_idx + word_count]).lower()
-            if potential_name in SPECIAL_MULTIWORD:
-                return start_idx + word_count - 1
-        
-        # Check multi-word form prefixes (like "origin-forme-dialga")
-        for prefix in MULTI_WORD_FORM_PREFIXES:
-            prefix_parts = prefix.split('-')
-            prefix_len = len(prefix_parts)
-            
-            if (start_idx + prefix_len < len(parts) and
-                # FIXED: Ensure we don't include set codes in prefix matching
-                not any(is_set_code(parts[start_idx + j]) for j in range(prefix_len)) and
-                '-'.join(parts[start_idx:start_idx + prefix_len]).lower() == prefix and
-                start_idx + prefix_len < len(parts) and
-                not is_set_code(parts[start_idx + prefix_len])):
-                return start_idx + prefix_len  # Include the Pokemon name after prefix
-        
-        # Check single-word prefixes
         current_part = parts[start_idx].lower()
         
-        if current_part in REGIONAL_PREFIXES:
-            # Regional forms: alolan-raichu, galarian-meowth, etc.
-            if start_idx + 1 < len(parts) and not is_set_code(parts[start_idx + 1]):
-                return start_idx + 1
-                
-        elif current_part in FORM_PREFIXES:
-            # Form variants: mega-charizard, primal-groudon, etc.
-            if start_idx + 1 < len(parts) and not is_set_code(parts[start_idx + 1]):
-                return start_idx + 1
-                
-        elif current_part in PARADOX_PREFIXES:
-            # Future Paradox: iron-treads, iron-valiant, etc.
-            if start_idx + 1 < len(parts) and not is_set_code(parts[start_idx + 1]):
+        # Check prefixes that indicate multi-word Pokemon
+        if (current_part in REGIONAL_PREFIXES or 
+            current_part in FORM_PREFIXES or 
+            current_part in PARADOX_PREFIXES):
+            if start_idx + 1 < len(parts):
                 return start_idx + 1
         
         return None
     
-    parts = deck_name.split('-')
     pokemon_names = []
     i = 0
     
-    while i < len(parts) and len(pokemon_names) < 2:
-        if is_set_code(parts[i]):
-            i += 1
-            continue
-        
+    while i < len(clean_parts) and len(pokemon_names) < 2:
         # Check if this starts a multi-word Pokemon
-        multiword_end = is_multiword_pokemon_start(parts, i)
+        multiword_end = is_multiword_pokemon_start(clean_parts, i)
         
         if multiword_end is not None:
-            # Found multi-word Pokemon
-            current_pokemon = parts[i:multiword_end + 1]
+            # Multi-word Pokemon found
+            current_pokemon = clean_parts[i:multiword_end + 1]
             i = multiword_end + 1
         else:
             # Single-word Pokemon
-            current_pokemon = [parts[i]]
+            current_pokemon = [clean_parts[i]]
             i += 1
         
-        # Check for suffixes (but skip if next part is a set code)
-        while (i < len(parts) and 
-               not is_set_code(parts[i]) and
-               parts[i].lower() in POKEMON_SUFFIXES):
-            current_pokemon.append(parts[i])
+        # Check for suffixes
+        while (i < len(clean_parts) and 
+               clean_parts[i].lower() in POKEMON_SUFFIXES):
+            current_pokemon.append(clean_parts[i])
             i += 1
         
         pokemon_names.append('-'.join(current_pokemon))
