@@ -279,6 +279,7 @@ def extract_pokemon_from_deck_name(deck_name):
     """
     Extract Pokemon names from deck name by first removing all set codes.
     Much simpler approach: strip set codes first, then extract Pokemon names.
+    Now includes support for special multi-word Pokemon like Tapu series.
     
     Args:
         deck_name: The deck name to extract Pokemon from
@@ -333,6 +334,7 @@ def extract_pokemon_from_deck_name(deck_name):
     REGIONAL_PREFIXES = POKEMON_NAME_PATTERNS['REGIONAL_PREFIXES']
     FORM_PREFIXES = POKEMON_NAME_PATTERNS['FORM_PREFIXES']
     PARADOX_PREFIXES = POKEMON_NAME_PATTERNS['PARADOX_PREFIXES']
+    SPECIAL_MULTIWORD = POKEMON_NAME_PATTERNS['SPECIAL_MULTIWORD']
     POKEMON_SUFFIXES = POKEMON_NAME_PATTERNS['POKEMON_SUFFIXES']
     
     def is_multiword_pokemon_start(parts, start_idx):
@@ -340,9 +342,17 @@ def extract_pokemon_from_deck_name(deck_name):
         if start_idx >= len(parts):
             return None
         
+        # STEP 1: Check special multi-word names first (exact matches)
+        # This handles Tapu Pokemon, Mr. Mime, Great Tusk, etc.
+        for word_count in range(2, min(5, len(parts) - start_idx + 1)):
+            potential_name = '-'.join(parts[start_idx:start_idx + word_count]).lower()
+            if potential_name in SPECIAL_MULTIWORD:
+                return start_idx + word_count - 1
+        
+        # STEP 2: Check prefix-based multi-word Pokemon
+        # This handles Alolan, Mega, Iron, etc.
         current_part = parts[start_idx].lower()
         
-        # Check prefixes that indicate multi-word Pokemon
         if (current_part in REGIONAL_PREFIXES or 
             current_part in FORM_PREFIXES or 
             current_part in PARADOX_PREFIXES):
