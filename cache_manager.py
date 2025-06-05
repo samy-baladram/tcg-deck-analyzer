@@ -372,76 +372,119 @@ def aggregate_card_usage(force_update=False):
 
 def load_or_update_tournament_data(force_update=False):
     """Load tournament data from cache or update if stale"""
+    print(f"DEBUG: load_or_update_tournament_data called with force_update={force_update}")
+    
     try:
         # Try to load tournament data from cache first
+        print("DEBUG: Loading tournament data from cache...")
         performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
-
+        print(f"DEBUG: Loaded {len(performance_df)} cached records, timestamp: {performance_timestamp}")
+        
         # Import CACHE_TTL from config
         from config import CACHE_TTL
-
+        print(f"DEBUG: CACHE_TTL = {CACHE_TTL} seconds")
+        
         # Check if data needs to be updated
-        if force_update or performance_df.empty or (datetime.now() - performance_timestamp) > timedelta(seconds=CACHE_TTL):
-            print("Updating tournament data...")
+        time_since_update = datetime.now() - performance_timestamp
+        print(f"DEBUG: Time since last update: {time_since_update.total_seconds()} seconds")
+        
+        needs_update = force_update or performance_df.empty or time_since_update > timedelta(seconds=CACHE_TTL)
+        print(f"DEBUG: Needs update: {needs_update} (force={force_update}, empty={performance_df.empty}, stale={time_since_update > timedelta(seconds=CACHE_TTL)})")
+        
+        if needs_update:
+            print("DEBUG: Updating tournament data...")
             
             # CRITICAL: Store old deck count for comparison
             old_deck_count = len(performance_df) if not performance_df.empty else 0
+            print(f"DEBUG: Old deck count: {old_deck_count}")
             
             # Update tournament tracking
+            print("DEBUG: Updating tournament tracking...")
             stats = update_tournament_tracking()
+            print(f"DEBUG: Tournament tracking stats: {stats}")
             
             # Force fresh analysis of performance data
             try:
+                print(f"DEBUG: Calling analyze_recent_performance with threshold {MIN_META_SHARE}")
                 performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+                print(f"DEBUG: analyze_recent_performance returned {len(performance_df)} records")
                 
                 if performance_df.empty:
-                    print("No performance data returned, trying alternative approach...")
+                    print("DEBUG: No performance data returned, trying alternative approach...")
                     # Try with lower threshold
+                    print("DEBUG: Trying with threshold 0.0...")
                     performance_df = analyze_recent_performance(share_threshold=0.0)
+                    print(f"DEBUG: Second attempt returned {len(performance_df)} records")
                 
                 if not performance_df.empty:
+                    print("DEBUG: Saving performance data to cache...")
                     # Save to cache
                     cache_utils.save_tournament_performance_data(performance_df)
                     
                     # NEW: Check if deck count changed significantly
                     new_deck_count = len(performance_df)
+                    print(f"DEBUG: New deck count: {new_deck_count}")
+                    
                     if new_deck_count != old_deck_count:
-                        print(f"Deck count changed: {old_deck_count} → {new_deck_count}")
+                        print(f"DEBUG: Deck count changed: {old_deck_count} → {new_deck_count}")
                         
                         # Force refresh of currently selected deck
                         if 'analyze' in st.session_state:
                             current_deck = st.session_state.analyze.get('deck_name')
+                            print(f"DEBUG: Current deck in session: {current_deck}")
                             if current_deck:
-                                print(f"Forcing cache clear for current deck: {current_deck}")
+                                print(f"DEBUG: Forcing cache clear for current deck: {current_deck}")
                                 # Clear all caches for the current deck
                                 clear_all_deck_caches(current_deck, st.session_state.analyze.get('set_name', 'A3a'))
                                 st.session_state.force_deck_refresh = True
+                                print("DEBUG: Set force_deck_refresh = True")
+                        else:
+                            print("DEBUG: No current deck in session state")
                     
-                    print(f"Successfully loaded {len(performance_df)} decks")
+                    print(f"DEBUG: Successfully loaded {len(performance_df)} decks")
                 else:
-                    print("Still no performance data available")
+                    print("DEBUG: Still no performance data available")
                     
             except Exception as e:
-                print(f"Error in analyze_recent_performance: {e}")
+                print(f"DEBUG: Exception in analyze_recent_performance call: {e}")
+                print(f"DEBUG: Exception type: {type(e)}")
+                import traceback
+                print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+                
                 # Try to use cached data even if old
                 if not performance_df.empty:
-                    print("Using old cached data as fallback")
+                    print("DEBUG: Using old cached data as fallback")
                 else:
+                    print("DEBUG: Creating minimal fallback data")
                     # Create minimal fallback data
                     performance_df = create_fallback_performance_data()
+                    print(f"DEBUG: Fallback data created with {len(performance_df)} records")
             
             # Update timestamp
             performance_timestamp = datetime.now()
+            print(f"DEBUG: Updated timestamp to: {performance_timestamp}")
             
             # Save the updated timestamp to disk
+            print("DEBUG: Saving timestamp to disk...")
             with open(cache_utils.TOURNAMENT_TIMESTAMP_PATH, 'w') as f:
                 f.write(performance_timestamp.isoformat())
-
+            print("DEBUG: Timestamp saved successfully")
+        else:
+            print("DEBUG: Using cached data (no update needed)")
+            
+        print(f"DEBUG: Returning {len(performance_df)} records")
         return performance_df, performance_timestamp
         
     except Exception as e:
-        print(f"Critical error in load_or_update_tournament_data: {e}")
+        print(f"DEBUG: Critical error in load_or_update_tournament_data: {e}")
+        print(f"DEBUG: Exception type: {type(e)}")
+        import traceback
+        print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+        
         # Return fallback data
-        return create_fallback_performance_data(), datetime.now()
+        print("DEBUG: Returning fallback data due to error")
+        fallback_data = create_fallback_performance_data()
+        return fallback_data, datetime.now()
 
 def create_fallback_performance_data():
     """Create minimal fallback performance data when all else fails"""
