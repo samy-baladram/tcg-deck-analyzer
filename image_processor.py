@@ -18,6 +18,8 @@ from io import BytesIO
 #import cv2
 import numpy as np
 import base64
+import streamlit as st
+import cache_manager
 
 # Simple utility functions
 def get_base64_image(path):
@@ -676,10 +678,6 @@ def get_card_thumbnail(set_code, number, size=40):
         return None
 
 # Add this to image_processor.py or create a new pokemon_info_manager.py file
-
-import streamlit as st
-from image_processor import extract_pokemon_from_deck_name
-import cache_manager
 
 def preload_all_deck_pokemon_info():
     """
