@@ -1,5 +1,6 @@
 # config.py
 """Configuration and constants for the TCG Deck Analyzer"""
+import streamlit as st
 
 # API and website URLs
 BASE_URL = "https://play.limitlesstcg.com"
