@@ -718,7 +718,10 @@ def render_sidebar_from_cache():
                 # Display performance data if it exists
                 if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
                     # Get trending decks (sorted by tournaments_played/Best Finishes)
-                    trending_decks = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).head(5)
+                    trending_decks = st.session_state.performance_data.sort_values(
+                                        ['tournaments_played', 'share'], 
+                                        ascending=[False, True]  # tournaments_played descending, share ascending
+                                    ).head(5)
                     
                     # Render each trending deck one by one, passing the rank (index + 1)
                     for idx, (_, deck) in enumerate(trending_decks.iterrows()):
@@ -733,7 +736,7 @@ def render_sidebar_from_cache():
                         <div>Updated {performance_time_str}</div>
                     </div>
                     <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                        Sorted by tournament activity
+                        Sorted by tournament activity, then by lowest meta share
                     </div>
                     """, unsafe_allow_html=True)
                     st.write("")
