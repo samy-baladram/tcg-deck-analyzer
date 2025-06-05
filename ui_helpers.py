@@ -657,7 +657,10 @@ def render_sidebar_from_cache():
             st.markdown("### 📈 Trending Decks")
         
         # Get the first trending deck
-        test_deck = st.session_state.performance_data.sort_values('tournaments_played', ascending=False).iloc[0]
+        test_deck = st.session_state.performance_data.sort_values(
+            ['tournaments_played', 'share'], 
+            ascending=[False, True]  # tournaments_played descending, share ascending
+        ).iloc[0]
         
         # Generate header image for trending deck
         header_image = get_header_image_cached(test_deck['deck_name'], test_deck['set'])
