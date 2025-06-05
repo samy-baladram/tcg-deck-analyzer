@@ -631,6 +631,12 @@ def update_tournament_tracking():
                         clear_all_deck_caches(deck_name, set_name)
                         print(f"Cleared caches for {deck_name} due to new tournaments")
                         stats['updated_decks'] += 1
+        
+        # ADDITION: Also clear collected decks to force fresh data collection
+        if 'collected_decks' in st.session_state:
+            collected_count = len(st.session_state.collected_decks)
+            st.session_state.collected_decks.clear()
+            print(f"Cleared {collected_count} collected deck caches")
     
     return stats
 
