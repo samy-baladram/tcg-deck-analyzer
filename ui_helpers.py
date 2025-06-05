@@ -953,8 +953,7 @@ def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
                         </div>
                         """, unsafe_allow_html=True)
                     meta_share = deck['share']
-                    st.caption(f"Best Finishes: {tournaments_played}")
-                    st.caption(f"Meta Share: {meta_share:.2f}%")
+                    st.caption(f"Best Finishes: {tournaments_played} • Meta Share: {meta_share:.2f}%")
                 
                 with col2:
                     if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
