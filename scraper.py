@@ -489,63 +489,124 @@ def get_deck_performance(deck_name, set_code=CURRENT_SET):
 
 def analyze_recent_performance(share_threshold=0.6):
     """Analyze the recent performance of popular decks."""
-    # Get popular decks above threshold
-    popular_decks = get_popular_decks_with_performance(share_threshold=share_threshold)
+    print(f"DEBUG: Starting analyze_recent_performance with threshold {share_threshold}")
     
-    # Get recent tournament IDs
-    recent_tournament_ids = set(get_all_recent_tournaments())
-    
-    # Prepare results dataframe
-    results = []
-    
-    # Process each deck
-    for _, deck in popular_decks.iterrows():
-        deck_name = deck['deck_name']
-        displayed_name = deck['displayed_name']
-        share = deck['share']
-        set_name = deck['set']
+    try:
+        # Check if streamlit is available
+        print("DEBUG: Checking streamlit import...")
+        import streamlit as st
+        print("DEBUG: Streamlit imported successfully")
         
-        # Get performance data for this deck
-        performance = get_deck_performance(deck_name, set_name)
+        # Get popular decks above threshold
+        print("DEBUG: Getting popular decks...")
+        popular_decks = get_popular_decks_with_performance(share_threshold=share_threshold)
+        print(f"DEBUG: Found {len(popular_decks)} popular decks")
         
-        # Filter for only recent tournaments
-        recent_performance = performance[performance['tournament_id'].isin(recent_tournament_ids)]
+        # Get recent tournament IDs
+        print("DEBUG: Getting recent tournament IDs...")
+        recent_tournament_ids = set(get_all_recent_tournaments())
+        print(f"DEBUG: Found {len(recent_tournament_ids)} recent tournaments")
         
-        # Skip if no recent data
-        if recent_performance.empty:
-           continue
+        # Prepare results dataframe
+        results = []
         
-        # Calculate totals
-        total_wins = recent_performance['wins'].sum()
-        total_losses = recent_performance['losses'].sum()
-        total_ties = recent_performance['ties'].sum()
-        tournaments_played = len(recent_performance['tournament_id'])
-        
-        # Calculate total games
-        total_games = total_wins + total_losses + total_ties
-        
-        if total_games > 0:
-            # Calculate Power Index
-            power_index = ((total_wins + (0.75*total_ties) - total_losses) / math.sqrt(total_games))
+        # Process each deck
+        print("DEBUG: Processing each deck...")
+        for idx, (_, deck) in enumerate(popular_decks.iterrows()):
+            print(f"DEBUG: Processing deck {idx+1}/{len(popular_decks)}: {deck['deck_name']}")
             
-            results.append({
-                'deck_name': deck_name,
-                'displayed_name': displayed_name,
-                'share': share,
-                'set': set_name,
-                'total_wins': total_wins,
-                'total_losses': total_losses,
-                'total_ties': total_ties,
-                'tournaments_played': tournaments_played,
-                'power_index': power_index
-            })
+            deck_name = deck['deck_name']
+            displayed_name = deck['displayed_name']
+            share = deck['share']
+            set_name = deck['set']
+            
+            # Get performance data for this deck
+            print(f"DEBUG: Getting performance data for {deck_name}...")
+            performance = get_deck_performance(deck_name, set_name)
+            print(f"DEBUG: Found {len(performance)} performance records for {deck_name}")
+            
+            # Filter for only recent tournaments
+            recent_performance = performance[performance['tournament_id'].isin(recent_tournament_ids)]
+            print(f"DEBUG: {len(recent_performance)} recent performance records for {deck_name}")
+            
+            # Skip if no recent data
+            if recent_performance.empty:
+                print(f"DEBUG: No recent data for {deck_name}, skipping")
+                continue
+            
+            # Calculate totals
+            total_wins = recent_performance['wins'].sum()
+            total_losses = recent_performance['losses'].sum()
+            total_ties = recent_performance['ties'].sum()
+            tournaments_played = len(recent_performance['tournament_id'])
+            
+            print(f"DEBUG: {deck_name} - Wins: {total_wins}, Losses: {total_losses}, Ties: {total_ties}")
+            
+            # Calculate total games
+            total_games = total_wins + total_losses + total_ties
+            
+            if total_games > 0:
+                print(f"DEBUG: Calculating power index for {deck_name} with {total_games} total games")
+                
+                # Handle ties as half-wins (common in card games)
+                adjusted_wins = total_wins + (0.5 * total_ties)
+                
+                # Calculate win proportion
+                win_proportion = adjusted_wins / total_games
+                
+                # Wilson Score Interval parameters
+                z = 1.96  # 95% confidence level
+                z_squared = z * z
+                
+                # Calculate Wilson Score lower bound
+                numerator = (win_proportion + (z_squared / (2 * total_games)) - 
+                             z * math.sqrt((win_proportion * (1 - win_proportion) + 
+                                          (z_squared / (4 * total_games))) / total_games))
+                
+                denominator = 1 + (z_squared / total_games)
+                
+                # Wilson Score lower bound (conservative estimate of true win rate)
+                wilson_score = numerator / denominator
+                
+                # Scale to make more intuitive
+                power_index = (wilson_score - 0.5) * 10
+                
+                print(f"DEBUG: {deck_name} power index: {power_index:.2f}")
+                
+                results.append({
+                    'deck_name': deck_name,
+                    'displayed_name': displayed_name,
+                    'share': share,
+                    'set': set_name,
+                    'total_wins': total_wins,
+                    'total_losses': total_losses,
+                    'total_ties': total_ties,
+                    'tournaments_played': tournaments_played,
+                    'power_index': power_index
+                })
+            else:
+                print(f"DEBUG: {deck_name} has 0 total games, skipping")
 
-    # Convert to DataFrame and sort by Power Index
-    results_df = pd.DataFrame(results)
-    if not results_df.empty:
-        results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
+        print(f"DEBUG: Created {len(results)} deck results")
+        
+        # Convert to DataFrame and sort by Power Index
+        results_df = pd.DataFrame(results)
+        if not results_df.empty:
+            print("DEBUG: Sorting results by power index...")
+            results_df = results_df.sort_values('power_index', ascending=False).reset_index(drop=True)
+            print(f"DEBUG: Top deck: {results_df.iloc[0]['deck_name']} with power index {results_df.iloc[0]['power_index']:.2f}")
+        else:
+            print("DEBUG: Results DataFrame is empty!")
 
-    return results_df
+        print(f"DEBUG: Returning DataFrame with {len(results_df)} rows")
+        return results_df
+        
+    except Exception as e:
+        print(f"DEBUG: Exception in analyze_recent_performance: {e}")
+        print(f"DEBUG: Exception type: {type(e)}")
+        import traceback
+        print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+        raise e
     
 # Add this temporary debugging function to scraper.py
 def debug_tournament_data():
