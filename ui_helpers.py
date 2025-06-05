@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+from cache_manager import load_or_update_tournament_data
 from formatters import format_deck_name, format_deck_option
 from scraper import get_popular_decks_with_performance
 from utils import calculate_time_ago
@@ -55,7 +56,7 @@ def check_and_update_tournament_data():
                     stats = cache_manager.update_tournament_tracking()
                     
                     # Update performance data
-                    performance_df, performance_timestamp = cache_manager.load_or_update_tournament_data(force_update=True)
+                    performance_df, performance_timestamp = load_or_update_tournament_data(force_update=True)
                     st.session_state.performance_data = performance_df
                     st.session_state.performance_fetch_time = performance_timestamp
                     
