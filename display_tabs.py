@@ -1244,9 +1244,6 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         font=dict(size=11)
     )
     
-    # Display the chart
-    import streamlit as st
-    
     custom_config = {
         'displayModeBar': False,
         'staticPlot': True,
