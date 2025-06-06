@@ -82,7 +82,7 @@ SIDEBAR_SECTIONS_CONFIG = {
         "max_result_decks": 5,   # Max counter results to show
         "min_matches": MIN_COUNTER_MATCHES,
         "multiselect_key": "counter_multiselect",
-        "rank_symbols": ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"],
+        "rank_symbols": ["🥇", "🥈", "🥉", "④", "⑤"],
         "caption_template": lambda d, matches, confidence, matched, total: f"{confidence} {matches} matches, {confidence.lower()} confidence • Counters {matched}/{total} selected decks",
         "confidence_config": {
             "high_threshold": 20,
