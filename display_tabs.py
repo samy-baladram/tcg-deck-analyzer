@@ -847,8 +847,6 @@ def display_raw_data_tab(results, variant_df):
         st.write("#### Variant Analysis Data")
         st.dataframe(variant_df, use_container_width=True)
 
-# In display_tabs.py - Fix the display_metagame_tab function
-
 # In display_tabs.py, fix the display_metagame_tab function
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
@@ -1007,138 +1005,6 @@ def display_metagame_tab():
     from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
     st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments on Limitless TCG.")
-    
-def display_matchup_treemap(deck_name, set_name, working_df):
-    """
-    Display a treemap showing matchup distribution against the meta
-    
-    Args:
-        deck_name: Current deck name
-        set_name: Current deck set
-        working_df: DataFrame with matchup data already processed
-    """
-    #st.write("#### Meta Matchup Distribution")
-    
-    # Check if we have matchup data with meta share
-    if working_df.empty or 'meta_share' not in working_df.columns:
-        st.info("No matchup data with meta share available.")
-        return
-    
-    # Prepare data for treemap
-    treemap_data = working_df.copy()
-
-    # ADDED: Sort by win rate (color) first, then by meta share for secondary ordering
-    treemap_data = treemap_data.sort_values(['win_pct', 'meta_share'], ascending=[False, False])
-   
-    # Clean opponent names for better display
-    treemap_data['clean_name'] = treemap_data['opponent_name'].apply(
-        lambda x: x.replace(' (', '<br>(') if len(x) > 15 else x
-    )
-    
-    # Create hover text
-    treemap_data['hover_text'] = treemap_data.apply(
-        lambda row: f"<b>{row['opponent_name']}</b><br>" +
-                   f"Win Rate: {row['win_pct']:.1f}%<br>" +
-                   f"Record: {row['wins']}-{row['losses']}-{row['ties']}<br>" +
-                   f"Meta Share: {row['meta_share']:.1f}%<br>" +
-                   f"Matches: {row['matches_played']}",
-        axis=1
-    )
-    
-    # Create text for display on rectangles
-    treemap_data['display_text'] = treemap_data.apply(
-        lambda row: f"{row['clean_name']}<br>{row['win_pct']:.0f}%<br>({row['meta_share']:.1f}%)",
-        axis=1
-    )
-    
-    # Create the treemap
-    import plotly.graph_objects as go
-    
-    fig = go.Figure(go.Treemap(
-        labels=treemap_data['clean_name'],
-        values=treemap_data['meta_share'],
-        parents=[""] * len(treemap_data),  # All top-level rectangles
-        
-        # Color by win rate with custom colorscale - FIXED: use 'colors' not 'color'
-        marker_colors=treemap_data['win_pct'],
-        marker_colorscale=[
-            [0.0, "rgb(220, 53, 69)"],     # Red (0% win)
-            [0.1, "rgb(253, 126, 20)"],    # Red-Orange (10% win)
-            [0.2, "rgb(255, 152, 0)"],     # Orange (20% win)
-            [0.3, "rgb(255, 183, 77)"],    # Light Orange (30% win)
-            [0.4, "rgb(255, 235, 59)"],    # Yellow (40% win)
-            [0.5, "rgb(205, 220, 57)"],    # Yellow-Green (50% win)
-            [0.6, "rgb(156, 204, 101)"],   # Light Green (60% win)
-            [0.7, "rgb(139, 195, 74)"],    # Medium Green (70% win)
-            [0.8, "rgb(102, 187, 106)"],   # Green (80% win)
-            [0.9, "rgb(76, 175, 80)"],     # Dark Green (90% win)
-            [1.0, "rgb(27, 94, 32)"]       # Very Dark Green (100% win)
-        ],
-        marker_cmid=50,  # Center colorscale at 50% win rate
-        marker_colorbar=dict(
-            title="Win Rate %",
-            thickness=15,
-            len=0.7,
-            x=1.02
-        ),
-        
-        # Text display
-        text=treemap_data['display_text'],
-        textinfo="text",
-        textfont=dict(size=12, color="white"),
-        textposition="middle center",
-        
-        # Hover information
-        #customdata=treemap_data['hover_text'],
-        #hovertemplate="%{customdata}<extra></extra>",
-        
-        # Styling
-        # Styling - FIXED: Remove white outline
-        marker_line=dict(width=0),  # Changed from width=2, color="white" to width=0
-        pathbar_visible=False
-
-    ))
-    
-    # Update layout - FIXED: Make background transparent
-    fig.update_layout(
-        height=500,
-        margin=dict(t=0, l=10, r=60, b=10),
-        font=dict(size=11),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        template="plotly_white",
-        showlegend=False,
-        xaxis=dict(
-            visible=False,
-            showgrid=False,
-            showticklabels=False,
-            showline=False,
-            zeroline=False
-        ),
-        yaxis=dict(
-            visible=False,
-            showgrid=False,
-            showticklabels=False,
-            showline=False,
-            zeroline=False,
-        )
-    )
-    
-    # Override backgrounds again
-    fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
-    )
-    
-    # Display the treemap
-    from visualizations import display_chart
-    display_chart(fig, key="matchup_treemap")
-    
-    # Add explanation
-    st.caption(
-        "Rectangle size = meta share (how often you'll face this deck). "
-        "Color = win rate (red = unfavorable, yellow = even, green = favorable). "
-    )
 
 def display_matchup_bar_chart(deck_name, set_name, working_df):
     """
@@ -1343,7 +1209,6 @@ def debug_deck_collection(deck_name, set_name):
         decks_count = len(st.session_state.collected_decks[deck_key]['decks'])
         st.sidebar.write(f"- Collected Decks: {decks_count}")
 
-
 def display_energy_debug_tab(deck_info):
     """Display the Energy Debug tab with detailed analysis and diagnostic information"""
     
@@ -1468,8 +1333,6 @@ def generate_energy_table_html(all_energies, energy_by_deck):
     
     return table_html
     
-    return table_html
-    
 def generate_energy_analysis(deck_info):
     """Generate the energy analysis table for the Card Usage tab"""
     deck_name = deck_info['deck_name']
@@ -1547,8 +1410,8 @@ def display_matchup_summary(deck_name, set_name, working_df):
         st.info("No matchup data with meta share available.")
         return
 
-    win_upper = 57.5
-    win_lower = 42.5
+    win_upper = 55
+    win_lower = 45
     # Classify each matchup
     working_df['matchup_type'] = working_df['win_pct'].apply(
         lambda wp: "Favorable" if wp >= win_upper else ("Unfavorable" if wp < win_lower else "Even")
