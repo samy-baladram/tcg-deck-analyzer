@@ -63,8 +63,19 @@ def check_and_update_tournament_data():
                     # Check if deck count changed (indicating new tournaments)
                     new_performance_count = len(performance_df)
                     
-                    # If deck count changed or tournaments were updated, force refresh current deck
+                    # If deck count changed or tournaments were updated, force refresh ALL decks
                     if (new_performance_count != old_performance_count or stats['updated_decks'] > 0):
+                        print(f"Tournament data changed, clearing deck options cache to force dropdown refresh")
+                        
+                        # Clear deck options cache to force dropdown regeneration
+                        if 'deck_options_cache' in st.session_state:
+                            del st.session_state['deck_options_cache']
+                        if 'deck_display_names' in st.session_state:
+                            del st.session_state['deck_display_names']
+                        if 'deck_name_mapping' in st.session_state:
+                            del st.session_state['deck_name_mapping']
+                        
+                        # Force refresh current deck if any is selected
                         if 'analyze' in st.session_state:
                             current_deck = st.session_state.analyze.get('deck_name')
                             if current_deck:
