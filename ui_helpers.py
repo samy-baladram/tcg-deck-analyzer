@@ -1041,50 +1041,6 @@ def display_deck_update_info(deck_name, set_name):
                 pass
     return None
 
-def update_energy_cache(deck_name, energy_types):
-    """
-    Update the energy combinations cache for a deck
-    
-    Args:
-        deck_name: The name of the deck
-        energy_types: List of energy types
-    """
-    if not energy_types:
-        return
-        
-    # Initialize if needed
-    if 'energy_combinations' not in st.session_state:
-        st.session_state.energy_combinations = {}
-    
-    # Initialize deck entry if needed
-    if deck_name not in st.session_state.energy_combinations:
-        st.session_state.energy_combinations[deck_name] = {}
-    
-    # Create a tuple from sorted energy types for consistency
-    combo_key = tuple(sorted(energy_types))
-    
-    # Increment count for this combination
-    if combo_key in st.session_state.energy_combinations[deck_name]:
-        st.session_state.energy_combinations[deck_name][combo_key] += 1
-    else:
-        st.session_state.energy_combinations[deck_name][combo_key] = 1
-
-def get_confidence_indicator(matches, min_threshold):
-    """Get confidence level and color for match count"""
-    if matches >= min_threshold * 3:
-        return "High", "#4FCC20"
-    elif matches >= min_threshold * 2:
-        return "Medium", "#FDA700" 
-    elif matches >= min_threshold:
-        return "Low", "#fd6c6c"
-    else:
-        return "Very Low", "#999"
-        
-def set_deck_to_analyze(deck_name):
-    """Callback function when counter deck button is clicked"""
-    # Set the deck to analyze
-    st.session_state.deck_to_analyze = deck_name
-
 def render_about_section():
     """Render the About & Contact section at the bottom of the sidebar"""
     with st.expander("🔗 About & Contact", expanded=False):
