@@ -11,6 +11,71 @@ import base64
 import os
 from display_tabs import fetch_matchup_data
 from header_image_cache import get_header_image_cached
+
+# Add this at the top of ui_helpers.py after imports
+SIDEBAR_SECTIONS_CONFIG = {
+    "meta": {
+        "type": "meta",
+        "banner_path": "sidebar_banner.png",
+        "fallback_title": "🏆 Top Meta Decks",
+        "max_decks": 10,
+        "show_key": "show_meta_decks",
+        "button_key_prefix": "details",
+        "rank_symbols": ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"],
+        "caption_template": lambda d: f"Power Index: {round(d['power_index'], 2)}",
+        "sort_config": {
+            "columns": ["power_index"],
+            "ascending": [False],
+            "method": "head",
+            "count": 10
+        },
+        "description": f"Top performers from the past {TOURNAMENT_COUNT} tournaments",
+        "sorting_note": "Sorted by their Power Index (see the bottom of sidebar)"
+    },
+    "trending": {
+        "type": "trending", 
+        "banner_path": "trending_banner.png",
+        "fallback_title": "📈 Trending Decks",
+        "max_decks": 5,
+        "show_key": "show_trending_decks", 
+        "button_key_prefix": "trending_details",
+        "rank_symbols": ["🚀"] * 10,  # Same symbol for all ranks
+        "caption_template": lambda d: f"Best Finishes: {d['tournaments_played']} • Meta Share: {d['share']:.2f}%",
+        "sort_config": {
+            "columns": ["tournaments_played", "share"],
+            "ascending": [False, True],
+            "method": "head",
+            "count": 5
+        },
+        "description": f"Most active from the past {TOURNAMENT_COUNT} tournaments",
+        "sorting_note": "Sorted by tournament activity, then by lowest meta share"
+    },
+    "gems": {
+        "type": "gems",
+        "banner_path": "gems_banner.png", 
+        "fallback_title": "💎 Hidden Gems",
+        "max_decks": 5,
+        "show_key": "show_gems_decks",
+        "button_key_prefix": "gem_details",
+        "rank_symbols": ["💎"] * 10,  # Same symbol for all ranks
+        "caption_template": lambda d: f"Win Rate: {d['win_rate']:.1f}% ({d.get('total_wins', 0)}-{d.get('total_losses', 0)}-{d.get('total_ties', 0)}) • Share: {d['share']:.2f}%",
+        "filter_config": {
+            "share_min": 0.05,
+            "share_max": 0.5,
+            "win_rate_min": 55,
+            "total_games_min": 20
+        },
+        "sort_config": {
+            "columns": ["win_rate"],
+            "ascending": [False],
+            "method": "head", 
+            "count": 5
+        },
+        "description": f"Underrepresented from the past {TOURNAMENT_COUNT} tournaments",
+        "sorting_note": "0.05-0.5% meta share, 55%+ win rate, 20+ games"
+    }
+}
+
 # ADD: Try to import card cache, but provide fallback if it fails
 try:
     from card_cache import get_sample_deck_cached
@@ -457,46 +522,66 @@ def create_deck_selector():
         on_change=on_deck_change,
     )
     
-    return selected_option
-
-def render_unified_deck_in_sidebar(deck, deck_type="meta", expanded=False, rank=None):
-    """
-    Unified function to render any type of deck in sidebar with cached components
+    return selected_option  
     
-    Args:
-        deck: Deck data dictionary
-        deck_type: Type of deck ("meta", "trending", "gems")
-        expanded: Whether expander should be expanded
-        rank: Rank number for display
-    """
-    try:
-        # Define type-specific configurations
-        type_configs = {
-            "meta": {
-                "rank_symbol": ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"][rank] if rank and 0 <= rank <= 10 else "",
-                "caption_template": lambda d: f"Power Index: {round(d['power_index'], 2)}",
-                "button_key_prefix": "details"
-            },
-            "trending": {
-                "rank_symbol": "🚀",
-                "caption_template": lambda d: f"Best Finishes: {d['tournaments_played']} • Meta Share: {d['share']:.2f}%",
-                "button_key_prefix": "trending_details"
-            },
-            "gems": {
-                "rank_symbol": "💎",
-                "caption_template": lambda d: f"Win Rate: {d['win_rate']:.1f}% ({d.get('total_wins', 0)}-{d.get('total_losses', 0)}-{d.get('total_ties', 0)}) • Share: {d['share']:.2f}%",
-                "button_key_prefix": "gem_details"
-            }
-        }
+def get_filtered_deck_data(section_type):
+    """Get filtered deck data based on section configuration"""
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+        return pd.DataFrame()
+    
+    config = SIDEBAR_SECTIONS_CONFIG.get(section_type)
+    if not config:
+        return pd.DataFrame()
+    
+    perf_data = st.session_state.performance_data.copy()
+    
+    # Ensure win_rate column exists
+    if 'win_rate' not in perf_data.columns:
+        perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
+        perf_data['win_rate'] = (
+            (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
+            perf_data['total_games'] * 100
+        ).fillna(0)
+    
+    # Apply filters if specified
+    if 'filter_config' in config:
+        filter_cfg = config['filter_config']
+        if 'total_games' not in perf_data.columns:
+            perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
         
-        config = type_configs.get(deck_type, type_configs["meta"])
-        rank_symbol = config["rank_symbol"]
+        filtered_data = perf_data[
+            (perf_data['share'] >= filter_cfg['share_min']) & 
+            (perf_data['share'] <= filter_cfg['share_max']) & 
+            (perf_data['win_rate'] >= filter_cfg['win_rate_min']) &
+            (perf_data['total_games'] >= filter_cfg['total_games_min'])
+        ]
+        result_data = filtered_data
+    else:
+        result_data = perf_data
+    
+    # Apply sorting
+    sort_cfg = config['sort_config']
+    sorted_data = result_data.sort_values(sort_cfg['columns'], ascending=sort_cfg['ascending'])
+    
+    # Apply count limit
+    if sort_cfg['method'] == 'head':
+        return sorted_data.head(sort_cfg['count'])
+    else:
+        return sorted_data
+
+def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
+    """Unified function to render any type of deck in sidebar"""
+    try:
+        # Get rank symbol
+        if rank and rank <= len(section_config['rank_symbols']):
+            rank_symbol = section_config['rank_symbols'][rank-1]
+        else:
+            rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
         
         with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
             try:
-                # 1. USE CACHED HEADER IMAGE
+                # Header image
                 header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-                
                 if header_image:
                     st.markdown(f"""
                     <div style="width: 100%; margin-bottom: 10px;">
@@ -504,9 +589,8 @@ def render_unified_deck_in_sidebar(deck, deck_type="meta", expanded=False, rank=
                     </div>
                     """, unsafe_allow_html=True)
                 
-                # 2. USE CACHED SAMPLE DECK
+                # Sample deck
                 deck_name = deck['deck_name']
-                
                 if CARD_CACHE_AVAILABLE:
                     sample_deck = get_sample_deck_cached(deck_name, deck['set'])
                 else:
@@ -518,25 +602,23 @@ def render_unified_deck_in_sidebar(deck, deck_type="meta", expanded=False, rank=
                         'energy_types': energy_types
                     }
                 
-                # Render deck view
                 from card_renderer import render_sidebar_deck
                 deck_html = render_sidebar_deck(
                     sample_deck['pokemon_cards'], 
                     sample_deck['trainer_cards'],
                     card_width=60
                 )
-                
                 st.markdown(deck_html, unsafe_allow_html=True)
 
-                # 3. USE CACHED ENERGY TYPES AND DETAILS BUTTON
+                # Energy and details section
                 col1, col2 = st.columns([2, 1])
                 
                 with col1:
                     energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                     
                     if energy_types:
-                        # Special compact rendering for gems type
-                        if deck_type == "gems":
+                        if section_config['type'] == "gems":
+                            # Compact rendering for gems
                             energy_html_compact = ""
                             for energy in energy_types:
                                 energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
@@ -548,7 +630,7 @@ def render_unified_deck_in_sidebar(deck, deck_type="meta", expanded=False, rank=
                             </div>
                             """, unsafe_allow_html=True)
                         else:
-                            # USE CACHED ENERGY ICON RENDERING (STANDARD)
+                            # Standard rendering
                             energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
                             st.markdown(energy_html, unsafe_allow_html=True)
                     else:
@@ -558,212 +640,136 @@ def render_unified_deck_in_sidebar(deck, deck_type="meta", expanded=False, rank=
                         </div>
                         """, unsafe_allow_html=True)
                     
-                    # Display type-specific caption
-                    caption_text = config["caption_template"](deck)
+                    # Display caption using template
+                    caption_text = section_config['caption_template'](deck)
                     st.caption(caption_text)
                 
                 with col2:
-                    button_key = f"{config['button_key_prefix']}_{deck['deck_name']}_{rank}"
+                    button_key = f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}"
                     if st.button("Details", key=button_key, type="tertiary", use_container_width=True):
                         st.session_state.deck_to_analyze = deck['deck_name']
                         st.rerun()
                 
             except Exception as e:
                 st.warning(f"Unable to load deck preview for {deck_name}")
-                print(f"Error rendering {deck_type} deck in sidebar: {e}")
-                # Show basic info as fallback
+                print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
+                fallback_caption = section_config['caption_template'](deck)
                 st.write(f"**{deck['displayed_name']}**")
-                fallback_caption = config["caption_template"](deck)
                 st.caption(fallback_caption)
                 
     except Exception as e:
         print(f"Critical error in render_unified_deck_in_sidebar: {e}")
         st.error("Error loading deck data")
 
-def create_deck_section(section_type, banner_path, fallback_title, data_source, max_decks=10):
-   """
-   Create a unified deck section with banner, first deck display, and expandable list
-   
-   Args:
-       section_type: Type of section ("meta", "trending", "gems")
-       banner_path: Path to banner image
-       fallback_title: Fallback title if no banner
-       data_source: DataFrame with deck data
-       max_decks: Maximum number of decks to show in expanded view
-   """
-   # Display banner
-   if os.path.exists(banner_path):
-       banner_base64 = get_cached_banner_image(banner_path)
-       if banner_base64:
-           st.markdown(f"""<div style="width:100%; text-align:center;">
-               <hr style='margin-bottom:20px; border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
-               <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
-           </div>
-           """, unsafe_allow_html=True)
-   else:
-       st.markdown(f"### {fallback_title}")
-   
-   # Use data_source directly (it's already a DataFrame)
-   deck_data = data_source
-   
-   if deck_data.empty:
-       # No data available
-       st.markdown("""
-       <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-           display: flex; align-items: center; justify-content: center;">
-           <span style="color: #888; font-size: 0.8rem;">No data found</span>
-       </div>
-       """, unsafe_allow_html=True)
-       st.caption("No decks found matching criteria")
-       return
-   
-   # Display first deck
-   first_deck = deck_data.iloc[0]
-   
-   # Generate header image for first deck
-   header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
-
-   if header_image:
-       st.markdown(f"""
-       <div style="width: 100%; margin-bottom: -1rem;">
-           <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-       </div>
-       """, unsafe_allow_html=True)
-   else:
-       st.markdown("""
-       <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-           display: flex; align-items: center; justify-content: center;">
-           <span style="color: #888; font-size: 0.8rem;">No image</span>
-       </div>
-       """, unsafe_allow_html=True)
-   
-   # 2-column layout for deck name and See More button
-   col1, col2 = st.columns([3, 1])
-   
-   with col1:         
-       # Button to switch to this deck
-       if st.button(
-           first_deck['displayed_name'], 
-           key=f"first_{section_type}_deck_button",
-           type="tertiary",
-           use_container_width=False
-       ):
-           st.session_state.deck_to_analyze = first_deck['deck_name']
-           st.rerun()
-
-   with col2:
-       # Toggle button for expanded view
-       show_key = f'show_{section_type}_decks'
-       if show_key not in st.session_state:
-           st.session_state[show_key] = False
-
-       button_text = "Close" if st.session_state[show_key] else "See More"
-       if st.button(button_text, type="tertiary", use_container_width=False, key=f"{section_type}_toggle_button"):
-           st.session_state[show_key] = not st.session_state[show_key]
-           st.rerun()
-
-   # Show expanded deck list if toggled
-   if st.session_state[show_key]:
-       with st.spinner(f"Loading {section_type} deck details..."):
-           # Ensure energy cache is initialized
-           import cache_manager
-           cache_manager.ensure_energy_cache()
-           
-           # Display decks using unified renderer
-           decks_to_show = deck_data.head(max_decks)
-           
-           for idx, (_, deck) in enumerate(decks_to_show.iterrows()):
-               rank = idx + 1
-               render_unified_deck_in_sidebar(deck, deck_type=section_type, rank=rank)
-       
-       # Add section-specific disclaimer
-       display_section_disclaimer(section_type, max_decks)
-   else:
-       st.write("")
-
-def display_section_disclaimer(section_type, max_decks):
-   """Display section-specific disclaimer text"""
-   performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-   
-   disclaimers = {
-       "meta": {
-           "description": f"Top performers from the past {TOURNAMENT_COUNT} tournaments",
-           "sorting": "Sorted by their Power Index (see the bottom of sidebar)"
-       },
-       "trending": {
-           "description": f"Most active from the past {TOURNAMENT_COUNT} tournaments",
-           "sorting": "Sorted by tournament activity, then by lowest meta share"
-       },
-       "gems": {
-           "description": f"Underrepresented from the past {TOURNAMENT_COUNT} tournaments",
-           "sorting": "0.05-0.5% meta share, 55%+ win rate, 20+ games"
-       }
-   }
-   
-   config = disclaimers.get(section_type, disclaimers["meta"])
-   
-   st.markdown(f"""
-   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
-       <div>{config["description"]}</div>
-       <div>Updated {performance_time_str}</div>
-   </div>
-   <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-       {config["sorting"]}
-   </div>
-   """, unsafe_allow_html=True)
-   st.write("")
-   st.write("")
-   st.write("")
+def create_deck_section(section_type):
+    """Create a unified deck section using configuration"""
+    config = SIDEBAR_SECTIONS_CONFIG.get(section_type)
+    if not config:
+        st.error(f"Unknown section type: {section_type}")
+        return
     
-def get_filtered_deck_data(filter_type):
-    """
-    Get filtered deck data based on filter type
-    
-    Args:
-        filter_type: Type of filter ("trending", "gems", "meta")
-        
-    Returns:
-        Filtered and sorted DataFrame
-    """
-    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-        return pd.DataFrame()
-    
-    perf_data = st.session_state.performance_data.copy()
-    
-    # Calculate win_rate if not present (should already exist but safety check)
-    if 'win_rate' not in perf_data.columns:
-        perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
-        perf_data['win_rate'] = (
-            (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
-            perf_data['total_games'] * 100
-        ).fillna(0)
-    
-    # Apply filters and sorting based on type
-    if filter_type == "trending":
-        return perf_data.sort_values(['tournaments_played', 'share'], ascending=[False, True])
-    
-    elif filter_type == "gems":
-        # Add total_games if not present
-        if 'total_games' not in perf_data.columns:
-            perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
-        
-        # Filter for hidden gems criteria
-        filtered_data = perf_data[
-            (perf_data['share'] >= 0.05) & 
-            (perf_data['share'] <= 0.5) & 
-            (perf_data['win_rate'] >= 55) &
-            (perf_data['total_games'] >= 20)
-        ]
-        return filtered_data.sort_values('win_rate', ascending=False)
-    
-    elif filter_type == "meta":
-        return perf_data.head(10)  # Already sorted by power_index
-    
+    # Display banner
+    if os.path.exists(config['banner_path']):
+        banner_base64 = get_cached_banner_image(config['banner_path'])
+        if banner_base64:
+            st.markdown(f"""<div style="width:100%; text-align:center;">
+                <hr style='margin-bottom:20px; border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
+            </div>
+            """, unsafe_allow_html=True)
     else:
-        return perf_data
+        st.markdown(f"### {config['fallback_title']}")
+    
+    # Get filtered data
+    deck_data = get_filtered_deck_data(section_type)
+    
+    if deck_data.empty:
+        st.markdown("""
+        <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;">
+            <span style="color: #888; font-size: 0.8rem;">No data found</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st.caption("No decks found matching criteria")
+        return
+    
+    # Display first deck
+    first_deck = deck_data.iloc[0]
+    header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
+
+    if header_image:
+        st.markdown(f"""
+        <div style="width: 100%; margin-bottom: -1rem;">
+            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;">
+            <span style="color: #888; font-size: 0.8rem;">No image</span>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # 2-column layout for deck name and toggle button
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:         
+        if st.button(
+            first_deck['displayed_name'], 
+            key=f"first_{section_type}_deck_button",
+            type="tertiary",
+            use_container_width=False
+        ):
+            st.session_state.deck_to_analyze = first_deck['deck_name']
+            st.rerun()
+
+    with col2:
+        show_key = config['show_key']
+        if show_key not in st.session_state:
+            st.session_state[show_key] = False
+
+        button_text = "Close" if st.session_state[show_key] else "See More"
+        if st.button(button_text, type="tertiary", use_container_width=False, key=f"{section_type}_toggle_button"):
+            st.session_state[show_key] = not st.session_state[show_key]
+            st.rerun()
+
+    # Show expanded deck list if toggled
+    if st.session_state[show_key]:
+        with st.spinner(f"Loading {section_type} deck details..."):
+            import cache_manager
+            cache_manager.ensure_energy_cache()
+            
+            decks_to_show = deck_data.head(config['max_decks'])
+            
+            for idx, (_, deck) in enumerate(decks_to_show.iterrows()):
+                rank = idx + 1
+                render_unified_deck_in_sidebar(deck, config, rank=rank)
+        
+        # Display disclaimer
+        display_section_disclaimer(config)
+    else:
+        st.write("")
+
+def display_section_disclaimer(config):
+    """Display section-specific disclaimer text"""
+    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+    
+    st.markdown(f"""
+    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+        <div>{config['description']}</div>
+        <div>Updated {performance_time_str}</div>
+    </div>
+    <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+        {config['sorting_note']}
+    </div>
+    """, unsafe_allow_html=True)
+    st.write("")
+    st.write("")
+    st.write("")
 
 def render_sidebar_from_cache():
-    """Render sidebar with aggressive caching - FULLY STREAMLINED VERSION"""
+    """Render sidebar with unified configuration approach"""
     check_and_update_tournament_data()
 
     # Check if we have performance data
@@ -771,40 +777,9 @@ def render_sidebar_from_cache():
         st.warning("No performance data available")
         return
 
-    # Define all sections configuration
-    sections_config = [
-        {
-            "type": "meta",
-            "banner_path": "sidebar_banner.png",
-            "fallback_title": "🏆 Top Meta Decks", 
-            "max_decks": 10
-        },
-        {
-            "type": "trending",
-            "banner_path": "trending_banner.png",
-            "fallback_title": "📈 Trending Decks",
-            "max_decks": 5
-        },
-        {
-            "type": "gems", 
-            "banner_path": "gems_banner.png",
-            "fallback_title": "💎 Hidden Gems",
-            "max_decks": 5
-        }
-    ]
-
-    # Render all sections using unified approach
-    for section in sections_config:
-        # Get filtered data directly
-        filtered_data = get_filtered_deck_data(section["type"])
-        
-        create_deck_section(
-            section_type=section["type"],
-            banner_path=section["banner_path"], 
-            fallback_title=section["fallback_title"],
-            data_source=filtered_data,  # Pass DataFrame directly
-            max_decks=section["max_decks"]
-        )
+    # Render all sections using unified configuration
+    for section_type in ["meta", "trending", "gems"]:
+        create_deck_section(section_type)
 
     # Continue with existing sections...
     with st.spinner("Loading counter picker..."):
