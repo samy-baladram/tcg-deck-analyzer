@@ -766,15 +766,15 @@ def render_sidebar_from_cache():
     """Render sidebar with aggressive caching - FULLY STREAMLINED VERSION"""
     check_and_update_tournament_data()
 
-    # Display main banner
-    banner_base64 = get_cached_banner_image("sidebar_banner.png")
-    if banner_base64:
-        st.markdown(f"""<div style="width:100%; text-align:center;">
-            <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.title("Top 10 Meta Decks")
+    # # Display main banner
+    # banner_base64 = get_cached_banner_image("sidebar_banner.png")
+    # if banner_base64:
+    #     st.markdown(f"""<div style="width:100%; text-align:center;">
+    #         <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
+    #     </div>
+    #     """, unsafe_allow_html=True)
+    # else:
+    #     st.title("Top 10 Meta Decks")
 
     # Check if we have performance data
     if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
