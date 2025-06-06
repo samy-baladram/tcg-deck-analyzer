@@ -21,7 +21,7 @@ SIDEBAR_SECTIONS_CONFIG = {
         "max_decks": 10,
         "show_key": "show_meta_decks",
         "button_key_prefix": "details",
-        "rank_symbols": ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"],
+        "rank_symbols": ["🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"],
         "caption_template": lambda d: f"Power Index: {round(d['power_index'], 2)}",
         "sort_config": {
             "columns": ["power_index"],
