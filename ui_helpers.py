@@ -459,17 +459,38 @@ def create_deck_selector():
     
     return selected_option
 
-# In ui_helpers.py - Updated render_deck_in_sidebar function
-def render_deck_in_sidebar(deck, expanded=False, rank=None):
-    """Render a single deck in the sidebar with cached components"""
+def render_unified_deck_in_sidebar(deck, deck_type="meta", expanded=False, rank=None):
+    """
+    Unified function to render any type of deck in sidebar with cached components
+    
+    Args:
+        deck: Deck data dictionary
+        deck_type: Type of deck ("meta", "trending", "gems")
+        expanded: Whether expander should be expanded
+        rank: Rank number for display
+    """
     try:
-        power_index = round(deck['power_index'], 2)
+        # Define type-specific configurations
+        type_configs = {
+            "meta": {
+                "rank_symbol": ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"][rank] if rank and 0 <= rank <= 10 else "",
+                "caption_template": lambda d: f"Power Index: {round(d['power_index'], 2)}",
+                "button_key_prefix": "details"
+            },
+            "trending": {
+                "rank_symbol": "🚀",
+                "caption_template": lambda d: f"Best Finishes: {d['tournaments_played']} • Meta Share: {d['share']:.2f}%",
+                "button_key_prefix": "trending_details"
+            },
+            "gems": {
+                "rank_symbol": "💎",
+                "caption_template": lambda d: f"Win Rate: {d['win_rate']:.1f}% ({d.get('total_wins', 0)}-{d.get('total_losses', 0)}-{d.get('total_ties', 0)}) • Share: {d['share']:.2f}%",
+                "button_key_prefix": "gem_details"
+            }
+        }
         
-        circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
-        
-        rank_symbol = ""
-        if rank is not None and 0 <= rank <= 10:
-            rank_symbol = circled_numbers[rank]
+        config = type_configs.get(deck_type, type_configs["meta"])
+        rank_symbol = config["rank_symbol"]
         
         with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
             try:
@@ -479,18 +500,16 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                 if header_image:
                     st.markdown(f"""
                     <div style="width: 100%; margin-bottom: 10px;">
-                        <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
+                        <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto;">
                     </div>
                     """, unsafe_allow_html=True)
                 
                 # 2. USE CACHED SAMPLE DECK
                 deck_name = deck['deck_name']
                 
-                # Check if card cache is available before using it
                 if CARD_CACHE_AVAILABLE:
                     sample_deck = get_sample_deck_cached(deck_name, deck['set'])
                 else:
-                    # Fallback to direct import if cache not available
                     from scraper import get_sample_deck_for_archetype
                     pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
                     sample_deck = {
@@ -509,48 +528,245 @@ def render_deck_in_sidebar(deck, expanded=False, rank=None):
                 
                 st.markdown(deck_html, unsafe_allow_html=True)
 
-                # 3. USE CACHED ENERGY TYPES
+                # 3. USE CACHED ENERGY TYPES AND DETAILS BUTTON
                 col1, col2 = st.columns([2, 1])
                 
                 with col1:
                     energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                     
                     if energy_types:
-                        # USE CACHED ENERGY ICON RENDERING
-                        energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
-                        st.markdown(energy_html, unsafe_allow_html=True)
+                        # Special compact rendering for gems type
+                        if deck_type == "gems":
+                            energy_html_compact = ""
+                            for energy in energy_types:
+                                energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+                                energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px;">'
+                            
+                            st.markdown(f"""
+                            <div style="margin-top:5px; margin-bottom:-5px;">
+                                <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            # USE CACHED ENERGY ICON RENDERING (STANDARD)
+                            energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
+                            st.markdown(energy_html, unsafe_allow_html=True)
                     else:
                         st.markdown("""
                         <div style="margin-bottom: 5px;">
                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
                         </div>
                         """, unsafe_allow_html=True)
-                    st.caption(f"Power Index: {power_index}")    
+                    
+                    # Display type-specific caption
+                    caption_text = config["caption_template"](deck)
+                    st.caption(caption_text)
                 
                 with col2:
-                    if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+                    button_key = f"{config['button_key_prefix']}_{deck['deck_name']}_{rank}"
+                    if st.button("Details", key=button_key, type="tertiary", use_container_width=True):
                         st.session_state.deck_to_analyze = deck['deck_name']
                         st.rerun()
                 
             except Exception as e:
                 st.warning(f"Unable to load deck preview for {deck_name}")
-                print(f"Error rendering deck in sidebar: {e}")
+                print(f"Error rendering {deck_type} deck in sidebar: {e}")
                 # Show basic info as fallback
                 st.write(f"**{deck['displayed_name']}**")
-                st.caption(f"Power Index: {power_index}")
+                fallback_caption = config["caption_template"](deck)
+                st.caption(fallback_caption)
                 
     except Exception as e:
-        print(f"Critical error in render_deck_in_sidebar: {e}")
+        print(f"Critical error in render_unified_deck_in_sidebar: {e}")
         st.error("Error loading deck data")
 
+def create_deck_section(section_type, banner_path, fallback_title, data_source, max_decks=10):
+   """
+   Create a unified deck section with banner, first deck display, and expandable list
+   
+   Args:
+       section_type: Type of section ("meta", "trending", "gems")
+       banner_path: Path to banner image
+       fallback_title: Fallback title if no banner
+       data_source: DataFrame with deck data
+       max_decks: Maximum number of decks to show in expanded view
+   """
+   # Display banner
+   if os.path.exists(banner_path):
+       banner_base64 = get_cached_banner_image(banner_path)
+       if banner_base64:
+           st.markdown(f"""<div style="width:100%; text-align:center;">
+               <hr style='margin-bottom:20px; border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+               <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
+           </div>
+           """, unsafe_allow_html=True)
+   else:
+       st.markdown(f"### {fallback_title}")
+   
+   # Use data_source directly (it's already a DataFrame)
+   deck_data = data_source
+   
+   if deck_data.empty:
+       # No data available
+       st.markdown("""
+       <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+           display: flex; align-items: center; justify-content: center;">
+           <span style="color: #888; font-size: 0.8rem;">No data found</span>
+       </div>
+       """, unsafe_allow_html=True)
+       st.caption("No decks found matching criteria")
+       return
+   
+   # Display first deck
+   first_deck = deck_data.iloc[0]
+   
+   # Generate header image for first deck
+   header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
+
+   if header_image:
+       st.markdown(f"""
+       <div style="width: 100%; margin-bottom: -1rem;">
+           <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+       </div>
+       """, unsafe_allow_html=True)
+   else:
+       st.markdown("""
+       <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+           display: flex; align-items: center; justify-content: center;">
+           <span style="color: #888; font-size: 0.8rem;">No image</span>
+       </div>
+       """, unsafe_allow_html=True)
+   
+   # 2-column layout for deck name and See More button
+   col1, col2 = st.columns([3, 1])
+   
+   with col1:         
+       # Button to switch to this deck
+       if st.button(
+           first_deck['displayed_name'], 
+           key=f"first_{section_type}_deck_button",
+           type="tertiary",
+           use_container_width=False
+       ):
+           st.session_state.deck_to_analyze = first_deck['deck_name']
+           st.rerun()
+
+   with col2:
+       # Toggle button for expanded view
+       show_key = f'show_{section_type}_decks'
+       if show_key not in st.session_state:
+           st.session_state[show_key] = False
+
+       button_text = "Close" if st.session_state[show_key] else "See More"
+       if st.button(button_text, type="tertiary", use_container_width=False, key=f"{section_type}_toggle_button"):
+           st.session_state[show_key] = not st.session_state[show_key]
+           st.rerun()
+
+   # Show expanded deck list if toggled
+   if st.session_state[show_key]:
+       with st.spinner(f"Loading {section_type} deck details..."):
+           # Ensure energy cache is initialized
+           import cache_manager
+           cache_manager.ensure_energy_cache()
+           
+           # Display decks using unified renderer
+           decks_to_show = deck_data.head(max_decks)
+           
+           for idx, (_, deck) in enumerate(decks_to_show.iterrows()):
+               rank = idx + 1
+               render_unified_deck_in_sidebar(deck, deck_type=section_type, rank=rank)
+       
+       # Add section-specific disclaimer
+       display_section_disclaimer(section_type, max_decks)
+   else:
+       st.write("")
+
+def display_section_disclaimer(section_type, max_decks):
+   """Display section-specific disclaimer text"""
+   performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+   
+   disclaimers = {
+       "meta": {
+           "description": f"Top performers from the past {TOURNAMENT_COUNT} tournaments",
+           "sorting": "Sorted by their Power Index (see the bottom of sidebar)"
+       },
+       "trending": {
+           "description": f"Most active from the past {TOURNAMENT_COUNT} tournaments",
+           "sorting": "Sorted by tournament activity, then by lowest meta share"
+       },
+       "gems": {
+           "description": f"Underrepresented from the past {TOURNAMENT_COUNT} tournaments",
+           "sorting": "0.05-0.5% meta share, 55%+ win rate, 20+ games"
+       }
+   }
+   
+   config = disclaimers.get(section_type, disclaimers["meta"])
+   
+   st.markdown(f"""
+   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+       <div>{config["description"]}</div>
+       <div>Updated {performance_time_str}</div>
+   </div>
+   <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+       {config["sorting"]}
+   </div>
+   """, unsafe_allow_html=True)
+   st.write("")
+   st.write("")
+   st.write("")
+    
+def get_filtered_deck_data(filter_type):
+    """
+    Get filtered deck data based on filter type
+    
+    Args:
+        filter_type: Type of filter ("trending", "gems", "meta")
+        
+    Returns:
+        Filtered and sorted DataFrame
+    """
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+        return pd.DataFrame()
+    
+    perf_data = st.session_state.performance_data.copy()
+    
+    # Calculate win_rate if not present (should already exist but safety check)
+    if 'win_rate' not in perf_data.columns:
+        perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
+        perf_data['win_rate'] = (
+            (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
+            perf_data['total_games'] * 100
+        ).fillna(0)
+    
+    # Apply filters and sorting based on type
+    if filter_type == "trending":
+        return perf_data.sort_values(['tournaments_played', 'share'], ascending=[False, True])
+    
+    elif filter_type == "gems":
+        # Add total_games if not present
+        if 'total_games' not in perf_data.columns:
+            perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
+        
+        # Filter for hidden gems criteria
+        filtered_data = perf_data[
+            (perf_data['share'] >= 0.05) & 
+            (perf_data['share'] <= 0.5) & 
+            (perf_data['win_rate'] >= 55) &
+            (perf_data['total_games'] >= 20)
+        ]
+        return filtered_data.sort_values('win_rate', ascending=False)
+    
+    elif filter_type == "meta":
+        return perf_data.head(10)  # Already sorted by power_index
+    
+    else:
+        return perf_data
+
 def render_sidebar_from_cache():
-    """Render sidebar with aggressive caching"""
+    """Render sidebar with aggressive caching - FULLY STREAMLINED VERSION"""
     check_and_update_tournament_data()
 
-    from datetime import datetime
-    current_month_year = datetime.now().strftime("%B %Y")
- 
-    # USE CACHED BANNER IMAGE
+    # Display main banner
     banner_base64 = get_cached_banner_image("sidebar_banner.png")
     if banner_base64:
         st.markdown(f"""<div style="width:100%; text-align:center;">
@@ -560,427 +776,585 @@ def render_sidebar_from_cache():
     else:
         st.title("Top 10 Meta Decks")
 
-    # Initialize top_deck variable
-
-    top_deck = None
-    
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        top_deck = st.session_state.performance_data.iloc[0]
-        
-        # USE CACHED HEADER IMAGE
-        header_image = get_header_image_cached(top_deck['deck_name'], top_deck['set'])
-
-        if header_image:
-            st.markdown(f"""
-            <div style="width: 100%; margin-bottom: -1rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
-            </div>
-            """, unsafe_allow_html=True)
-    
-    # CRITICAL FIX: Only proceed if we have top_deck data
-    if top_deck is not None:
-        # NEW: Add 2-column layout for top deck and See more button
-        col1, col2 = st.columns([3, 1])
-        
-        with col1:         
-            # Button to switch to this deck
-            if st.button(
-                top_deck['displayed_name'], 
-                key="top_deck_button",
-                type="tertiary",
-                use_container_width=False
-            ):
-                # Set the deck to analyze
-                st.session_state.deck_to_analyze = top_deck['deck_name']
-                st.rerun()
-
-        with col2:
-            # Add button to toggle deck visibility for Top 10 Meta Decks
-            if 'show_decks' not in st.session_state:
-                st.session_state.show_decks = False
-
-            # # Only show the button if decks are not currently visible
-            # if not st.session_state.show_decks:
-            #     if st.button("See more", type="tertiary", use_container_width=False):
-            #         st.session_state.show_decks = True
-            #         st.rerun()
-            
-            # Always show the button, but change text based on state
-            button_text = "Close" if st.session_state.show_decks else "See more"
-            if st.button(button_text, type="tertiary", use_container_width=False, key="meta_toggle_button"):
-                st.session_state.show_decks = not st.session_state.show_decks
-                st.rerun()
-
-        # Only show decks if the button has been clicked
-        if st.session_state.show_decks:
-            with st.spinner("Loading top 10 meta decks..."):
-                # Ensure energy cache is initialized
-                import cache_manager
-                cache_manager.ensure_energy_cache()
-                
-                # Display performance data if it exists
-                if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-                    # Get the top 10 performing decks (sorted by Power Index)
-                    top_decks = st.session_state.performance_data.head(10)
-                    
-                    # Render each deck one by one, passing the rank (index + 1)
-                    for idx, (_, deck) in enumerate(top_decks.iterrows()):
-                        rank = idx + 1  # Calculate rank (1-based)
-                        render_deck_in_sidebar(deck, rank=rank)
-                
-                    # Add disclaimer with update time in one line
-                    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-                    st.markdown(f"""
-                    <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
-                        <div>Top performers from the past {TOURNAMENT_COUNT} tournaments</div>
-                        <div>Updated {performance_time_str}</div>
-                    </div>
-                    <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                        Sorted by their Power Index (see the bottom of sidebar)
-                    </div>
-                    """, unsafe_allow_html=True)
-                    st.write("")
-                    st.write("")
-                    st.write("")
-        else:
-            st.write("")
-
-        # ADD NEW SECTION: Trending Decks
-        
-        # Load and encode the trending banner image if it exists
-        trending_banner_path = "trending_banner.png"
-        if os.path.exists(trending_banner_path):
-            with open(trending_banner_path, "rb") as f:
-                trending_banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""<div style="width:100%; text-align:center;">
-                <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
-                <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("### 📈 Trending Decks")
-        
-        # Get the first trending deck
-        test_deck = st.session_state.performance_data.sort_values(
-            ['tournaments_played', 'share'], 
-            ascending=[False, True]  # tournaments_played descending, share ascending
-        ).iloc[0]
-        
-        # Generate header image for trending deck
-        header_image = get_header_image_cached(test_deck['deck_name'], test_deck['set'])
-
-        if header_image:
-            st.markdown(f"""
-            <div style="width: 100%; margin-bottom: -1rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # NEW: Add 2-column layout for test deck and See More button
-        col1, col2 = st.columns([3, 1])
-        
-        with col1:         
-            # Button to switch to this deck
-            if st.button(
-                test_deck['displayed_name'], 
-                key="test_trending_deck_button",
-                type="tertiary",
-                use_container_width=False
-            ):
-                # Set the deck to analyze
-                st.session_state.deck_to_analyze = test_deck['deck_name']
-                st.rerun()
-
-        with col2:
-            # Add button to toggle trending decks visibility
-            if 'show_trending_decks' not in st.session_state:
-                st.session_state.show_trending_decks = False
-
-            # Only show the button if trending decks are not currently visible
-            # if not st.session_state.show_trending_decks:
-            #     if st.button("See More", type="tertiary", use_container_width=False, key="trending_button"):
-            #         st.session_state.show_trending_decks = True
-            #         st.rerun()
-            
-            # Always show the button, but change text based on state
-            button_text = "Close" if st.session_state.show_trending_decks else "See More"
-            if st.button(button_text, type="tertiary", use_container_width=False, key="trending_button"):
-                st.session_state.show_trending_decks = not st.session_state.show_trending_decks
-                st.rerun()
-
-        # Only show trending decks if the button has been clicked
-        if st.session_state.show_trending_decks:
-            with st.spinner("Loading trending deck details..."):
-                # Ensure energy cache is initialized
-                import cache_manager
-                cache_manager.ensure_energy_cache()
-                
-                # Display performance data if it exists
-                if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-                    # Get trending decks (sorted by tournaments_played/Best Finishes)
-                    trending_decks = st.session_state.performance_data.sort_values(
-                                        ['tournaments_played', 'share'], 
-                                        ascending=[False, True]  # tournaments_played descending, share ascending
-                                    ).head(5)
-                    
-                    # Render each trending deck one by one, passing the rank (index + 1)
-                    for idx, (_, deck) in enumerate(trending_decks.iterrows()):
-                        rank = idx + 1  # Calculate rank (1-based)
-                        render_trending_deck_in_sidebar(deck, rank=rank)
-                
-                    # Add disclaimer with update time for trending decks
-                    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-                    st.markdown(f"""
-                    <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
-                        <div>Most active from the past {TOURNAMENT_COUNT} tournaments</div>
-                        <div>Updated {performance_time_str}</div>
-                    </div>
-                    <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                        Sorted by tournament activity, then by lowest meta share
-                    </div>
-                    """, unsafe_allow_html=True)
-                    st.write("")
-                    st.write("")
-                    st.write("")
-        else:
-            st.write("")
-
-        # ADD NEW SECTION: Hidden Gems Decks
-        gems_banner_path = "gems_banner.png"
-        if os.path.exists(gems_banner_path):
-            with open(gems_banner_path, "rb") as f:
-                gems_banner_base64 = base64.b64encode(f.read()).decode()
-            st.markdown(f"""<div style="width:100%; text-align:center;">
-                <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
-                <img src="data:image/png;base64,{gems_banner_base64}" style="width:100%; max-width:350px;">
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown("### 💎 Hidden Gems")
-        
-        # Calculate win_rate if it doesn't exist, then filter for hidden gems
-        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-            perf_data = st.session_state.performance_data.copy()
-
-            perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
-
-            # Calculate win_rate if not present
-            if 'win_rate' not in perf_data.columns:
-                perf_data['win_rate'] = (
-                    (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
-                    (perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']) * 100
-                ).fillna(0)
-            
-            # Filter for hidden gems
-            hidden_gems = perf_data[
-                (perf_data['share'] >= 0.05) & 
-                (perf_data['share'] <= 0.5) & 
-                (perf_data['win_rate'] >= 55) &
-                (perf_data['total_games'] >= 20)  # NEW: Minimum 20 total games
-            ].sort_values('win_rate', ascending=False)
-        
-        if not hidden_gems.empty:
-            first_gem = hidden_gems.iloc[0]
-            
-            # Generate header image for hidden gem deck
-            header_image = get_header_image_cached(first_gem['deck_name'], first_gem['set'])
-    
-            if header_image:
-                st.markdown(f"""
-                <div style="width: 100%; margin-bottom: -1rem;">
-                    <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                    display: flex; align-items: center; justify-content: center;">
-                    <span style="color: #888; font-size: 0.8rem;">No image</span>
-                </div>
-                """, unsafe_allow_html=True)
-        
-            # 2-column layout for gem deck and See More button
-            col1, col2 = st.columns([3, 1])
-            
-            with col1:         
-                # Button to switch to this deck
-                if st.button(
-                    first_gem['displayed_name'], 
-                    key="first_gem_deck_button",
-                    type="tertiary",
-                    use_container_width=False
-                ):
-                    st.session_state.deck_to_analyze = first_gem['deck_name']
-                    st.rerun()
-    
-            with col2:
-                # Add button to toggle hidden gems visibility
-                if 'show_hidden_gems' not in st.session_state:
-                    st.session_state.show_hidden_gems = False
-    
-                # Always show the button, but change text based on state
-                button_text = "Close" if st.session_state.show_hidden_gems else "See More"
-                if st.button(button_text, type="tertiary", use_container_width=False, key="gems_button"):
-                    st.session_state.show_hidden_gems = not st.session_state.show_hidden_gems
-                    st.rerun()
-    
-            # Only show hidden gems if the button has been clicked
-            if st.session_state.show_hidden_gems:
-                with st.spinner("Loading hidden gem details..."):
-                    # Ensure energy cache is initialized
-                    import cache_manager
-                    cache_manager.ensure_energy_cache()
-                    
-                    # Display hidden gems (up to 5)
-                    gems_to_show = hidden_gems.head(5)
-                    
-                    # Render each hidden gem deck one by one, passing the rank (index + 1)
-                    for idx, (_, deck) in enumerate(gems_to_show.iterrows()):
-                        rank = idx + 1  # Calculate rank (1-based)
-                        render_hidden_gem_in_sidebar(deck, rank=rank)
-                
-                    # Add disclaimer with update time for hidden gems
-                    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-                    st.markdown(f"""
-                    <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
-                        <div>Underrepresented from the past {TOURNAMENT_COUNT} tournaments</div>
-                        <div>Updated {performance_time_str}</div>
-                    </div>
-                    <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-                        0.05-0.5% meta share, 55%+ win rate,  20+ games
-                    </div>
-                    """, unsafe_allow_html=True)
-                    st.write("")
-                    st.write("")
-                    st.write("")
-            else:
-                st.write("")
-        else:
-            # No hidden gems found - show placeholder
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No hidden gems found</span>
-            </div>
-            """, unsafe_allow_html=True)
-            st.caption("No decks found matching hidden gems criteria")
-        
-        # Continue with existing code (Counter Picker section)
-        with st.spinner("Loading counter picker..."):
-            display_counter_picker_sidebar()
-        
-        # Power Index explanation
-        st.markdown("<hr style='margin:25px;  border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
-        with st.expander("🔍 About the Power Index"):
-            # Format the explanation with the current date and tournament count
-            formatted_explanation = POWER_INDEX_EXPLANATION.format(
-                tournament_count=TOURNAMENT_COUNT,
-                current_month_year=current_month_year
-            )
-            
-            # Display the enhanced explanation
-            st.markdown(formatted_explanation)
-        
-        # ADD THIS NEW SECTION HERE
-        render_about_section()
-    else:
-        # Fallback if no performance data
+    # Check if we have performance data
+    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
         st.warning("No performance data available")
-    
-def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
-    """Render a single trending deck in the sidebar with cached components"""
-    try:
-        tournaments_played = deck['tournaments_played']
-        
-        # Keep the rocket emoji for trending decks
-        rank_symbol = "🚀"
-        
-        with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-            try:
-                # 1. USE CACHED HEADER IMAGE
-                header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-                
-                if header_image:
-                    st.markdown(f"""
-                    <div style="width: 100%; margin-bottom: 10px;">
-                        <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                # 2. USE CACHED SAMPLE DECK
-                deck_name = deck['deck_name']
-                
-                # Check if card cache is available before using it
-                if CARD_CACHE_AVAILABLE:
-                    sample_deck = get_sample_deck_cached(deck_name, deck['set'])
-                else:
-                    # Fallback to direct import if cache not available
-                    from scraper import get_sample_deck_for_archetype
-                    pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
-                    sample_deck = {
-                        'pokemon_cards': pokemon_cards,
-                        'trainer_cards': trainer_cards,
-                        'energy_types': energy_types
-                    }
-                
-                # Render deck view
-                from card_renderer import render_sidebar_deck
-                deck_html = render_sidebar_deck(
-                    sample_deck['pokemon_cards'], 
-                    sample_deck['trainer_cards'],
-                    card_width=60
-                )
-                
-                st.markdown(deck_html, unsafe_allow_html=True)
+        return
 
-                # 3. USE CACHED ENERGY TYPES (SAME FORMAT AS TOP 10 META)
-                col1, col2 = st.columns([2, 1])
+    # Define all sections configuration
+    sections_config = [
+        {
+            "type": "meta",
+            "banner_path": "sidebar_banner.png",
+            "fallback_title": "🏆 Top Meta Decks", 
+            "max_decks": 10
+        },
+        {
+            "type": "trending",
+            "banner_path": "trending_banner.png",
+            "fallback_title": "📈 Trending Decks",
+            "max_decks": 5
+        },
+        {
+            "type": "gems", 
+            "banner_path": "gems_banner.png",
+            "fallback_title": "💎 Hidden Gems",
+            "max_decks": 5
+        }
+    ]
+
+    # Render all sections using unified approach
+    for section in sections_config:
+        # Get filtered data directly
+        filtered_data = get_filtered_deck_data(section["type"])
+        
+        create_deck_section(
+            section_type=section["type"],
+            banner_path=section["banner_path"], 
+            fallback_title=section["fallback_title"],
+            data_source=filtered_data,  # Pass DataFrame directly
+            max_decks=section["max_decks"]
+        )
+
+    # Continue with existing sections...
+    with st.spinner("Loading counter picker..."):
+        display_counter_picker_sidebar()
+    
+    # Power Index explanation and about section remain unchanged
+    st.markdown("<hr style='margin:25px; border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
+    with st.expander("🔍 About the Power Index"):
+        from datetime import datetime
+        current_month_year = datetime.now().strftime("%B %Y")
+        formatted_explanation = POWER_INDEX_EXPLANATION.format(
+            tournament_count=TOURNAMENT_COUNT,
+            current_month_year=current_month_year
+        )
+        st.markdown(formatted_explanation)
+    
+    render_about_section()
+    
+# In ui_helpers.py - Updated render_deck_in_sidebar function
+# def render_deck_in_sidebar(deck, expanded=False, rank=None):
+#     """Render a single deck in the sidebar with cached components"""
+#     try:
+#         power_index = round(deck['power_index'], 2)
+        
+#         circled_numbers = ["⓪", "🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"]
+        
+#         rank_symbol = ""
+#         if rank is not None and 0 <= rank <= 10:
+#             rank_symbol = circled_numbers[rank]
+        
+#         with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+#             try:
+#                 # 1. USE CACHED HEADER IMAGE
+#                 header_image = get_header_image_cached(deck['deck_name'], deck['set'])
                 
-                with col1:
-                    energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+#                 if header_image:
+#                     st.markdown(f"""
+#                     <div style="width: 100%; margin-bottom: 10px;">
+#                         <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
+#                     </div>
+#                     """, unsafe_allow_html=True)
+                
+#                 # 2. USE CACHED SAMPLE DECK
+#                 deck_name = deck['deck_name']
+                
+#                 # Check if card cache is available before using it
+#                 if CARD_CACHE_AVAILABLE:
+#                     sample_deck = get_sample_deck_cached(deck_name, deck['set'])
+#                 else:
+#                     # Fallback to direct import if cache not available
+#                     from scraper import get_sample_deck_for_archetype
+#                     pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
+#                     sample_deck = {
+#                         'pokemon_cards': pokemon_cards,
+#                         'trainer_cards': trainer_cards,
+#                         'energy_types': energy_types
+#                     }
+                
+#                 # Render deck view
+#                 from card_renderer import render_sidebar_deck
+#                 deck_html = render_sidebar_deck(
+#                     sample_deck['pokemon_cards'], 
+#                     sample_deck['trainer_cards'],
+#                     card_width=60
+#                 )
+                
+#                 st.markdown(deck_html, unsafe_allow_html=True)
+
+#                 # 3. USE CACHED ENERGY TYPES
+#                 col1, col2 = st.columns([2, 1])
+                
+#                 with col1:
+#                     energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
                     
-                    if energy_types:
-                        # USE CACHED ENERGY ICON RENDERING (SAME AS TOP 10 META)
-                        energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
-                        st.markdown(energy_html, unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        <div style="margin-bottom: 5px;">
-                            <div style="font-size: 0.8rem; color: #888;">No energy data</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    meta_share = deck['share']
-                    st.caption(f"Best Finishes: {tournaments_played} • Meta Share: {meta_share:.2f}%")
+#                     if energy_types:
+#                         # USE CACHED ENERGY ICON RENDERING
+#                         energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
+#                         st.markdown(energy_html, unsafe_allow_html=True)
+#                     else:
+#                         st.markdown("""
+#                         <div style="margin-bottom: 5px;">
+#                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+#                         </div>
+#                         """, unsafe_allow_html=True)
+#                     st.caption(f"Power Index: {power_index}")    
                 
-                with col2:
-                    if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
-                        st.session_state.deck_to_analyze = deck['deck_name']
-                        st.rerun()
+#                 with col2:
+#                     if st.button("Details", key=f"details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+#                         st.session_state.deck_to_analyze = deck['deck_name']
+#                         st.rerun()
                 
-            except Exception as e:
-                st.warning(f"Unable to load deck preview for {deck_name}")
-                print(f"Error rendering trending deck in sidebar: {e}")
-                # Show basic info as fallback
-                st.write(f"**{deck['displayed_name']}**")
-                st.caption(f"Best Finishes: {tournaments_played}")
+#             except Exception as e:
+#                 st.warning(f"Unable to load deck preview for {deck_name}")
+#                 print(f"Error rendering deck in sidebar: {e}")
+#                 # Show basic info as fallback
+#                 st.write(f"**{deck['displayed_name']}**")
+#                 st.caption(f"Power Index: {power_index}")
                 
-    except Exception as e:
-        print(f"Critical error in render_trending_deck_in_sidebar: {e}")
-        st.error("Error loading deck data")
+#     except Exception as e:
+#         print(f"Critical error in render_deck_in_sidebar: {e}")
+#         st.error("Error loading deck data")
+
+# def render_sidebar_from_cache():
+#     """Render sidebar with aggressive caching"""
+#     check_and_update_tournament_data()
+
+#     from datetime import datetime
+#     current_month_year = datetime.now().strftime("%B %Y")
+ 
+#     # USE CACHED BANNER IMAGE
+#     banner_base64 = get_cached_banner_image("sidebar_banner.png")
+#     if banner_base64:
+#         st.markdown(f"""<div style="width:100%; text-align:center;">
+#             <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
+#         </div>
+#         """, unsafe_allow_html=True)
+#     else:
+#         st.title("Top 10 Meta Decks")
+
+#     # Initialize top_deck variable
+
+#     top_deck = None
+    
+#     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+#         top_deck = st.session_state.performance_data.iloc[0]
+        
+#         # USE CACHED HEADER IMAGE
+#         header_image = get_header_image_cached(top_deck['deck_name'], top_deck['set'])
+
+#         if header_image:
+#             st.markdown(f"""
+#             <div style="width: 100%; margin-bottom: -1rem;">
+#                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+#             </div>
+#             """, unsafe_allow_html=True)
+#         else:
+#             st.markdown("""
+#             <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+#                 display: flex; align-items: center; justify-content: center;">
+#                 <span style="color: #888; font-size: 0.8rem;">No image</span>
+#             </div>
+#             """, unsafe_allow_html=True)
+    
+#     # CRITICAL FIX: Only proceed if we have top_deck data
+#     if top_deck is not None:
+#         # NEW: Add 2-column layout for top deck and See more button
+#         col1, col2 = st.columns([3, 1])
+        
+#         with col1:         
+#             # Button to switch to this deck
+#             if st.button(
+#                 top_deck['displayed_name'], 
+#                 key="top_deck_button",
+#                 type="tertiary",
+#                 use_container_width=False
+#             ):
+#                 # Set the deck to analyze
+#                 st.session_state.deck_to_analyze = top_deck['deck_name']
+#                 st.rerun()
+
+#         with col2:
+#             # Add button to toggle deck visibility for Top 10 Meta Decks
+#             if 'show_decks' not in st.session_state:
+#                 st.session_state.show_decks = False
+
+#             # # Only show the button if decks are not currently visible
+#             # if not st.session_state.show_decks:
+#             #     if st.button("See more", type="tertiary", use_container_width=False):
+#             #         st.session_state.show_decks = True
+#             #         st.rerun()
+            
+#             # Always show the button, but change text based on state
+#             button_text = "Close" if st.session_state.show_decks else "See more"
+#             if st.button(button_text, type="tertiary", use_container_width=False, key="meta_toggle_button"):
+#                 st.session_state.show_decks = not st.session_state.show_decks
+#                 st.rerun()
+
+#         # Only show decks if the button has been clicked
+#         if st.session_state.show_decks:
+#             with st.spinner("Loading top 10 meta decks..."):
+#                 # Ensure energy cache is initialized
+#                 import cache_manager
+#                 cache_manager.ensure_energy_cache()
+                
+#                 # Display performance data if it exists
+#                 if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+#                     # Get the top 10 performing decks (sorted by Power Index)
+#                     top_decks = st.session_state.performance_data.head(10)
+                    
+#                     # Render each deck one by one, passing the rank (index + 1)
+#                     for idx, (_, deck) in enumerate(top_decks.iterrows()):
+#                         rank = idx + 1  # Calculate rank (1-based)
+#                         render_deck_in_sidebar(deck, rank=rank)
+                
+#                     # Add disclaimer with update time in one line
+#                     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+#                     st.markdown(f"""
+#                     <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
+#                         <div>Top performers from the past {TOURNAMENT_COUNT} tournaments</div>
+#                         <div>Updated {performance_time_str}</div>
+#                     </div>
+#                     <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+#                         Sorted by their Power Index (see the bottom of sidebar)
+#                     </div>
+#                     """, unsafe_allow_html=True)
+#                     st.write("")
+#                     st.write("")
+#                     st.write("")
+#         else:
+#             st.write("")
+
+#         # ADD NEW SECTION: Trending Decks
+        
+#         # Load and encode the trending banner image if it exists
+#         trending_banner_path = "trending_banner.png"
+#         if os.path.exists(trending_banner_path):
+#             with open(trending_banner_path, "rb") as f:
+#                 trending_banner_base64 = base64.b64encode(f.read()).decode()
+#             st.markdown(f"""<div style="width:100%; text-align:center;">
+#                 <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+#                 <img src="data:image/png;base64,{trending_banner_base64}" style="width:100%; max-width:350px;">
+#             </div>
+#             """, unsafe_allow_html=True)
+#         else:
+#             st.markdown("### 📈 Trending Decks")
+        
+#         # Get the first trending deck
+#         test_deck = st.session_state.performance_data.sort_values(
+#             ['tournaments_played', 'share'], 
+#             ascending=[False, True]  # tournaments_played descending, share ascending
+#         ).iloc[0]
+        
+#         # Generate header image for trending deck
+#         header_image = get_header_image_cached(test_deck['deck_name'], test_deck['set'])
+
+#         if header_image:
+#             st.markdown(f"""
+#             <div style="width: 100%; margin-bottom: -1rem;">
+#                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+#             </div>
+#             """, unsafe_allow_html=True)
+#         else:
+#             st.markdown("""
+#             <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+#                 display: flex; align-items: center; justify-content: center;">
+#                 <span style="color: #888; font-size: 0.8rem;">No image</span>
+#             </div>
+#             """, unsafe_allow_html=True)
+        
+#         # NEW: Add 2-column layout for test deck and See More button
+#         col1, col2 = st.columns([3, 1])
+        
+#         with col1:         
+#             # Button to switch to this deck
+#             if st.button(
+#                 test_deck['displayed_name'], 
+#                 key="test_trending_deck_button",
+#                 type="tertiary",
+#                 use_container_width=False
+#             ):
+#                 # Set the deck to analyze
+#                 st.session_state.deck_to_analyze = test_deck['deck_name']
+#                 st.rerun()
+
+#         with col2:
+#             # Add button to toggle trending decks visibility
+#             if 'show_trending_decks' not in st.session_state:
+#                 st.session_state.show_trending_decks = False
+
+#             # Only show the button if trending decks are not currently visible
+#             # if not st.session_state.show_trending_decks:
+#             #     if st.button("See More", type="tertiary", use_container_width=False, key="trending_button"):
+#             #         st.session_state.show_trending_decks = True
+#             #         st.rerun()
+            
+#             # Always show the button, but change text based on state
+#             button_text = "Close" if st.session_state.show_trending_decks else "See More"
+#             if st.button(button_text, type="tertiary", use_container_width=False, key="trending_button"):
+#                 st.session_state.show_trending_decks = not st.session_state.show_trending_decks
+#                 st.rerun()
+
+#         # Only show trending decks if the button has been clicked
+#         if st.session_state.show_trending_decks:
+#             with st.spinner("Loading trending deck details..."):
+#                 # Ensure energy cache is initialized
+#                 import cache_manager
+#                 cache_manager.ensure_energy_cache()
+                
+#                 # Display performance data if it exists
+#                 if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+#                     # Get trending decks (sorted by tournaments_played/Best Finishes)
+#                     trending_decks = st.session_state.performance_data.sort_values(
+#                                         ['tournaments_played', 'share'], 
+#                                         ascending=[False, True]  # tournaments_played descending, share ascending
+#                                     ).head(5)
+                    
+#                     # Render each trending deck one by one, passing the rank (index + 1)
+#                     for idx, (_, deck) in enumerate(trending_decks.iterrows()):
+#                         rank = idx + 1  # Calculate rank (1-based)
+#                         render_trending_deck_in_sidebar(deck, rank=rank)
+                
+#                     # Add disclaimer with update time for trending decks
+#                     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+#                     st.markdown(f"""
+#                     <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
+#                         <div>Most active from the past {TOURNAMENT_COUNT} tournaments</div>
+#                         <div>Updated {performance_time_str}</div>
+#                     </div>
+#                     <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+#                         Sorted by tournament activity, then by lowest meta share
+#                     </div>
+#                     """, unsafe_allow_html=True)
+#                     st.write("")
+#                     st.write("")
+#                     st.write("")
+#         else:
+#             st.write("")
+
+#         # ADD NEW SECTION: Hidden Gems Decks
+#         gems_banner_path = "gems_banner.png"
+#         if os.path.exists(gems_banner_path):
+#             with open(gems_banner_path, "rb") as f:
+#                 gems_banner_base64 = base64.b64encode(f.read()).decode()
+#             st.markdown(f"""<div style="width:100%; text-align:center;">
+#                 <hr style='margin-bottom:20px;  border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+#                 <img src="data:image/png;base64,{gems_banner_base64}" style="width:100%; max-width:350px;">
+#             </div>
+#             """, unsafe_allow_html=True)
+#         else:
+#             st.markdown("### 💎 Hidden Gems")
+        
+#         # Calculate win_rate if it doesn't exist, then filter for hidden gems
+#         if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+#             perf_data = st.session_state.performance_data.copy()
+
+#             perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
+
+#             # Calculate win_rate if not present
+#             if 'win_rate' not in perf_data.columns:
+#                 perf_data['win_rate'] = (
+#                     (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
+#                     (perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']) * 100
+#                 ).fillna(0)
+            
+#             # Filter for hidden gems
+#             hidden_gems = perf_data[
+#                 (perf_data['share'] >= 0.05) & 
+#                 (perf_data['share'] <= 0.5) & 
+#                 (perf_data['win_rate'] >= 55) &
+#                 (perf_data['total_games'] >= 20)  # NEW: Minimum 20 total games
+#             ].sort_values('win_rate', ascending=False)
+        
+#         if not hidden_gems.empty:
+#             first_gem = hidden_gems.iloc[0]
+            
+#             # Generate header image for hidden gem deck
+#             header_image = get_header_image_cached(first_gem['deck_name'], first_gem['set'])
+    
+#             if header_image:
+#                 st.markdown(f"""
+#                 <div style="width: 100%; margin-bottom: -1rem;">
+#                     <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+#                 </div>
+#                 """, unsafe_allow_html=True)
+#             else:
+#                 st.markdown("""
+#                 <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+#                     display: flex; align-items: center; justify-content: center;">
+#                     <span style="color: #888; font-size: 0.8rem;">No image</span>
+#                 </div>
+#                 """, unsafe_allow_html=True)
+        
+#             # 2-column layout for gem deck and See More button
+#             col1, col2 = st.columns([3, 1])
+            
+#             with col1:         
+#                 # Button to switch to this deck
+#                 if st.button(
+#                     first_gem['displayed_name'], 
+#                     key="first_gem_deck_button",
+#                     type="tertiary",
+#                     use_container_width=False
+#                 ):
+#                     st.session_state.deck_to_analyze = first_gem['deck_name']
+#                     st.rerun()
+    
+#             with col2:
+#                 # Add button to toggle hidden gems visibility
+#                 if 'show_hidden_gems' not in st.session_state:
+#                     st.session_state.show_hidden_gems = False
+    
+#                 # Always show the button, but change text based on state
+#                 button_text = "Close" if st.session_state.show_hidden_gems else "See More"
+#                 if st.button(button_text, type="tertiary", use_container_width=False, key="gems_button"):
+#                     st.session_state.show_hidden_gems = not st.session_state.show_hidden_gems
+#                     st.rerun()
+    
+#             # Only show hidden gems if the button has been clicked
+#             if st.session_state.show_hidden_gems:
+#                 with st.spinner("Loading hidden gem details..."):
+#                     # Ensure energy cache is initialized
+#                     import cache_manager
+#                     cache_manager.ensure_energy_cache()
+                    
+#                     # Display hidden gems (up to 5)
+#                     gems_to_show = hidden_gems.head(5)
+                    
+#                     # Render each hidden gem deck one by one, passing the rank (index + 1)
+#                     for idx, (_, deck) in enumerate(gems_to_show.iterrows()):
+#                         rank = idx + 1  # Calculate rank (1-based)
+#                         render_hidden_gem_in_sidebar(deck, rank=rank)
+                
+#                     # Add disclaimer with update time for hidden gems
+#                     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+#                     st.markdown(f"""
+#                     <div style="display: flex; justify-content: space-between; align-items: center;  font-size: 0.85rem;">
+#                         <div>Underrepresented from the past {TOURNAMENT_COUNT} tournaments</div>
+#                         <div>Updated {performance_time_str}</div>
+#                     </div>
+#                     <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+#                         0.05-0.5% meta share, 55%+ win rate,  20+ games
+#                     </div>
+#                     """, unsafe_allow_html=True)
+#                     st.write("")
+#                     st.write("")
+#                     st.write("")
+#             else:
+#                 st.write("")
+#         else:
+#             # No hidden gems found - show placeholder
+#             st.markdown("""
+#             <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+#                 display: flex; align-items: center; justify-content: center;">
+#                 <span style="color: #888; font-size: 0.8rem;">No hidden gems found</span>
+#             </div>
+#             """, unsafe_allow_html=True)
+#             st.caption("No decks found matching hidden gems criteria")
+        
+#         # Continue with existing code (Counter Picker section)
+#         with st.spinner("Loading counter picker..."):
+#             display_counter_picker_sidebar()
+        
+#         # Power Index explanation
+#         st.markdown("<hr style='margin:25px;  border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
+#         with st.expander("🔍 About the Power Index"):
+#             # Format the explanation with the current date and tournament count
+#             formatted_explanation = POWER_INDEX_EXPLANATION.format(
+#                 tournament_count=TOURNAMENT_COUNT,
+#                 current_month_year=current_month_year
+#             )
+            
+#             # Display the enhanced explanation
+#             st.markdown(formatted_explanation)
+        
+#         # ADD THIS NEW SECTION HERE
+#         render_about_section()
+#     else:
+#         # Fallback if no performance data
+#         st.warning("No performance data available")
+    
+# def render_trending_deck_in_sidebar(deck, expanded=False, rank=None):
+#     """Render a single trending deck in the sidebar with cached components"""
+#     try:
+#         tournaments_played = deck['tournaments_played']
+        
+#         # Keep the rocket emoji for trending decks
+#         rank_symbol = "🚀"
+        
+#         with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+#             try:
+#                 # 1. USE CACHED HEADER IMAGE
+#                 header_image = get_header_image_cached(deck['deck_name'], deck['set'])
+                
+#                 if header_image:
+#                     st.markdown(f"""
+#                     <div style="width: 100%; margin-bottom: 10px;">
+#                         <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; ">
+#                     </div>
+#                     """, unsafe_allow_html=True)
+                
+#                 # 2. USE CACHED SAMPLE DECK
+#                 deck_name = deck['deck_name']
+                
+#                 # Check if card cache is available before using it
+#                 if CARD_CACHE_AVAILABLE:
+#                     sample_deck = get_sample_deck_cached(deck_name, deck['set'])
+#                 else:
+#                     # Fallback to direct import if cache not available
+#                     from scraper import get_sample_deck_for_archetype
+#                     pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
+#                     sample_deck = {
+#                         'pokemon_cards': pokemon_cards,
+#                         'trainer_cards': trainer_cards,
+#                         'energy_types': energy_types
+#                     }
+                
+#                 # Render deck view
+#                 from card_renderer import render_sidebar_deck
+#                 deck_html = render_sidebar_deck(
+#                     sample_deck['pokemon_cards'], 
+#                     sample_deck['trainer_cards'],
+#                     card_width=60
+#                 )
+                
+#                 st.markdown(deck_html, unsafe_allow_html=True)
+
+#                 # 3. USE CACHED ENERGY TYPES (SAME FORMAT AS TOP 10 META)
+#                 col1, col2 = st.columns([2, 1])
+                
+#                 with col1:
+#                     energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                    
+#                     if energy_types:
+#                         # USE CACHED ENERGY ICON RENDERING (SAME AS TOP 10 META)
+#                         energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
+#                         st.markdown(energy_html, unsafe_allow_html=True)
+#                     else:
+#                         st.markdown("""
+#                         <div style="margin-bottom: 5px;">
+#                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+#                         </div>
+#                         """, unsafe_allow_html=True)
+#                     meta_share = deck['share']
+#                     st.caption(f"Best Finishes: {tournaments_played} • Meta Share: {meta_share:.2f}%")
+                
+#                 with col2:
+#                     if st.button("Details", key=f"trending_details_{deck['deck_name']}_{rank}", type="tertiary", use_container_width=True):
+#                         st.session_state.deck_to_analyze = deck['deck_name']
+#                         st.rerun()
+                
+#             except Exception as e:
+#                 st.warning(f"Unable to load deck preview for {deck_name}")
+#                 print(f"Error rendering trending deck in sidebar: {e}")
+#                 # Show basic info as fallback
+#                 st.write(f"**{deck['displayed_name']}**")
+#                 st.caption(f"Best Finishes: {tournaments_played}")
+                
+#     except Exception as e:
+#         print(f"Critical error in render_trending_deck_in_sidebar: {e}")
+#         st.error("Error loading deck data")
 
 def display_counter_picker_sidebar():
     """Display counter picker in sidebar with expander format"""
