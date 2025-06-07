@@ -778,11 +778,11 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         
         # Calculate stats text
         if section_config['type'] == "meta":
-            stats_text = f"Power {deck['power_index']:.1f}"
+            stats_text = f"Power {deck['power_index']:.2f}"
         elif section_config['type'] == "trending":
-            stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.1f}% share"
+            stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.2f}% share"
         elif section_config['type'] == "gems":
-            stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.1f}% share"
+            stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.2f}% share"
         else:
             stats_text = f"{deck['share']:.1f}% share"
         
