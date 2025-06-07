@@ -76,7 +76,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "counter_picker": {
         "type": "counter_picker",
-        "banner_path": "picker_banner.png",
+        "banner_path": "picker_banner.webp",
         "fallback_title": "🎯 Meta Counter Picker",
         "max_source_decks": 20,  # Max meta decks to choose from
         "max_result_decks": 5,   # Max counter results to show
