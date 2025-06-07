@@ -791,8 +791,8 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         if header_image:
             st.markdown(f"""
             <div style="width: 100%; margin-bottom: 5px; position: relative;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 10px; z-index:-1;">
-                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 2px 4px; border-radius: 6px; font-size: 0.5rem; font-weight: 700;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px; z-index:-1;">
+                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 2px 4px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;">
                     {stats_text}
                 </div>
             </div>
@@ -862,8 +862,8 @@ def create_deck_section(section_type):
     if header_image:
         st.markdown(f"""
         <div style="width: 100%; margin-bottom: 5px; position: relative;">
-            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 10px; z-index:-1;">
-            <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 2px 4px; border-radius: 6px; font-size: 0.5rem; font-weight: 700;">
+            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px; z-index:-1;">
+            <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 2px 4px; border-radius: 88px; font-size: 0.7rem; font-weight: 700;">
                 {stats_text}
             </div>
         </div>
