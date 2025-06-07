@@ -119,7 +119,10 @@ class CardGrid:
         
         # Create basic image HTML
         img_html = (f"<img src=\"{standard_url}\" "
-                f"style=\"width: 100%; border-radius: {self.border_radius}px; border: 0.5px solid {self.border_color};\">")
+                f"loading=\"lazy\" "
+                f"decoding=\"async\" "
+                f"style=\"width: 100%; border-radius: {self.border_radius}px; border: 0.5px solid {self.border_color}; "
+                f"image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;\">")
         
         # Enhance with hover effect and clickability
         # Pass card_data if available for better set/num handling
