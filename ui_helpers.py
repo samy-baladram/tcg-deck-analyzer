@@ -780,7 +780,7 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         header_image = get_header_image_cached(deck['deck_name'], deck['set'])
         if header_image:
             st.markdown(f"""
-            <div style="width: 100%; margin-bottom: 10px;">
+            <div style="width: 100%; margin-bottom: -1rem;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
             </div>
             """, unsafe_allow_html=True)
@@ -855,7 +855,7 @@ def create_deck_section(section_type):
 
     if header_image:
         st.markdown(f"""
-        <div style="width: 100%; margin-bottom: 10px;">
+        <div style="width: 100%; margin-bottom: -1rem;">
             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
         </div>
         """, unsafe_allow_html=True)
@@ -878,7 +878,7 @@ def create_deck_section(section_type):
         st.rerun()
 
     # Always show expander (no toggle button)
-    with st.expander("More Decks", expanded=True):
+    with st.expander("More Decks", expanded=False):
         # Show remaining decks (skip first one)
         remaining_decks = deck_data.iloc[1:config['max_decks']]
         
