@@ -626,7 +626,7 @@ def create_deck_header_images(deck_info, analysis_results=None, enable_ai_enhanc
     
     # Convert to base64
     buffered = BytesIO()
-    merged_image.save(buffered, format="PNG")
+    merged_image.save(buffered, format="WEBP", quality=75)
     img_base64 = base64.b64encode(buffered.getvalue()).decode()
     
     return img_base64
