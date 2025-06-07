@@ -789,7 +789,7 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         col1, col2 = st.columns([3, 1])
         
         with col1:
-            # Deck name as clickable button
+            # Deck name as left-aligned button
             if st.button(
                 f"{rank_symbol} {deck['displayed_name']}", 
                 key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
@@ -800,21 +800,17 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
                 st.rerun()
         
         with col2:
-            # Abbreviated stats based on section type
+            # Stats as caption with descriptive text and comma separators
             if section_config['type'] == "meta":
-                stats_text = f"{deck['power_index']:.1f}"
+                stats_text = f"Power {deck['power_index']:.1f}"
             elif section_config['type'] == "trending":
-                stats_text = f"{deck['tournaments_played']} | {deck['share']:.1f}%"
+                stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.1f}% share"
             elif section_config['type'] == "gems":
-                stats_text = f"{deck['win_rate']:.1f}% | {deck['share']:.1f}%"
+                stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.1f}% share"
             else:
-                stats_text = f"{deck['share']:.1f}%"
+                stats_text = f"{deck['share']:.1f}% share"
             
-            st.markdown(f"""
-            <div style="text-align: right; font-size: 0.9rem; margin-top: 8px;">
-                {stats_text}
-            </div>
-            """, unsafe_allow_html=True)
+            st.caption(stats_text)
                 
     except Exception as e:
         print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
@@ -871,7 +867,7 @@ def create_deck_section(section_type):
         </div>
         """, unsafe_allow_html=True)
     
-    # Featured deck name with emoji
+    # Featured deck name with emoji (left-aligned)
     if st.button(
         f"{first_rank_symbol} {first_deck['displayed_name']}", 
         key=f"first_{section_type}_deck_button",
@@ -881,40 +877,26 @@ def create_deck_section(section_type):
         st.session_state.deck_to_analyze = first_deck['deck_name']
         st.rerun()
 
-    # Toggle button for expander
-    show_key = config['show_key']
-    if show_key not in st.session_state:
-        st.session_state[show_key] = False
-
-    if st.button("See More" if not st.session_state[show_key] else "Close", 
-                 type="tertiary", use_container_width=True, 
-                 key=f"{section_type}_toggle_button"):
-        st.session_state[show_key] = not st.session_state[show_key]
-        st.rerun()
-
-    # Show expanded deck list if toggled
-    if st.session_state[show_key]:
-        with st.expander("More Decks", expanded=True):
-            # Show remaining decks (skip first one)
-            remaining_decks = deck_data.iloc[1:config['max_decks']]
-            
-            for idx, (_, deck) in enumerate(remaining_decks.iterrows()):
-                rank = idx + 2  # Start from 2 since first deck is already shown
-                render_unified_deck_in_sidebar(deck, config, rank=rank)
+    # Always show expander (no toggle button)
+    with st.expander("More Decks", expanded=True):
+        # Show remaining decks (skip first one)
+        remaining_decks = deck_data.iloc[1:config['max_decks']]
         
-            # Add caption inside expander explaining abbreviated stats
-            if config['type'] == "meta":
-                caption_text = "Numbers show: Power Index"
-            elif config['type'] == "trending":
-                caption_text = "Numbers show: Best Finishes | Meta Share %"
-            elif config['type'] == "gems":
-                caption_text = "Numbers show: Win Rate % | Meta Share %"
-            else:
-                caption_text = "Numbers show: Meta Share %"
-            
-            st.caption(f"{config['description']}. {caption_text}")
-    else:
-        st.write("")
+        for idx, (_, deck) in enumerate(remaining_decks.iterrows()):
+            rank = idx + 2  # Start from 2 since first deck is already shown
+            render_unified_deck_in_sidebar(deck, config, rank=rank)
+    
+        # Add caption inside expander explaining stats
+        if config['type'] == "meta":
+            caption_text = "Shows Power Index values"
+        elif config['type'] == "trending":
+            caption_text = "Shows tournament plays and meta share"
+        elif config['type'] == "gems":
+            caption_text = "Shows win rate and meta share"
+        else:
+            caption_text = "Shows meta share percentages"
+        
+        st.caption(f"{config['description']}. {caption_text}")
         
 def display_section_disclaimer(config):
     """Display section-specific disclaimer text"""
