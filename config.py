@@ -59,6 +59,9 @@ POKEMON_URL_EXCEPTIONS = {
     'alolan-dugtrio': {
         'default': 'dugtrio-alola'  # fallback
     },
+    'dusk-mane-necrozma': {
+        'default': 'necrozma-dusk-mane'  # fallback
+    },
     # Add more exceptions as needed
     # 'rotom': {
     #     'pikachu': 'rotom-wash',
@@ -119,7 +122,7 @@ POKEMON_NAME_PATTERNS = {
     'FORM_PREFIXES': ['mega', 'primal', 'ultra'],
     
     # Multi-word form prefixes
-    'MULTI_WORD_FORM_PREFIXES': ['origin-forme', 'white-striped',  'dawn-wings'],
+    'MULTI_WORD_FORM_PREFIXES': ['origin-forme', 'white-striped',  'dawn-wings', 'dusk-mane'],
     
     # Paradox prefixes (future Pokemon start with "iron-")
     'PARADOX_PREFIXES': ['iron'],
