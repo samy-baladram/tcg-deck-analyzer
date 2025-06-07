@@ -585,8 +585,190 @@ def get_filtered_deck_data(section_type):
     else:
         return sorted_data
 
+# def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
+#     """Unified function to render any type of deck in sidebar"""
+#     try:
+#         # Get rank symbol
+#         if rank and rank <= len(section_config['rank_symbols']):
+#             rank_symbol = section_config['rank_symbols'][rank-1]
+#         else:
+#             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
+        
+#         with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
+#             try:
+#                 # Header image
+#                 header_image = get_header_image_cached(deck['deck_name'], deck['set'])
+#                 if header_image:
+#                     st.markdown(f"""
+#                     <div style="width: 100%; margin-bottom: 10px;">
+#                         <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto;">
+#                     </div>
+#                     """, unsafe_allow_html=True)
+                
+#                 # Sample deck
+#                 deck_name = deck['deck_name']
+#                 if CARD_CACHE_AVAILABLE:
+#                     sample_deck = get_sample_deck_cached(deck_name, deck['set'])
+#                 else:
+#                     from scraper import get_sample_deck_for_archetype
+#                     pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
+#                     sample_deck = {
+#                         'pokemon_cards': pokemon_cards,
+#                         'trainer_cards': trainer_cards,
+#                         'energy_types': energy_types
+#                     }
+                
+#                 from card_renderer import render_sidebar_deck
+#                 deck_html = render_sidebar_deck(
+#                     sample_deck['pokemon_cards'], 
+#                     sample_deck['trainer_cards'],
+#                     card_width=60
+#                 )
+#                 st.markdown(deck_html, unsafe_allow_html=True)
+
+#                 # Energy and details section
+#                 col1, col2 = st.columns([2, 1])
+                
+#                 with col1:
+#                     energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
+                    
+#                     if energy_types:
+#                         if section_config['type'] == "gems":
+#                             # Compact rendering for gems
+#                             energy_html_compact = ""
+#                             for energy in energy_types:
+#                                 energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+#                                 energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px;">'
+                            
+#                             st.markdown(f"""
+#                             <div style="margin-top:5px; margin-bottom:-5px;">
+#                                 <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
+#                             </div>
+#                             """, unsafe_allow_html=True)
+#                         else:
+#                             # Standard rendering
+#                             energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
+#                             st.markdown(energy_html, unsafe_allow_html=True)
+#                     else:
+#                         st.markdown("""
+#                         <div style="margin-bottom: 5px;">
+#                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
+#                         </div>
+#                         """, unsafe_allow_html=True)
+                    
+#                     # Display caption using template
+#                     caption_text = section_config['caption_template'](deck)
+#                     st.caption(caption_text)
+                
+#                 with col2:
+#                     button_key = f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}"
+#                     if st.button("Details", key=button_key, type="tertiary", use_container_width=True):
+#                         st.session_state.deck_to_analyze = deck['deck_name']
+#                         st.rerun()
+                
+#             except Exception as e:
+#                 st.warning(f"Unable to load deck preview for {deck_name}")
+#                 print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
+#                 fallback_caption = section_config['caption_template'](deck)
+#                 st.write(f"**{deck['displayed_name']}**")
+#                 st.caption(fallback_caption)
+                
+#     except Exception as e:
+#         print(f"Critical error in render_unified_deck_in_sidebar: {e}")
+#         st.error("Error loading deck data")
+
+# def create_deck_section(section_type):
+#     """Create a unified deck section using configuration"""
+#     config = SIDEBAR_SECTIONS_CONFIG.get(section_type)
+#     if not config:
+#         st.error(f"Unknown section type: {section_type}")
+#         return
+    
+#     # Display banner
+#     if os.path.exists(config['banner_path']):
+#         banner_base64 = get_cached_banner_image(config['banner_path'])
+#         if banner_base64:
+#             st.markdown(f"""<div style="width:100%; text-align:center;">
+#                 <hr style='margin-bottom:20px; border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
+#                 <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
+#             </div>
+#             """, unsafe_allow_html=True)
+#     else:
+#         st.markdown(f"### {config['fallback_title']}")
+    
+#     # Get filtered data
+#     deck_data = get_filtered_deck_data(section_type)
+    
+#     if deck_data.empty:
+#         st.markdown("""
+#         <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+#             display: flex; align-items: center; justify-content: center;">
+#             <span style="color: #888; font-size: 0.8rem;">No data found</span>
+#         </div>
+#         """, unsafe_allow_html=True)
+#         st.caption("No decks found matching criteria")
+#         return
+    
+#     # Display first deck
+#     first_deck = deck_data.iloc[0]
+#     header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
+
+#     if header_image:
+#         st.markdown(f"""
+#         <div style="width: 100%; margin-bottom: -1rem;">
+#             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+#         </div>
+#         """, unsafe_allow_html=True)
+#     else:
+#         st.markdown("""
+#         <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+#             display: flex; align-items: center; justify-content: center;">
+#             <span style="color: #888; font-size: 0.8rem;">No image</span>
+#         </div>
+#         """, unsafe_allow_html=True)
+    
+#     # 2-column layout for deck name and toggle button
+#     col1, col2 = st.columns([3, 1])
+    
+#     with col1:         
+#         if st.button(
+#             first_deck['displayed_name'], 
+#             key=f"first_{section_type}_deck_button",
+#             type="tertiary",
+#             use_container_width=False
+#         ):
+#             st.session_state.deck_to_analyze = first_deck['deck_name']
+#             st.rerun()
+
+#     with col2:
+#         show_key = config['show_key']
+#         if show_key not in st.session_state:
+#             st.session_state[show_key] = False
+
+#         button_text = "Close" if st.session_state[show_key] else "See More"
+#         if st.button(button_text, type="tertiary", use_container_width=False, key=f"{section_type}_toggle_button"):
+#             st.session_state[show_key] = not st.session_state[show_key]
+#             st.rerun()
+
+#     # Show expanded deck list if toggled
+#     if st.session_state[show_key]:
+#         with st.spinner(f"Loading {section_type} deck details..."):
+#             import cache_manager
+#             cache_manager.ensure_energy_cache()
+            
+#             decks_to_show = deck_data.head(config['max_decks'])
+            
+#             for idx, (_, deck) in enumerate(decks_to_show.iterrows()):
+#                 rank = idx + 1
+#                 render_unified_deck_in_sidebar(deck, config, rank=rank)
+        
+#         # Display disclaimer
+#         display_section_disclaimer(config)
+#     else:
+#         st.write("")
+
 def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
-    """Unified function to render any type of deck in sidebar"""
+    """Unified function to render any type of deck in sidebar - LIGHTWEIGHT VERSION"""
     try:
         # Get rank symbol
         if rank and rank <= len(section_config['rank_symbols']):
@@ -594,91 +776,52 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         else:
             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
         
-        with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-            try:
-                # Header image
-                header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-                if header_image:
-                    st.markdown(f"""
-                    <div style="width: 100%; margin-bottom: 10px;">
-                        <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto;">
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                # Sample deck
-                deck_name = deck['deck_name']
-                if CARD_CACHE_AVAILABLE:
-                    sample_deck = get_sample_deck_cached(deck_name, deck['set'])
-                else:
-                    from scraper import get_sample_deck_for_archetype
-                    pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
-                    sample_deck = {
-                        'pokemon_cards': pokemon_cards,
-                        'trainer_cards': trainer_cards,
-                        'energy_types': energy_types
-                    }
-                
-                from card_renderer import render_sidebar_deck
-                deck_html = render_sidebar_deck(
-                    sample_deck['pokemon_cards'], 
-                    sample_deck['trainer_cards'],
-                    card_width=60
-                )
-                st.markdown(deck_html, unsafe_allow_html=True)
-
-                # Energy and details section
-                col1, col2 = st.columns([2, 1])
-                
-                with col1:
-                    energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
-                    
-                    if energy_types:
-                        if section_config['type'] == "gems":
-                            # Compact rendering for gems
-                            energy_html_compact = ""
-                            for energy in energy_types:
-                                energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-                                energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px;">'
-                            
-                            st.markdown(f"""
-                            <div style="margin-top:5px; margin-bottom:-5px;">
-                                <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            # Standard rendering
-                            energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
-                            st.markdown(energy_html, unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        <div style="margin-bottom: 5px;">
-                            <div style="font-size: 0.8rem; color: #888;">No energy data</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    
-                    # Display caption using template
-                    caption_text = section_config['caption_template'](deck)
-                    st.caption(caption_text)
-                
-                with col2:
-                    button_key = f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}"
-                    if st.button("Details", key=button_key, type="tertiary", use_container_width=True):
-                        st.session_state.deck_to_analyze = deck['deck_name']
-                        st.rerun()
-                
-            except Exception as e:
-                st.warning(f"Unable to load deck preview for {deck_name}")
-                print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
-                fallback_caption = section_config['caption_template'](deck)
-                st.write(f"**{deck['displayed_name']}**")
-                st.caption(fallback_caption)
+        # Header image with rounded corners
+        header_image = get_header_image_cached(deck['deck_name'], deck['set'])
+        if header_image:
+            st.markdown(f"""
+            <div style="width: 100%; margin-bottom: 10px;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Two column layout (3:1 ratio)
+        col1, col2 = st.columns([3, 1])
+        
+        with col1:
+            # Deck name as clickable button
+            if st.button(
+                f"{rank_symbol} {deck['displayed_name']}", 
+                key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
+                type="tertiary",
+                use_container_width=True
+            ):
+                st.session_state.deck_to_analyze = deck['deck_name']
+                st.rerun()
+        
+        with col2:
+            # Abbreviated stats based on section type
+            if section_config['type'] == "meta":
+                stats_text = f"{deck['power_index']:.1f}"
+            elif section_config['type'] == "trending":
+                stats_text = f"{deck['tournaments_played']} | {deck['share']:.1f}%"
+            elif section_config['type'] == "gems":
+                stats_text = f"{deck['win_rate']:.1f}% | {deck['share']:.1f}%"
+            else:
+                stats_text = f"{deck['share']:.1f}%"
+            
+            st.markdown(f"""
+            <div style="text-align: right; font-size: 0.9rem; margin-top: 8px;">
+                {stats_text}
+            </div>
+            """, unsafe_allow_html=True)
                 
     except Exception as e:
-        print(f"Critical error in render_unified_deck_in_sidebar: {e}")
+        print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
         st.error("Error loading deck data")
 
 def create_deck_section(section_type):
-    """Create a unified deck section using configuration"""
+    """Create a unified deck section using configuration - LIGHTWEIGHT VERSION"""
     config = SIDEBAR_SECTIONS_CONFIG.get(section_type)
     if not config:
         st.error(f"Unknown section type: {section_type}")
@@ -709,64 +852,70 @@ def create_deck_section(section_type):
         st.caption("No decks found matching criteria")
         return
     
-    # Display first deck
+    # Display first deck with emoji and rounded corners
     first_deck = deck_data.iloc[0]
+    first_rank_symbol = config['rank_symbols'][0] if config['rank_symbols'] else ""
     header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
 
     if header_image:
         st.markdown(f"""
-        <div style="width: 100%; margin-bottom: -1rem;">
-            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
+        <div style="width: 100%; margin-bottom: 10px;">
+            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
+        <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;">
             <span style="color: #888; font-size: 0.8rem;">No image</span>
         </div>
         """, unsafe_allow_html=True)
     
-    # 2-column layout for deck name and toggle button
-    col1, col2 = st.columns([3, 1])
-    
-    with col1:         
-        if st.button(
-            first_deck['displayed_name'], 
-            key=f"first_{section_type}_deck_button",
-            type="tertiary",
-            use_container_width=False
-        ):
-            st.session_state.deck_to_analyze = first_deck['deck_name']
-            st.rerun()
+    # Featured deck name with emoji
+    if st.button(
+        f"{first_rank_symbol} {first_deck['displayed_name']}", 
+        key=f"first_{section_type}_deck_button",
+        type="tertiary",
+        use_container_width=True
+    ):
+        st.session_state.deck_to_analyze = first_deck['deck_name']
+        st.rerun()
 
-    with col2:
-        show_key = config['show_key']
-        if show_key not in st.session_state:
-            st.session_state[show_key] = False
+    # Toggle button for expander
+    show_key = config['show_key']
+    if show_key not in st.session_state:
+        st.session_state[show_key] = False
 
-        button_text = "Close" if st.session_state[show_key] else "See More"
-        if st.button(button_text, type="tertiary", use_container_width=False, key=f"{section_type}_toggle_button"):
-            st.session_state[show_key] = not st.session_state[show_key]
-            st.rerun()
+    if st.button("See More" if not st.session_state[show_key] else "Close", 
+                 type="tertiary", use_container_width=True, 
+                 key=f"{section_type}_toggle_button"):
+        st.session_state[show_key] = not st.session_state[show_key]
+        st.rerun()
 
     # Show expanded deck list if toggled
     if st.session_state[show_key]:
-        with st.spinner(f"Loading {section_type} deck details..."):
-            import cache_manager
-            cache_manager.ensure_energy_cache()
+        with st.expander("More Decks", expanded=True):
+            # Show remaining decks (skip first one)
+            remaining_decks = deck_data.iloc[1:config['max_decks']]
             
-            decks_to_show = deck_data.head(config['max_decks'])
-            
-            for idx, (_, deck) in enumerate(decks_to_show.iterrows()):
-                rank = idx + 1
+            for idx, (_, deck) in enumerate(remaining_decks.iterrows()):
+                rank = idx + 2  # Start from 2 since first deck is already shown
                 render_unified_deck_in_sidebar(deck, config, rank=rank)
         
-        # Display disclaimer
-        display_section_disclaimer(config)
+            # Add caption inside expander explaining abbreviated stats
+            if config['type'] == "meta":
+                caption_text = "Numbers show: Power Index"
+            elif config['type'] == "trending":
+                caption_text = "Numbers show: Best Finishes | Meta Share %"
+            elif config['type'] == "gems":
+                caption_text = "Numbers show: Win Rate % | Meta Share %"
+            else:
+                caption_text = "Numbers show: Meta Share %"
+            
+            st.caption(f"{config['description']}. {caption_text}")
     else:
         st.write("")
-
+        
 def display_section_disclaimer(config):
     """Display section-specific disclaimer text"""
     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
