@@ -776,41 +776,37 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         else:
             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
         
-        # Header image with same formatting as featured deck
+        # Calculate stats text
+        if section_config['type'] == "meta":
+            stats_text = f"Power {deck['power_index']:.1f}"
+        elif section_config['type'] == "trending":
+            stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.1f}% share"
+        elif section_config['type'] == "gems":
+            stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.1f}% share"
+        else:
+            stats_text = f"{deck['share']:.1f}% share"
+        
+        # Header image with stats overlay
         header_image = get_header_image_cached(deck['deck_name'], deck['set'])
         if header_image:
             st.markdown(f"""
-            <div style="width: 100%; margin-bottom: -1rem;">
+            <div style="width: 100%; margin-bottom: 5px; position: relative;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 10px; z-index:-1;">
+                <div style="position: absolute; bottom: 8px; right: 8px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;">
+                    {stats_text}
+                </div>
             </div>
             """, unsafe_allow_html=True)
         
-        # Two column layout (3:1 ratio)
-        col1, col2 = st.columns([3, 1])
-        
-        with col1:
-            # Deck name as left-aligned button
-            if st.button(
-                f"{rank_symbol} {deck['displayed_name']}", 
-                key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
-                type="tertiary",
-                use_container_width=False
-            ):
-                st.session_state.deck_to_analyze = deck['deck_name']
-                st.rerun()
-        
-        with col2:
-            # Stats as caption with descriptive text and comma separators
-            if section_config['type'] == "meta":
-                stats_text = f"Power {deck['power_index']:.1f}"
-            elif section_config['type'] == "trending":
-                stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.1f}% share"
-            elif section_config['type'] == "gems":
-                stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.1f}% share"
-            else:
-                stats_text = f"{deck['share']:.1f}% share"
-            
-            st.caption(stats_text)
+        # Deck name as left-aligned button (single column)
+        if st.button(
+            f"{rank_symbol} {deck['displayed_name']}", 
+            key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
+            type="tertiary",
+            use_container_width=False
+        ):
+            st.session_state.deck_to_analyze = deck['deck_name']
+            st.rerun()
                 
     except Exception as e:
         print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
@@ -848,15 +844,28 @@ def create_deck_section(section_type):
         st.caption("No decks found matching criteria")
         return
     
-    # Display first deck with emoji and rounded corners
+    # Display first deck with emoji and stats overlay
     first_deck = deck_data.iloc[0]
     first_rank_symbol = config['rank_symbols'][0] if config['rank_symbols'] else ""
     header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
 
+    # Calculate stats for featured deck
+    if config['type'] == "meta":
+        stats_text = f"Power {first_deck['power_index']:.1f}"
+    elif config['type'] == "trending":
+        stats_text = f"{first_deck['tournaments_played']} plays, {first_deck['share']:.1f}% share"
+    elif config['type'] == "gems":
+        stats_text = f"{first_deck['win_rate']:.1f}% win, {first_deck['share']:.1f}% share"
+    else:
+        stats_text = f"{first_deck['share']:.1f}% share"
+
     if header_image:
         st.markdown(f"""
-        <div style="width: 100%; margin-bottom: -1rem;">
+        <div style="width: 100%; margin-bottom: 5px; position: relative;">
             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 10px; z-index:-1;">
+            <div style="position: absolute; bottom: 8px; right: 8px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;">
+                {stats_text}
+            </div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -867,7 +876,7 @@ def create_deck_section(section_type):
         </div>
         """, unsafe_allow_html=True)
     
-    # Featured deck name with emoji (left-aligned)
+    # Featured deck name with emoji (single column, shorter spacing)
     if st.button(
         f"{first_rank_symbol} {first_deck['displayed_name']}", 
         key=f"first_{section_type}_deck_button",
