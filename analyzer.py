@@ -93,7 +93,7 @@ def collect_decks(deck_name, set_name=CURRENT_SET):
         # Add to collection
         all_decks.append(deck_data)
         
-        time.sleep(0.2)  # Be nice to the server
+        # time.sleep(0.2)  # Be nice to the server
     
     progress_bar.empty()
     status_text.empty()
