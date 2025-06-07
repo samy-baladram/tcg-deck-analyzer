@@ -776,12 +776,12 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         else:
             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
         
-        # Header image with rounded corners
+        # Header image with rounded corners (same formatting as original)
         header_image = get_header_image_cached(deck['deck_name'], deck['set'])
         if header_image:
             st.markdown(f"""
-            <div style="width: 100%; margin-bottom: -1rem;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
+            <div style="width: 100%; margin-bottom: 10px;">
+                <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto; border-radius: 10px;">
             </div>
             """, unsafe_allow_html=True)
         
@@ -848,7 +848,7 @@ def create_deck_section(section_type):
         st.caption("No decks found matching criteria")
         return
     
-    # Display first deck with emoji and rounded corners
+    # Display first deck with emoji and rounded corners (same formatting as original)
     first_deck = deck_data.iloc[0]
     first_rank_symbol = config['rank_symbols'][0] if config['rank_symbols'] else ""
     header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
@@ -856,7 +856,7 @@ def create_deck_section(section_type):
     if header_image:
         st.markdown(f"""
         <div style="width: 100%; margin-bottom: -1rem;">
-            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 10px;">
+            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 10px; z-index:-1;">
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -872,7 +872,7 @@ def create_deck_section(section_type):
         f"{first_rank_symbol} {first_deck['displayed_name']}", 
         key=f"first_{section_type}_deck_button",
         type="tertiary",
-        use_container_width=True
+        use_container_width=False
     ):
         st.session_state.deck_to_analyze = first_deck['deck_name']
         st.rerun()
