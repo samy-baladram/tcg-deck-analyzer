@@ -62,6 +62,9 @@ POKEMON_URL_EXCEPTIONS = {
     'dusk-mane-necrozma': {
         'default': 'necrozma-dusk-mane'  # fallback
     },
+    'ultra-necrozma': {
+        'default': 'necrozma-ultra'  # fallback
+    },
     # Add more exceptions as needed
     # 'rotom': {
     #     'pikachu': 'rotom-wash',
