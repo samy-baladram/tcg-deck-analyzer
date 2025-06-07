@@ -899,7 +899,7 @@ def create_deck_section(section_type):
         if config['type'] == "meta":
             caption_text = "Shows Power Index values"
         elif config['type'] == "trending":
-            caption_text = "Shows tournament plays and meta share"
+            caption_text = "Shows tournament best-finish plays and meta share"
         elif config['type'] == "gems":
             caption_text = "Shows win rate and meta share"
         else:
