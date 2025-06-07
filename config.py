@@ -146,7 +146,26 @@ POKEMON_NAME_PATTERNS = {
         
         # Gen 9 legends
         'wo-chien', 'chien-pao', 'ting-lu', 'chi-yu',
-        'koraidon', 'miraidon'
+        'koraidon', 'miraidon',
+        
+        # ADD THESE MISSING NECROZMA FORMS:
+        'dusk-mane-necrozma',
+        'dawn-wings-necrozma',
+        'ultra-necrozma',
+        
+        # ADD THESE MISSING KYUREM FORMS:
+        'black-kyurem',
+        'white-kyurem',
+        
+        # ADD OTHER POTENTIAL MULTI-WORD POKEMON:
+        'shadow-lugia',      # If it exists
+        'primal-dialga',     # If different from prefix-based detection
+        'origin-forme-dialga',
+        'origin-forme-palkia',
+        'origin-forme-giratina',
+        'therian-forme-tornadus',
+        'therian-forme-thundurus',
+        'therian-forme-landorus',
     },
     
     # Pokemon suffixes
