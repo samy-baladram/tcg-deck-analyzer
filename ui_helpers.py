@@ -63,7 +63,7 @@ SIDEBAR_SECTIONS_CONFIG = {
             "share_min": 0.05,
             "share_max": 0.5,
             "win_rate_min": 55,
-            "total_games_min": 20
+            "total_games_min": 12
         },
         "sort_config": {
             "columns": ["win_rate"],
