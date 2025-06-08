@@ -825,7 +825,7 @@ def create_deck_section(section_type):
         if banner_base64:
             st.markdown(f"""<div style="width:100%; text-align:center; ">
                 <hr style='margin-bottom:10px; border: 0.5px solid rgba(137, 148, 166, 0.3); margin-top:0px;'>
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:-5px;">
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:-2px;">
             </div>
             """, unsafe_allow_html=True)
     else:
