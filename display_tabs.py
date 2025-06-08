@@ -258,7 +258,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     """Display the main sample deck and any variant decks containing other Pokémon options"""
     # Check if options is empty or None
     if options is None or options.empty:
-        st.write("#### Sample Deck")
+        st.write("##### Sample Deck")
         render_sample_deck(energy_types, is_typical)
         return
     
@@ -267,7 +267,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     
     # If no Pokemon options, just show the sample deck
     if pokemon_options.empty:
-        st.write("#### Sample Deck")
+        st.write("##### Sample Deck")
         render_sample_deck(energy_types, is_typical)
         return
     
