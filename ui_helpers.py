@@ -818,8 +818,8 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         if header_image:
             st.markdown(f"""
             <div style="width: 100%; margin-top: -18px; margin-bottom: 7px; position: relative;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
-                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.6rem; font-weight: 700;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 6px 6px 0px 0px; z-index:-1;">
+                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 0px 0px; font-size: 0.6rem; font-weight: 700;">
                     {stats_text}
                 </div>
             </div>
