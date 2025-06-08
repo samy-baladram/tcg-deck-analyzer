@@ -1223,7 +1223,7 @@ def render_sidebar_from_cache():
         update_text = f"Data updated {performance_time_str}"
      
     st.markdown(f"""
-    <div style="font-size: 0.75rem; color: rgb(163, 168, 184); margin-top: -40px; margin-bottom: 20px; text-align: center;">
+    <div style="font-size: 0.85rem; color: rgb(163, 168, 184); margin-top: -50px; text-align: left;">
         {update_text}
     </div>
     """, unsafe_allow_html=True)
