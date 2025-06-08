@@ -717,7 +717,7 @@ def render_sample_deck(energy_types, is_typical):
 def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options, variant_df=None):
     """Display the deck composition section"""
     # Create header
-    st.write("#### Deck Composition", unsafe_allow_html=True)
+    # st.write("#### Deck Composition", unsafe_allow_html=True)
     if energy_types:
         # Render energy icons for header
         energy_html = ""
@@ -727,7 +727,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         
         # Create header with energy types
         archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
-        core_cards_header = f"""##### Meta Essentials ({total_cards} Cards)""" + f"""<span style="font-size: 1rem; font-weight: normal;">&emsp; Energy: {energy_html}{archetype_note}</span>"""
+        core_cards_header = f"""##### Meta Essentials ({total_cards} Cards)""" + f"""<span style="font-size: 1rem; font-weight: normal;">&emsp; Energy: {energy_html}</span>"""
     else:
         # Just "Core Cards" if no energy found
         core_cards_header = f"##### Meta Essentials ({total_cards} Cards):"
@@ -744,19 +744,17 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
     
     with core_col1:
         # Pokemon cards section
-        st.write("###### Pokémon")
+        st.caption("Pokémon")
         pokemon_grid = CardGrid(card_width=65, gap=4)
         pokemon_grid.add_cards_from_dict(deck_info['Pokemon'], repeat_by_count=True)
         pokemon_grid.display()
     
     with core_col2:
         # Trainer cards section
-        st.write("###### Trainer")
+        st.caption("Trainer")
         trainer_grid = CardGrid(card_width=65, gap=4)
         trainer_grid.add_cards_from_dict(deck_info['Trainer'], repeat_by_count=True)
         trainer_grid.display()
-
-    st.caption("Meta Essentials: Cards appearing in 80%+ of competitive decks.")
         
     # Flexible slots section
     remaining = 20 - total_cards
@@ -776,7 +774,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         with flex_col1:
             # Only show Pokemon options if there are any
             if not pokemon_options.empty:
-                st.write("###### Pokémon Options")
+                st.caption("Pokémon Options")
                 pokemon_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 pokemon_options_grid.add_cards_from_dataframe(pokemon_options)
                 pokemon_options_grid.display()
@@ -823,11 +821,12 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
         with flex_col2:
             # Only show Trainer options if there are any
             if not trainer_options.empty:
-                st.write("###### Trainer Options")
+                st.caption("Trainer Options")
                 trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 trainer_options_grid.add_cards_from_dataframe(trainer_options)
                 trainer_options_grid.display()
-        st.caption("Remaining Slots: Cards appearing in 25-80% of decks, offering flexibility for tech choices. Percentages show how often each card appears in top competitive decks. Higher values indicate more popular choices for your remaining slots.")
+        st.caption("Meta Essentials: Cards appearing in 80%+ of competitive decks.")
+        st.caption("Remaining Slots: Cards appearing in 25-80% of decks, offering flexibility for tech choices. Percentages show how often each card appears in top competitive decks.")
     else:
         st.info("No remaining slots available for this deck.")
         
