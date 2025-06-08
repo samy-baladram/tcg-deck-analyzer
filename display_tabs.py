@@ -57,7 +57,7 @@ def display_deck_header(deck_info, results):
                 </div>"""
         
         # Add the deck name
-        header_content += f"""<h1 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])!}</h1></div>
+        header_content += f"""<h1 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1></div>
         </div>"""
         
         st.markdown(header_content, unsafe_allow_html=True)
