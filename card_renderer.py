@@ -437,3 +437,24 @@ def enhance_card_image_html(img_html, full_size_url=None, card_data=None):
     
     # If we couldn't extract the set code and number, return the original HTML
     return img_html
+
+def render_energy_icons(energy_types, is_typical=False):
+    """Generate HTML for energy icons"""
+    if not energy_types:
+        return ""
+        
+    energy_html = ""
+    # Create image tags for each energy type
+    for energy in energy_types:
+        # Direct URL to the energy icon
+        energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
+        energy_html += f'<img src="{energy_url}" alt="{energy}" style="height:20px; margin-right:4px; vertical-align:middle;">'
+    
+    # Add note if these are typical energy types
+    archetype_note = ''
+    #archetype_note = '<span style="font-size: 0.8rem; color: #888; margin-left: 4px;">(most common)</span>' if is_typical else ""
+    
+    energy_display = f"""<div style="margin-bottom: 10px;">
+        <p style="margin-bottom:5px;">Energy: {energy_html} {archetype_note}</p>
+    </div>"""
+    return energy_display
