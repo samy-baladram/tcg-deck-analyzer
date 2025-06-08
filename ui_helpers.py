@@ -800,12 +800,12 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         header_image = get_header_image_cached(deck['deck_name'], deck['set'])
         if header_image:
             st.markdown(f"""
-            <div style="width: 100%; margin-top: -20px; margin-bottom: -5px; position: relative;">
+            <div style="width: 100%; margin-top: -20px; margin-bottom: 5px; position: relative;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px; z-index:-1;">
-                <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 6px; border-radius: 8px 0px 8px 0px; font-size: 1rem; font-weight: 700;">
+                <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 1px 6px; border-radius: 8px 0px 8px 0px; font-size: 1rem; font-weight: 700;">
                     {rank_symbol}
                 </div>
-                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 4px; border-radius: 6px 0px 8px 0px; font-size: 0.6rem; font-weight: 700;">
+                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 6px 0px 8px 0px; font-size: 0.6rem; font-weight: 700;">
                     {stats_text}
                 </div>
             </div>
@@ -874,12 +874,12 @@ def create_deck_section(section_type):
         
     if header_image:
         st.markdown(f"""
-        <div style="width: 100%; margin-top: -20px; margin-bottom: -5px; position: relative;">
+        <div style="width: 100%; margin-top: -20px; margin-bottom: 5px; position: relative;">
             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px; z-index:-1;">
-            <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 6px; border-radius: 8px 0px 8px 0px; font-size: 1rem; font-weight: 700;">
+            <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 1px 6px; border-radius: 8px 0px 8px 0px; font-size: 1rem; font-weight: 700;">
                 {first_rank_symbol}
             </div>
-            <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 4px; border-radius: 6px 0px 8px 0px; font-size: 0.6rem; font-weight: 700;">
+            <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 6px 0px 8px 0px; font-size: 0.6rem; font-weight: 700;">
                 {stats_text}
             </div>
         </div>
