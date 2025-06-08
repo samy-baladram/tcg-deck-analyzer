@@ -281,7 +281,7 @@ def display_variant_decks(deck_info, energy_types, is_typical, options):
     
     # If no different Pokemon in options, just show the standard sample deck
     if different_pokemon.empty:
-        st.write("#### Sample Deck")
+        st.write("##### Sample Deck")
         render_sample_deck(energy_types, is_typical)
         return
     
