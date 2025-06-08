@@ -1218,6 +1218,11 @@ def render_sidebar_from_cache():
         st.warning("No performance data available")
         return
 
+    # Add last update caption at the very top
+    if 'performance_fetch_time' in st.session_state:
+        performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+        st.caption(f"Data updated {performance_time_str}")
+        
     # Render all deck sections
     for section_type in ["meta", "trending", "gems"]:
         create_deck_section(section_type)
