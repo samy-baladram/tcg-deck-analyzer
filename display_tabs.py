@@ -1159,11 +1159,18 @@ def display_related_decks_tab(deck_info, results):
                         deck['set']
                     )
                     
+                    # Simple tertiary button with the deck name
+                    if st.button(formatted_name, key=f"btn_{deck['deck_name']}_{i}", type="tertiary"):
+                        # Set this deck to be analyzed
+                        st.session_state.deck_to_analyze = deck['deck_name']
+                        # Force rerun to trigger the analysis
+                        st.rerun()
+                        
                     # Display the banner image
                     if header_image:
                         st.markdown(f"""
-                        <div style="width: 100%; height: auto; overflow: hidden; border-radius: 10px 10px 10px 0px; margin-bottom: 0px;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; object-fit: cover; border-radius: 10px;">
+                        <div style="width: 100%; height: auto; overflow: hidden; margin-top:-18px; margin-bottom: 10px;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; object-fit: cover; border-radius: 4px;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
@@ -1173,12 +1180,7 @@ def display_related_decks_tab(deck_info, results):
                         </div>
                         """, unsafe_allow_html=True)
                     
-                    # Simple tertiary button with the deck name
-                    if st.button(formatted_name, key=f"btn_{deck['deck_name']}_{i}", type="tertiary"):
-                        # Set this deck to be analyzed
-                        st.session_state.deck_to_analyze = deck['deck_name']
-                        # Force rerun to trigger the analysis
-                        st.rerun()
+ 
                         
             st.caption("Decks sharing featured Pokémon with this archetype.")
     else:
