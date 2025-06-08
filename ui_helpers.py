@@ -903,7 +903,7 @@ def create_deck_section(section_type):
         """, unsafe_allow_html=True)  
 
     # Always show expander (no toggle button)
-    with st.expander(" ", expanded=False):
+    with st.expander("More decks", expanded=False):
         # Show remaining decks (skip first one)
         remaining_decks = deck_data.iloc[1:config['max_decks']]
         
@@ -922,7 +922,6 @@ def create_deck_section(section_type):
             caption_text = "Shows meta share percentages"
         
         st.caption(f"{config['description']}. {caption_text}")
-    st.write("")
     st.write("")
     st.write("")
     st.write("")
