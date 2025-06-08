@@ -43,7 +43,7 @@ def display_deck_header(deck_info, results):
         # Simplified centered layout
         header_content = f"""
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; margin: -0.5rem 0 0.5rem 0; text-align: center;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; margin: 0rem 0 0.5rem 0; text-align: center;">
             <div style="min-width: 200px;">"""
         
         # Add featured image if this is the first time and image exists
@@ -54,7 +54,7 @@ def display_deck_header(deck_info, results):
                 </div>"""
         
         # Add the deck name (h1 on left side)
-        header_content += f"""<div style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word; font-size: 3rem; margin: 0.5rem;">{format_deck_name(deck_info['deck_name'])}</div></div>
+        header_content += f"""<div style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word; font-size: 3rem; margin: 0rem;">{format_deck_name(deck_info['deck_name'])}</div></div>
             <div><img src="data:image/png;base64,{header_image}" style="max-width: {deck_image_max_width}; width: 100%; height: auto; border: 3px solid #57585F;border-radius: 10px;"></div></div>"""
         
         st.markdown(header_content, unsafe_allow_html=True)
