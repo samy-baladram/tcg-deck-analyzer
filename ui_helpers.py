@@ -1102,8 +1102,7 @@ def display_counter_picker_sidebar():
     if os.path.exists(config['banner_path']):
         banner_base64 = get_cached_banner_image(config['banner_path'])
         if banner_base64:
-            st.markdown(f"""<div style="width:100%; text-align:center;">
-                <hr style='margin-bottom:10px; border: 0.5px solid rgba(137, 148, 166, 0.3); margin-top:0px;'>
+            st.markdown(f"""<div style="width:100%; text-align:center;">               
                 <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-bottom:10px;">
             </div>
             """, unsafe_allow_html=True)
@@ -1221,7 +1220,13 @@ def render_sidebar_from_cache():
     # Add last update caption at the very top
     if 'performance_fetch_time' in st.session_state:
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-        st.caption(f"Data updated {performance_time_str}")
+        update_text = f"Data updated {performance_time_str}"
+     
+    st.markdown(f"""
+    <div style="font-size: 0.75rem; color: rgb(163, 168, 184); margin-top: -40px; margin-bottom: 20px; text-align: center;">
+        {update_text}
+    </div>
+    """, unsafe_allow_html=True)
         
     # Render all deck sections
     for section_type in ["meta", "trending", "gems"]:
