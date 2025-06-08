@@ -767,6 +767,23 @@ def get_filtered_deck_data(section_type):
 #     else:
 #         st.write("")
 
+# def display_section_disclaimer(config):
+#     """Display section-specific disclaimer text"""
+#     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+    
+#     st.markdown(f"""
+#     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+#         <div>{config['description']}</div>
+#         <div>Updated {performance_time_str}</div>
+#     </div>
+#     <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
+#         {config['sorting_note']}
+#     </div>
+#     """, unsafe_allow_html=True)
+#     st.write("")
+#     st.write("")
+#     st.write("")
+    
 def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
     """Unified function to render any type of deck in sidebar - LIGHTWEIGHT VERSION"""
     try:
@@ -906,23 +923,7 @@ def create_deck_section(section_type):
         
         st.caption(f"{config['description']}. {caption_text}")
     st.markdown(f"""<hr style='margin-bottom:40px; border: 0.5px solid rgba(137, 148, 166, 0.3); margin-top:0px;'>""", unsafe_allow_html=True)        
-        
-def display_section_disclaimer(config):
-    """Display section-specific disclaimer text"""
-    performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-    
-    st.markdown(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
-        <div>{config['description']}</div>
-        <div>Updated {performance_time_str}</div>
-    </div>
-    <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-        {config['sorting_note']}
-    </div>
-    """, unsafe_allow_html=True)
-    st.write("")
-    st.write("")
-    st.write("")
+     
 
 def analyze_counter_matchups(selected_deck_names, config):
     """Analyze counter matchups using configuration"""
@@ -1042,7 +1043,7 @@ def render_counter_deck_content(deck, config, rank):
     
     if header_image:
         st.markdown(f"""
-        <div style="width: 100%; margin-bottom: 10px;">
+        <div style="width: 100%; margin-top: -30px; margin-bottom: 10px;">
             <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto;">
         </div>
         """, unsafe_allow_html=True)
