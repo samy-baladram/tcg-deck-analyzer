@@ -6,7 +6,7 @@ from formatters import format_deck_name, extract_pokemon_urls
 from related_decks import find_related_decks
 from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
 from analyzer import build_deck_template
-from card_renderer import render_energy_icons
+from energy_utils import render_energy_icons
 from config import TOURNAMENT_COUNT, POWER_INDEX_EXPLANATION, MIN_MATCHUP_MATCHES
 from header_image_cache import get_header_image_cached
 import pandas as pd
