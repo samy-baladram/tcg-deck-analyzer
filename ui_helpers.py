@@ -854,11 +854,11 @@ def create_deck_section(section_type):
 
     # Calculate stats for featured deck
     if config['type'] == "meta":
-        stats_text = f"Power {first_deck['power_index']:.1f}"
+        stats_text = f"Power {first_deck['power_index']:.2f}"
     elif config['type'] == "trending":
-        stats_text = f"{first_deck['tournaments_played']} plays, {first_deck['share']:.1f}% share"
+        stats_text = f"{first_deck['tournaments_played']} plays, {first_deck['share']:.2f}% share"
     elif config['type'] == "gems":
-        stats_text = f"{first_deck['win_rate']:.1f}% win, {first_deck['share']:.1f}% share"
+        stats_text = f"{first_deck['win_rate']:.1f}% win, {first_deck['share']:.2f}% share"
     else:
         stats_text = f"{first_deck['share']:.1f}% share"
 
