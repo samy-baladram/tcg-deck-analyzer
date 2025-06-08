@@ -54,7 +54,7 @@ def display_deck_header(deck_info, results):
         
         # Add the deck name (h1 above image)
         header_content += f"""
-            <div style="width: 100%; order: 1;">
+            <div style="order: 1;">
                 <h1 style="margin: 0; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
             </div>
             <div style="order: 2;">
