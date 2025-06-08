@@ -792,44 +792,21 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
             st.markdown(f"""
             <div style="width: 100%; margin-top: -5px; margin-bottom: -5px; position: relative;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px; z-index:-1;">
-                <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 4px; border-radius: 0px 6px 0px 8px; font-size: 0.8rem; font-weight: 700;">
-                    {first_rank_symbol}
-                </div>
                 <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 4px; border-radius: 6px 0px 8px 0px; font-size: 0.6rem; font-weight: 700;">
                     {stats_text}
                 </div>
-                <div style="position: absolute; bottom: 8px; left: 8px; right: 8px;">
-                    """, unsafe_allow_html=True)
-            
-            # Deck name button overlaid on image
-            if st.button(
-                f"{first_deck['displayed_name']}", 
-                key=f"first_{section_type}_deck_button",
-                type="tertiary",
-                use_container_width=True
-            ):
-                st.session_state.deck_to_analyze = first_deck['deck_name']
-                st.rerun()
-            
-            st.markdown("</div></div>", unsafe_allow_html=True)
-            
-        else:
-            st.markdown("""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 10px;
-                display: flex; align-items: center; justify-content: center;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
             </div>
             """, unsafe_allow_html=True)
-            
-            # Fallback button when no image
-            if st.button(
-                f"{first_rank_symbol} {first_deck['displayed_name']}", 
-                key=f"first_{section_type}_deck_button_fallback",
-                type="tertiary",
-                use_container_width=False
-            ):
-                st.session_state.deck_to_analyze = first_deck['deck_name']
-                st.rerun()
+        
+        # Deck name as left-aligned button (single column)
+        if st.button(
+            f"{rank_symbol} {deck['displayed_name']}", 
+            key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
+            type="tertiary",
+            use_container_width=False
+        ):
+            st.session_state.deck_to_analyze = deck['deck_name']
+            st.rerun()
                 
     except Exception as e:
         print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
@@ -886,27 +863,11 @@ def create_deck_section(section_type):
         st.markdown(f"""
         <div style="width: 100%; margin-top: -5px; margin-bottom: -5px; position: relative;">
             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px; z-index:-1;">
-            <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 4px; border-radius: 0px 6px 0px 8px; font-size: 0.8rem; font-weight: 700;">
-                {first_rank_symbol}
-            </div>
             <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 2px 4px; border-radius: 6px 0px 8px 0px; font-size: 0.6rem; font-weight: 700;">
                 {stats_text}
             </div>
-            <div style="position: absolute; bottom: 8px; left: 8px; right: 8px;">
-                """, unsafe_allow_html=True)
-        
-        # Deck name button overlaid on image
-        if st.button(
-            f"{first_deck['displayed_name']}", 
-            key=f"first_{section_type}_deck_button",
-            type="tertiary",
-            use_container_width=True
-        ):
-            st.session_state.deck_to_analyze = first_deck['deck_name']
-            st.rerun()
-        
-        st.markdown("</div></div>", unsafe_allow_html=True)
-        
+        </div>
+        """, unsafe_allow_html=True)
     else:
         st.markdown("""
         <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 10px;
@@ -914,16 +875,16 @@ def create_deck_section(section_type):
             <span style="color: #888; font-size: 0.8rem;">No image</span>
         </div>
         """, unsafe_allow_html=True)
-        
-        # Fallback button when no image
-        if st.button(
-            f"{first_rank_symbol} {first_deck['displayed_name']}", 
-            key=f"first_{section_type}_deck_button_fallback",
-            type="tertiary",
-            use_container_width=False
-        ):
-            st.session_state.deck_to_analyze = first_deck['deck_name']
-            st.rerun()
+    
+    # Featured deck name with emoji (single column, shorter spacing)
+    if st.button(
+        f"{first_rank_symbol} {first_deck['displayed_name']}", 
+        key=f"first_{section_type}_deck_button",
+        type="tertiary",
+        use_container_width=False
+    ):
+        st.session_state.deck_to_analyze = first_deck['deck_name']
+        st.rerun()
 
     # Always show expander (no toggle button)
     with st.expander("More Decks", expanded=False):
