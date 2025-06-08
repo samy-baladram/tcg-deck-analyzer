@@ -789,7 +789,7 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         # Header image with stats overlay
         # Deck name as left-aligned button (single column)
         if st.button(
-            f"{deck['displayed_name']}", 
+            f"{rank_symbol} {deck['displayed_name']}", 
             key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
             type="tertiary",
             use_container_width=False
@@ -802,9 +802,6 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
             st.markdown(f"""
             <div style="width: 100%; margin-top: -22px; margin-bottom: 10px; position: relative;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
-                <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 6px; border-radius: 4px 0px 4px 0px; font-size: 1rem; font-weight: 700;">
-                    {rank_symbol}
-                </div>
                 <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.6rem; font-weight: 700;">
                     {stats_text}
                 </div>
@@ -864,7 +861,7 @@ def create_deck_section(section_type):
 
     # Featured deck name with emoji (single column, shorter spacing)
     if st.button(
-        f"{first_deck['displayed_name']}", 
+        f"{first_rank_symbol} {first_deck['displayed_name']}", 
         key=f"first_{section_type}_deck_button",
         type="tertiary",
         use_container_width=False
@@ -876,9 +873,6 @@ def create_deck_section(section_type):
         st.markdown(f"""
         <div style="width: 100%; margin-top: -22px; margin-bottom: 10px; position: relative;">
             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-2;">
-            <div style="position: absolute; top: 0px; left: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 6px; border-radius: 4px 0px 4px 0px; font-size: 1rem; font-weight: 700;">
-                {first_rank_symbol}
-            </div>
             <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.6rem; font-weight: 700;">
                 {stats_text}
             </div>
