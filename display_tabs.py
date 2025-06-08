@@ -1169,8 +1169,8 @@ def display_related_decks_tab(deck_info, results):
                     # Display the banner image
                     if header_image:
                         st.markdown(f"""
-                        <div style="width: 100%; height: auto; overflow: hidden;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; margin-top:-18px; margin-bottom: 10px; object-fit: cover; border-radius: 4px;">
+                        <div style="width: 100%; margin-top: -18px; margin-bottom: 12px; position: relative;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 300px; height: auto; border-radius: 4px; z-index:-2;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
@@ -1179,6 +1179,14 @@ def display_related_decks_tab(deck_info, results):
                             <span style="color: #888;">No image</span>
                         </div>
                         """, unsafe_allow_html=True)
+        #                 st.markdown(f"""
+        # <div style="width: 100%; margin-top: -18px; margin-bottom: 12px; position: relative;">
+        #     <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-2;">
+        #     <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.6rem; font-weight: 700;">
+        #         {stats_text}
+        #     </div>
+        # </div>
+        # """, unsafe_allow_html=True)
                     
  
                         
