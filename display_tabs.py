@@ -64,23 +64,23 @@ def display_deck_header(deck_info, results):
         
         st.markdown(header_content, unsafe_allow_html=True)
         
-        else:
-            # No header image case - same as before
-            st.markdown("""
-            <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
+    else:
+        # No header image case - same as before
+        st.markdown("""
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
+        """, unsafe_allow_html=True)
+        
+        # Build content for no-image case
+        if show_landing_message and featured_image_base64:
+            st.markdown(f"""
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px; border-radius: 10px;">
+            </div>
+            <h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
             """, unsafe_allow_html=True)
-            
-            # Build content for no-image case
-            if show_landing_message and featured_image_base64:
-                st.markdown(f"""
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px; border-radius: 10px;">
-                </div>
-                <h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown(f"""<h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
-     
+        else:
+            st.markdown(f"""<h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
+ 
 # In display_card_usage_tab function in display_tabs.py
 def display_card_usage_tab(results, total_decks, variant_df):
     """Display the Card Usage tab with energy-colored charts based on deck energy types"""
