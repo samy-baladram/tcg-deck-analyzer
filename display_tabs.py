@@ -1169,8 +1169,8 @@ def display_related_decks_tab(deck_info, results):
                     # Display the banner image
                     if header_image:
                         st.markdown(f"""
-                        <div style="width: 100%; height: auto; overflow: hidden; margin-top:-18px; margin-bottom: 10px;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; object-fit: cover; border-radius: 4px;">
+                        <div style="width: 100%; height: auto; overflow: hidden;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width:300px; margin-top:-18px; margin-bottom: 10px; object-fit: cover; border-radius: 4px;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
