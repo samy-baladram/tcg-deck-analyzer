@@ -1470,7 +1470,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         unfavorable_share_norm = 0
     
     # Create 4-column layout instead of 3
-    col1, col2, col3, col4 = st.columns([1,1,1,1])
+    col1, col2, col3, sep1, col4 = st.columns([1,1,1,0.05, 1])
     
     # Display unfavorable matchups
     with col1:
@@ -1501,7 +1501,10 @@ def display_matchup_summary(deck_name, set_name, working_df):
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
-    
+
+    with sep1:
+        st.markdown('<div style="border-left: 1px solid #ddd; height: 80px;"></div>', unsafe_allow_html=True)
+
     # NEW: Display Meta Win Rate
     with col4:
         st.markdown(f"""
