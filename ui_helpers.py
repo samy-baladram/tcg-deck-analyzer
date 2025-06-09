@@ -1241,6 +1241,102 @@ def render_about_section():
         *Not affiliated with TPCi or Limitless - just a fan project.*
         """)
 
+# Add this function to ui_helpers.py
+def create_meta_table():
+    """Create HTML table for Top 10 Meta decks with Pokemon icons and clickable deck names"""
+    
+    # Get filtered data for meta decks (same as existing meta section)
+    meta_deck_data = get_filtered_deck_data("meta")
+    
+    if meta_deck_data.empty:
+        return "<p>No meta deck data available</p>"
+    
+    # Limit to top 10
+    top_10_decks = meta_deck_data.head(10)
+    
+    # Start building the HTML table
+    table_html = """
+    <div style="margin-top: 20px; margin-bottom: 20px;">
+        <table style="width: 100%; font-size: 0.75rem; border-collapse: collapse; background-color: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden;">
+            <thead>
+                <tr style="background-color: rgba(0, 160, 255, 0.1); border-bottom: 1px solid rgba(0, 160, 255, 0.2);">
+                    <th style="text-align: center; padding: 8px; font-weight: bold;">Rank</th>
+                    <th style="text-align: center; padding: 8px; font-weight: bold;">Icon 1</th>
+                    <th style="text-align: center; padding: 8px; font-weight: bold;">Icon 2</th>
+                    <th style="text-align: left; padding: 8px; font-weight: bold;">Deck Name</th>
+                    <th style="text-align: center; padding: 8px; font-weight: bold;">Power Index</th>
+                </tr>
+            </thead>
+            <tbody>
+    """
+    
+    # Add rows for each deck
+    for rank, (_, deck) in enumerate(top_10_decks.iterrows(), 1):
+        deck_name = deck['deck_name']
+        displayed_name = deck['displayed_name']
+        power_index = deck['power_index']
+        
+        # Extract Pokemon URLs using the same function as Metagame Overview
+        try:
+            url1, url2 = extract_pokemon_urls(deck_name)
+        except Exception as e:
+            print(f"Error extracting Pokemon URLs for {deck_name}: {e}")
+            url1, url2 = None, None
+        
+        # Create icon HTML
+        icon1_html = f'<img src="{url1}" style="height: 20px; width: auto;" alt="Pokemon 1">' if url1 else '<span style="color: #888;">-</span>'
+        icon2_html = f'<img src="{url2}" style="height: 20px; width: auto;" alt="Pokemon 2">' if url2 else '<span style="color: #888;">-</span>'
+        
+        # Create clickable deck name
+        deck_button_id = f"meta_table_{deck_name}_{rank}"
+        deck_name_html = f"""
+        <button onclick="selectDeck('{deck_name}')" 
+                style="background: none; border: none; color: #00A0FF; text-decoration: underline; cursor: pointer; font-size: 0.75rem; text-align: left; padding: 0; font-family: inherit;"
+                onmouseover="this.style.color='#48BBFF'" 
+                onmouseout="this.style.color='#00A0FF'">
+            {displayed_name}
+        </button>
+        """
+        
+        # Add row to table
+        row_style = "border-bottom: 1px solid rgba(0, 160, 255, 0.1);" if rank < 10 else ""
+        table_html += f"""
+            <tr style="{row_style}">
+                <td style="text-align: center; padding: 6px; font-weight: bold;">{rank}</td>
+                <td style="text-align: center; padding: 6px;">{icon1_html}</td>
+                <td style="text-align: center; padding: 6px;">{icon2_html}</td>
+                <td style="text-align: left; padding: 6px;">{deck_name_html}</td>
+                <td style="text-align: center; padding: 6px; font-weight: bold;">{power_index:.2f}</td>
+            </tr>
+        """
+    
+    # Close the table
+    table_html += """
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+    function selectDeck(deckName) {
+        // Set the deck to analyze in session state
+        if (window.parent && window.parent.streamlit) {
+            // For Streamlit Cloud
+            window.parent.streamlit.setComponentValue({
+                'action': 'select_deck',
+                'deck_name': deckName
+            });
+        } else {
+            // Alternative method - trigger a rerun with deck selection
+            console.log('Selected deck:', deckName);
+            // This will depend on how Streamlit handles JavaScript interactions
+            // For now, we'll use a simpler approach with session state
+        }
+    }
+    </script>
+    """
+    
+    return table_html
+    
 def render_sidebar_from_cache():
     """Render sidebar with fully unified configuration approach"""
     check_and_update_tournament_data()
@@ -1261,9 +1357,15 @@ def render_sidebar_from_cache():
     """, unsafe_allow_html=True)
         
     # Render all deck sections
-    for section_type in ["meta", "trending", "gems"]:
-        create_deck_section(section_type)
+    create_deck_section("meta")
 
+    # NEW: Add the meta table after the existing sections
+    meta_table_html = create_meta_table()
+    st.markdown(meta_table_html, unsafe_allow_html=True)
+
+    create_deck_section("trending")
+    create_deck_section("gems")
+    
     # Render counter picker using unified approach
     with st.spinner("Loading counter picker..."):
         display_counter_picker_sidebar()
