@@ -130,6 +130,12 @@ def check_and_update_tournament_data():
                 st.session_state.update_running = True
                 
                 with st.spinner("Checking for new tournament data..."):
+                    # 🔧 FIX: Store the current deck BEFORE any updates
+                    current_deck_name = None
+                    if 'analyze' in st.session_state:
+                        current_deck_name = st.session_state.analyze.get('deck_name')
+                        print(f"DEBUG: Preserving current deck for refresh: {current_deck_name}")
+                    
                     # CRITICAL FIX: Get old tournament count before update
                     old_performance_count = len(st.session_state.performance_data) if 'performance_data' in st.session_state else 0
                     
@@ -156,14 +162,14 @@ def check_and_update_tournament_data():
                         if 'deck_name_mapping' in st.session_state:
                             del st.session_state['deck_name_mapping']
                         
-                        # Force refresh current deck if any is selected
-                        if 'analyze' in st.session_state:
-                            current_deck = st.session_state.analyze.get('deck_name')
-                            if current_deck:
-                                print(f"Forcing refresh of current deck {current_deck} due to tournament update")
-                                st.session_state.deck_to_analyze = current_deck
-                                st.session_state.auto_refresh_in_progress = True
-                                st.session_state.force_deck_refresh = True
+                        # 🔧 FIX: Preserve the current deck selection
+                        if current_deck_name:
+                            print(f"DEBUG: Setting deck_to_analyze to preserve current selection: {current_deck_name}")
+                            st.session_state.deck_to_analyze = current_deck_name
+                            st.session_state.auto_refresh_in_progress = True
+                            st.session_state.force_deck_refresh = True
+                        else:
+                            print("DEBUG: No current deck to preserve")
                     
                     # Update card usage data
                     card_usage_df = cache_manager.aggregate_card_usage()
@@ -173,7 +179,7 @@ def check_and_update_tournament_data():
                     
                     if stats['new_tournaments'] > 0 or new_performance_count != old_performance_count:
                         st.success(f"Updated with new tournament data: {old_performance_count} → {new_performance_count} decks")
-
+                        
 # ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
     """Get energy types for a deck, using dedicated energy cache"""
@@ -388,74 +394,85 @@ def on_deck_change():
     else:
         st.session_state.selected_deck_index = None
 
-def ensure_performance_data_updated():
-    """Ensure performance data uses latest formula"""
-    import math
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        print("Updating power index formula...")
+# def ensure_performance_data_updated():
+#     """Ensure performance data uses latest formula"""
+#     import math
+#     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
+#         print("Updating power index formula...")
         
-        # Force recalculate power index with new formula
-        performance_df = st.session_state.performance_data.copy()
+#         # Force recalculate power index with new formula
+#         performance_df = st.session_state.performance_data.copy()
         
-        # Apply the new formula to each row
-        def recalculate_power_index(row):
-            total_wins = row['total_wins']
-            total_losses = row['total_losses']
-            total_ties = row['total_ties']
-            total_games = total_wins + total_losses + total_ties
+#         # Apply the new formula to each row
+#         def recalculate_power_index(row):
+#             total_wins = row['total_wins']
+#             total_losses = row['total_losses']
+#             total_ties = row['total_ties']
+#             total_games = total_wins + total_losses + total_ties
             
-            if total_games > 0:
-                # Calculate total games (including ties)
-                total_games = total_wins + total_losses + total_ties
+#             if total_games > 0:
+#                 # Calculate total games (including ties)
+#                 total_games = total_wins + total_losses + total_ties
                 
-                if total_games > 0:
-                    # Handle ties as half-wins (common in card games)
-                    adjusted_wins = total_wins + (0.5 * total_ties)
+#                 if total_games > 0:
+#                     # Handle ties as half-wins (common in card games)
+#                     adjusted_wins = total_wins + (0.5 * total_ties)
                     
-                    # Calculate win proportion
-                    win_proportion = adjusted_wins / total_games
+#                     # Calculate win proportion
+#                     win_proportion = adjusted_wins / total_games
                     
-                    # Wilson Score Interval parameters
-                    z = 1.96  # 95% confidence level
-                    z_squared = z * z
+#                     # Wilson Score Interval parameters
+#                     z = 1.96  # 95% confidence level
+#                     z_squared = z * z
                     
-                    # Calculate Wilson Score lower bound
-                    numerator = (win_proportion + (z_squared / (2 * total_games)) - 
-                                 z * math.sqrt((win_proportion * (1 - win_proportion) + 
-                                              (z_squared / (4 * total_games))) / total_games))
+#                     # Calculate Wilson Score lower bound
+#                     numerator = (win_proportion + (z_squared / (2 * total_games)) - 
+#                                  z * math.sqrt((win_proportion * (1 - win_proportion) + 
+#                                               (z_squared / (4 * total_games))) / total_games))
                     
-                    denominator = 1 + (z_squared / total_games)
+#                     denominator = 1 + (z_squared / total_games)
                     
-                    # Wilson Score lower bound (conservative estimate of true win rate)
-                    wilson_score = numerator / denominator
+#                     # Wilson Score lower bound (conservative estimate of true win rate)
+#                     wilson_score = numerator / denominator
                     
-                    # Scale to make more intuitive (similar range to original power index)
-                    # Transforming from 0-1 scale to -5 to +5 scale
-                    #
-                    power_index = (wilson_score - 0.5) * 10
-                return power_index
-            return 0.0
+#                     # Scale to make more intuitive (similar range to original power index)
+#                     # Transforming from 0-1 scale to -5 to +5 scale
+#                     #
+#                     power_index = (wilson_score - 0.5) * 10
+#                 return power_index
+#             return 0.0
         
-        # Update power index and resort
-        performance_df['power_index'] = performance_df.apply(recalculate_power_index, axis=1)
-        performance_df = performance_df.sort_values('power_index', ascending=False).reset_index(drop=True)
+#         # Update power index and resort
+#         performance_df['power_index'] = performance_df.apply(recalculate_power_index, axis=1)
+#         performance_df = performance_df.sort_values('power_index', ascending=False).reset_index(drop=True)
         
-        # Replace in session state
-        st.session_state.performance_data = performance_df
+#         # Replace in session state
+#         st.session_state.performance_data = performance_df
         
-        # Also clear deck display names to force regeneration
-        if 'deck_display_names' in st.session_state:
-            del st.session_state['deck_display_names']
+#         # Also clear deck display names to force regeneration
+#         if 'deck_display_names' in st.session_state:
+#             del st.session_state['deck_display_names']
 
-    return
+#     return
     
 def create_deck_selector():
     """Create and display the deck selector dropdown with minimal loading"""
 
-    ensure_performance_data_updated()
+    #ensure_performance_data_updated()
     # Initialize session state variables if they don't exist
     if 'selected_deck_index' not in st.session_state:
         st.session_state.selected_deck_index = None
+        
+    # 🔧 FIX: Handle deck_to_analyze FIRST, before dropdown generation
+    if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
+        target_deck = st.session_state.deck_to_analyze
+        print(f"DEBUG: Processing deck_to_analyze: {target_deck}")
+        
+        # Store this for later processing after dropdown is generated
+        preserved_deck = target_deck
+        st.session_state.deck_to_analyze = None  # Clear it now
+    else:
+        preserved_deck = None
         
     # Only compute dropdown options if not already cached
     if 'deck_display_names' not in st.session_state:
@@ -493,8 +510,38 @@ def create_deck_selector():
                 'deck_name': first_deck_info['deck_name'],
                 'set_name': first_deck_info['set'],
             }
-    
-    # Calculate time ago
+
+    # 🔧 FIX: Now process the preserved deck after dropdown is generated
+    if preserved_deck:
+        print(f"DEBUG: Looking for preserved deck: {preserved_deck}")
+        
+        # Find the matching display name and index
+        found_match = False
+        for i, display_name in enumerate(deck_display_names):
+            deck_info = deck_name_mapping[display_name]
+            if deck_info['deck_name'] == preserved_deck:
+                print(f"DEBUG: Found preserved deck at index {i}: {display_name}")
+                
+                # Update selection
+                st.session_state.selected_deck_index = i
+                st.session_state.analyze = {
+                    'deck_name': deck_info['deck_name'],
+                    'set_name': deck_info['set'],
+                }
+                
+                # Check if this was triggered by automatic refresh
+                if st.session_state.get('auto_refresh_in_progress', False):
+                    st.session_state.force_deck_refresh = True
+                    del st.session_state.auto_refresh_in_progress
+                
+                found_match = True
+                break
+        
+        if not found_match:
+            print(f"DEBUG: Preserved deck not found in new rankings: {preserved_deck}")
+            print(f"DEBUG: Available decks: {[deck_name_mapping[name]['deck_name'] for name in deck_display_names[:5]]}...")
+
+    # Calculate time ago and current set (rest of function stays the same)
     time_str = calculate_time_ago(st.session_state.fetch_time)
     
     # Get current set from selected deck or default
@@ -502,26 +549,7 @@ def create_deck_selector():
     if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
         selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
         deck_info = st.session_state.deck_name_mapping[selected_deck_display]
-        # FIXED: Remove .upper() to maintain original case format (A3a, A3b, etc.)
         current_set = deck_info['set']
-    
-    # Handle deck_to_analyze if set (e.g., from sidebar selection)
-    if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
-        # Find the matching display name and index
-        for i, display_name in enumerate(deck_display_names):
-            deck_info = deck_name_mapping[display_name]
-            if deck_info['deck_name'] == st.session_state.deck_to_analyze:
-                st.session_state.selected_deck_index = i
-                
-                # Set the deck to analyze
-                st.session_state.analyze = {
-                    'deck_name': deck_info['deck_name'],
-                    'set_name': deck_info['set'],
-                }
-                
-                # Clear the deck_to_analyze for next time
-                st.session_state.deck_to_analyze = None
-                break
     
     # Create label and help text
     label_text = f"Current Set: {current_set}"
@@ -538,7 +566,7 @@ def create_deck_selector():
         on_change=on_deck_change,
     )
     
-    return selected_option  
+    return selected_option
     
 def get_filtered_deck_data(section_type):
     """Get filtered deck data based on section configuration"""
