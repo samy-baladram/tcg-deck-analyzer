@@ -1456,7 +1456,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Calculate Meta Win Rate (weighted average win rate by meta share)
     if total_known_share > 0:
         # Weight each matchup's win rate by its meta share
-        weighted_win_rate = 0 #(working_df['win_pct'] * working_df['meta_share']).sum() / total_known_share
+        weighted_win_rate = (working_df['win_pct'] * working_df['meta_share']).sum() / total_known_share
         
         # Normalize values to sum to 100% (just the three known categories)
         favorable_share_norm = (favorable_share / total_known_share) * 100
@@ -1493,24 +1493,24 @@ def display_matchup_summary(deck_name, set_name, working_df):
         """, unsafe_allow_html=True)
     
     # Display favorable matchups
-    with col3:
-       st.markdown(f"""
-       <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
-            <div style="font-size: 1rem; ">of meta</div>
-        </div>
-        """, unsafe_allow_html=True)
+    # with col3:
+    #    st.markdown(f"""
+    #    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
+    #         <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
+    #         <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
+    #         <div style="font-size: 1rem; ">of meta</div>
+    #     </div>
+    #     """, unsafe_allow_html=True)
     
-    # NEW: Display Meta Win Rate
-    with col4:
-        st.markdown(f"""
-        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold;">Meta Win Rate</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #00A0FF; line-height: 0.8;">{weighted_win_rate:.1f}%</div>
-            <div style="font-size: 1rem;">weighted avg</div>
-        </div>
-        """, unsafe_allow_html=True)
+    # # NEW: Display Meta Win Rate
+    # with col4:
+    #     st.markdown(f"""
+    #     <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
+    #         <div style="font-size: 1.1rem; font-weight: bold;">Meta Win Rate</div>
+    #         <div style="font-size: 2.5rem; font-weight: bold; color: #00A0FF; line-height: 0.8;">{weighted_win_rate:.1f}%</div>
+    #         <div style="font-size: 1rem;">weighted avg</div>
+    #     </div>
+    #     """, unsafe_allow_html=True)
         
     st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), or unfavorable (<{win_lower}% win rate) matchups against this deck. Meta Win Rate is the average win rate weighted by opponent meta share. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
     
