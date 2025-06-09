@@ -10,7 +10,11 @@ import background
 from header_image_cache import clear_expired_cache, get_cache_stats
 from card_cache import clear_expired_cache as clear_card_cache
 from PIL import Image
-    
+
+import importlib
+import display_tabs
+importlib.reload(display_tabs)
+
 favicon = Image.open("favicon.png").convert('RGBA')
 
 st.set_page_config(
