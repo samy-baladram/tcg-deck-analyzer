@@ -1554,7 +1554,7 @@ def display_matchup_tab(deck_info=None):
     working_df = matchup_df.copy()
 
     # Filter out current deck from matchups
-    working_df = working_df[working_df['opponent_deck_name'] != deck_name]
+    #working_df = working_df[working_df['opponent_deck_name'] != deck_name]
 
     # Filter by minimum matches
     from config import MIN_MATCHUP_MATCHES
