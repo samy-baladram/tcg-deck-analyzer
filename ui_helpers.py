@@ -276,16 +276,17 @@ def load_initial_data():
     
     # Initialize session state variables
     if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = 0  # Pre-select first option (index 0)
+        st.session_state.selected_deck_index = None
         
     if 'deck_to_analyze' not in st.session_state:
         st.session_state.deck_to_analyze = None
     
-    # ENHANCE: Use cached popular decks
+    # Ensure we have deck list data before continuing
     if 'deck_list' not in st.session_state:
         st.session_state.deck_list = get_cached_popular_decks()
         st.session_state.fetch_time = datetime.now()
-
+        print("DEBUG: Loaded initial deck list data")
+        
 # ENHANCE: Cache deck options creation
 def create_deck_options():
     """Create deck options for dropdown from performance data or fallback to deck list"""
@@ -458,21 +459,20 @@ def on_deck_change():
 def create_deck_selector():
     """Create and display the deck selector dropdown with minimal loading"""
 
-    #ensure_performance_data_updated()
     # Initialize session state variables if they don't exist
     if 'selected_deck_index' not in st.session_state:
         st.session_state.selected_deck_index = None
         
-    # 🔧 FIX: Handle deck_to_analyze FIRST, before dropdown generation
-    if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
+    # Handle deck_to_analyze ONLY if dropdown already existed (not fresh load)
+    preserved_deck = None
+    if ('deck_to_analyze' in st.session_state and 
+        st.session_state.deck_to_analyze and 
+        'deck_display_names' in st.session_state):
+        
         target_deck = st.session_state.deck_to_analyze
         print(f"DEBUG: Processing deck_to_analyze: {target_deck}")
-        
-        # Store this for later processing after dropdown is generated
         preserved_deck = target_deck
-        st.session_state.deck_to_analyze = None  # Clear it now
-    else:
-        preserved_deck = None
+        st.session_state.deck_to_analyze = None
         
     # Only compute dropdown options if not already cached
     if 'deck_display_names' not in st.session_state:
@@ -483,53 +483,55 @@ def create_deck_selector():
         st.session_state.deck_display_names = deck_display_names
         st.session_state.deck_name_mapping = deck_name_mapping
         
-        # Pre-select first deck if we have options and no selection yet
-        if deck_display_names and (st.session_state.selected_deck_index is None or 'analyze' not in st.session_state):
-            st.session_state.selected_deck_index = 0
-            
-            # Set the first deck to analyze
+        # Always pre-select first deck on fresh load
+        print("DEBUG: Fresh app load - selecting first deck")
+        st.session_state.selected_deck_index = 0
+        
+        if deck_display_names:
             first_deck_display = deck_display_names[0]
             first_deck_info = deck_name_mapping[first_deck_display]
             st.session_state.analyze = {
                 'deck_name': first_deck_info['deck_name'],
                 'set_name': first_deck_info['set'],
             }
+            print(f"DEBUG: Set first deck: {first_deck_info['deck_name']}")
     else:
         # Use cached options
         deck_display_names = st.session_state.deck_display_names
         deck_name_mapping = st.session_state.deck_name_mapping
         
-        # Check if we need to pre-select first deck
-        if deck_display_names and (st.session_state.selected_deck_index is None or 'analyze' not in st.session_state):
+        # Only set default if no valid selection exists
+        if (st.session_state.selected_deck_index is None or 
+            st.session_state.selected_deck_index >= len(deck_display_names) or
+            'analyze' not in st.session_state):
+            
+            print("DEBUG: No valid selection - defaulting to first deck")
             st.session_state.selected_deck_index = 0
             
-            # Set the first deck to analyze
-            first_deck_display = deck_display_names[0]
-            first_deck_info = deck_name_mapping[first_deck_display]
-            st.session_state.analyze = {
-                'deck_name': first_deck_info['deck_name'],
-                'set_name': first_deck_info['set'],
-            }
+            if deck_display_names:
+                first_deck_display = deck_display_names[0]
+                first_deck_info = deck_name_mapping[first_deck_display]
+                st.session_state.analyze = {
+                    'deck_name': first_deck_info['deck_name'],
+                    'set_name': first_deck_info['set'],
+                }
 
-    # 🔧 FIX: Now process the preserved deck after dropdown is generated
+    # Process preserved deck ONLY if it's from a tournament update
     if preserved_deck:
         print(f"DEBUG: Looking for preserved deck: {preserved_deck}")
         
-        # Find the matching display name and index
         found_match = False
         for i, display_name in enumerate(deck_display_names):
             deck_info = deck_name_mapping[display_name]
             if deck_info['deck_name'] == preserved_deck:
                 print(f"DEBUG: Found preserved deck at index {i}: {display_name}")
                 
-                # Update selection
                 st.session_state.selected_deck_index = i
                 st.session_state.analyze = {
                     'deck_name': deck_info['deck_name'],
                     'set_name': deck_info['set'],
                 }
                 
-                # Check if this was triggered by automatic refresh
                 if st.session_state.get('auto_refresh_in_progress', False):
                     st.session_state.force_deck_refresh = True
                     del st.session_state.auto_refresh_in_progress
@@ -539,13 +541,12 @@ def create_deck_selector():
         
         if not found_match:
             print(f"DEBUG: Preserved deck not found in new rankings: {preserved_deck}")
-            print(f"DEBUG: Available decks: {[deck_name_mapping[name]['deck_name'] for name in deck_display_names[:5]]}...")
 
-    # Calculate time ago and current set (rest of function stays the same)
+    # Calculate time ago and current set
     time_str = calculate_time_ago(st.session_state.fetch_time)
     
     # Get current set from selected deck or default
-    current_set = "-"  # Default
+    current_set = "-"
     if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
         selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
         deck_info = st.session_state.deck_name_mapping[selected_deck_display]
