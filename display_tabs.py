@@ -825,7 +825,8 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 trainer_options_grid.add_cards_from_dataframe(trainer_options)
                 trainer_options_grid.display()
-        st.caption("Meta Essentials: Cards appearing in 80%+ of competitive decks. Remaining Slots: Cards appearing in 25-80% of decks, offering flexibility for tech choices, with percentages show how often each card appears in top competitive decks.")
+        st.caption("Meta Essentials: Cards appearing in 80%+ of competitive decks."
+                   "Remaining Slots: Cards appearing in 25-80% of decks, offering flexibility for tech choices, with percentages show how often each card appears in top competitive decks.")
     else:
         st.info("No remaining slots available for this deck.")
         
@@ -1100,16 +1101,16 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         
         # Clean axes
         xaxis=dict(
-            title="Win Rate",
+            title="Win Rate (%)",
             title_font=dict(size=16),
             tickfont=dict(size=14),
             showgrid=False,
             showline=False,
             zeroline=False,
-            # Show every other tick to avoid crowding
+            # Show every 5% tick
             tickmode='array',
-            tickvals=bin_labels[::1],  # Show every 10% (0%, 10%, 20%, etc.)
-            ticktext=bin_labels[::2]
+            tickvals=[f"{i}%" for i in range(0, 100, 5)],
+            ticktext=[str(i) for i in range(0, 100, 5)]  # Show numbers without %
         ),
         yaxis=dict(
             title="Meta Share %",
@@ -1136,7 +1137,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     
     # Add explanation
     st.caption(
-        "Shows how much of the meta falls into each 5% win rate interval. "
+        "Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). "
         "Higher bars in green ranges = more favorable meta coverage."
     )
     
