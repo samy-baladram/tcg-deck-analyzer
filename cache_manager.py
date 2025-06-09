@@ -134,11 +134,17 @@ def validate_cache_data(cached_data):
 
 def analyze_deck_fresh(deck_name, set_name):
     """Perform fresh deck analysis without using any cache"""
-    from analyzer import analyze_deck, build_deck_template
+    from analyzer import collect_decks, analyze_deck, build_deck_template
     
-    print(f"Performing fresh analysis for {deck_name}")
+    print(f"Performing COMPLETELY FRESH analysis for {deck_name}")
     
-    # Force fresh collection and analysis
+    # CRITICAL: Clear the collected_decks session state to force fresh collection
+    deck_key = f"{deck_name}_{set_name}"
+    if 'collected_decks' in st.session_state and deck_key in st.session_state.collected_decks:
+        del st.session_state.collected_decks[deck_key]
+        print(f"Cleared session collected_decks for {deck_name}")
+    
+    # Force fresh collection and analysis (no cache checking)
     results, total_decks, variant_df, energy_types = analyze_deck(deck_name, set_name)
     deck_list, deck_info, total_cards, options = build_deck_template(results)
     
@@ -146,24 +152,25 @@ def analyze_deck_fresh(deck_name, set_name):
     
     # Create COMPLETE analyzed data structure
     analyzed_data = {
-        'results': results,                              # CRITICAL: Main analysis results
-        'total_decks': total_decks,                     # CRITICAL: Total deck count  
-        'variant_df': variant_df,                       # CRITICAL: Variant analysis
-        'deck_list': deck_list,                         # Deck template data
-        'deck_info': deck_info,                         # Card info for rendering
-        'total_cards': total_cards,                     # Total cards in template
-        'options': options,                             # Optional cards
-        'energy_types': energy_types,                   # Energy types list
-        'most_common_energy': most_common_energy        # Most common energy combo
+        'results': results,                              
+        'total_decks': total_decks,                      
+        'variant_df': variant_df,                        
+        'deck_list': deck_list,                          
+        'deck_info': deck_info,                          
+        'total_cards': total_cards,                      
+        'options': options,                              
+        'energy_types': energy_types,                    
+        'most_common_energy': most_common_energy         
     }
     
     # Store in session cache
     cache_key = f"full_deck_{deck_name}_{set_name}"
     st.session_state.analyzed_deck_cache[cache_key] = analyzed_data
     
-    # Save to disk cache
+    # Save to disk cache (with new data)
     cache_utils.save_analyzed_deck_components(deck_name, set_name, results, total_decks, variant_df, energy_types)
     
+    print(f"Completed fresh analysis for {deck_name} with {total_decks} decks")
     return analyzed_data
 
 # Update the get_or_analyze_full_deck function
@@ -389,7 +396,7 @@ def load_or_update_tournament_data(force_update=False):
         print(f"DEBUG: Time since last update: {time_since_update.total_seconds()} seconds")
         
         needs_update = force_update or performance_df.empty or time_since_update > timedelta(seconds=CACHE_TTL)
-        print(f"DEBUG: Needs update: {needs_update} (force={force_update}, empty={performance_df.empty}, stale={time_since_update > timedelta(seconds=CACHE_TTL)})")
+        print(f"DEBUG: Needs update: {needs_update}")
         
         if needs_update:
             print("DEBUG: Updating tournament data...")
@@ -403,62 +410,61 @@ def load_or_update_tournament_data(force_update=False):
             stats = update_tournament_tracking()
             print(f"DEBUG: Tournament tracking stats: {stats}")
             
-            # Force fresh analysis of performance data
-            try:
-                print(f"DEBUG: Calling analyze_recent_performance with threshold {MIN_META_SHARE}")
-                performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-                print(f"DEBUG: analyze_recent_performance returned {len(performance_df)} records")
+            # CRITICAL FIX: Only run expensive analysis if there are new tournaments OR forced
+            has_new_tournaments = stats.get('new_tournaments', 0) > 0
+            should_analyze = force_update or has_new_tournaments or performance_df.empty
+            
+            if should_analyze:
+                print(f"DEBUG: Running analysis - force: {force_update}, new tournaments: {has_new_tournaments}, empty cache: {performance_df.empty}")
                 
-                if performance_df.empty:
-                    print("DEBUG: No performance data returned, trying alternative approach...")
-                    # Try with lower threshold
-                    print("DEBUG: Trying with threshold 0.0...")
-                    performance_df = analyze_recent_performance(share_threshold=0.0)
-                    print(f"DEBUG: Second attempt returned {len(performance_df)} records")
-                
-                if not performance_df.empty:
-                    print("DEBUG: Saving performance data to cache...")
-                    # Save to cache
-                    cache_utils.save_tournament_performance_data(performance_df)
+                # Force fresh analysis of performance data
+                try:
+                    print(f"DEBUG: Calling analyze_recent_performance with threshold {MIN_META_SHARE}")
+                    performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+                    print(f"DEBUG: analyze_recent_performance returned {len(performance_df)} records")
                     
-                    # NEW: Check if deck count changed significantly
-                    new_deck_count = len(performance_df)
-                    print(f"DEBUG: New deck count: {new_deck_count}")
+                    if performance_df.empty:
+                        print("DEBUG: No performance data returned, trying alternative approach...")
+                        performance_df = analyze_recent_performance(share_threshold=0.0)
+                        print(f"DEBUG: Second attempt returned {len(performance_df)} records")
                     
-                    if new_deck_count != old_deck_count:
-                        print(f"DEBUG: Deck count changed: {old_deck_count} → {new_deck_count}")
+                    if not performance_df.empty:
+                        print("DEBUG: Saving performance data to cache...")
+                        # Save to cache
+                        cache_utils.save_tournament_performance_data(performance_df)
                         
-                        # Force refresh of currently selected deck
-                        if 'analyze' in st.session_state:
-                            current_deck = st.session_state.analyze.get('deck_name')
-                            print(f"DEBUG: Current deck in session: {current_deck}")
-                            if current_deck:
-                                print(f"DEBUG: Forcing cache clear for current deck: {current_deck}")
-                                # Clear all caches for the current deck
-                                clear_all_deck_caches(current_deck, st.session_state.analyze.get('set_name', 'A3a'))
-                                st.session_state.force_deck_refresh = True
-                                print("DEBUG: Set force_deck_refresh = True")
-                        else:
-                            print("DEBUG: No current deck in session state")
-                    
-                    print(f"DEBUG: Successfully loaded {len(performance_df)} decks")
-                else:
-                    print("DEBUG: Still no performance data available")
-                    
-            except Exception as e:
-                print(f"DEBUG: Exception in analyze_recent_performance call: {e}")
-                print(f"DEBUG: Exception type: {type(e)}")
-                import traceback
-                print(f"DEBUG: Full traceback: {traceback.format_exc()}")
-                
-                # Try to use cached data even if old
-                if not performance_df.empty:
-                    print("DEBUG: Using old cached data as fallback")
-                else:
-                    print("DEBUG: Creating minimal fallback data")
-                    # Create minimal fallback data
-                    performance_df = create_fallback_performance_data()
-                    print(f"DEBUG: Fallback data created with {len(performance_df)} records")
+                        # Check if deck count changed significantly
+                        new_deck_count = len(performance_df)
+                        print(f"DEBUG: New deck count: {new_deck_count}")
+                        
+                        if new_deck_count != old_deck_count:
+                            print(f"DEBUG: Deck count changed: {old_deck_count} → {new_deck_count}")
+                            
+                            # Force refresh of currently selected deck
+                            if 'analyze' in st.session_state:
+                                current_deck = st.session_state.analyze.get('deck_name')
+                                print(f"DEBUG: Current deck in session: {current_deck}")
+                                if current_deck:
+                                    print(f"DEBUG: Forcing cache clear for current deck: {current_deck}")
+                                    clear_all_deck_caches(current_deck, st.session_state.analyze.get('set_name', 'A3a'))
+                                    st.session_state.force_deck_refresh = True
+                                    print("DEBUG: Set force_deck_refresh = True")
+                        
+                        print(f"DEBUG: Successfully loaded {len(performance_df)} decks")
+                    else:
+                        print("DEBUG: Still no performance data available")
+                        
+                except Exception as e:
+                    print(f"DEBUG: Exception in analyze_recent_performance call: {e}")
+                    # Try to use cached data even if old
+                    if not performance_df.empty:
+                        print("DEBUG: Using old cached data as fallback")
+                    else:
+                        print("DEBUG: Creating minimal fallback data")
+                        performance_df = create_fallback_performance_data()
+            else:
+                print("DEBUG: No new tournaments detected, skipping expensive analysis")
+                print("DEBUG: Using existing cached performance data")
             
             # Update timestamp
             performance_timestamp = datetime.now()
@@ -477,10 +483,6 @@ def load_or_update_tournament_data(force_update=False):
         
     except Exception as e:
         print(f"DEBUG: Critical error in load_or_update_tournament_data: {e}")
-        print(f"DEBUG: Exception type: {type(e)}")
-        import traceback
-        print(f"DEBUG: Full traceback: {traceback.format_exc()}")
-        
         # Return fallback data
         print("DEBUG: Returning fallback data due to error")
         fallback_data = create_fallback_performance_data()
@@ -670,8 +672,16 @@ def clear_all_deck_caches(deck_name, set_name):
                 del st.session_state[key]
                 print(f"Cleared session state key: {key}")
     
-    # Clear disk caches
+    # CRITICAL FIX: Clear disk caches too when force refreshing
     cache_utils.clear_deck_cache(deck_name, set_name)
+    
+    # CRITICAL FIX: Also clear collected deck disk cache
+    import os
+    safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+    collected_file = os.path.join("cached_data/collected_decks", f"{safe_name}_{set_name}_collected.json")
+    if os.path.exists(collected_file):
+        os.remove(collected_file)
+        print(f"Cleared collected deck file: {collected_file}")
     
     # Clear energy utils cache
     if 'archetype_energy_types' in st.session_state and deck_name in st.session_state.archetype_energy_types:
@@ -679,6 +689,12 @@ def clear_all_deck_caches(deck_name, set_name):
     
     if 'archetype_energy_combos' in st.session_state and deck_name in st.session_state.archetype_energy_combos:
         del st.session_state.archetype_energy_combos[deck_name]
+    
+    # CRITICAL FIX: Also clear card cache
+    from card_cache import invalidate_deck_cache
+    invalidate_deck_cache(deck_name, set_name)
+    
+    print(f"Cleared ALL caches (including disk) for {deck_name}")
 
 def update_all_caches():
     """Comprehensive update of all caching systems."""
