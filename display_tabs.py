@@ -1047,6 +1047,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             (156, 204, 101),   # Light Green (60%)
             (139, 195, 74),    # Medium Green (70%)
             (102, 187, 106),   # Green (80%)
+            (27, 94, 32),       # Very Dark Green (90-100%)
             (27, 94, 32)       # Very Dark Green (90-100%)
         ]
         
@@ -1108,8 +1109,8 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             zeroline=False,
             # Show every 5% tick
             tickmode='array',
-            tickvals=[f"{i}%" for i in range(0, 100, 5)],
-            ticktext=[str(i) for i in range(0, 100, 5)]  # Show numbers without %
+            tickvals=[f"{i}%" for i in range(0, 101, 5)],
+            ticktext=[str(i) for i in range(0, 101, 5)]  # Show numbers without %
         ),
         yaxis=dict(
             title="Meta Share %",
