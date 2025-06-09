@@ -1456,7 +1456,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Calculate Meta Win Rate (weighted average win rate by meta share)
     if total_known_share > 0:
         # Weight each matchup's win rate by its meta share
-        weighted_win_rate = (working_df['win_pct'] * working_df['meta_share']).sum() / total_known_share
+        weighted_win_rate = (working_df['win_pct'] * working_df['matches_played'] * working_df['meta_share']).sum() / (working_df['matches_played'] * working_df['meta_share']).sum()
         
         # Normalize values to sum to 100% (just the three known categories)
         favorable_share_norm = (favorable_share / total_known_share) * 100
@@ -1512,7 +1512,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         </div>
         """, unsafe_allow_html=True)
         
-    st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), or unfavorable (<{win_lower}% win rate) matchups against this deck. Meta Win Rate is the average win rate weighted by opponent meta share. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
+    st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), or unfavorable (<{win_lower}% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Unfavorable {unfavorable_share:.1f}%, Even {even_share:.1f}%, Favorable {favorable_share:.1f}%).  Meta Win Rate is the average win rate weighted by match count and opponent meta share for reliability.")       
     
     # Display the bar chart
     display_matchup_bar_chart(deck_name, set_name, working_df)
