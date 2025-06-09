@@ -82,8 +82,8 @@ def get_all_recent_tournaments():
     current_year_month = current_date.strftime("%Y-%m")  # Format: YYYY-MM
     
     # Build URL with current year and month
-    #url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={current_year_month}&show={TOURNAMENT_COUNT}"
-    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&show={TOURNAMENT_COUNT}"
+    #url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&time={current_year_month}&show={TOURNAMENT_COUNT}"
+    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&show={TOURNAMENT_COUNT}"
     
     try:
         print(f"DEBUG: Fetching tournaments from: {url}")  # Add debug
@@ -95,8 +95,8 @@ def get_all_recent_tournaments():
             # Try previous month as fallback
             prev_month = current_date.replace(day=1) - timedelta(days=1)
             prev_year_month = prev_month.strftime("%Y-%m")
-            url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&show={TOURNAMENT_COUNT}"
-            #url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time={prev_year_month}&show={TOURNAMENT_COUNT}"
+            url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&show={TOURNAMENT_COUNT}"
+            #url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&time={prev_year_month}&show={TOURNAMENT_COUNT}"
             response = requests.get(url)
         
         soup = BeautifulSoup(response.text, 'html.parser')
