@@ -1102,13 +1102,13 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         xaxis=dict(
             title="Win Rate",
             title_font=dict(size=16),
-            tickfont=dict(size=16),
+            tickfont=dict(size=14),
             showgrid=False,
             showline=False,
             zeroline=False,
             # Show every other tick to avoid crowding
             tickmode='array',
-            tickvals=bin_labels[::2],  # Show every 10% (0%, 10%, 20%, etc.)
+            tickvals=bin_labels[::1],  # Show every 10% (0%, 10%, 20%, etc.)
             ticktext=bin_labels[::2]
         ),
         yaxis=dict(
@@ -1118,7 +1118,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             showgrid=False,
             showline=False,
             zeroline=False,
-            range=[0, 35]
+            range=[0, 25]
         ),
         
         # Remove legend and other elements
