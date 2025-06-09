@@ -237,15 +237,15 @@ else:
         #st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
 
 # Main content area
-if 'analyze' in st.session_state and selected_option:
+if 'analyze' in st.session_state and selected_option and st.session_state.get('deck_display_names'):
     original_deck_info = st.session_state.analyze
     
-    # Check if we need to force refresh (e.g., after deck switch)
+    # Check if we need to force refresh
     force_refresh = st.session_state.get('force_deck_refresh', False)
     if force_refresh:
-        st.session_state.force_deck_refresh = False  # Clear the flag
+        st.session_state.force_deck_refresh = False
     
-    # FIXED: Better error handling and retry logic
+    # Analyze deck with proper error handling
     with st.spinner("Analyzing deck..."):
         try:
             analyzed_deck = cache_manager.get_or_analyze_full_deck(
@@ -360,7 +360,13 @@ if 'analyze' in st.session_state and selected_option:
                 import traceback
                 st.code(traceback.format_exc())
 else:
-    st.info("👆 Select a deck from the dropdown to view detailed analysis")
+    # Show proper loading state instead of incomplete content
+    if not st.session_state.get('deck_display_names'):
+        st.info("Loading deck data...")
+    elif not selected_option:
+        st.info("Select a deck from the dropdown to view detailed analysis")
+    else:
+        st.info("Initializing deck analysis...")
 
 # st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
 # st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
