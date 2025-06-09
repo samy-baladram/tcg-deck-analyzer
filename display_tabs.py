@@ -1016,7 +1016,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     
     # Create 20 bins for win rates (0%, 5%, 10%, etc.)
     bins = list(range(0, 101, 5))  # [0, 5, 10, 15, ..., 95, 100]
-    bin_labels = [f"{i}%" for i in range(0, 100, 5)]  # ["0%", "5%", "10%", ..., "95%"]
+    bin_labels = [f"{i}%" for i in range(0, 101, 5)]  # ["0%", "5%", "10%", ..., "95%"]
     
     # Round win rates to nearest 5% and assign to bins
     working_df = working_df.copy()
