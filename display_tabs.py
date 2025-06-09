@@ -1489,7 +1489,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
        st.markdown(f"""
        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #65C63F; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
@@ -1693,7 +1693,7 @@ def display_matchup_tab(deck_info=None):
                 ),
                 "Matchup": st.column_config.TextColumn(
                     "Matchup",
-                    help="Favorable: ≥57.5%, Unfavorable: <42.5%, Even: 42.5-57.5%"
+                    help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
                 ),
                 "Meta Share %": st.column_config.NumberColumn(
                     "Meta Share %",
