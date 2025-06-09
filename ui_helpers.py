@@ -1255,8 +1255,7 @@ def create_meta_table():
     top_10_decks = meta_deck_data.head(10)
     
     # Start building the HTML table
-    table_html = """
-    <div style="margin-top: 20px; margin-bottom: 20px;">
+    table_html = """<div style="margin-top: 20px; margin-bottom: 20px;">
         <table style="width: 100%; font-size: 0.75rem; border-collapse: collapse; background-color: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden;">
             <thead>
                 <tr style="background-color: rgba(0, 160, 255, 0.1); border-bottom: 1px solid rgba(0, 160, 255, 0.2);">
@@ -1267,8 +1266,7 @@ def create_meta_table():
                     <th style="text-align: center; padding: 8px; font-weight: bold;">Power Index</th>
                 </tr>
             </thead>
-            <tbody>
-    """
+            <tbody>"""
     
     # Add rows for each deck
     for rank, (_, deck) in enumerate(top_10_decks.iterrows(), 1):
@@ -1327,8 +1325,7 @@ def create_meta_table():
             // For now, we'll use a simpler approach with session state
         }
     }
-    </script>
-    """
+    </script>"""
     
     return table_html
     
@@ -1355,8 +1352,8 @@ def render_sidebar_from_cache():
     create_deck_section("meta")
 
     # NEW: Add the meta table after the existing sections
-    meta_table_html = create_meta_table()
-    st.markdown(meta_table_html, unsafe_allow_html=True)
+    # meta_table_html = create_meta_table()
+    # st.markdown(meta_table_html, unsafe_allow_html=True)
 
     create_deck_section("trending")
     create_deck_section("gems")
