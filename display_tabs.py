@@ -1021,7 +1021,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     # Round win rates to nearest 5% and assign to bins
     working_df = working_df.copy()
     working_df['win_rate_rounded'] = (working_df['win_pct'] / 5).round() * 5
-    working_df['win_rate_rounded'] = working_df['win_rate_rounded'].clip(0, 95)  # Cap at 95%
+    working_df['win_rate_rounded'] = working_df['win_rate_rounded'].clip(0, 100)  # Cap at 95%
     working_df['win_rate_bin'] = working_df['win_rate_rounded'].astype(int).astype(str) + "%"
     
     # Aggregate meta share by bin
