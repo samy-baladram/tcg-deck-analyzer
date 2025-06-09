@@ -1,0 +1,41 @@
+name: Update Tournament Cache
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Every 4 hours
+  workflow_dispatch:       # Manual trigger button
+
+jobs:
+  update-tournaments:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests beautifulsoup4
+        
+    - name: Run tournament scraper
+      run: python scripts/update_tournaments.py
+        
+    - name: List cached files
+      run: |
+        echo "Files in tournament_cache:"
+        ls -la tournament_cache/
+        echo "Content of index.json:"
+        cat tournament_cache/index.json || echo "No index.json found"
+        
+    - name: Commit tournament data
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add tournament_cache/
+        git commit -m "Update tournament cache $(date)" || exit 0
+        git push
