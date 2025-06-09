@@ -1092,7 +1092,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     # Update layout - Clean and minimal
     fig.update_layout(
         height=300,
-        margin=dict(t=0, l=10, r=0, b=20),
+        margin=dict(t=0, l=10, r=0, b=10),
         
         # Transparent backgrounds
         paper_bgcolor='rgba(0,0,0,0)',
@@ -1108,7 +1108,6 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             zeroline=False,
             # Show every 5% tick
             tickmode='array',
-            tickpad=2,
             tickvals=[f"{i}%" for i in range(0, 100, 5)],
             ticktext=[str(i) for i in range(0, 100, 5)]  # Show numbers without %
         ),
