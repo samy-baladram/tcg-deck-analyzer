@@ -1303,7 +1303,7 @@ def create_meta_table():
                 
                 # Add row to table
                 row_style = "border-bottom: 1px solid rgba(0, 160, 255, 0.1);" if rank < 10 else ""
-                table_html += f"<tr style='{row_style}'><td style='text-align: center; padding: 6px; font-weight: bold;'>{rank}</td><td style='text-align: center; padding: 6px;'>{icon1_html}</td><td style='text-align: center; padding: 6px;'>{icon2_html}</td><td style='text-align: left; padding: 6px;'>{deck_name_html}</td><td style='text-align: center; padding: 6px; font-weight: bold;'>{power_index:.2f}</td></tr>"
+                # table_html += f"<tr style='{row_style}'><td style='text-align: center; padding: 6px; font-weight: bold;'>{rank}</td><td style='text-align: center; padding: 6px;'>{icon1_html}</td><td style='text-align: center; padding: 6px;'>{icon2_html}</td><td style='text-align: left; padding: 6px;'>{deck_name_html}</td><td style='text-align: center; padding: 6px; font-weight: bold;'>{power_index:.2f}</td></tr>"
                 
                 print(f"DEBUG: Successfully processed deck {rank}")
                 
