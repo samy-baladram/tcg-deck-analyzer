@@ -1114,11 +1114,11 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         yaxis=dict(
             title="Meta Share %",
             title_font=dict(size=16),
-            tickfont=dict(size=16),
+            tickfont=dict(size=14),
             showgrid=False,
             showline=False,
             zeroline=False,
-            range=[0, 25]
+            range=[0, 27]
         ),
         
         # Remove legend and other elements
