@@ -1289,30 +1289,25 @@ def create_meta_table():
         
         # Create clickable deck name
         deck_button_id = f"meta_table_{deck_name}_{rank}"
-        deck_name_html = f"""
-        <button onclick="selectDeck('{deck_name}')" 
+        deck_name_html = f"""<button onclick="selectDeck('{deck_name}')" 
                 style="background: none; border: none; color: #00A0FF; text-decoration: underline; cursor: pointer; font-size: 0.75rem; text-align: left; padding: 0; font-family: inherit;"
                 onmouseover="this.style.color='#48BBFF'" 
                 onmouseout="this.style.color='#00A0FF'">
             {displayed_name}
-        </button>
-        """
+        </button>"""
         
         # Add row to table
         row_style = "border-bottom: 1px solid rgba(0, 160, 255, 0.1);" if rank < 10 else ""
-        table_html += f"""
-            <tr style="{row_style}">
+        table_html += f"""<tr style="{row_style}">
                 <td style="text-align: center; padding: 6px; font-weight: bold;">{rank}</td>
                 <td style="text-align: center; padding: 6px;">{icon1_html}</td>
                 <td style="text-align: center; padding: 6px;">{icon2_html}</td>
                 <td style="text-align: left; padding: 6px;">{deck_name_html}</td>
                 <td style="text-align: center; padding: 6px; font-weight: bold;">{power_index:.2f}</td>
-            </tr>
-        """
+            </tr>"""
     
     # Close the table
-    table_html += """
-            </tbody>
+    table_html += """</tbody>
         </table>
     </div>
     
