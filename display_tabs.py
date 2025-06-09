@@ -1456,7 +1456,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Calculate Meta Win Rate (weighted average win rate by meta share)
     if total_known_share > 0:
         # Weight each matchup's win rate by its meta share
-        weighted_win_rate = (working_df['win_pct'] * working_df['meta_share']).sum() / total_known_share
+        weighted_win_rate = 0 #(working_df['win_pct'] * working_df['meta_share']).sum() / total_known_share
         
         # Normalize values to sum to 100% (just the three known categories)
         favorable_share_norm = (favorable_share / total_known_share) * 100
