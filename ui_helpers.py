@@ -1245,46 +1245,118 @@ def render_about_section():
 def create_meta_table():
     """Create HTML table for Top 10 Meta decks with Pokemon icons and clickable deck names"""
     
-    # Get filtered data for meta decks (same as existing meta section)
-    meta_deck_data = get_filtered_deck_data("meta")
-    
-    if meta_deck_data.empty:
-        return "<p>No meta deck data available</p>"
-    
-    # Limit to top 10
-    top_10_decks = meta_deck_data.head(10)
-    
-    # Start building the HTML table with minimal spacing
-    table_html = "<div style='margin-top: 20px; margin-bottom: 20px;'><h5 style='margin-bottom: 10px;'>📊 Top 10 Meta Table</h5><table style='width: 100%; font-size: 0.75rem; border-collapse: collapse; background-color: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden;'><thead><tr style='background-color: rgba(0, 160, 255, 0.1); border-bottom: 1px solid rgba(0, 160, 255, 0.2);'><th style='text-align: center; padding: 8px; font-weight: bold;'>Rank</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Icon 1</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Icon 2</th><th style='text-align: left; padding: 8px; font-weight: bold;'>Deck Name</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Power Index</th></tr></thead><tbody>"
-    
-    # Add rows for each deck
-    for rank, (_, deck) in enumerate(top_10_decks.iterrows(), 1):
-        deck_name = deck['deck_name']
-        displayed_name = deck['displayed_name']
-        power_index = deck['power_index']
+    try:
+        # Debug: Check if we can get the data
+        print("DEBUG: Starting create_meta_table()")
         
-        # Extract Pokemon URLs using the same function as Metagame Overview
-        try:
-            url1, url2 = extract_pokemon_urls(deck_name)
-        except Exception as e:
-            print(f"Error extracting Pokemon URLs for {deck_name}: {e}")
-            url1, url2 = None, None
+        # Get filtered data for meta decks (same as existing meta section)
+        meta_deck_data = get_filtered_deck_data("meta")
+        print(f"DEBUG: Got meta_deck_data with {len(meta_deck_data)} rows")
         
-        # Create icon HTML
-        icon1_html = f"<img src='{url1}' style='height: 20px; width: auto;' alt='Pokemon 1'>" if url1 else "<span style='color: #888;'>-</span>"
-        icon2_html = f"<img src='{url2}' style='height: 20px; width: auto;' alt='Pokemon 2'>" if url2 else "<span style='color: #888;'>-</span>"
+        if meta_deck_data.empty:
+            print("DEBUG: meta_deck_data is empty")
+            return "<p>No meta deck data available</p>"
         
-        # Simple deck name display (no JavaScript)
-        deck_name_html = f"<span style='color: #00A0FF; font-weight: bold;'>{displayed_name}</span>"
+        # Debug: Check the columns
+        print(f"DEBUG: meta_deck_data columns: {list(meta_deck_data.columns)}")
         
-        # Add row to table
-        row_style = "border-bottom: 1px solid rgba(0, 160, 255, 0.1);" if rank < 10 else ""
-        table_html += f"<tr style='{row_style}'><td style='text-align: center; padding: 6px; font-weight: bold;'>{rank}</td><td style='text-align: center; padding: 6px;'>{icon1_html}</td><td style='text-align: center; padding: 6px;'>{icon2_html}</td><td style='text-align: left; padding: 6px;'>{deck_name_html}</td><td style='text-align: center; padding: 6px; font-weight: bold;'>{power_index:.2f}</td></tr>"
-    
-    # Close the table
-    table_html += "</tbody></table></div>"
-    
-    return table_html
+        # Limit to top 10
+        top_10_decks = meta_deck_data.head(10)
+        print(f"DEBUG: top_10_decks shape: {top_10_decks.shape}")
+        
+        # Start building the HTML table with minimal spacing
+        table_html = "<div style='margin-top: 20px; margin-bottom: 20px;'><h5 style='margin-bottom: 10px;'>📊 Top 10 Meta Table</h5><table style='width: 100%; font-size: 0.75rem; border-collapse: collapse; background-color: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden;'><thead><tr style='background-color: rgba(0, 160, 255, 0.1); border-bottom: 1px solid rgba(0, 160, 255, 0.2);'><th style='text-align: center; padding: 8px; font-weight: bold;'>Rank</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Icon 1</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Icon 2</th><th style='text-align: left; padding: 8px; font-weight: bold;'>Deck Name</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Power Index</th></tr></thead><tbody>"
+        
+        # Add rows for each deck with debugging
+        for rank, (_, deck) in enumerate(top_10_decks.iterrows(), 1):
+            try:
+                print(f"DEBUG: Processing deck {rank}")
+                
+                # Debug: Check if required fields exist
+                required_fields = ['deck_name', 'displayed_name', 'power_index']
+                for field in required_fields:
+                    if field not in deck:
+                        print(f"ERROR: Missing field '{field}' in deck data")
+                        print(f"Available fields: {list(deck.index)}")
+                        return f"<p>Error: Missing field '{field}' in deck data</p>"
+                
+                deck_name = deck['deck_name']
+                displayed_name = deck['displayed_name']
+                power_index = deck['power_index']
+                
+                print(f"DEBUG: deck_name={deck_name}, displayed_name={displayed_name}, power_index={power_index}")
+                
+                # Extract Pokemon URLs using the same function as Metagame Overview
+                try:
+                    url1, url2 = extract_pokemon_urls(deck_name)
+                    print(f"DEBUG: Pokemon URLs extracted for {deck_name}")
+                except Exception as e:
+                    print(f"ERROR: extracting Pokemon URLs for {deck_name}: {e}")
+                    url1, url2 = None, None
+                
+                # Create icon HTML
+                icon1_html = f"<img src='{url1}' style='height: 20px; width: auto;' alt='Pokemon 1'>" if url1 else "<span style='color: #888;'>-</span>"
+                icon2_html = f"<img src='{url2}' style='height: 20px; width: auto;' alt='Pokemon 2'>" if url2 else "<span style='color: #888;'>-</span>"
+                
+                # Simple deck name display (no JavaScript)
+                deck_name_html = f"<span style='color: #00A0FF; font-weight: bold;'>{displayed_name}</span>"
+                
+                # Add row to table
+                row_style = "border-bottom: 1px solid rgba(0, 160, 255, 0.1);" if rank < 10 else ""
+                table_html += f"<tr style='{row_style}'><td style='text-align: center; padding: 6px; font-weight: bold;'>{rank}</td><td style='text-align: center; padding: 6px;'>{icon1_html}</td><td style='text-align: center; padding: 6px;'>{icon2_html}</td><td style='text-align: left; padding: 6px;'>{deck_name_html}</td><td style='text-align: center; padding: 6px; font-weight: bold;'>{power_index:.2f}</td></tr>"
+                
+                print(f"DEBUG: Successfully processed deck {rank}")
+                
+            except Exception as e:
+                print(f"ERROR: Processing deck {rank}: {e}")
+                import traceback
+                print(f"TRACEBACK: {traceback.format_exc()}")
+                # Continue with next deck instead of failing completely
+                continue
+        
+        # Close the table
+        table_html += "</tbody></table></div>"
+        
+        print("DEBUG: create_meta_table() completed successfully")
+        return table_html
+        
+    except Exception as e:
+        print(f"CRITICAL ERROR in create_meta_table(): {e}")
+        import traceback
+        print(f"FULL TRACEBACK: {traceback.format_exc()}")
+        return f"<p>Error creating meta table: {str(e)}</p>"
+
+# Also add this simple test function to check if the data exists
+def debug_meta_data():
+    """Debug function to check meta data availability"""
+    try:
+        print("=== DEBUG META DATA ===")
+        
+        # Check session state
+        if 'performance_data' not in st.session_state:
+            print("ERROR: No performance_data in session_state")
+            return
+        
+        perf_data = st.session_state.performance_data
+        print(f"Performance data shape: {perf_data.shape}")
+        print(f"Performance data columns: {list(perf_data.columns)}")
+        
+        if not perf_data.empty:
+            print("First few rows:")
+            print(perf_data.head(2))
+        
+        # Test get_filtered_deck_data
+        meta_data = get_filtered_deck_data("meta")
+        print(f"Meta filtered data shape: {meta_data.shape}")
+        
+        if not meta_data.empty:
+            print("First meta deck:")
+            print(meta_data.iloc[0])
+            
+    except Exception as e:
+        print(f"Error in debug_meta_data: {e}")
+        import traceback
+        print(traceback.format_exc())
     
 def render_sidebar_from_cache():
     """Render sidebar with fully unified configuration approach"""
