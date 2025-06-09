@@ -15,7 +15,7 @@ ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_
 
 # Tournament count
 TOURNAMENT_COUNT = 50
-MIN_MATCHUP_MATCHES = 5
+MIN_MATCHUP_MATCHES = 7
 MIN_COUNTER_MATCHES = 8
 
 # Display settings
