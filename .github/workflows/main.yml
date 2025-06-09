@@ -1,0 +1,41 @@
+name: Update Tournament Cache
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Every 4 hours
+  workflow_dispatch:       # Manual trigger button
+
+jobs:
+  update-tournaments:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests beautifulsoup4
+        
+    - name: Create test tournament file
+      run: |
+        mkdir -p tournament_cache
+        echo '{"test": "This is a test file", "timestamp": "'$(date)'"}'> tournament_cache/test.json
+        
+    - name: List files
+      run: |
+        echo "Files in tournament_cache:"
+        ls -la tournament_cache/
+        
+    - name: Commit test data
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add tournament_cache/
+        git commit -m "Test tournament cache update $(date)" || exit 0
+        git push
