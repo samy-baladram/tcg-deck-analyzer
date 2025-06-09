@@ -73,7 +73,7 @@ def scrape_tournament_data(tournament_id):
     }
 
 def update_tournament_cache():
-    """Main function to update tournament cache"""
+    """Main function to update tournament cache - only scrape NEW tournaments"""
     cache_dir = "tournament_cache"
     index_file = f"{cache_dir}/index.json"
     
@@ -90,42 +90,46 @@ def update_tournament_cache():
     print(f"Current cache has {len(index['tournaments'])} tournaments")
     
     # Get recent tournament IDs
-    tournament_ids = get_recent_tournament_ids(30)
+    tournament_ids = get_recent_tournament_ids(20)
     print(f"Found {len(tournament_ids)} recent tournaments")
     
-    new_count = 0
-    target_count = 2  # Only process 2 tournaments for testing
+    # Find NEW tournaments (not in cache)
+    new_tournament_ids = [tid for tid in tournament_ids if tid not in index['tournaments']]
+    print(f"New tournaments to scrape: {len(new_tournament_ids)}")
     
-    for tournament_id in tournament_ids:
-        if new_count >= target_count:
-            break
-            
-        if tournament_id not in index['tournaments']:
-            try:
-                data = scrape_tournament_data(tournament_id)
-                if data and data['player_count'] >= 50:  # Only cache tournaments with 50+ players
-                    # Save individual tournament file
-                    tournament_file = f"{cache_dir}/{tournament_id}.json"
-                    with open(tournament_file, 'w') as f:
-                        json.dump(data, f, indent=2)
-                    
-                    # Update index
-                    index['tournaments'].append(tournament_id)
-                    new_count += 1
-                    print(f"✅ Cached {tournament_id}: {data['name'][:50]}... ({data['player_count']} players)")
-                else:
-                    print(f"⏭️  Skipped {tournament_id}: too small or failed")
-            except Exception as e:
-                print(f"❌ Failed {tournament_id}: {e}")
-            
-            time.sleep(2)  # Be nice to the server
+    if not new_tournament_ids:
+        print("No new tournaments found - nothing to scrape")
+        return
+    
+    new_count = 0
+    
+    # Only scrape the NEW ones
+    for tournament_id in new_tournament_ids:
+        try:
+            data = scrape_tournament_data(tournament_id)
+            if data and data['player_count'] >= 50:  # Only cache tournaments with 50+ players
+                # Save individual tournament file
+                tournament_file = f"{cache_dir}/{tournament_id}.json"
+                with open(tournament_file, 'w') as f:
+                    json.dump(data, f, indent=2)
+                
+                # Update index
+                index['tournaments'].append(tournament_id)
+                new_count += 1
+                print(f"✅ NEW: {tournament_id} - {data['name'][:50]}... ({data['player_count']} players)")
+            else:
+                print(f"⏭️  Skipped {tournament_id}: too small or failed")
+        except Exception as e:
+            print(f"❌ Failed {tournament_id}: {e}")
+        
+        time.sleep(2)  # Be nice to the server
     
     # Update index with new timestamp
     index['last_updated'] = int(time.time())
     with open(index_file, 'w') as f:
         json.dump(index, f, indent=2)
     
-    print(f"Update complete: {new_count} new tournaments cached")
+    print(f"Update complete: {new_count} new tournaments added to cache")
 
 if __name__ == "__main__":
     update_tournament_cache()
