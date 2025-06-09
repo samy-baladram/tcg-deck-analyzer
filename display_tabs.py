@@ -1503,7 +1503,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         """, unsafe_allow_html=True)
 
     with sep1:
-        st.markdown('<div style="border-left: 1px solid #ddd; height: 80px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="border-left: 1px solid #ddd; height: 120px;"></div>', unsafe_allow_html=True)
 
     # NEW: Display Meta Win Rate
     with col4:
