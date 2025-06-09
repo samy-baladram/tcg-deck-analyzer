@@ -1073,7 +1073,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             return f"rgb({avg_r}, {avg_g}, {avg_b})"
     
     # Create colors list for all bars
-    bar_colors = [get_bin_color(i) for i in range(20)]
+    bar_colors = [get_bin_color(i) for i in range(21)]
     
     # Create the bar chart
     import plotly.graph_objects as go
