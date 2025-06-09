@@ -1092,7 +1092,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     # Update layout - Clean and minimal
     fig.update_layout(
         height=300,
-        margin=dict(t=-10, l=10, r=0, b=0),
+        margin=dict(t=0, l=0, r=0, b=0),
         
         # Transparent backgrounds
         paper_bgcolor='rgba(0,0,0,0)',
