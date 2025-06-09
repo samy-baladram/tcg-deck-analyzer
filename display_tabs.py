@@ -1138,6 +1138,40 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     st.caption(
         "Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage."
     )
+
+# In display_tabs.py - Update the get_or_fetch_matchup_data function
+def calculate_weighted_win_rate(matchup_df):
+    """
+    Calculate weighted win rate based on meta share percentages
+    
+    Args:
+        matchup_df: DataFrame with matchup data including 'win_pct' and 'meta_share'
+        
+    Returns:
+        Float representing the weighted win rate
+    """
+    if matchup_df.empty or matchup_df['meta_share'].sum() == 0:
+        return 0.0
+    
+    # Calculate weighted average: (win_rate * meta_share) / total_meta_share
+    weighted_sum = (matchup_df['win_pct'] * matchup_df['meta_share']).sum()
+    total_weight = matchup_df['meta_share'].sum()
+    
+    return weighted_sum / total_weight if total_weight > 0 else 0.0
+
+# Add the weighted win rate calculation to your matchup processing
+def process_matchup_data(matchup_df):
+    """Process matchup data and add weighted metrics"""
+    if matchup_df.empty:
+        return matchup_df
+    
+    # Add individual weighted win rate for each matchup
+    matchup_df['weighted_win_rate'] = matchup_df['win_pct'] * (matchup_df['meta_share'] / 100)
+    
+    # Calculate overall weighted win rate for the deck
+    overall_weighted_wr = calculate_weighted_win_rate(matchup_df)
+    
+    return matchup_df, overall_weighted_wr
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
@@ -1463,7 +1497,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         unfavorable_share_norm = 0
     
     # Columns
-    col1, col2, col3 = st.columns([1,1,1])
+    col1, col2, col3, col4 = st.columns([1,1,1,1])
     
     # Display favorable matchups
     with col1:
@@ -1493,8 +1527,17 @@ def display_matchup_summary(deck_name, set_name, working_df):
             <div style="font-size: 1rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown(f"""
+        <div style="display: flex; flex-direction: column; justify-content: center; alignment-items: center; padding: 10px; border-radius: 8px; height: 100px;">
+            <div style="font-size: 1.1rem; font-weight: bold;">Meta Win Rate</div>
+            <div style="font-size: 2.5rem; font-weight: bold; color: #00A0FF; line-height: 0.8;">{overall_weighted_wr:.1f}%</div>
+            <div style="font-size: 1rem;">weighted</div>
+        </div>
+        """, unsafe_allow_html=True)            
         
-    st.caption(f"This shows how much of the current meta (≥0.5% share) has favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), or unfavorable (<{win_lower}% win rate) matchups against this deck. Values are normalized to sum to 100%. (Raw data: Favorable {favorable_share:.1f}%, Even {even_share:.1f}%, Unfavorable {unfavorable_share:.1f}%)")       
+    st.caption(f"Distribution shows meta coverage: favorable (≥{win_upper}% win rate), even ({win_lower}-{win_upper}% win rate), unfavorable (<{win_lower}% win rate) matchups. Values normalized to 100%. (Raw data: Unfavorable {unfavorable_share:.1f}%), Even {even_share:.1f}%, Favorable {favorable_share:.1f}%). Meta Win Rate shows expected win percentage against current meta, weighted by opponent deck frequency.")
     # # Add a more detailed note about the data
     # st.write("")
     # Display the bar chart
