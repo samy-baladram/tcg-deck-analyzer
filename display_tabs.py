@@ -1001,7 +1001,7 @@ def display_metagame_tab():
 
 def display_matchup_bar_chart(deck_name, set_name, working_df):
     """
-    Display a bar chart showing win rate distribution with 10 bins
+    Display a bar chart showing win rate distribution with 5% bins
     
     Args:
         deck_name: Current deck name
@@ -1014,12 +1014,15 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         st.info("No matchup data available for bar chart.")
         return
     
-    # Create 10 bins for win rates (0-10%, 10-20%, etc.)
-    bins = list(range(0, 101, 10))  # [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    bin_labels = [f"{i}-{i+9}%" for i in range(0, 100, 10)]
+    # Create 20 bins for win rates (0%, 5%, 10%, etc.)
+    bins = list(range(0, 101, 5))  # [0, 5, 10, 15, ..., 95, 100]
+    bin_labels = [f"{i}%" for i in range(0, 100, 5)]  # ["0%", "5%", "10%", ..., "95%"]
     
-    # Assign each matchup to a bin and sum meta shares
-    working_df['win_rate_bin'] = pd.cut(working_df['win_pct'], bins=bins, labels=bin_labels, include_lowest=True)
+    # Round win rates to nearest 5% and assign to bins
+    working_df = working_df.copy()
+    working_df['win_rate_rounded'] = (working_df['win_pct'] / 5).round() * 5
+    working_df['win_rate_rounded'] = working_df['win_rate_rounded'].clip(0, 95)  # Cap at 95%
+    working_df['win_rate_bin'] = working_df['win_rate_rounded'].astype(int).astype(str) + "%"
     
     # Aggregate meta share by bin
     bin_data = working_df.groupby('win_rate_bin', observed=True).agg({
@@ -1031,13 +1034,10 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     all_bins_df = pd.DataFrame({'win_rate_bin': bin_labels})
     bin_data = all_bins_df.merge(bin_data, on='win_rate_bin', how='left').fillna(0)
     
-    # Get colors for each bin using the same gradient
+    # Create 20 colors by interpolating between adjacent colors
     def get_bin_color(bin_index):
-        # Map bin index (0-9) to color scale position (0.0-1.0)
-        position = bin_index / 9
-        
-        # Same RGB colors from the gradient
-        colors = [
+        # Original 10 colors
+        base_colors = [
             (220, 53, 69),     # Red (0%)
             (253, 126, 20),    # Red-Orange (10%)
             (255, 152, 0),     # Orange (20%)
@@ -1050,10 +1050,29 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             (27, 94, 32)       # Very Dark Green (90-100%)
         ]
         
-        return f"rgb({colors[bin_index][0]}, {colors[bin_index][1]}, {colors[bin_index][2]})"
+        # For 20 bins (0%, 5%, 10%, ..., 95%), we need interpolation
+        if bin_index % 2 == 0:
+            # Even indices (0%, 10%, 20%, etc.) use original colors
+            original_index = bin_index // 2
+            return f"rgb({base_colors[original_index][0]}, {base_colors[original_index][1]}, {base_colors[original_index][2]})"
+        else:
+            # Odd indices (5%, 15%, 25%, etc.) use interpolated colors
+            left_index = bin_index // 2
+            right_index = min(left_index + 1, len(base_colors) - 1)
+            
+            # Interpolate between adjacent colors
+            left_color = base_colors[left_index]
+            right_color = base_colors[right_index]
+            
+            # Average the RGB values
+            avg_r = (left_color[0] + right_color[0]) // 2
+            avg_g = (left_color[1] + right_color[1]) // 2
+            avg_b = (left_color[2] + right_color[2]) // 2
+            
+            return f"rgb({avg_r}, {avg_g}, {avg_b})"
     
     # Create colors list for all bars
-    bar_colors = [get_bin_color(i) for i in range(10)]
+    bar_colors = [get_bin_color(i) for i in range(20)]
     
     # Create the bar chart
     import plotly.graph_objects as go
@@ -1081,12 +1100,16 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         
         # Clean axes
         xaxis=dict(
-            title="Win Rate Range",
+            title="Win Rate",
             title_font=dict(size=16),
             tickfont=dict(size=16),
             showgrid=False,
             showline=False,
-            zeroline=False
+            zeroline=False,
+            # Show every other tick to avoid crowding
+            tickmode='array',
+            tickvals=bin_labels[::2],  # Show every 10% (0%, 10%, 20%, etc.)
+            ticktext=bin_labels[::2]
         ),
         yaxis=dict(
             title="Meta Share %",
@@ -1113,7 +1136,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     
     # Add explanation
     st.caption(
-        "Shows how much of the meta falls into each win rate range. "
+        "Shows how much of the meta falls into each 5% win rate interval. "
         "Higher bars in green ranges = more favorable meta coverage."
     )
     
