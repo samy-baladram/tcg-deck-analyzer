@@ -1257,29 +1257,29 @@ def create_meta_table():
     # Start building the HTML table with minimal spacing
     table_html = "<div style='margin-top: 20px; margin-bottom: 20px;'><h5 style='margin-bottom: 10px;'>📊 Top 10 Meta Table</h5><table style='width: 100%; font-size: 0.75rem; border-collapse: collapse; background-color: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden;'><thead><tr style='background-color: rgba(0, 160, 255, 0.1); border-bottom: 1px solid rgba(0, 160, 255, 0.2);'><th style='text-align: center; padding: 8px; font-weight: bold;'>Rank</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Icon 1</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Icon 2</th><th style='text-align: left; padding: 8px; font-weight: bold;'>Deck Name</th><th style='text-align: center; padding: 8px; font-weight: bold;'>Power Index</th></tr></thead><tbody>"
     
-    # Add rows for each deck
-    for rank, (_, deck) in enumerate(top_10_decks.iterrows(), 1):
-        deck_name = deck['deck_name']
-        displayed_name = deck['displayed_name']
-        power_index = deck['power_index']
+    # # Add rows for each deck
+    # for rank, (_, deck) in enumerate(top_10_decks.iterrows(), 1):
+    #     deck_name = deck['deck_name']
+    #     displayed_name = deck['displayed_name']
+    #     power_index = deck['power_index']
         
-        # Extract Pokemon URLs using the same function as Metagame Overview
-        try:
-            url1, url2 = extract_pokemon_urls(deck_name)
-        except Exception as e:
-            print(f"Error extracting Pokemon URLs for {deck_name}: {e}")
-            url1, url2 = None, None
+    #     # Extract Pokemon URLs using the same function as Metagame Overview
+    #     try:
+    #         url1, url2 = extract_pokemon_urls(deck_name)
+    #     except Exception as e:
+    #         print(f"Error extracting Pokemon URLs for {deck_name}: {e}")
+    #         url1, url2 = None, None
         
-        # Create icon HTML
-        icon1_html = f"<img src='{url1}' style='height: 20px; width: auto;' alt='Pokemon 1'>" if url1 else "<span style='color: #888;'>-</span>"
-        icon2_html = f"<img src='{url2}' style='height: 20px; width: auto;' alt='Pokemon 2'>" if url2 else "<span style='color: #888;'>-</span>"
+    #     # Create icon HTML
+    #     icon1_html = f"<img src='{url1}' style='height: 20px; width: auto;' alt='Pokemon 1'>" if url1 else "<span style='color: #888;'>-</span>"
+    #     icon2_html = f"<img src='{url2}' style='height: 20px; width: auto;' alt='Pokemon 2'>" if url2 else "<span style='color: #888;'>-</span>"
         
-        # Simple deck name display (no JavaScript)
-        deck_name_html = f"<span style='color: #00A0FF; font-weight: bold;'>{displayed_name}</span>"
+    #     # Simple deck name display (no JavaScript)
+    #     deck_name_html = f"<span style='color: #00A0FF; font-weight: bold;'>{displayed_name}</span>"
         
-        # Add row to table
-        row_style = "border-bottom: 1px solid rgba(0, 160, 255, 0.1);" if rank < 10 else ""
-        table_html += f"<tr style='{row_style}'><td style='text-align: center; padding: 6px; font-weight: bold;'>{rank}</td><td style='text-align: center; padding: 6px;'>{icon1_html}</td><td style='text-align: center; padding: 6px;'>{icon2_html}</td><td style='text-align: left; padding: 6px;'>{deck_name_html}</td><td style='text-align: center; padding: 6px; font-weight: bold;'>{power_index:.2f}</td></tr>"
+    #     # Add row to table
+    #     row_style = "border-bottom: 1px solid rgba(0, 160, 255, 0.1);" if rank < 10 else ""
+    #     table_html += f"<tr style='{row_style}'><td style='text-align: center; padding: 6px; font-weight: bold;'>{rank}</td><td style='text-align: center; padding: 6px;'>{icon1_html}</td><td style='text-align: center; padding: 6px;'>{icon2_html}</td><td style='text-align: left; padding: 6px;'>{deck_name_html}</td><td style='text-align: center; padding: 6px; font-weight: bold;'>{power_index:.2f}</td></tr>"
     
     # Close the table
     table_html += "</tbody></table></div>"
