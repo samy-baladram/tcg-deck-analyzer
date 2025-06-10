@@ -167,6 +167,12 @@ div[role="option"]:hover {
     background-color: #00A0FF;
 }
 
+/* Selected option */
+div[data-baseweb="select"] [aria-selected="true"] {
+    background-color: #00A0FF !important;
+}
+
+
 /* TAB NAVIGATION STYLES */
 /* Active tab text color */
 .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
