@@ -157,6 +157,11 @@ div[role="option"]:hover {
     background-color: #00A0FF !important;
 }
 
+/* Change primary color to blue */
+div[data-baseweb="select"] > div {
+    border-color: #00A0FF !important;
+}
+
 .stButton > button:hover {
     border-color: #00A0FF;
     color: #00A0FF;
