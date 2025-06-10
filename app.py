@@ -152,32 +152,6 @@ div[data-baseweb="tag"] * {
     border-color: #00A0FF !important;
 }
 
-/* Change primary color to blue */
-div[data-baseweb="select"] > div {
-    border-color: #00A0FF !important;
-}
-
-/* Selected option */
-div[data-baseweb="select"] [aria-selected="true"] {
-    background-color: #00A0FF !important;
-}
-
-/* Hover effect */
-div[role="option"]:hover {
-    background-color: #00A0FF !important;
-}
-
-/* Button primary color */
-.stButton > button {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
-
-.stButton > button:hover {
-    border-color: #00A0FF;
-    color: #00A0FF;
-}
-
 /* Progress bar */
 .stProgress > div > div > div > div {
     background-color: #00A0FF;
@@ -219,6 +193,32 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 
 </style>
 """, unsafe_allow_html=True)
+
+# /* Change primary color to blue */
+# div[data-baseweb="select"] > div {
+#     border-color: #00A0FF !important;
+# }
+
+# /* Selected option */
+# div[data-baseweb="select"] [aria-selected="true"] {
+#     background-color: #00A0FF !important;
+# }
+
+# /* Hover effect */
+# div[role="option"]:hover {
+#     background-color: #00A0FF !important;
+# }
+
+# /* Button primary color */
+# .stButton > button {
+#     border-color: #00A0FF;
+#     color: #00A0FF;
+# }
+
+# .stButton > button:hover {
+#     border-color: #00A0FF;
+#     color: #00A0FF;
+# }
 
 # Display banner
 ui_helpers.display_banner("title_banner.png")
