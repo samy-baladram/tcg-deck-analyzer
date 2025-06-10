@@ -1,6 +1,8 @@
 name: Update Tournament Cache
 
 on:
+  schedule:
+    - cron: '0 */2 * * *'  # Every 2 hours
   workflow_dispatch:       # Manual trigger button
 
 jobs:
@@ -25,10 +27,8 @@ jobs:
         
     - name: List cached files
       run: |
-        echo "Files in tournament_cache:"
-        ls -la tournament_cache/
-        echo "Content of index.json:"
-        cat tournament_cache/index.json || echo "No index.json found"
+        echo "Recent files in tournament_cache:"
+        find tournament_cache -name "*.json" | head -10
         
     - name: Commit tournament data
       run: |
