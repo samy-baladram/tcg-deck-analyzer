@@ -152,6 +152,16 @@ div[data-baseweb="tag"] * {
     border-color: #00A0FF !important;
 }
 
+/* Hover effect */
+div[role="option"]:hover {
+    background-color: #00A0FF !important;
+}
+
+.stButton > button:hover {
+    border-color: #00A0FF;
+    color: #00A0FF;
+}
+
 /* Progress bar */
 .stProgress > div > div > div > div {
     background-color: #00A0FF;
