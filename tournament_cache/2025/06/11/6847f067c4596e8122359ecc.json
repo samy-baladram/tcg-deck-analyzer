@@ -1,0 +1,80 @@
+{
+  "tournament_id": "6847f067c4596e8122359ecc",
+  "name": "\ud83e\ude99 MASTER OF COIN TOURNAMENT #4 \ud83e\ude99",
+  "timestamp": 1749664800000,
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PGX| WiloXOmega",
+      "record": "4 - 1 - 0",
+      "archetype": "exeggutor-ex-a1-tsareena-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "Nurulbey",
+      "record": "4 - 1 - 0",
+      "archetype": "alolan-exeggutor-tsareena-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "BocchiCresXnT",
+      "record": "3 - 2 - 0",
+      "archetype": "tinkaton-ex-a2b-alolan-dugtrio-ex-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Turbone101",
+      "record": "3 - 2 - 0",
+      "archetype": "guzzlord-ex-alolan-persian-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Doink44",
+      "record": "3 - 2 - 0",
+      "archetype": "exeggutor-ex-a1-celebi-ex-a1a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Filoranzo",
+      "record": "3 - 2 - 0",
+      "archetype": "exeggutor-ex-a1-tsareena-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "GT | Mikeyodas",
+      "record": "2 - 2 - 0drop",
+      "archetype": "alolan-dugtrio-ex-guzzlord-ex-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "JAL15",
+      "record": "2 - 3 - 0",
+      "archetype": "guzzlord-ex-a3a-toxapex-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "JustDefault2",
+      "record": "2 - 2 - 0drop",
+      "archetype": "tsareena-alolan-exeggutor-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "DereckWho",
+      "record": "1 - 2 - 0drop",
+      "archetype": "exeggutor-ex-a1-celebi-ex-a1a"
+    },
+    {
+      "placement": 11,
+      "player_name": "TDL/MSP | EllieDark",
+      "record": "0 - 5 - 0",
+      "archetype": "celebi-ex-a1a-alolan-exeggutor-a3"
+    },
+    {
+      "placement": 12,
+      "player_name": "Straski",
+      "record": "0 - 1 - 0drop",
+      "archetype": "moltres-ex-a1-rapidash-a1a"
+    }
+  ]
+}
