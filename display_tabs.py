@@ -1521,6 +1521,140 @@ def display_matchup_summary(deck_name, set_name, working_df):
     # Add some space
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
 
+def create_meta_trend_chart(deck_name):
+    """
+    Create a line chart showing meta percentage trend over time for a specific deck
+    
+    Args:
+        deck_name: The internal deck name (e.g., "charizard-ex-arcanine-ex")
+        
+    Returns:
+        Plotly figure or None if no data found
+    """
+    import sqlite3
+    import pandas as pd
+    import plotly.graph_objects as go
+    from datetime import datetime
+    
+    try:
+        # Connect to SQLite database
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Query to get daily aggregated data for the specific archetype
+        query = """
+        SELECT 
+            t.date,
+            COALESCE(SUM(aa.count), 0) as archetype_players,
+            SUM(t.total_players) as total_players
+        FROM tournaments t
+        LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
+            AND aa.archetype = ?
+        GROUP BY t.date
+        HAVING total_players > 0
+        ORDER BY t.date
+        """
+        
+        # Execute query
+        df = pd.read_sql_query(query, conn, params=[deck_name])
+        conn.close()
+        
+        if df.empty:
+            print(f"No data found for archetype: {deck_name}")
+            return None
+        
+        # Calculate percentage for each date
+        df['meta_percentage'] = (df['archetype_players'] / df['total_players']) * 100
+        
+        # Convert date strings to datetime for better plotting
+        df['date'] = pd.to_datetime(df['date'])
+        
+        # Filter out dates where archetype had 0% (optional - removes gaps)
+        df_filtered = df[df['meta_percentage'] > 0].copy()
+        
+        if df_filtered.empty:
+            print(f"No appearances found for archetype: {deck_name}")
+            return None
+        
+        # Create the line chart
+        fig = go.Figure()
+        
+        fig.add_trace(go.Scatter(
+            x=df_filtered['date'],
+            y=df_filtered['meta_percentage'],
+            mode='lines+markers',
+            name='Meta Share %',
+            line=dict(color='#00A0FF', width=3),
+            marker=dict(size=6, color='#00A0FF'),
+            hovertemplate='<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Players: %{customdata[0]}<br>Total: %{customdata[1]}<extra></extra>',
+            customdata=list(zip(df_filtered['archetype_players'], df_filtered['total_players']))
+        ))
+        
+        # Update layout
+        fig.update_layout(
+            title=f"Meta Trend: {deck_name.replace('-', ' ').title()}",
+            xaxis_title="Date",
+            yaxis_title="Meta Share (%)",
+            height=400,
+            margin=dict(t=50, l=50, r=20, b=50),
+            hovermode='x unified',
+            
+            # Styling to match your app
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(size=12),
+            
+            # Grid and axes styling
+            xaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)'
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)',
+                rangemode='tozero'  # Start y-axis from 0
+            )
+        )
+        
+        return fig
+        
+    except Exception as e:
+        print(f"Error creating meta trend chart: {e}")
+        return None
+
+def display_meta_trend_section(deck_name):
+    """
+    Display the meta trend section with line chart
+    
+    Args:
+        deck_name: The internal deck name from the current selection
+    """
+    import streamlit as st
+    
+    st.write("#### Meta Share Trend")
+    
+    # Create the chart
+    fig = create_meta_trend_chart(deck_name)
+    
+    if fig:
+        # Display the chart
+        from config import PLOTLY_CONFIG
+        config = PLOTLY_CONFIG.copy()
+        config['displayModeBar'] = True  # Allow download for this chart
+        
+        st.plotly_chart(fig, use_container_width=True, config=config, key="meta_trend_chart")
+        
+        # Add explanation
+        st.caption(
+            "Shows daily meta share percentage based on tournament data. "
+            "Each point represents the combined percentage across all tournaments on that date."
+        )
+    else:
+        st.info(f"No meta trend data available for this deck archetype.")
+        
 # In display_tabs.py, fix the display_matchup_tab function
 def display_matchup_tab(deck_info=None):
     """
@@ -1737,3 +1871,5 @@ def display_matchup_tab(deck_info=None):
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
+        # Display meta trend section
+    display_meta_trend_section(deck_name)
