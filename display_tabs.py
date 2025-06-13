@@ -2160,27 +2160,6 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         print(f"Error creating enhanced meta trend chart: {e}")
         return None
 
-def get_set_release_dates():
-    """
-    Load set release dates from the sets index file
-    
-    Returns:
-        List of tuples: [(release_date, set_code, set_name), ...]
-    """
-    with open("meta_analysis/sets_index.json", 'r') as f:
-        sets_data = json.load(f)
-    
-    releases = []
-    for set_info in sets_data['sets']:
-        if set_info['release_date']:
-            releases.append((
-                set_info['release_date'],
-                set_info['set_code'], 
-                set_info['set_name']
-            ))
-    
-    return sorted(releases)
-
 def display_meta_trend_tab(deck_info=None):
     """
     Display the Meta Trend tab with enhanced line chart and smart format filters
@@ -2298,6 +2277,27 @@ def get_deck_available_formats(deck_name):
         print(f"Error getting deck available formats: {e}")
         return ['Standard']  # Fallback
 
+def get_set_release_dates():
+    """
+    Load set release dates from the sets index file
+    
+    Returns:
+        List of tuples: [(release_date, set_code, set_name), ...]
+    """
+    with open("meta_analysis/sets_index.json", 'r') as f:
+        sets_data = json.load(f)
+    
+    releases = []
+    for set_info in sets_data['sets']:
+        if set_info['release_date']:
+            releases.append((
+                set_info['release_date'],
+                set_info['set_code'], 
+                set_info['set_name']
+            ))
+    
+    return sorted(releases)
+    
 def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, chart_subtitle=""):
     """
     Create enhanced line chart that combines formats into a single line
@@ -2372,20 +2372,39 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         # Create the figure
         fig = go.Figure()
         
-        # Add set release markers
+        # Add set release markers with improved annotations
         set_releases = get_set_release_dates()
         min_date = df_filtered['date'].min()
         max_date = df_filtered['date'].max()
+        max_percentage = df_filtered['meta_percentage'].max()
         
-        for release_date, set_name in set_releases:
+        for release_date, set_code, set_name in set_releases:
             release_dt = pd.to_datetime(release_date)
             if release_dt >= min_date and release_dt <= max_date:
+                # Add vertical line
                 fig.add_vline(
                     x=release_date, 
                     line_dash="dash", 
-                    line_color="rgba(0, 0, 0, 0.5)",
-                    annotation_text=f"Set: {set_name}",
-                    annotation_position="top"
+                    line_color="rgba(128, 128, 128, 0.6)",
+                    line_width=1
+                )
+                
+                # Add set code annotation at the top with hover info
+                fig.add_annotation(
+                    x=release_date,
+                    y=max_percentage * 1.05,  # Position at top of chart
+                    text=set_code,
+                    showarrow=False,
+                    font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
+                    bgcolor="rgba(255,255,255,0.8)",
+                    bordercolor="rgba(128, 128, 128, 0.3)",
+                    borderwidth=1,
+                    hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
+                    hoverlabel=dict(
+                        bgcolor="white",
+                        bordercolor="gray",
+                        font=dict(color="black")
+                    )
                 )
         
         # Add the main trend line (single line combining all selected formats)
@@ -2442,7 +2461,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[0, df_filtered['meta_percentage'].max() * 1.1]
+                range=[0, df_filtered['meta_percentage'].max() * 1.15]  # Extra space for annotations
             )
         )
         
