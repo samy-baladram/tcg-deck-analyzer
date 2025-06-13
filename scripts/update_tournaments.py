@@ -9,7 +9,7 @@ from datetime import datetime
 
 def get_recent_tournament_ids(max_fetch=20):
     """Get recent tournament IDs - limited to 20"""
-    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&time=2025-04&show={max_fetch}"
+    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&show={max_fetch}"
     
     response = requests.get(url)
     response.raise_for_status()
