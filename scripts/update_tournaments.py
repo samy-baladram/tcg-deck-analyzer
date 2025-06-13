@@ -4,6 +4,7 @@ import re
 import time
 import json
 import os
+import sqlite3
 from datetime import datetime
 
 def get_recent_tournament_ids(max_fetch=20):
@@ -78,20 +79,172 @@ def scrape_tournament_data(tournament_id):
 def get_date_folder_path(timestamp):
     """Convert timestamp to YYYY/MM/DD folder path"""
     if not timestamp:
-        # Fallback to current date if no timestamp
         date = datetime.now()
     else:
         date = datetime.fromtimestamp(timestamp / 1000)
     
     return f"{date.year}/{date.month:02d}/{date.day:02d}"
 
+def get_date_string(timestamp):
+    """Convert timestamp to YYYY-MM-DD string"""
+    if not timestamp:
+        date = datetime.now()
+    else:
+        date = datetime.fromtimestamp(timestamp / 1000)
+    
+    return date.strftime('%Y-%m-%d')
+
+def init_meta_database():
+    """Initialize SQLite database with required tables"""
+    meta_dir = "meta_analysis"
+    os.makedirs(meta_dir, exist_ok=True)
+    
+    conn = sqlite3.connect(f"{meta_dir}/tournament_meta.db")
+    
+    # Create tables
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS tournaments (
+            tournament_id TEXT PRIMARY KEY,
+            date TEXT,
+            total_players INTEGER,
+            unique_archetypes INTEGER
+        );
+        
+        CREATE TABLE IF NOT EXISTS archetype_appearances (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tournament_id TEXT,
+            archetype TEXT,
+            count INTEGER,
+            percentage REAL,
+            FOREIGN KEY (tournament_id) REFERENCES tournaments (tournament_id)
+        );
+        
+        CREATE TABLE IF NOT EXISTS daily_meta (
+            date TEXT PRIMARY KEY,
+            total_players INTEGER,
+            total_tournaments INTEGER,
+            archetype_data TEXT
+        );
+        
+        CREATE INDEX IF NOT EXISTS idx_archetype_tournament 
+        ON archetype_appearances(archetype, tournament_id);
+        
+        CREATE INDEX IF NOT EXISTS idx_tournament_date 
+        ON tournaments(date);
+    """)
+    
+    conn.commit()
+    conn.close()
+
+def process_tournament_meta(tournament_data):
+    """Process tournament data and update meta database"""
+    tournament_id = tournament_data['tournament_id']
+    date_str = get_date_string(tournament_data['timestamp'])
+    total_players = tournament_data['player_count']
+    
+    # Count archetypes
+    archetype_counts = {}
+    for player in tournament_data['players']:
+        archetype = player.get('archetype')
+        if archetype:  # Only count players with known archetypes
+            archetype_counts[archetype] = archetype_counts.get(archetype, 0) + 1
+    
+    if not archetype_counts:
+        print(f"No archetypes found for tournament {tournament_id}")
+        return
+    
+    conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+    
+    # Add tournament summary
+    conn.execute("""
+        INSERT OR REPLACE INTO tournaments 
+        VALUES (?, ?, ?, ?)
+    """, (tournament_id, date_str, total_players, len(archetype_counts)))
+    
+    # Remove existing archetype data for this tournament (in case of reprocessing)
+    conn.execute("""
+        DELETE FROM archetype_appearances WHERE tournament_id = ?
+    """, (tournament_id,))
+    
+    # Add archetype appearances
+    for archetype, count in archetype_counts.items():
+        percentage = (count / total_players) * 100
+        conn.execute("""
+            INSERT INTO archetype_appearances 
+            (tournament_id, archetype, count, percentage) 
+            VALUES (?, ?, ?, ?)
+        """, (tournament_id, archetype, count, percentage))
+    
+    conn.commit()
+    conn.close()
+    
+    print(f"✅ Meta processed: {tournament_id} - {len(archetype_counts)} archetypes")
+
+def update_quick_index():
+    """Update the quick JSON index file"""
+    conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+    
+    # Get basic stats
+    cursor = conn.execute("SELECT COUNT(*) FROM tournaments")
+    total_tournaments = cursor.fetchone()[0]
+    
+    cursor = conn.execute("SELECT MIN(date), MAX(date) FROM tournaments")
+    date_range = cursor.fetchone()
+    
+    # Get top archetypes (by total appearances)
+    cursor = conn.execute("""
+        SELECT archetype, SUM(count) as total_count 
+        FROM archetype_appearances 
+        GROUP BY archetype 
+        ORDER BY total_count DESC 
+        LIMIT 10
+    """)
+    top_archetypes = [row[0] for row in cursor.fetchall()]
+    
+    # Get recent daily meta (last 7 days)
+    cursor = conn.execute("""
+        SELECT date, total_players, total_tournaments 
+        FROM daily_meta 
+        ORDER BY date DESC 
+        LIMIT 7
+    """)
+    recent_daily = {}
+    for date, players, tournaments in cursor.fetchall():
+        recent_daily[date] = {
+            "total_players": players,
+            "total_tournaments": tournaments
+        }
+    
+    conn.close()
+    
+    # Create quick index
+    quick_index = {
+        "last_updated": int(time.time()),
+        "total_tournaments": total_tournaments,
+        "date_range": {
+            "earliest": date_range[0] if date_range[0] else None,
+            "latest": date_range[1] if date_range[1] else None
+        },
+        "top_archetypes": top_archetypes,
+        "recent_daily_meta": recent_daily
+    }
+    
+    # Save to JSON
+    with open("meta_analysis/quick_index.json", 'w') as f:
+        json.dump(quick_index, f, indent=2)
+    
+    print("✅ Quick index updated")
+
 def update_tournament_cache():
-    """Main function to update tournament cache with organized folders"""
+    """Main function to update tournament cache and meta analysis"""
     cache_dir = "tournament_cache"
     index_file = f"{cache_dir}/index.json"
     
-    # Ensure cache directory exists
+    # Ensure directories exist
     os.makedirs(cache_dir, exist_ok=True)
+    
+    # Initialize meta database
+    init_meta_database()
     
     # Load existing cache index
     if os.path.exists(index_file):
@@ -107,11 +260,11 @@ def update_tournament_cache():
     
     print(f"Current cache has {len(index['tournaments'])} tournaments")
     
-    # Get recent tournament IDs (max 20)
+    # Get recent tournament IDs
     tournament_ids = get_recent_tournament_ids(20)
     print(f"Found {len(tournament_ids)} recent tournaments")
     
-    # Find NEW tournaments (not in cache)
+    # Find NEW tournaments
     new_tournament_ids = [tid for tid in tournament_ids if tid not in index['tournaments']]
     print(f"New tournaments to scrape: {len(new_tournament_ids)}")
     
@@ -121,28 +274,26 @@ def update_tournament_cache():
     
     new_count = 0
     
-    # Process only NEW tournaments - NO FILTERING, GET ALL TOURNAMENTS
+    # Process NEW tournaments
     for tournament_id in new_tournament_ids:
         try:
+            # Scrape tournament data
             data = scrape_tournament_data(tournament_id)
-            if data:  # Just check if data exists, no player count filter
-                
-                # Get date folder path from tournament timestamp
+            if data:
+                # Save tournament file
                 date_path = get_date_folder_path(data['timestamp'])
                 full_folder_path = f"{cache_dir}/{date_path}"
-                
-                # Create date folder if it doesn't exist
                 os.makedirs(full_folder_path, exist_ok=True)
                 
-                # Save tournament file in date folder
                 tournament_file = f"{full_folder_path}/{tournament_id}.json"
                 with open(tournament_file, 'w') as f:
                     json.dump(data, f, indent=2)
                 
+                # Process meta data
+                process_tournament_meta(data)
+                
                 # Update index
                 index['tournaments'].append(tournament_id)
-                
-                # Update tournaments_by_path
                 if date_path not in index['tournaments_by_path']:
                     index['tournaments_by_path'][date_path] = []
                 index['tournaments_by_path'][date_path].append(tournament_id)
@@ -154,15 +305,17 @@ def update_tournament_cache():
         except Exception as e:
             print(f"❌ Failed {tournament_id}: {e}")
         
-        time.sleep(2)  # Be nice to the server
+        time.sleep(2)
     
-    # Update index metadata
+    # Update index
     index['last_updated'] = int(time.time())
     index['total_tournaments'] = len(index['tournaments'])
     
-    # Save updated index
     with open(index_file, 'w') as f:
         json.dump(index, f, indent=2)
+    
+    # Update quick index
+    update_quick_index()
     
     print(f"Update complete: {new_count} new tournaments cached")
     print(f"Total tournaments in cache: {index['total_tournaments']}")
