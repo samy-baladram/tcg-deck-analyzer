@@ -2548,7 +2548,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[10, 90]  # Fixed range 0-100% with space for annotations
+                range=[10, 95]  # Fixed range 0-100% with space for annotations
             )
         )
         
