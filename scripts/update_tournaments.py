@@ -37,6 +37,24 @@ def scrape_tournament_data(tournament_id):
     time_element = details_soup.find(attrs={'data-time': True})
     timestamp = int(time_element.get('data-time')) if time_element else None
     
+    # Extract format information
+    page_text = details_soup.get_text()
+    format_type = "Standard"  # Default fallback
+    
+    # Pattern 1: "- NOEX format -" or "- Standard format -"
+    format_match = re.search(r'-\s*(NOEX|Standard)\s+format\s*-', page_text, re.IGNORECASE)
+    if format_match:
+        format_type = format_match.group(1).upper()
+    else:
+        # Pattern 2: "Format: NOEX" or "Format: Standard"
+        format_match = re.search(r'Format:\s*(NOEX|Standard)', page_text, re.IGNORECASE)
+        if format_match:
+            format_type = format_match.group(1).upper()
+        else:
+            # Pattern 3: Look for "NOEX" anywhere (indicating no EX cards)
+            if re.search(r'\bNOEX\b|\bNo\s*EX\b', page_text, re.IGNORECASE):
+                format_type = "NOEX"
+    
     # Get player data
     standings_response = requests.get(f"https://play.limitlesstcg.com/tournament/{tournament_id}/standings")
     standings_soup = BeautifulSoup(standings_response.text, 'html.parser')
@@ -72,6 +90,7 @@ def scrape_tournament_data(tournament_id):
         'tournament_id': tournament_id,
         'name': name,
         'timestamp': timestamp,
+        'format': format_type,
         'player_count': len(players),
         'players': players
     }
@@ -101,11 +120,12 @@ def init_meta_database():
     
     conn = sqlite3.connect(f"{meta_dir}/tournament_meta.db")
     
-    # Create tables
+    # Create tables with format field added
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS tournaments (
             tournament_id TEXT PRIMARY KEY,
             date TEXT,
+            format TEXT,
             total_players INTEGER,
             unique_archetypes INTEGER
         );
@@ -131,6 +151,9 @@ def init_meta_database():
         
         CREATE INDEX IF NOT EXISTS idx_tournament_date 
         ON tournaments(date);
+        
+        CREATE INDEX IF NOT EXISTS idx_tournament_format 
+        ON tournaments(format);
     """)
     
     conn.commit()
@@ -141,6 +164,7 @@ def process_tournament_meta(tournament_data):
     tournament_id = tournament_data['tournament_id']
     date_str = get_date_string(tournament_data['timestamp'])
     total_players = tournament_data['player_count']
+    format_type = tournament_data.get('format', 'Standard')  # Get format with fallback
     
     # Count archetypes
     archetype_counts = {}
@@ -155,11 +179,11 @@ def process_tournament_meta(tournament_data):
     
     conn = sqlite3.connect("meta_analysis/tournament_meta.db")
     
-    # Add tournament summary
+    # Add tournament summary with format
     conn.execute("""
         INSERT OR REPLACE INTO tournaments 
-        VALUES (?, ?, ?, ?)
-    """, (tournament_id, date_str, total_players, len(archetype_counts)))
+        VALUES (?, ?, ?, ?, ?)
+    """, (tournament_id, date_str, format_type, total_players, len(archetype_counts)))
     
     # Remove existing archetype data for this tournament (in case of reprocessing)
     conn.execute("""
@@ -178,7 +202,7 @@ def process_tournament_meta(tournament_data):
     conn.commit()
     conn.close()
     
-    print(f"✅ Meta processed: {tournament_id} - {len(archetype_counts)} archetypes")
+    print(f"✅ Meta processed: {tournament_id} ({format_type}) - {len(archetype_counts)} archetypes")
 
 def update_quick_index():
     """Update the quick JSON index file"""
@@ -191,6 +215,17 @@ def update_quick_index():
     cursor = conn.execute("SELECT MIN(date), MAX(date) FROM tournaments")
     date_range = cursor.fetchone()
     
+    # Get format distribution
+    cursor = conn.execute("""
+        SELECT format, COUNT(*) as count 
+        FROM tournaments 
+        GROUP BY format 
+        ORDER BY count DESC
+    """)
+    format_distribution = {}
+    for format_type, count in cursor.fetchall():
+        format_distribution[format_type] = count
+    
     # Get top archetypes (by total appearances)
     cursor = conn.execute("""
         SELECT archetype, SUM(count) as total_count 
@@ -200,6 +235,20 @@ def update_quick_index():
         LIMIT 10
     """)
     top_archetypes = [row[0] for row in cursor.fetchall()]
+    
+    # Get top archetypes by format
+    top_archetypes_by_format = {}
+    for format_type in format_distribution.keys():
+        cursor = conn.execute("""
+            SELECT archetype, SUM(aa.count) as total_count 
+            FROM archetype_appearances aa
+            JOIN tournaments t ON aa.tournament_id = t.tournament_id
+            WHERE t.format = ?
+            GROUP BY archetype 
+            ORDER BY total_count DESC 
+            LIMIT 5
+        """, (format_type,))
+        top_archetypes_by_format[format_type] = [row[0] for row in cursor.fetchall()]
     
     # Get recent daily meta (last 7 days)
     cursor = conn.execute("""
@@ -217,15 +266,17 @@ def update_quick_index():
     
     conn.close()
     
-    # Create quick index
+    # Create quick index with format information
     quick_index = {
         "last_updated": int(time.time()),
         "total_tournaments": total_tournaments,
+        "format_distribution": format_distribution,
         "date_range": {
             "earliest": date_range[0] if date_range[0] else None,
             "latest": date_range[1] if date_range[1] else None
         },
         "top_archetypes": top_archetypes,
+        "top_archetypes_by_format": top_archetypes_by_format,
         "recent_daily_meta": recent_daily
     }
     
@@ -233,7 +284,7 @@ def update_quick_index():
     with open("meta_analysis/quick_index.json", 'w') as f:
         json.dump(quick_index, f, indent=2)
     
-    print("✅ Quick index updated")
+    print("✅ Quick index updated with format data")
 
 def update_tournament_cache():
     """Main function to update tournament cache and meta analysis"""
@@ -291,7 +342,7 @@ def update_tournament_cache():
             print(f"❌ Failed to process {json_file}: {e}")
     
     # Get recent tournament IDs
-    tournament_ids = get_recent_tournament_ids(20)
+    tournament_ids = get_recent_tournament_ids(100)
     print(f"Found {len(tournament_ids)} recent tournaments")
     
     # Find NEW tournaments
