@@ -1,0 +1,165 @@
+{
+  "tournament_id": "68076901b8cdc8c08c211858",
+  "name": "\ud83c\udfc6P.P.i.T\ud83c\udfc624H May Tour\ud83c\udfc6#1 ROUND\ud83c\udfc6",
+  "timestamp": 1746385200000,
+  "format": "Standard",
+  "player_count": 26,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "[\ud835\ude4e\ud835\ude6b\ud835\ude46] | maus10",
+      "record": "6 - 1 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "[\ud835\ude4e\ud835\ude6b\ud835\ude46] | Thanos",
+      "record": "5 - 1 - 1",
+      "archetype": "lucario-rampardos-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "criug95",
+      "record": "5 - 1 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Piccirko",
+      "record": "4 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "BaroneAsmo",
+      "record": "4 - 1 - 0",
+      "archetype": "aerodactyl-ex-a1a-rampardos-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "DeckDevelopment",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-a2b-oricorio-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "thespoler",
+      "record": "3 - 2 - 0",
+      "archetype": "lucario-rampardos-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "[\ud835\ude4e\ud835\ude6b\ud835\ude46] | Rome90",
+      "record": "3 - 2 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "Pette9550",
+      "record": "3 - 2 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\udde3.\ud835\udde3.\ud835\udddc. | ienicus",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "MiMiPaL",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Luca_T",
+      "record": "3 - 2 - 0",
+      "archetype": "banette-a3-mewtwo-ex-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "kaidan90",
+      "record": "3 - 2 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 14,
+      "player_name": "Zios798",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 15,
+      "player_name": "lorighi",
+      "record": "2 - 3 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 16,
+      "player_name": "Mr. Bago",
+      "record": "2 - 2 - 1",
+      "archetype": "solgaleo-ex-a3-snorlax-a2a"
+    },
+    {
+      "placement": 17,
+      "player_name": "Simoeldiablo",
+      "record": "2 - 3 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 18,
+      "player_name": "[\ud835\ude4e\ud835\ude6b\ud835\ude46] | Manutan",
+      "record": "2 - 3 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 19,
+      "player_name": "\ud835\udddc\ud835\udde7\ud835\udde3 || XY",
+      "record": "2 - 3 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 20,
+      "player_name": "IL_PERUVIANO",
+      "record": "1 - 4 - 0",
+      "archetype": "rampardos-lucario-a2"
+    },
+    {
+      "placement": 21,
+      "player_name": "Nakagata",
+      "record": "1 - 4 - 0",
+      "archetype": "meowscarada-beedrill-ex-a2b"
+    },
+    {
+      "placement": 22,
+      "player_name": "Atlas_16",
+      "record": "1 - 4 - 0",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 23,
+      "player_name": "Shizokun",
+      "record": "1 - 3 - 1drop",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 24,
+      "player_name": "AleM_5",
+      "record": "0 - 3 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 25,
+      "player_name": "indren_thrysta",
+      "record": "0 - 3 - 0drop",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 26,
+      "player_name": "ViToMiNaTcG",
+      "record": "0 - 4 - 1",
+      "archetype": "arceus-ex-crobat-a2a"
+    }
+  ]
+}

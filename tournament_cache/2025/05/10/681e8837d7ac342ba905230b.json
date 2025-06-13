@@ -1,0 +1,105 @@
+{
+  "tournament_id": "681e8837d7ac342ba905230b",
+  "name": "Umbreon League - Pocket #3",
+  "timestamp": 1746835200000,
+  "format": "STANDARD",
+  "player_count": 16,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "DREAMZZ POY",
+      "record": "7 - 0 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "zainmiller",
+      "record": "4 - 3 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Leonn",
+      "record": "4 - 2 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "TDL | EllieDark",
+      "record": "3 - 2 - 1",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "JvP",
+      "record": "3 - 2 - 0",
+      "archetype": "lycanroc-a3-rampardos-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "CLECrustle",
+      "record": "2 - 2 - 1",
+      "archetype": "incineroar-ex-turtonator-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Connor F",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Msloan",
+      "record": "2 - 3 - 0",
+      "archetype": "marowak-ex-a1-garchomp-ex-a2a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Cheese_Cat",
+      "record": "2 - 2 - 0",
+      "archetype": "lunala-ex-a3-giratina-ex-a2b"
+    },
+    {
+      "placement": 10,
+      "player_name": "JordanLitteral",
+      "record": "1 - 3 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "saibear03",
+      "record": "0 - 4 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "XxJMxX",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Yorunoyuhi",
+      "record": "1 - 2 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Miradidon",
+      "record": "1 - 3 - 0drop",
+      "archetype": "wigglytuff-ex-a1-wigglytuff-a2b"
+    },
+    {
+      "placement": 15,
+      "player_name": "Lilnoland12",
+      "record": "1 - 2 - 0drop",
+      "archetype": "aerodactyl-ex-a1a-lycanroc-a3"
+    },
+    {
+      "placement": 16,
+      "player_name": "Mr. Gogi (:",
+      "record": "1 - 3 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    }
+  ]
+}

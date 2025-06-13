@@ -1,0 +1,45 @@
+{
+  "tournament_id": "681a02add7ac342ba90500a0",
+  "name": "GeekoPoke Pocket VI",
+  "timestamp": 1746576000000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "daigustosanti",
+      "record": "3 - 0 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "MiteiNikki",
+      "record": "2 - 1 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "franrovz",
+      "record": "1 - 2 - 0",
+      "archetype": "charizard-ex-a2b-charizard-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Calabazo",
+      "record": "1 - 2 - 0",
+      "archetype": "greninja-a1-giratina-ex-a2b"
+    },
+    {
+      "placement": 5,
+      "player_name": "euviro13",
+      "record": "1 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Jonless",
+      "record": "1 - 2 - 0",
+      "archetype": "greninja-a1-giratina-ex-a2b"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "tournament_id": "6813d1fc7884c9a104b23469",
+  "name": "\ud83c\udfc6 Spring Cup NOEX BO3 #11\ud83c\udfc6",
+  "timestamp": 1746972000000,
+  "format": "NOEX",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "CasaNerd",
+      "record": "6 - 1 - 1",
+      "archetype": "greninja-a1-snorlax-a2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Milozaki",
+      "record": "7 - 1 - 0",
+      "archetype": "magnezone-skarmory-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "hrsnfbrn",
+      "record": "4 - 3 - 0",
+      "archetype": "greninja-a1-pyukumuku-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "ZUKY187",
+      "record": "4 - 3 - 0",
+      "archetype": "magnezone-skarmory-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "outlxw",
+      "record": "3 - 2 - 1",
+      "archetype": "togekiss-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Darki1356",
+      "record": "3 - 3 - 0",
+      "archetype": "exeggutor-serperior-a1a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Ksi123",
+      "record": "3 - 3 - 0",
+      "archetype": "togekiss-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "wolfchris10",
+      "record": "2 - 4 - 0",
+      "archetype": "toucannon-tsareena-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "Liko_ri",
+      "record": "2 - 3 - 0",
+      "archetype": "togekiss-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "Shadwo",
+      "record": "2 - 3 - 0",
+      "archetype": "greninja-a1-snorlax-a2a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Soldoban",
+      "record": "2 - 3 - 0",
+      "archetype": "greninja-a1-snorlax-a2a"
+    },
+    {
+      "placement": 12,
+      "player_name": "DasDragomir",
+      "record": "1 - 4 - 0",
+      "archetype": "greninja-a1-pyukumuku-a3"
+    },
+    {
+      "placement": 13,
+      "player_name": "Domdor95_Twitch",
+      "record": "0 - 3 - 0drop",
+      "archetype": "serperior-exeggutor-a1a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Pixelzitrus",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mimikyu-tapu-lele-a3"
+    }
+  ]
+}

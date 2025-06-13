@@ -1,0 +1,33 @@
+{
+  "tournament_id": "681cbb57524e86dc8e9f5997",
+  "name": "Eelda's League May Tournament",
+  "timestamp": 1747396800000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Saimonpus",
+      "record": "3 - 1 - 0",
+      "archetype": "crobat-a2a-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "FlamingRaccoon",
+      "record": "3 - 1 - 0",
+      "archetype": "decidueye-ex-lurantis-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Icicle220",
+      "record": "1 - 2 - 0",
+      "archetype": "paldean-clodsire-ex-a2b-weezing-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Luck910",
+      "record": "0 - 3 - 0",
+      "archetype": "incineroar-ex-a3-moltres-ex-a1"
+    }
+  ]
+}

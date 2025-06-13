@@ -1,0 +1,87 @@
+{
+  "tournament_id": "68170921524e86dc8e9f31ff",
+  "name": "Battle tower 8",
+  "timestamp": 1746878400000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Golden FrogEX",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Hispanic Dynasty Origin",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Nusantara Force",
+      "record": "64.00%",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Galactic Gang",
+      "record": "57.00%",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "HYP$QUAD",
+      "record": "56.25%",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Ruby FrogEX",
+      "record": "48.00%",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Home Team",
+      "record": "55.00%",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Team MI",
+      "record": "49.00%",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "Hispanic Warriors Alpha",
+      "record": "47.67%",
+      "archetype": null
+    },
+    {
+      "placement": 10,
+      "player_name": "Champions",
+      "record": "45.00%",
+      "archetype": null
+    },
+    {
+      "placement": 11,
+      "player_name": "Garuda Rafflesia Reborn",
+      "record": "71.11%",
+      "archetype": null
+    },
+    {
+      "placement": 12,
+      "player_name": "Nightfall",
+      "record": "50.00%",
+      "archetype": null
+    },
+    {
+      "placement": 13,
+      "player_name": "Tutor brothers",
+      "record": "36.67%",
+      "archetype": null
+    }
+  ]
+}

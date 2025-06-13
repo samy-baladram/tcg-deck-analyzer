@@ -1,0 +1,81 @@
+{
+  "tournament_id": "681b6575d7ac342ba90506fd",
+  "name": "TBBL - Celestial Guardians Saison [Week 2]",
+  "timestamp": 1746817200000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Llooo",
+      "record": "6 - 1 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "TDL | EllieDark",
+      "record": "5 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Essey",
+      "record": "5 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udddc\ud835\udde7\ud835\udde3 || Destyder",
+      "record": "4 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Mr. Gogi (:",
+      "record": "4 - 3 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Yorunoyuhi",
+      "record": "3 - 4 - 0",
+      "archetype": "gallade-ex-a2-hitmonlee-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Wojciech",
+      "record": "3 - 4 - 0",
+      "archetype": "banette-a3-mewtwo-ex-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "KrikorKz",
+      "record": "1 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "MichaelTwister",
+      "record": "1 - 1 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 10,
+      "player_name": "Dardarburr",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Super_Peace",
+      "record": "0 - 2 - 0drop",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 12,
+      "player_name": "ArrozConLeche",
+      "record": "0 - 3 - 0drop",
+      "archetype": "magnezone-a2-oricorio-a3"
+    }
+  ]
+}

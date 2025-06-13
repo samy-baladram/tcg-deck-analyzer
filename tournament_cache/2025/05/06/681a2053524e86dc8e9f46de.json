@@ -1,0 +1,243 @@
+{
+  "tournament_id": "681a2053524e86dc8e9f46de",
+  "name": "TBBL - No-Ex Sunday [Custom] [5 Usd$]",
+  "timestamp": 1746560700000,
+  "format": "Standard",
+  "player_count": 39,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Normo360",
+      "record": "7 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "soko",
+      "record": "6 - 2 - 0",
+      "archetype": "greninja-a1-giratina-ex-a2b"
+    },
+    {
+      "placement": 3,
+      "player_name": "Jintus",
+      "record": "5 - 2 - 0",
+      "archetype": "luxray-a2-pikachu-ex-a2b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Zackoloto",
+      "record": "5 - 2 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Essey",
+      "record": "5 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "brykupono",
+      "record": "4 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "SwansonSays",
+      "record": "4 - 2 - 0",
+      "archetype": "lycanroc-a3-rampardos-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "kaifalelahi",
+      "record": "4 - 2 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 9,
+      "player_name": "tuca1020",
+      "record": "3 - 2 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "sunshineraf",
+      "record": "3 - 2 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "ADoK",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Minhtam",
+      "record": "3 - 2 - 0",
+      "archetype": "meowscarada-a2b-butterfree-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Tommot",
+      "record": "3 - 2 - 0drop",
+      "archetype": "togekiss-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "PikaIcetea",
+      "record": "3 - 2 - 0",
+      "archetype": "lycanroc-a3-rampardos-a2"
+    },
+    {
+      "placement": 15,
+      "player_name": "Fab2006",
+      "record": "3 - 2 - 0",
+      "archetype": "dragonite-a1-giratina-ex-a2b"
+    },
+    {
+      "placement": 16,
+      "player_name": "Lore_Pizza",
+      "record": "3 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 17,
+      "player_name": "joek0",
+      "record": "3 - 2 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 18,
+      "player_name": "sneakAttack",
+      "record": "2 - 3 - 0drop",
+      "archetype": "weavile-ex-darkrai-ex-a2"
+    },
+    {
+      "placement": 19,
+      "player_name": "CalFox",
+      "record": "2 - 3 - 0",
+      "archetype": "gengar-a1"
+    },
+    {
+      "placement": 20,
+      "player_name": "DragonairJordan",
+      "record": "2 - 3 - 0",
+      "archetype": "leafeon-ex-a2a-golisopod-a3"
+    },
+    {
+      "placement": 21,
+      "player_name": "Starfox69",
+      "record": "2 - 3 - 0",
+      "archetype": "luxray-a2-pikachu-ex-a2b"
+    },
+    {
+      "placement": 22,
+      "player_name": "KyorakuST",
+      "record": "2 - 3 - 0",
+      "archetype": "gengar-ex-gengar-a1"
+    },
+    {
+      "placement": 23,
+      "player_name": "TDL | EllieDark",
+      "record": "2 - 3 - 0drop",
+      "archetype": "magnezone-a2"
+    },
+    {
+      "placement": 24,
+      "player_name": "Sir_Mooseman",
+      "record": "2 - 3 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 25,
+      "player_name": "Kazama9",
+      "record": "1 - 3 - 0drop",
+      "archetype": "dragonite-a1-giratina-ex-a2b"
+    },
+    {
+      "placement": 26,
+      "player_name": "GLX| WiloXOmega",
+      "record": "1 - 2 - 0drop",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 27,
+      "player_name": "Skies",
+      "record": "1 - 4 - 0",
+      "archetype": "greninja-a1-giratina-ex-a2b"
+    },
+    {
+      "placement": 28,
+      "player_name": "Jokker",
+      "record": "1 - 3 - 0drop",
+      "archetype": "alolan-raichu-ex-a3-pachirisu-a2b"
+    },
+    {
+      "placement": 29,
+      "player_name": "VRayQuaZaThe1",
+      "record": "1 - 2 - 0drop",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 30,
+      "player_name": "DanMosa",
+      "record": "1 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 31,
+      "player_name": "Turbone101",
+      "record": "0 - 1 - 0drop",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 32,
+      "player_name": "Rimuru21",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 33,
+      "player_name": "Funky420",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-snorlax-a2a"
+    },
+    {
+      "placement": 34,
+      "player_name": "Depression",
+      "record": "0 - 1 - 0drop",
+      "archetype": "paldean-clodsire-ex-grafaiai-a2b"
+    },
+    {
+      "placement": 35,
+      "player_name": "Jewelry",
+      "record": "0 - 2 - 0drop",
+      "archetype": "pidgeot-ex-a1a-hitmonlee-a1"
+    },
+    {
+      "placement": 36,
+      "player_name": "40madian",
+      "record": "0 - 2 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 37,
+      "player_name": "DREAMZZ POY",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-snorlax-a2a"
+    },
+    {
+      "placement": 38,
+      "player_name": "Llooo",
+      "record": "0 - 4 - 0drop",
+      "archetype": "gallade-ex-a2-aerodactyl-ex-a1a"
+    },
+    {
+      "placement": 39,
+      "player_name": "DomBolton",
+      "record": "0 - 1 - 0drop",
+      "archetype": "gyarados-ex-a1a-manaphy-a2"
+    }
+  ]
+}

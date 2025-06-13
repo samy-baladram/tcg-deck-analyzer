@@ -1,0 +1,243 @@
+{
+  "tournament_id": "681c200bd7ac342ba9050e00",
+  "name": "Umbreon League - Pocket #2",
+  "timestamp": 1746747000000,
+  "format": "STANDARD",
+  "player_count": 39,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "theopin",
+      "record": "8 - 1 - 0",
+      "archetype": "lucario-rampardos-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Daan",
+      "record": "6 - 2 - 1",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "samz",
+      "record": "6 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Mr. Gogi (:",
+      "record": "5 - 3 - 0",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "amdrax",
+      "record": "5 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "elGaM98",
+      "record": "5 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "AkW",
+      "record": "4 - 3 - 0",
+      "archetype": "greninja-a1-giratina-ex-a2b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Barky Malarkey",
+      "record": "4 - 3 - 0",
+      "archetype": "weavile-ex-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "NiteNinja",
+      "record": "4 - 2 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 10,
+      "player_name": "DREAMZZ POY",
+      "record": "4 - 2 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "TDL | EllieDark",
+      "record": "4 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Leonn",
+      "record": "3 - 2 - 1",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "rehnanf",
+      "record": "3 - 3 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "Jebat T",
+      "record": "3 - 3 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Newfirsniper",
+      "record": "3 - 3 - 0",
+      "archetype": "wishiwashi-ex-wishiwashi-a3"
+    },
+    {
+      "placement": 16,
+      "player_name": "CLECrustle",
+      "record": "3 - 3 - 0",
+      "archetype": "incineroar-ex-turtonator-a3"
+    },
+    {
+      "placement": 17,
+      "player_name": "Pidazodepayo",
+      "record": "3 - 3 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 18,
+      "player_name": "Connor F",
+      "record": "3 - 3 - 0",
+      "archetype": "garchomp-ex-a2a-lucario-a2"
+    },
+    {
+      "placement": 19,
+      "player_name": "MakiNavajas",
+      "record": "3 - 3 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 20,
+      "player_name": "DreamSlap",
+      "record": "2 - 3 - 1",
+      "archetype": "celebi-ex-serperior-a1a"
+    },
+    {
+      "placement": 21,
+      "player_name": "Bibi .",
+      "record": "2 - 4 - 0",
+      "archetype": "crabominable-ex-a3-greninja-a1"
+    },
+    {
+      "placement": 22,
+      "player_name": "Han2cock",
+      "record": "2 - 4 - 0",
+      "archetype": "dragonite-a1-druddigon-a1a"
+    },
+    {
+      "placement": 23,
+      "player_name": "aw4som9",
+      "record": "2 - 4 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 24,
+      "player_name": "Mr_Robrrt",
+      "record": "2 - 4 - 0",
+      "archetype": "togekiss-a2"
+    },
+    {
+      "placement": 25,
+      "player_name": "JeremLeOuf",
+      "record": "1 - 5 - 0",
+      "archetype": "lucario-rampardos-a2"
+    },
+    {
+      "placement": 26,
+      "player_name": "Llooo",
+      "record": "0 - 3 - 0drop",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 27,
+      "player_name": "nhoff92",
+      "record": "0 - 3 - 0drop",
+      "archetype": "scolipede-a1a-alolan-muk-ex-a3"
+    },
+    {
+      "placement": 28,
+      "player_name": "Dardarburr",
+      "record": "1 - 3 - 0drop",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 29,
+      "player_name": "TrippyHippie711",
+      "record": "1 - 3 - 0drop",
+      "archetype": "decidueye-ex-a3-arceus-ex-a2a"
+    },
+    {
+      "placement": 30,
+      "player_name": "Funky420",
+      "record": "2 - 2 - 0drop",
+      "archetype": "charizard-ex-a2b"
+    },
+    {
+      "placement": 31,
+      "player_name": "Castela",
+      "record": "1 - 2 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 32,
+      "player_name": "Slinnerd101",
+      "record": "0 - 2 - 1drop",
+      "archetype": "serperior-celebi-ex-a1a"
+    },
+    {
+      "placement": 33,
+      "player_name": "sneakAttack",
+      "record": "1 - 1 - 0drop",
+      "archetype": "lunala-ex-a3-giratina-ex-a2b"
+    },
+    {
+      "placement": 34,
+      "player_name": "Ducelimone",
+      "record": "2 - 3 - 0drop",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 35,
+      "player_name": "Hancockay",
+      "record": "3 - 3 - 0drop",
+      "archetype": "crabominable-ex-a3-greninja-a1"
+    },
+    {
+      "placement": 36,
+      "player_name": "B1urAntics",
+      "record": "0 - 2 - 0drop",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 37,
+      "player_name": "Shiro1704",
+      "record": "0 - 1 - 0drop",
+      "archetype": "gallade-ex-lucario-a2"
+    },
+    {
+      "placement": 38,
+      "player_name": "BoostedAvian",
+      "record": "0 - 3 - 0drop",
+      "archetype": "leafeon-ex-a2a-celebi-ex-a1a"
+    },
+    {
+      "placement": 39,
+      "player_name": "BitesTheDust",
+      "record": "3 - 3 - 0drop",
+      "archetype": "greninja-a1-oricorio-a3"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6823dcd6ffed157efd3f78f2",
+  "name": "Glitch Pocket League 2 Tem2 - Tour #2",
+  "timestamp": 1747270800000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Egaete",
+      "record": "3 - 0 - 0",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "skyshot123",
+      "record": "2 - 1 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "FLAXXO",
+      "record": "2 - 1 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "WallyOriginal",
+      "record": "1 - 2 - 0",
+      "archetype": "charizard-ex-a2b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Sprit",
+      "record": "1 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Myrokordril",
+      "record": "0 - 3 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    }
+  ]
+}

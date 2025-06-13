@@ -1,0 +1,57 @@
+{
+  "tournament_id": "68012c1857322cac46248354",
+  "name": "ThePokes - PTCGP Tournament #6 !!SET BATTLE!!",
+  "timestamp": 1746397800000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "KidShadow",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "sunchaser117",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Rad_Thad",
+      "record": "4 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "JaysWing",
+      "record": "2 - 2 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "ArinMax",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Mr_Cookie",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "KamehaWav",
+      "record": "1 - 2 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "KeoKeo",
+      "record": "0 - 4 - 0",
+      "archetype": null
+    }
+  ]
+}
