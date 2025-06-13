@@ -1973,8 +1973,8 @@ def display_meta_trend_tab(deck_info=None):
         st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
         
         st.caption(
-            f"Shows win rate and loss rate trends over time. "
-            f"Green line = win percentage, Red line = loss percentage."
+            f"Shows win rate trends over time for {formats_text} format(s). "
+            f"Green markers = above 50% win rate, Red markers = below 50% win rate. Dotted line shows 50% reference."
         )
     else:
         st.info(f"No performance trend data available for this deck archetype.")
@@ -2380,7 +2380,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
 
 def create_performance_trend_chart(deck_name, selected_formats=None):
     """
-    Create performance trend chart showing win/loss percentages over time
+    Create performance trend chart showing win percentage over time with 50% reference
     
     Args:
         deck_name: The deck archetype name
@@ -2433,7 +2433,6 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Calculate total games and percentages
         df['total_games'] = df['total_wins'] + df['total_losses'] + df['total_ties']
         df['win_percentage'] = (df['total_wins'] / df['total_games'] * 100).fillna(0)
-        df['loss_percentage'] = (df['total_losses'] / df['total_games'] * 100).fillna(0)
         
         # Combine all formats for each date (aggregate by date)
         df_combined = df.groupby('date').agg({
@@ -2446,7 +2445,6 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Recalculate percentages after combining formats
         df_combined['total_games'] = df_combined['total_wins'] + df_combined['total_losses'] + df_combined['total_ties']
         df_combined['win_percentage'] = (df_combined['total_wins'] / df_combined['total_games'] * 100).fillna(0)
-        df_combined['loss_percentage'] = (df_combined['total_losses'] / df_combined['total_games'] * 100).fillna(0)
         
         # Filter out dates with no games
         df_filtered = df_combined[df_combined['total_games'] > 0].copy()
@@ -2458,7 +2456,17 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Create the figure
         fig = go.Figure()
         
-        # Add set release markers (same as meta trend chart)
+        # Add 50% reference line
+        fig.add_hline(
+            y=50, 
+            line_dash="dot", 
+            line_color="rgba(128, 128, 128, 0.8)",
+            line_width=2,
+            annotation_text="50% Win Rate",
+            annotation_position="right"
+        )
+        
+        # Add set release markers
         set_releases = get_set_release_dates()
         min_date = df_filtered['date'].min()
         max_date = df_filtered['date'].max()
@@ -2480,7 +2488,10 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                     y=105,  # Fixed position at top
                     text=set_code,
                     showarrow=False,
-                    font=dict(size=10),
+                    font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
+                    bgcolor="rgba(255,255,255,0.8)",
+                    bordercolor="rgba(128, 128, 128, 0.3)",
+                    borderwidth=1,
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
@@ -2489,52 +2500,35 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                     )
                 )
         
-        # Add win percentage line (green)
+        # Create conditional colors for each point
+        colors = ['#28A745' if wp >= 50 else '#DC3545' for wp in df_filtered['win_percentage']]
+        
+        # Add win percentage line with conditional coloring
         fig.add_trace(go.Scatter(
             x=df_filtered['date'],
             y=df_filtered['win_percentage'],
             mode='lines+markers',
             name='Win %',
-            line=dict(color='#28A745', width=3),  # Green
-            marker=dict(size=6, color='#28A745'),
-            hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Total Games: %{customdata[1]}<extra></extra>',
-            customdata=list(zip(df_filtered['total_wins'], df_filtered['total_games']))
-        ))
-        
-        # Add loss percentage line (red)
-        fig.add_trace(go.Scatter(
-            x=df_filtered['date'],
-            y=df_filtered['loss_percentage'],
-            mode='lines+markers',
-            name='Loss %',
-            line=dict(color='#DC3545', width=3),  # Red
-            marker=dict(size=6, color='#DC3545'),
-            hovertemplate='<b>%{x}</b><br>Loss Rate: %{y:.1f}%<br>Losses: %{customdata[0]}<br>Total Games: %{customdata[1]}<extra></extra>',
-            customdata=list(zip(df_filtered['total_losses'], df_filtered['total_games']))
+            line=dict(color='#00A0FF', width=3),  # Use default blue for line
+            marker=dict(size=8, color=colors),  # Conditional colors for markers
+            hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
+            customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
         ))
         
         # Update layout
         fig.update_layout(
             title="",  # No title since it's under the main chart
             xaxis_title="",
-            yaxis_title="Percentage (%)",
-            #height=400,
-            margin=dict(t=80, l=10, r=10, b=0),
+            yaxis_title="Win Rate (%)",
+            height=400,
+            margin=dict(t=10, l=50, r=20, b=50),
             hovermode='x unified',
             
             # Styling to match your app
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(size=12),
-            
-            # Legend styling
-            legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1
-            ),
+            showlegend=False,  # Hide legend since we only have one line
             
             # Grid and axes styling
             xaxis=dict(
@@ -2548,7 +2542,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[10, 95]  # Fixed range 0-100% with space for annotations
+                range=[0, 110]  # Fixed range 0-100% with space for annotations
             )
         )
         
