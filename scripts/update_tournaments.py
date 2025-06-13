@@ -291,7 +291,7 @@ def update_tournament_cache():
             print(f"❌ Failed to process {json_file}: {e}")
     
     # Get recent tournament IDs
-    tournament_ids = get_recent_tournament_ids(100)
+    tournament_ids = get_recent_tournament_ids(20)
     print(f"Found {len(tournament_ids)} recent tournaments")
     
     # Find NEW tournaments
