@@ -1,0 +1,47 @@
+{
+  "last_updated": "2025-06-13T14:47:32.137363",
+  "sets": [
+    {
+      "set_name": "Extradimensional Crisis",
+      "set_code": "A3a",
+      "release_date": "2025-05-29",
+      "card_count": 103
+    },
+    {
+      "set_name": "Celestial Guardians",
+      "set_code": "A3",
+      "release_date": "2025-04-30",
+      "card_count": 239
+    },
+    {
+      "set_name": "Shining Revelry",
+      "set_code": "A2b",
+      "release_date": "2025-03-27",
+      "card_count": 111
+    },
+    {
+      "set_name": "Triumphant Light",
+      "set_code": "A2a",
+      "release_date": "2025-02-28",
+      "card_count": 96
+    },
+    {
+      "set_name": "Space-Time Smackdown",
+      "set_code": "A2",
+      "release_date": "2025-01-29",
+      "card_count": 207
+    },
+    {
+      "set_name": "Mythical Island",
+      "set_code": "A1a",
+      "release_date": "2024-12-17",
+      "card_count": 86
+    },
+    {
+      "set_name": "Genetic Apex",
+      "set_code": "A1",
+      "release_date": "2024-10-30",
+      "card_count": 286
+    }
+  ]
+}
