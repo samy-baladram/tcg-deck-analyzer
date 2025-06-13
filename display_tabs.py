@@ -2364,20 +2364,17 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 fig.add_vline(
                     x=release_date, 
                     line_dash="dash", 
-                    line_color="rgba(128, 128, 128, 0.6)",
+                    #line_color="rgba(128, 128, 128, 0.6)",
                     line_width=1
                 )
                 
                 # Add set code annotation at the top with hover info
                 fig.add_annotation(
                     x=release_date,
-                    y=max_percentage * 1.05,  # Position at top of chart
+                    y=max_percentage * 1.1,  # Position at top of chart
                     text=set_code,
                     showarrow=False,
-                    font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
-                    bgcolor="rgba(255,255,255,0.8)",
-                    bordercolor="rgba(128, 128, 128, 0.3)",
-                    borderwidth=1,
+                    font=dict(size=10),
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
