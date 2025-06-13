@@ -1877,7 +1877,7 @@ def display_matchup_tab(deck_info=None):
 
 def display_meta_trend_tab(deck_info=None):
     """
-    Display the Meta Trend tab with enhanced line chart and format filters
+    Display the Meta Trend tab with enhanced line chart, format filters, and performance trends
     """
     import pandas as pd
     
@@ -1897,9 +1897,6 @@ def display_meta_trend_tab(deck_info=None):
     # Display indicator badges first
     display_meta_indicators(deck_name)
     
-    # Add format filter checkboxes
-    st.write("##### Format Filters")
-    
     # Get available formats from database
     available_formats = get_available_formats()
     
@@ -1910,56 +1907,69 @@ def display_meta_trend_tab(deck_info=None):
         # Initialize session state for format filters if not exists
         if 'format_filters' not in st.session_state:
             st.session_state.format_filters = {
-                'Standard': True,   # Default checked
-                'NOEX': False,     # Default unchecked
-                'STANDARD': False   # Default unchecked (legacy format name)
+                'Standard': True,
+                'NOEX': False,
+                'STANDARD': False
             }
         
         # Display checkboxes for each available format
         selected_formats = []
         for i, format_type in enumerate(available_formats):
             with checkbox_cols[i]:
-                # Use session state to maintain checkbox state
                 checked = st.checkbox(
                     format_type,
                     value=st.session_state.format_filters.get(format_type, False),
                     key=f"format_filter_{format_type}"
                 )
                 
-                # Update session state
                 st.session_state.format_filters[format_type] = checked
                 
                 if checked:
                     selected_formats.append(format_type)
         
-        # Show message if no formats selected
         if not selected_formats:
             st.warning("Please select at least one format to display.")
             return
             
-        # Create the enhanced meta trend chart with format filter
-        fig = create_enhanced_meta_trend_chart(deck_name, selected_formats)
-        
-        if fig:
-            # Enable interactivity
-            config = {
-                'displayModeBar': True,
-                'displaylogo': False,
-                'modeBarButtonsToRemove': ['lasso2d', 'select2d']
-            }
-            
-            st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
-            
-            # Add explanation with selected formats
-            formats_text = ", ".join(selected_formats)
-            st.caption(
-                f"Shows daily meta share percentage for {formats_text} format(s). "
-                f"Vertical dashed lines indicate set releases. Peak value is highlighted on the chart."
-            )
-        else:
-            st.info(f"No meta trend data available for this deck archetype in selected format(s).")
+        chart_subtitle = f" ({' + '.join(selected_formats)})"
     else:
-        st.info("No format data available in database.")
+        selected_formats = ['Standard']
+        chart_subtitle = ""
+    
+    # Create the meta evolution chart
+    fig = create_enhanced_meta_trend_chart_combined(deck_name, selected_formats, chart_subtitle)
+    
+    if fig:
+        config = {
+            'displayModeBar': True,
+            'displaylogo': False,
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d']
+        }
+        
+        st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
+        
+        formats_text = ", ".join(selected_formats)
+        st.caption(
+            f"Shows daily meta share percentage for {formats_text} format(s). "
+            f"Vertical dashed lines indicate set releases."
+        )
+    else:
+        st.info(f"No meta trend data available for this deck archetype.")
+    
+    # Add performance trend chart
+    st.write("#### Performance Trends")
+    
+    perf_fig = create_performance_trend_chart(deck_name, selected_formats)
+    
+    if perf_fig:
+        st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
+        
+        st.caption(
+            f"Shows win rate and loss rate trends over time for {formats_text} format(s). "
+            f"Green line = win percentage, Red line = loss percentage."
+        )
+    else:
+        st.info(f"No performance trend data available for this deck archetype.")
 
 def get_available_formats():
     """
@@ -2445,4 +2455,188 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         
     except Exception as e:
         print(f"Error creating enhanced meta trend chart: {e}")
+        return None
+
+
+def create_performance_trend_chart(deck_name, selected_formats=None):
+    """
+    Create performance trend chart showing win/loss percentages over time
+    
+    Args:
+        deck_name: The deck archetype name
+        selected_formats: List of formats to include
+    """
+    import sqlite3
+    import pandas as pd
+    import plotly.graph_objects as go
+    from datetime import datetime
+    
+    if selected_formats is None:
+        selected_formats = ['Standard']
+    
+    try:
+        # Connect to SQLite database
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Create format filter for SQL query
+        format_placeholders = ','.join(['?' for _ in selected_formats])
+        
+        # Query to get daily performance data
+        query = f"""
+        SELECT 
+            t.date,
+            t.format,
+            SUM(pp.wins) as total_wins,
+            SUM(pp.losses) as total_losses,
+            SUM(pp.ties) as total_ties,
+            COUNT(pp.player_name) as total_players
+        FROM tournaments t
+        JOIN player_performance pp ON t.tournament_id = pp.tournament_id
+        WHERE pp.archetype = ? AND t.format IN ({format_placeholders})
+        GROUP BY t.date, t.format
+        HAVING total_players > 0
+        ORDER BY t.date
+        """
+        
+        # Execute query with deck name and selected formats
+        query_params = [deck_name] + selected_formats
+        df = pd.read_sql_query(query, conn, params=query_params)
+        conn.close()
+        
+        if df.empty:
+            print(f"No performance data found for archetype: {deck_name} in formats: {selected_formats}")
+            return None
+        
+        # Convert date strings to datetime
+        df['date'] = pd.to_datetime(df['date'])
+        
+        # Calculate total games and percentages
+        df['total_games'] = df['total_wins'] + df['total_losses'] + df['total_ties']
+        df['win_percentage'] = (df['total_wins'] / df['total_games'] * 100).fillna(0)
+        df['loss_percentage'] = (df['total_losses'] / df['total_games'] * 100).fillna(0)
+        
+        # Combine all formats for each date (aggregate by date)
+        df_combined = df.groupby('date').agg({
+            'total_wins': 'sum',
+            'total_losses': 'sum',
+            'total_ties': 'sum',
+            'total_players': 'sum'
+        }).reset_index()
+        
+        # Recalculate percentages after combining formats
+        df_combined['total_games'] = df_combined['total_wins'] + df_combined['total_losses'] + df_combined['total_ties']
+        df_combined['win_percentage'] = (df_combined['total_wins'] / df_combined['total_games'] * 100).fillna(0)
+        df_combined['loss_percentage'] = (df_combined['total_losses'] / df_combined['total_games'] * 100).fillna(0)
+        
+        # Filter out dates with no games
+        df_filtered = df_combined[df_combined['total_games'] > 0].copy()
+        
+        if df_filtered.empty:
+            print(f"No performance data with games found for archetype: {deck_name}")
+            return None
+        
+        # Create the figure
+        fig = go.Figure()
+        
+        # Add set release markers (same as meta trend chart)
+        set_releases = get_set_release_dates()
+        min_date = df_filtered['date'].min()
+        max_date = df_filtered['date'].max()
+        
+        for release_date, set_code, set_name in set_releases:
+            release_dt = pd.to_datetime(release_date)
+            if release_dt >= min_date and release_dt <= max_date:
+                # Add vertical line
+                fig.add_vline(
+                    x=release_date, 
+                    line_dash="dash", 
+                    line_color="rgba(128, 128, 128, 0.6)",
+                    line_width=1
+                )
+                
+                # Add set code annotation at the top
+                fig.add_annotation(
+                    x=release_date,
+                    y=105,  # Fixed position at top
+                    text=set_code,
+                    showarrow=False,
+                    font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
+                    bgcolor="rgba(255,255,255,0.8)",
+                    bordercolor="rgba(128, 128, 128, 0.3)",
+                    borderwidth=1,
+                    hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
+                    hoverlabel=dict(
+                        bgcolor="white",
+                        bordercolor="gray",
+                        font=dict(color="black")
+                    )
+                )
+        
+        # Add win percentage line (green)
+        fig.add_trace(go.Scatter(
+            x=df_filtered['date'],
+            y=df_filtered['win_percentage'],
+            mode='lines+markers',
+            name='Win %',
+            line=dict(color='#28A745', width=3),  # Green
+            marker=dict(size=6, color='#28A745'),
+            hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Total Games: %{customdata[1]}<extra></extra>',
+            customdata=list(zip(df_filtered['total_wins'], df_filtered['total_games']))
+        ))
+        
+        # Add loss percentage line (red)
+        fig.add_trace(go.Scatter(
+            x=df_filtered['date'],
+            y=df_filtered['loss_percentage'],
+            mode='lines+markers',
+            name='Loss %',
+            line=dict(color='#DC3545', width=3),  # Red
+            marker=dict(size=6, color='#DC3545'),
+            hovertemplate='<b>%{x}</b><br>Loss Rate: %{y:.1f}%<br>Losses: %{customdata[0]}<br>Total Games: %{customdata[1]}<extra></extra>',
+            customdata=list(zip(df_filtered['total_losses'], df_filtered['total_games']))
+        ))
+        
+        # Update layout
+        fig.update_layout(
+            title="",  # No title since it's under the main chart
+            xaxis_title="",
+            yaxis_title="Percentage (%)",
+            height=400,
+            margin=dict(t=40, l=50, r=20, b=50),
+            hovermode='x unified',
+            
+            # Styling to match your app
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(size=12),
+            
+            # Legend styling
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            ),
+            
+            # Grid and axes styling
+            xaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)'
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)',
+                range=[0, 110]  # Fixed range 0-100% with space for annotations
+            )
+        )
+        
+        return fig
+        
+    except Exception as e:
+        print(f"Error creating performance trend chart: {e}")
         return None
