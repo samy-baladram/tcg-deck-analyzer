@@ -2141,81 +2141,17 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
 
 def get_set_release_dates():
     """
-    Load set release dates from the sets index file
-    
-    Returns:
-        List of tuples: [(release_date, set_code, set_name), ...]
+    Return known set release dates for PTCGP
+    You'll need to update this with actual release dates
     """
-    with open("meta_analysis/sets_index.json", 'r') as f:
-        sets_data = json.load(f)
-    
-    releases = []
-    for set_info in sets_data['sets']:
-        if set_info['release_date']:
-            releases.append((
-                set_info['release_date'],
-                set_info['set_code'], 
-                set_info['set_name']
-            ))
-    
-    return sorted(releases)
-
-def display_meta_indicators(deck_name):
-    """
-    Display indicator badges for the current deck - simplified version
-    """
-    try:
-        # Get basic stats from database
-        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
-        
-        # Get overall stats
-        overall_query = """
-        SELECT 
-            MIN(t.date) as first_seen,
-            MAX(t.date) as last_seen,
-            MAX(COALESCE(aa.count, 0) * 100.0 / t.total_players) as peak_percentage,
-            COUNT(DISTINCT t.tournament_id) as tournaments_appeared
-        FROM tournaments t
-        LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
-            AND aa.archetype = ?
-        WHERE aa.archetype IS NOT NULL
-        """
-        
-        overall_stats = pd.read_sql_query(overall_query, conn, params=[deck_name])
-        conn.close()
-        
-        # Calculate indicators
-        indicators = []
-        
-        if not overall_stats.empty and overall_stats.iloc[0]['first_seen']:
-            # Days active
-            first_seen = pd.to_datetime(overall_stats.iloc[0]['first_seen'])
-            last_seen = pd.to_datetime(overall_stats.iloc[0]['last_seen'])
-            days_active = (last_seen - first_seen).days + 1
-            indicators.append(f"📅 {days_active} days in meta")
-            
-            # Peak performance (without tier labels)
-            peak = overall_stats.iloc[0]['peak_percentage']
-            if peak:
-                indicators.append(f"🏆 Peak: {peak:.1f}%")
-            
-            # Tournament appearances
-            tournaments = overall_stats.iloc[0]['tournaments_appeared']
-            if tournaments:
-                indicators.append(f"🎯 {tournaments} tournaments")
-        
-        # Display indicators in columns
-        if indicators:
-            cols = st.columns(len(indicators))
-            for i, indicator in enumerate(indicators):
-                with cols[i]:
-                    st.markdown(f"**{indicator}**")
-        else:
-            st.info("No trend data available for this archetype")
-        
-    except Exception as e:
-        print(f"Error displaying meta indicators: {e}")
-        st.info("Trend indicators unavailable")
+    return [
+        ("2024-10-30", "Genetic Apex"),
+        ("2024-12-17", "Mythical Island"),
+        ("2025-01-29", "Space-Time Smackdown"),
+        ("2025-04-30", "Celestial Guardians"),
+        ("2025-06-26", "Extradimensional Crisis"),
+        # Add more as they're announced
+    ]
 
 def display_meta_trend_tab(deck_info=None):
     """
@@ -2235,9 +2171,6 @@ def display_meta_trend_tab(deck_info=None):
         return
     
     st.write("#### Meta Share Evolution")
-    
-    # Display indicator badges first
-    display_meta_indicators(deck_name)
     
     # Check what formats are available for this specific deck
     deck_formats = get_deck_available_formats(deck_name)
@@ -2411,39 +2344,20 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         # Create the figure
         fig = go.Figure()
         
-        # Add set release markers with improved annotations
+        # Add set release markers
         set_releases = get_set_release_dates()
         min_date = df_filtered['date'].min()
         max_date = df_filtered['date'].max()
-        max_percentage = df_filtered['meta_percentage'].max()
         
-        for release_date, set_code, set_name in set_releases:
+        for release_date, set_name in set_releases:
             release_dt = pd.to_datetime(release_date)
             if release_dt >= min_date and release_dt <= max_date:
-                # Add vertical line
                 fig.add_vline(
                     x=release_date, 
                     line_dash="dash", 
-                    line_color="rgba(128, 128, 128, 0.6)",
-                    line_width=1
-                )
-                
-                # Add set code annotation at the top with hover info
-                fig.add_annotation(
-                    x=release_date,
-                    y=max_percentage * 1.05,  # Position at top of chart
-                    text=set_code,
-                    showarrow=False,
-                    font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
-                    bgcolor="rgba(255,255,255,0.8)",
-                    bordercolor="rgba(128, 128, 128, 0.3)",
-                    borderwidth=1,
-                    hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
-                    hoverlabel=dict(
-                        bgcolor="white",
-                        bordercolor="gray",
-                        font=dict(color="black")
-                    )
+                    line_color="rgba(0, 0, 0, 0.5)",
+                    annotation_text=f"Set: {set_name}",
+                    annotation_position="top"
                 )
         
         # Add the main trend line (single line combining all selected formats)
@@ -2500,7 +2414,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[0, df_filtered['meta_percentage'].max() * 1.15]  # Extra space for annotations
+                range=[0, df_filtered['meta_percentage'].max() * 1.1]
             )
         )
         
