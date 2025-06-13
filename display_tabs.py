@@ -1973,7 +1973,7 @@ def display_meta_trend_tab(deck_info=None):
         st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
         
         st.caption(
-            f"Shows win rate and loss rate trends over time for {formats_text} format(s). "
+            f"Shows win rate and loss rate trends over time. "
             f"Green line = win percentage, Red line = loss percentage."
         )
     else:
@@ -2125,8 +2125,8 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             title=f"Meta Evolution: {deck_name.replace('-', ' ').title()} ({formats_text})",
             xaxis_title="",
             yaxis_title="Meta Share (%)",
-            height=500,
-            margin=dict(t=10, l=10, r=10, b=10),
+            #height=500,
+            margin=dict(t=80, l=10, r=10, b=00),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2345,8 +2345,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}{chart_subtitle}",
             xaxis_title="",
             yaxis_title="Meta Share (%)",
-            height=500,
-            margin=dict(t=10, l=10, r=10, b=10),
+            #height=500,
+            margin=dict(t=80, l=10, r=10, b=0),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2480,10 +2480,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                     y=105,  # Fixed position at top
                     text=set_code,
                     showarrow=False,
-                    font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
-                    bgcolor="rgba(255,255,255,0.8)",
-                    bordercolor="rgba(128, 128, 128, 0.3)",
-                    borderwidth=1,
+                    font=dict(size=10),
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
@@ -2521,8 +2518,8 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             title="",  # No title since it's under the main chart
             xaxis_title="",
             yaxis_title="Percentage (%)",
-            height=400,
-            margin=dict(t=10, l=10, r=10, b=10),
+            #height=400,
+            margin=dict(t=80, l=10, r=10, b=0),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2551,7 +2548,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[0, 110]  # Fixed range 0-100% with space for annotations
+                range=[40, 85]  # Fixed range 0-100% with space for annotations
             )
         )
         
