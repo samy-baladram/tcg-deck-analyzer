@@ -1892,10 +1892,10 @@ def display_meta_trend_tab(deck_info=None):
         st.warning("No deck selected for meta trend analysis.")
         return
     
-    st.write("#### Meta Share Evolution")
+    st.write("##### Meta Share Evolution")
     
     # Display indicator badges first
-    display_meta_indicators(deck_name)
+    # display_meta_indicators(deck_name)
     
     # Check what formats are available for this specific deck
     deck_formats = get_deck_available_formats(deck_name)
@@ -1965,7 +1965,7 @@ def display_meta_trend_tab(deck_info=None):
         st.info(f"No meta trend data available for this deck archetype.")
     
     # Add performance trend chart
-    st.write("#### Performance Trends")
+    st.write("##### Performance Trends")
     
     perf_fig = create_performance_trend_chart(deck_name, selected_formats)
     
