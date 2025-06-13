@@ -1872,7 +1872,7 @@ def display_matchup_tab(deck_info=None):
     
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
         # Display meta trend section
-    display_meta_trend_section(deck_name)
+   # display_meta_trend_section(deck_name)
 
 def display_meta_trend_tab(deck_info=None):
     """
