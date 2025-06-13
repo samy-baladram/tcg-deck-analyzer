@@ -2153,63 +2153,6 @@ def get_set_release_dates():
         # Add more as they're announced
     ]
 
-def display_meta_indicators(deck_name):
-    """
-    Display indicator badges for the current deck - simplified version
-    """
-    try:
-        # Get basic stats from database
-        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
-        
-        # Get overall stats
-        overall_query = """
-        SELECT 
-            MIN(t.date) as first_seen,
-            MAX(t.date) as last_seen,
-            MAX(COALESCE(aa.count, 0) * 100.0 / t.total_players) as peak_percentage,
-            COUNT(DISTINCT t.tournament_id) as tournaments_appeared
-        FROM tournaments t
-        LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
-            AND aa.archetype = ?
-        WHERE aa.archetype IS NOT NULL
-        """
-        
-        overall_stats = pd.read_sql_query(overall_query, conn, params=[deck_name])
-        conn.close()
-        
-        # Calculate indicators
-        indicators = []
-        
-        if not overall_stats.empty and overall_stats.iloc[0]['first_seen']:
-            # Days active
-            first_seen = pd.to_datetime(overall_stats.iloc[0]['first_seen'])
-            last_seen = pd.to_datetime(overall_stats.iloc[0]['last_seen'])
-            days_active = (last_seen - first_seen).days + 1
-            indicators.append(f"📅 {days_active} days in meta")
-            
-            # Peak performance (without tier labels)
-            peak = overall_stats.iloc[0]['peak_percentage']
-            if peak:
-                indicators.append(f"🏆 Peak: {peak:.1f}%")
-            
-            # Tournament appearances
-            tournaments = overall_stats.iloc[0]['tournaments_appeared']
-            if tournaments:
-                indicators.append(f"🎯 {tournaments} tournaments")
-        
-        # Display indicators in columns
-        if indicators:
-            cols = st.columns(len(indicators))
-            for i, indicator in enumerate(indicators):
-                with cols[i]:
-                    st.markdown(f"**{indicator}**")
-        else:
-            st.info("No trend data available for this archetype")
-        
-    except Exception as e:
-        print(f"Error displaying meta indicators: {e}")
-        st.info("Trend indicators unavailable")
-
 def display_meta_trend_tab(deck_info=None):
     """
     Display the Meta Trend tab with enhanced line chart and smart format filters
@@ -2228,9 +2171,6 @@ def display_meta_trend_tab(deck_info=None):
         return
     
     st.write("#### Meta Share Evolution")
-    
-    # Display indicator badges first
-    display_meta_indicators(deck_name)
     
     # Check what formats are available for this specific deck
     deck_formats = get_deck_available_formats(deck_name)
