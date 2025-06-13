@@ -2086,7 +2086,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             if pd.to_datetime(release_date) >= df_filtered['date'].min() and pd.to_datetime(release_date) <= df_filtered['date'].max():
                 fig.add_vline(
                     x=release_date, 
-                    line_dash="dash", 
+                    line_dash="dot", 
                     line_color="rgba(0, 0, 0, 0.5)",
                     annotation_text=f"Set: {set_name}",
                     annotation_position="top"
@@ -2477,7 +2477,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 # Add vertical line
                 fig.add_vline(
                     x=release_date, 
-                    line_dash="dash", 
+                    line_dash="dot", 
                     line_color="rgba(128, 128, 128, 0.6)",
                     line_width=1
                 )
