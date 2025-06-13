@@ -2212,7 +2212,7 @@ def display_meta_indicators(deck_name):
 
 def display_meta_trend_tab(deck_info=None):
     """
-    Display the Meta Trend tab with enhanced line chart and indicators
+    Display the Meta Trend tab with enhanced line chart and format filters
     """
     import pandas as pd
     
@@ -2232,23 +2232,247 @@ def display_meta_trend_tab(deck_info=None):
     # Display indicator badges first
     display_meta_indicators(deck_name)
     
-    # Create the enhanced meta trend chart
-    fig = create_enhanced_meta_trend_chart(deck_name)
+    # Add format filter checkboxes
+    st.write("##### Format Filters")
     
-    if fig:
-        # Enable interactivity
-        config = {
-            'displayModeBar': True,  # Show toolbar
-            'displaylogo': False,    # Hide plotly logo
-            'modeBarButtonsToRemove': ['lasso2d', 'select2d']  # Remove some tools
+    # Get available formats from database
+    available_formats = get_available_formats()
+    
+    if available_formats:
+        # Create columns for checkboxes
+        checkbox_cols = st.columns(len(available_formats))
+        
+        # Initialize session state for format filters if not exists
+        if 'format_filters' not in st.session_state:
+            st.session_state.format_filters = {
+                'Standard': True,   # Default checked
+                'NOEX': False,     # Default unchecked
+                'STANDARD': False   # Default unchecked (legacy format name)
+            }
+        
+        # Display checkboxes for each available format
+        selected_formats = []
+        for i, format_type in enumerate(available_formats):
+            with checkbox_cols[i]:
+                # Use session state to maintain checkbox state
+                checked = st.checkbox(
+                    format_type,
+                    value=st.session_state.format_filters.get(format_type, False),
+                    key=f"format_filter_{format_type}"
+                )
+                
+                # Update session state
+                st.session_state.format_filters[format_type] = checked
+                
+                if checked:
+                    selected_formats.append(format_type)
+        
+        # Show message if no formats selected
+        if not selected_formats:
+            st.warning("Please select at least one format to display.")
+            return
+            
+        # Create the enhanced meta trend chart with format filter
+        fig = create_enhanced_meta_trend_chart_multi_format(deck_name, selected_formats)
+        
+        if fig:
+            # Enable interactivity
+            config = {
+                'displayModeBar': True,
+                'displaylogo': False,
+                'modeBarButtonsToRemove': ['lasso2d', 'select2d']
+            }
+            
+            st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
+            
+            # Add explanation with selected formats
+            formats_text = ", ".join(selected_formats)
+            st.caption(
+                f"Shows daily meta share percentage for {formats_text} format(s). "
+                f"Each format is shown as a separate line. Vertical dashed lines indicate set releases."
+            )
+        else:
+            st.info(f"No meta trend data available for this deck archetype in selected format(s).")
+    else:
+        st.info("No format data available in database.")
+
+def create_enhanced_meta_trend_chart_multi_format(deck_name, selected_formats=None):
+    """
+    Create enhanced line chart with separate lines for each format
+    
+    Args:
+        deck_name: The deck archetype name
+        selected_formats: List of formats to include (e.g., ['Standard', 'NOEX'])
+    """
+    import sqlite3
+    import pandas as pd
+    import plotly.graph_objects as go
+    from datetime import datetime
+    
+    if selected_formats is None:
+        selected_formats = ['Standard']
+    
+    try:
+        # Connect to SQLite database
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Create format filter for SQL query
+        format_placeholders = ','.join(['?' for _ in selected_formats])
+        
+        # Query to get daily data for the specific archetype and selected formats
+        query = f"""
+        SELECT 
+            t.date,
+            t.format,
+            COALESCE(SUM(aa.count), 0) as archetype_players,
+            SUM(t.total_players) as total_players
+        FROM tournaments t
+        LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
+            AND aa.archetype = ?
+        WHERE t.format IN ({format_placeholders})
+        GROUP BY t.date, t.format
+        HAVING total_players > 0
+        ORDER BY t.date, t.format
+        """
+        
+        # Execute query with deck name and selected formats
+        query_params = [deck_name] + selected_formats
+        df = pd.read_sql_query(query, conn, params=query_params)
+        conn.close()
+        
+        if df.empty:
+            print(f"No data found for archetype: {deck_name} in formats: {selected_formats}")
+            return None
+        
+        # Calculate percentage for each date/format combination
+        df['meta_percentage'] = (df['archetype_players'] / df['total_players']) * 100
+        
+        # Convert date strings to datetime for better plotting
+        df['date'] = pd.to_datetime(df['date'])
+        
+        # Filter out dates where archetype had 0%
+        df_filtered = df[df['meta_percentage'] > 0].copy()
+        
+        if df_filtered.empty:
+            print(f"No appearances found for archetype: {deck_name} in formats: {selected_formats}")
+            return None
+        
+        # Create the figure
+        fig = go.Figure()
+        
+        # Define colors for different formats
+        format_colors = {
+            'Standard': '#00A0FF',      # Blue
+            'NOEX': '#FF6B35',          # Orange
+            'STANDARD': '#28A745'       # Green (for legacy format name)
         }
         
-        st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
+        # Add a separate line for each format
+        all_dates = []
+        all_percentages = []
         
-        # Add explanation
-        st.caption(
-            "Shows daily meta share percentage based on tournament data. "
-            "Vertical dashed lines indicate set releases. Peak value is highlighted on the chart."
+        for format_type in selected_formats:
+            format_data = df_filtered[df_filtered['format'] == format_type].copy()
+            
+            if not format_data.empty:
+                # Sort by date
+                format_data = format_data.sort_values('date')
+                
+                # Get color for this format
+                line_color = format_colors.get(format_type, '#666666')
+                
+                # Add trace for this format
+                fig.add_trace(go.Scatter(
+                    x=format_data['date'],
+                    y=format_data['meta_percentage'],
+                    mode='lines+markers',
+                    name=f'{format_type} Format',
+                    line=dict(color=line_color, width=3),
+                    marker=dict(size=6, color=line_color),
+                    hovertemplate=f'<b>%{{x}}</b><br>{format_type} Format<br>Meta Share: %{{y:.1f}}%<br>Players: %{{customdata[0]}}<br>Total: %{{customdata[1]}}<extra></extra>',
+                    customdata=list(zip(format_data['archetype_players'], format_data['total_players']))
+                ))
+                
+                # Collect data for overall peak calculation
+                all_dates.extend(format_data['date'].tolist())
+                all_percentages.extend(format_data['meta_percentage'].tolist())
+        
+        # Add set release markers
+        set_releases = get_set_release_dates()
+        if all_dates:  # Only if we have data
+            min_date = min(all_dates)
+            max_date = max(all_dates)
+            
+            for release_date, set_name in set_releases:
+                release_dt = pd.to_datetime(release_date)
+                if release_dt >= min_date and release_dt <= max_date:
+                    fig.add_vline(
+                        x=release_date, 
+                        line_dash="dash", 
+                        line_color="rgba(0, 0, 0, 0.5)",
+                        annotation_text=f"Set: {set_name}",
+                        annotation_position="top"
+                    )
+        
+        # Add overall peak annotation (highest across all formats)
+        if all_percentages:
+            max_percentage = max(all_percentages)
+            max_idx = all_percentages.index(max_percentage)
+            peak_date = all_dates[max_idx]
+            
+            fig.add_annotation(
+                x=peak_date,
+                y=max_percentage + (max_percentage * 0.05),
+                text=f"Overall Peak: {max_percentage:.1f}%",
+                showarrow=False,
+                font=dict(color="#333333", size=12),
+                bgcolor="rgba(255,255,255,0.8)",
+                bordercolor="rgba(0,0,0,0.3)",
+                borderwidth=1
+            )
+        
+        # Update layout
+        formats_text = " vs ".join(selected_formats)
+        fig.update_layout(
+            title=f"Meta Evolution: {deck_name.replace('-', ' ').title()} ({formats_text})",
+            xaxis_title="",
+            yaxis_title="Meta Share (%)",
+            height=500,
+            margin=dict(t=80, l=50, r=20, b=50),
+            hovermode='x unified',
+            
+            # Styling to match your app
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(size=12),
+            
+            # Legend styling
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            ),
+            
+            # Grid and axes styling
+            xaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)'
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)',
+                range=[0, max(all_percentages) * 1.1] if all_percentages else [0, 10]
+            )
         )
-    else:
-        st.info(f"No meta trend data available for this deck archetype.")
+        
+        return fig
+        
+    except Exception as e:
+        print(f"Error creating enhanced meta trend chart: {e}")
+        return None
