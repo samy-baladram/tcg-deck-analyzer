@@ -2363,8 +2363,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 # Add vertical line
                 fig.add_vline(
                     x=release_date, 
-                    line_dash="dash", 
-                    #line_color="rgba(128, 128, 128, 0.6)",
+                    line_dash="dot", 
+                    line_color="rgba(128, 128, 128, 0.5)",
                     line_width=1
                 )
                 
