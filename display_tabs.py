@@ -1905,7 +1905,7 @@ def display_meta_trend_tab(deck_info=None):
     
     if has_noex and len(deck_formats) > 1:
         # Show format filter options
-        st.write("##### Format Filters")
+        st.write("###### Format Filters")
         
         # Initialize session state for format selection
         if 'deck_format_selection' not in st.session_state:
