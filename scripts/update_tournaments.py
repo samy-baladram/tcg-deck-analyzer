@@ -260,9 +260,47 @@ def update_tournament_cache():
     
     print(f"Current cache has {len(index['tournaments'])} tournaments")
     
+    # ADDITION: Check which tournaments are missing from SQLite
+    conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+    cursor = conn.execute("SELECT tournament_id FROM tournaments")
+    existing_in_db = {row[0] for row in cursor.fetchall()}
+    conn.close()
+    
+    # Find tournaments that exist as JSON but not in SQLite
+    missing_from_db = []
+    for tournament_id in index['tournaments']:
+        if tournament_id not in existing_in_db:
+            # Find the JSON file for this tournament
+            for date_path, tournament_list in index['tournaments_by_path'].items():
+                if tournament_id in tournament_list:
+                    json_file = f"{cache_dir}/{date_path}/{tournament_id}.json"
+                    if os.path.exists(json_file):
+                        missing_from_db.append(json_file)
+                    break
+    
+    print(f"Found {len(missing_from_db)} tournaments to process into SQLite")
+    
+    # Process existing JSON files into SQLite
+    for json_file in missing_from_db:
+        try:
+            with open(json_file, 'r') as f:
+                data = json.load(f)
+            process_tournament_meta(data)
+            print(f"✅ Processed existing: {data['tournament_id']}")
+        except Exception as e:
+            print(f"❌ Failed to process {json_file}: {e}")
+    
     # Get recent tournament IDs
     tournament_ids = get_recent_tournament_ids(20)
     print(f"Found {len(tournament_ids)} recent tournaments")
+    
+    # Find NEW tournaments
+    new_tournament_ids = [tid for tid in tournament_ids if tid not in index['tournaments']]
+    print(f"New tournaments to scrape: {len(new_tournament_ids)}")
+    
+    if not new_tournament_ids and not missing_from_db:
+        print("No new tournaments found and SQLite is up to date")
+        return
     
     # CHANGE: Find tournaments without actual files (not just index entries)
     unprocessed_tournament_ids = []
