@@ -120,7 +120,7 @@ def init_meta_database():
     
     conn = sqlite3.connect(f"{meta_dir}/tournament_meta.db")
     
-    # Create tables with format field added
+    # Create tables with format field and new player_performance table
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS tournaments (
             tournament_id TEXT PRIMARY KEY,
@@ -139,6 +139,18 @@ def init_meta_database():
             FOREIGN KEY (tournament_id) REFERENCES tournaments (tournament_id)
         );
         
+        CREATE TABLE IF NOT EXISTS player_performance (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tournament_id TEXT,
+            player_name TEXT,
+            archetype TEXT,
+            placement INTEGER,
+            wins INTEGER,
+            losses INTEGER,
+            ties INTEGER,
+            FOREIGN KEY (tournament_id) REFERENCES tournaments (tournament_id)
+        );
+        
         CREATE TABLE IF NOT EXISTS daily_meta (
             date TEXT PRIMARY KEY,
             total_players INTEGER,
@@ -154,23 +166,60 @@ def init_meta_database():
         
         CREATE INDEX IF NOT EXISTS idx_tournament_format 
         ON tournaments(format);
+        
+        CREATE INDEX IF NOT EXISTS idx_player_performance_archetype 
+        ON player_performance(archetype);
+        
+        CREATE INDEX IF NOT EXISTS idx_player_performance_tournament 
+        ON player_performance(tournament_id);
     """)
     
     conn.commit()
     conn.close()
+
+def parse_record(record_str):
+    """
+    Parse record string like "9 - 2 - 0" into wins, losses, ties
+    
+    Args:
+        record_str: String like "9 - 2 - 0"
+        
+    Returns:
+        tuple: (wins, losses, ties) or (0, 0, 0) if parsing fails
+    """
+    try:
+        # Remove extra spaces and split by '-'
+        parts = [part.strip() for part in record_str.split('-')]
+        
+        if len(parts) >= 3:
+            wins = int(parts[0])
+            losses = int(parts[1]) 
+            ties = int(parts[2])
+            return wins, losses, ties
+        elif len(parts) == 2:
+            # Handle case with no ties recorded
+            wins = int(parts[0])
+            losses = int(parts[1])
+            ties = 0
+            return wins, losses, ties
+            
+    except (ValueError, IndexError):
+        pass
+    
+    return 0, 0, 0
 
 def process_tournament_meta(tournament_data):
     """Process tournament data and update meta database"""
     tournament_id = tournament_data['tournament_id']
     date_str = get_date_string(tournament_data['timestamp'])
     total_players = tournament_data['player_count']
-    format_type = tournament_data.get('format', 'Standard')  # Get format with fallback
+    format_type = tournament_data.get('format', 'Standard')
     
     # Count archetypes
     archetype_counts = {}
     for player in tournament_data['players']:
         archetype = player.get('archetype')
-        if archetype:  # Only count players with known archetypes
+        if archetype:
             archetype_counts[archetype] = archetype_counts.get(archetype, 0) + 1
     
     if not archetype_counts:
@@ -179,16 +228,15 @@ def process_tournament_meta(tournament_data):
     
     conn = sqlite3.connect("meta_analysis/tournament_meta.db")
     
-    # Add tournament summary with format
+    # Add tournament summary
     conn.execute("""
         INSERT OR REPLACE INTO tournaments 
         VALUES (?, ?, ?, ?, ?)
     """, (tournament_id, date_str, format_type, total_players, len(archetype_counts)))
     
-    # Remove existing archetype data for this tournament (in case of reprocessing)
-    conn.execute("""
-        DELETE FROM archetype_appearances WHERE tournament_id = ?
-    """, (tournament_id,))
+    # Remove existing data for this tournament (in case of reprocessing)
+    conn.execute("DELETE FROM archetype_appearances WHERE tournament_id = ?", (tournament_id,))
+    conn.execute("DELETE FROM player_performance WHERE tournament_id = ?", (tournament_id,))
     
     # Add archetype appearances
     for archetype, count in archetype_counts.items():
@@ -199,10 +247,29 @@ def process_tournament_meta(tournament_data):
             VALUES (?, ?, ?, ?)
         """, (tournament_id, archetype, count, percentage))
     
+    # Add individual player performance data
+    for player in tournament_data['players']:
+        if player.get('archetype'):  # Only add players with known archetypes
+            wins, losses, ties = parse_record(player.get('record', '0-0-0'))
+            
+            conn.execute("""
+                INSERT INTO player_performance 
+                (tournament_id, player_name, archetype, placement, wins, losses, ties) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                tournament_id,
+                player.get('player_name', 'Unknown'),
+                player['archetype'],
+                player.get('placement', 999),
+                wins,
+                losses,
+                ties
+            ))
+    
     conn.commit()
     conn.close()
     
-    print(f"✅ Meta processed: {tournament_id} ({format_type}) - {len(archetype_counts)} archetypes")
+    print(f"✅ Meta processed: {tournament_id} ({format_type}) - {len(archetype_counts)} archetypes, {len(tournament_data['players'])} players")
 
 def update_quick_index():
     """Update the quick JSON index file"""
