@@ -1,0 +1,87 @@
+{
+  "tournament_id": "67e04428fb3a86a4cffcdd4a",
+  "name": "\ud83c\udfc6 Heaven\u00b4s Spring Cup #9 Singelton BO3\ud83c\udfc6",
+  "timestamp": 1745762400000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Soldoban",
+      "record": "7 - 1 - 0",
+      "archetype": "giratina-ex-a2b-arceus-ex-a2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Legenbaer",
+      "record": "6 - 2 - 0",
+      "archetype": "articuno-ex-a1-palkia-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Ksi123",
+      "record": "5 - 2 - 0",
+      "archetype": "articuno-ex-a1-palkia-ex-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Shadwo",
+      "record": "5 - 2 - 0",
+      "archetype": "mewtwo-ex-a1-mew-ex-a1a"
+    },
+    {
+      "placement": 5,
+      "player_name": "outlxw",
+      "record": "3 - 3 - 0",
+      "archetype": "pikachu-ex-zapdos-ex-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "miqkymiyuki",
+      "record": "3 - 3 - 0",
+      "archetype": "rampardos-lucario-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "DasDragomir",
+      "record": "3 - 3 - 0",
+      "archetype": "weavile-ex-a2-paldean-clodsire-ex-a2b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Pixelzitrus",
+      "record": "2 - 4 - 0",
+      "archetype": "celebi-ex-a1a-butterfree-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Darki1356",
+      "record": "1 - 4 - 0",
+      "archetype": "kabutops-a1-rampardos-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "hrsnfbrn",
+      "record": "0 - 1 - 0drop",
+      "archetype": "starmie-ex-articuno-ex-a1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Implo",
+      "record": "0 - 3 - 0drop",
+      "archetype": "articuno-ex-a1-palkia-ex-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "tKarma121",
+      "record": "0 - 2 - 0drop",
+      "archetype": "exeggutor-ex-a1-celebi-ex-a1a"
+    },
+    {
+      "placement": 13,
+      "player_name": "CasaNerd",
+      "record": "0 - 2 - 0drop",
+      "archetype": "starmie-ex-a1-wugtrio-ex-a2b"
+    }
+  ]
+}

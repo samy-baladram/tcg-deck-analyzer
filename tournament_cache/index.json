@@ -269,10 +269,30 @@
     "680f724bfcf14d4e4278f184",
     "680a6cffb8cdc8c08c21273a",
     "680dba00fcf14d4e4278e6a4",
-    "67c9ff7c8f99a44fce3461c7"
+    "67c9ff7c8f99a44fce3461c7",
+    "68102431fcf14d4e4278f72a",
+    "68112389fcf14d4e4278fb67",
+    "6810ec92fcf14d4e4278f9bd",
+    "6808bf9d57322cac4624c621",
+    "680819ffb8cdc8c08c211e06",
+    "67ff0ecab8cdc8c08c20daa4",
+    "680ca657223a6c7d5ec95a9b",
+    "680fa8b4223a6c7d5ec97238",
+    "680d47a8223a6c7d5ec96184",
+    "680ea3b8fcf14d4e4278ee73",
+    "6808540457322cac4624c52b",
+    "680c161dfcf14d4e4278d621",
+    "680e4f5f223a6c7d5ec96828",
+    "680e481f223a6c7d5ec967c9",
+    "67fd1f77b8cdc8c08c20cb09",
+    "68098bdf57322cac4624c9b3",
+    "67e04428fb3a86a4cffcdd4a",
+    "680d013bfcf14d4e4278db06",
+    "67de8cff40ab762997ea9fa7",
+    "67fb376bb8cdc8c08c20b9f0"
   ],
-  "last_updated": 1749833616,
-  "total_tournaments": 270,
+  "last_updated": 1749833777,
+  "total_tournaments": 290,
   "tournaments_by_path": {
     "2025/06/12": [
       "68425e2827d8bc24cf24e4cb",
@@ -629,6 +649,34 @@
       "680a6cffb8cdc8c08c21273a",
       "680dba00fcf14d4e4278e6a4",
       "67c9ff7c8f99a44fce3461c7"
+    ],
+    "2025/04/30": [
+      "68102431fcf14d4e4278f72a"
+    ],
+    "2025/04/29": [
+      "68112389fcf14d4e4278fb67",
+      "6810ec92fcf14d4e4278f9bd",
+      "6808bf9d57322cac4624c621",
+      "680819ffb8cdc8c08c211e06",
+      "67ff0ecab8cdc8c08c20daa4",
+      "680ca657223a6c7d5ec95a9b"
+    ],
+    "2025/04/28": [
+      "680fa8b4223a6c7d5ec97238",
+      "680d47a8223a6c7d5ec96184",
+      "680ea3b8fcf14d4e4278ee73"
+    ],
+    "2025/04/27": [
+      "6808540457322cac4624c52b",
+      "680c161dfcf14d4e4278d621",
+      "680e4f5f223a6c7d5ec96828",
+      "680e481f223a6c7d5ec967c9",
+      "67fd1f77b8cdc8c08c20cb09",
+      "68098bdf57322cac4624c9b3",
+      "67e04428fb3a86a4cffcdd4a",
+      "680d013bfcf14d4e4278db06",
+      "67de8cff40ab762997ea9fa7",
+      "67fb376bb8cdc8c08c20b9f0"
     ]
   }
 }

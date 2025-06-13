@@ -1,0 +1,183 @@
+{
+  "tournament_id": "68112389fcf14d4e4278fb67",
+  "name": "Liga JubsTV #2 - Torneio BR Pok\u00e9mon TCGP",
+  "timestamp": 1745967600000,
+  "format": "Standard",
+  "player_count": 29,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Rooo",
+      "record": "8 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Arascapunga",
+      "record": "5 - 4 - 0",
+      "archetype": "palkia-ex-manaphy-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "7earless",
+      "record": "6 - 1 - 1",
+      "archetype": "rampardos-a2-hitmonlee-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Zetten93",
+      "record": "4 - 3 - 1",
+      "archetype": "mew-ex-a1a-dialga-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Misomaki",
+      "record": "4 - 2 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Kuzzu",
+      "record": "4 - 2 - 1",
+      "archetype": "exeggutor-ex-a1-arceus-ex-a2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "jubstv",
+      "record": "4 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Red_Dot4",
+      "record": "3 - 3 - 1",
+      "archetype": "magnezone-skarmory-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "Atsuya06",
+      "record": "4 - 1 - 1",
+      "archetype": "blastoise-ex-a1-manaphy-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "DomBolton",
+      "record": "3 - 2 - 1",
+      "archetype": "gyarados-ex-a1a-manaphy-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "AdrianoPKM",
+      "record": "3 - 2 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "DAVIDIGACI",
+      "record": "3 - 3 - 0",
+      "archetype": "weavile-ex-darkrai-ex-a2"
+    },
+    {
+      "placement": 13,
+      "player_name": "Llooo",
+      "record": "3 - 3 - 0",
+      "archetype": "gyarados-ex-a1a-manaphy-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "jotaciwnl",
+      "record": "2 - 3 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 15,
+      "player_name": "IkazuchiVenefi",
+      "record": "2 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 16,
+      "player_name": "Hennan",
+      "record": "2 - 4 - 0",
+      "archetype": "giratina-ex-a2b-mewtwo-ex-a1"
+    },
+    {
+      "placement": 17,
+      "player_name": "Palhacin",
+      "record": "2 - 3 - 0",
+      "archetype": "primeape-a1-lucario-a2"
+    },
+    {
+      "placement": 18,
+      "player_name": "Rissun",
+      "record": "1 - 3 - 1",
+      "archetype": "meowscarada-beedrill-ex-a2b"
+    },
+    {
+      "placement": 19,
+      "player_name": "elrusoflex",
+      "record": "1 - 3 - 1",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    },
+    {
+      "placement": 20,
+      "player_name": "jorgelugia",
+      "record": "1 - 3 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 21,
+      "player_name": "Dardarburr",
+      "record": "1 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 22,
+      "player_name": "Bagula",
+      "record": "1 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 23,
+      "player_name": "TDL | EllieDark",
+      "record": "0 - 5 - 0",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    },
+    {
+      "placement": 24,
+      "player_name": "Shimarai",
+      "record": "1 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 25,
+      "player_name": "MonkeyDJaylen",
+      "record": "2 - 2 - 1drop",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    },
+    {
+      "placement": 26,
+      "player_name": "pyrc",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 27,
+      "player_name": "Laygus",
+      "record": "1 - 3 - 1drop",
+      "archetype": "magnezone-skarmory-a2"
+    },
+    {
+      "placement": 28,
+      "player_name": "Funky420",
+      "record": "0 - 1 - 0drop",
+      "archetype": "beedrill-ex-meowscarada-a2b"
+    },
+    {
+      "placement": 29,
+      "player_name": "Arthur1248421",
+      "record": "0 - 3 - 0drop",
+      "archetype": "arceus-ex-carnivine-a2a"
+    }
+  ]
+}

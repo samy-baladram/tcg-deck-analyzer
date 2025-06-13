@@ -1,13 +1,13 @@
 {
-  "last_updated": 1749833616,
-  "total_tournaments": 217,
+  "last_updated": 1749833777,
+  "total_tournaments": 229,
   "format_distribution": {
-    "Standard": 161,
-    "STANDARD": 32,
-    "NOEX": 24
+    "Standard": 171,
+    "STANDARD": 33,
+    "NOEX": 25
   },
   "date_range": {
-    "earliest": "2025-05-01",
+    "earliest": "2025-04-27",
     "latest": "2025-06-12"
   },
   "top_archetypes": [
@@ -40,9 +40,9 @@
     "NOEX": [
       "silvally-a3a-rampardos-a2",
       "lucario-rampardos-a2",
+      "magnezone-skarmory-a2",
       "greninja-a1-pyukumuku-a3",
-      "tsareena-a3",
-      "togekiss-a2"
+      "tsareena-a3"
     ]
   },
   "recent_daily_meta": {}
