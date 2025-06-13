@@ -1967,17 +1967,17 @@ def display_meta_trend_tab(deck_info=None):
     # Add performance trend chart
     st.write("##### Performance Trends")
     
-    # perf_fig = create_performance_trend_chart(deck_name, selected_formats)
+    perf_fig = create_performance_trend_chart(deck_name, selected_formats)
     
-    # if perf_fig:
-    #     st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
+    if perf_fig:
+        st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
         
-    #     st.caption(
-    #         f"Shows win rate trends over time. "
-    #         f"Green markers = above 50% win rate, Red markers = below 50% win rate. Dotted line shows 50% reference."
-    #     )
-    # else:
-    #     st.info(f"No performance trend data available for this deck archetype.")
+        st.caption(
+            f"Shows win rate trends over time. "
+            f"Green markers = above 50% win rate, Red markers = below 50% win rate. Dotted line shows 50% reference."
+        )
+    else:
+        st.info(f"No performance trend data available for this deck archetype.")
 
 def get_available_formats():
     """
