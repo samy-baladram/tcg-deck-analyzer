@@ -2485,13 +2485,10 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 # Add set code annotation at the top
                 fig.add_annotation(
                     x=release_date,
-                    y=105,  # Fixed position at top
+                    y=80,  # Fixed position at top
                     text=set_code,
                     showarrow=False,
                     font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
-                    bgcolor="rgba(255,255,255,0.8)",
-                    bordercolor="rgba(128, 128, 128, 0.3)",
-                    borderwidth=1,
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
