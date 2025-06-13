@@ -364,16 +364,16 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     display_tabs.display_meta_trend_tab(original_deck_info)
                 
                 # And shift the existing tabs:
-                with tab6:  # Related Decks (was tab5)
-                    display_tabs.display_related_decks_tab(original_deck_info, results)
+                # with tab6:  # Related Decks (was tab5)
+                #     display_tabs.display_related_decks_tab(original_deck_info, results)
                     
-                with tab7:  # Raw Data (was tab6)
-                    if variant_df is not None:
-                        display_tabs.display_raw_data_tab(results, variant_df)
-                    else:
-                        import pandas as pd
-                        empty_variant_df = pd.DataFrame()
-                        display_tabs.display_raw_data_tab(results, empty_variant_df)
+                # with tab7:  # Raw Data (was tab6)
+                #     if variant_df is not None:
+                #         display_tabs.display_raw_data_tab(results, variant_df)
+                #     else:
+                #         import pandas as pd
+                #         empty_variant_df = pd.DataFrame()
+                #         display_tabs.display_raw_data_tab(results, empty_variant_df)
         
         except Exception as e:
             st.error(f"Error displaying deck analysis: {str(e)}")
