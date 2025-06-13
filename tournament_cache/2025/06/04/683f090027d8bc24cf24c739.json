@@ -1,0 +1,62 @@
+{
+  "tournament_id": "683f090027d8bc24cf24c739",
+  "name": "GeekoPoke Pocket IX",
+  "timestamp": 1748995200000,
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "daigustosanti",
+      "record": "3 - 0 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Jonless",
+      "record": "2 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "enrimaster",
+      "record": "2 - 1 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "GusD307",
+      "record": "2 - 1 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Bryant1512",
+      "record": "2 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "VicTamer",
+      "record": "1 - 2 - 0",
+      "archetype": "tapu-koko-ex-a3a-pikachu-ex-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "Calabazo",
+      "record": "1 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "umeechaan",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "PapiSaimon",
+      "record": "0 - 3 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    }
+  ]
+}
