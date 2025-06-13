@@ -1877,7 +1877,7 @@ def display_matchup_tab(deck_info=None):
 
 def display_meta_trend_tab(deck_info=None):
     """
-    Display the Meta Trend tab with enhanced line chart, format filters, and performance trends
+    Display the Meta Trend tab with enhanced line chart and smart format filters
     """
     import pandas as pd
     
@@ -1894,49 +1894,52 @@ def display_meta_trend_tab(deck_info=None):
     
     st.write("#### Meta Share Evolution")
     
-    # Get available formats from database
-    available_formats = get_available_formats()
+    # Display indicator badges first
+    display_meta_indicators(deck_name)
     
-    if available_formats:
-        # Create columns for checkboxes
-        checkbox_cols = st.columns(len(available_formats))
+    # Check what formats are available for this specific deck
+    deck_formats = get_deck_available_formats(deck_name)
+    
+    # Determine if we need to show format filters
+    has_noex = any('NOEX' in fmt.upper() for fmt in deck_formats)
+    
+    if has_noex and len(deck_formats) > 1:
+        # Show format filter options
+        st.write("##### Format Filters")
         
-        # Initialize session state for format filters if not exists
-        if 'format_filters' not in st.session_state:
-            st.session_state.format_filters = {
-                'Standard': True,
-                'NOEX': False,
-                'STANDARD': False
-            }
+        # Initialize session state for format selection
+        if 'deck_format_selection' not in st.session_state:
+            st.session_state.deck_format_selection = 'Standard'  # Default to Standard only
         
-        # Display checkboxes for each available format
-        selected_formats = []
-        for i, format_type in enumerate(available_formats):
-            with checkbox_cols[i]:
-                checked = st.checkbox(
-                    format_type,
-                    value=st.session_state.format_filters.get(format_type, False),
-                    key=f"format_filter_{format_type}"
-                )
-                
-                st.session_state.format_filters[format_type] = checked
-                
-                if checked:
-                    selected_formats.append(format_type)
+        # Create radio button for format selection
+        format_option = st.radio(
+            "Select tournament formats to include:",
+            options=['Standard', 'Standard+NOEX'],
+            index=0 if st.session_state.deck_format_selection == 'Standard' else 1,
+            key="format_selection_radio",
+            horizontal=True
+        )
         
-        if not selected_formats:
-            st.warning("Please select at least one format to display.")
-            return
-            
-        chart_subtitle = f" ({' + '.join(selected_formats)})"
+        # Update session state
+        st.session_state.deck_format_selection = format_option
+        
+        # Map selection to actual format list
+        if format_option == 'Standard':
+            selected_formats = ['Standard', 'STANDARD']  # Include both Standard variants
+        else:  # 'Standard+NOEX'
+            selected_formats = deck_formats  # Include all available formats
+        
+        chart_subtitle = f" ({format_option})"
     else:
-        selected_formats = ['Standard']
+        # No filter needed - use all available formats (likely just Standard)
+        selected_formats = deck_formats if deck_formats else ['Standard']
         chart_subtitle = ""
     
-    # Create the meta evolution chart
+    # Create the chart
     fig = create_enhanced_meta_trend_chart_combined(deck_name, selected_formats, chart_subtitle)
     
     if fig:
+        # Enable interactivity
         config = {
             'displayModeBar': True,
             'displaylogo': False,
@@ -1945,11 +1948,19 @@ def display_meta_trend_tab(deck_info=None):
         
         st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
         
-        formats_text = ", ".join(selected_formats)
-        st.caption(
-            f"Shows daily meta share percentage for {formats_text} format(s). "
-            f"Vertical dashed lines indicate set releases."
-        )
+        # Add explanation
+        if has_noex and len(deck_formats) > 1:
+            st.caption(
+                "Shows daily meta share percentage. "
+                "'Standard' shows only Standard format tournaments. "
+                "'Standard+NOEX' combines data from all tournament formats. "
+                "Vertical dashed lines indicate set releases."
+            )
+        else:
+            st.caption(
+                "Shows daily meta share percentage based on tournament data. "
+                "Vertical dashed lines indicate set releases."
+            )
     else:
         st.info(f"No meta trend data available for this deck archetype.")
     
