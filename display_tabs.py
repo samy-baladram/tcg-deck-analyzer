@@ -2280,11 +2280,6 @@ def get_deck_available_formats(deck_name):
 def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, chart_subtitle=""):
     """
     Create enhanced line chart that combines formats into a single line
-    
-    Args:
-        deck_name: The deck archetype name
-        selected_formats: List of formats to include and combine
-        chart_subtitle: Additional text for chart title
     """
     import sqlite3
     import pandas as pd
@@ -2322,6 +2317,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         df = pd.read_sql_query(query, conn, params=query_params)
         conn.close()
         
+        print(f"DEBUG: Query returned {len(df)} rows for {deck_name}")  # DEBUG
+        
         if df.empty:
             print(f"No data found for archetype: {deck_name} in formats: {selected_formats}")
             return None
@@ -2344,6 +2341,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         # Filter out dates where archetype had 0%
         df_filtered = df_combined[df_combined['meta_percentage'] > 0].copy()
         
+        print(f"DEBUG: After filtering, {len(df_filtered)} rows remain")  # DEBUG
+        
         if df_filtered.empty:
             print(f"No appearances found for archetype: {deck_name} in formats: {selected_formats}")
             return None
@@ -2351,21 +2350,9 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         # Create the figure
         fig = go.Figure()
         
-        # Add set release markers
-        set_releases = get_set_release_dates()
-        min_date = df_filtered['date'].min()
-        max_date = df_filtered['date'].max()
-        
-        for release_date, set_name in set_releases:
-            release_dt = pd.to_datetime(release_date)
-            if release_dt >= min_date and release_dt <= max_date:
-                fig.add_vline(
-                    x=release_date, 
-                    line_dash="dash", 
-                    line_color="rgba(0, 0, 0, 0.5)",
-                    annotation_text=f"Set: {set_name}",
-                    annotation_position="top"
-                )
+        # Add set release markers - TEMPORARILY COMMENT OUT TO TEST
+        # set_releases = get_set_release_dates()
+        # ... set annotation code ...
         
         # Add the main trend line (single line combining all selected formats)
         fig.add_trace(go.Scatter(
