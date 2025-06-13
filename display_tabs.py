@@ -2148,8 +2148,6 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
         print(f"Error creating enhanced meta trend chart: {e}")
         return None
 
-
-
 def get_set_release_dates():
     """
     Load set release dates from the sets index file
@@ -2170,92 +2168,6 @@ def get_set_release_dates():
             ))
     
     return sorted(releases)
-
-def display_meta_trend_tab(deck_info=None):
-    """
-    Display the Meta Trend tab with enhanced line chart and smart format filters
-    """
-    import pandas as pd
-    
-    # Use current deck if none provided
-    if not deck_info and 'analyze' in st.session_state:
-        deck_name = st.session_state.analyze.get('deck_name', '')
-        set_name = st.session_state.analyze.get('set_name', 'A3')
-    elif deck_info:
-        deck_name = deck_info.get('deck_name', '')
-        set_name = deck_info.get('set', 'A3')
-    else:
-        st.warning("No deck selected for meta trend analysis.")
-        return
-    
-    st.write("#### Meta Share Evolution")
-    
-    # Check what formats are available for this specific deck
-    deck_formats = get_deck_available_formats(deck_name)
-    
-    # Determine if we need to show format filters
-    has_noex = any('NOEX' in fmt.upper() for fmt in deck_formats)
-    
-    if has_noex and len(deck_formats) > 1:
-        # Show format filter options
-        st.write("##### Format Filters")
-        
-        # Initialize session state for format selection
-        if 'deck_format_selection' not in st.session_state:
-            st.session_state.deck_format_selection = 'Standard'  # Default to Standard only
-        
-        # Create radio button for format selection
-        format_option = st.radio(
-            "Select tournament formats to include:",
-            options=['Standard', 'Standard+NOEX'],
-            index=0 if st.session_state.deck_format_selection == 'Standard' else 1,
-            key="format_selection_radio",
-            horizontal=True
-        )
-        
-        # Update session state
-        st.session_state.deck_format_selection = format_option
-        
-        # Map selection to actual format list
-        if format_option == 'Standard':
-            selected_formats = ['Standard', 'STANDARD']  # Include both Standard variants
-        else:  # 'Standard+NOEX'
-            selected_formats = deck_formats  # Include all available formats
-        
-        chart_subtitle = f" ({format_option})"
-    else:
-        # No filter needed - use all available formats (likely just Standard)
-        selected_formats = deck_formats if deck_formats else ['Standard']
-        chart_subtitle = ""
-    
-    # Create the chart
-    fig = create_enhanced_meta_trend_chart_combined(deck_name, selected_formats, chart_subtitle)
-    
-    if fig:
-        # Enable interactivity
-        config = {
-            'displayModeBar': True,
-            'displaylogo': False,
-            'modeBarButtonsToRemove': ['lasso2d', 'select2d']
-        }
-        
-        st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
-        
-        # Add explanation
-        if has_noex and len(deck_formats) > 1:
-            st.caption(
-                "Shows daily meta share percentage. "
-                "'Standard' shows only Standard format tournaments. "
-                "'Standard+NOEX' combines data from all tournament formats. "
-                "Vertical dashed lines indicate set releases."
-            )
-        else:
-            st.caption(
-                "Shows daily meta share percentage based on tournament data. "
-                "Vertical dashed lines indicate set releases."
-            )
-    else:
-        st.info(f"No meta trend data available for this deck archetype.")
 
 def get_deck_available_formats(deck_name):
     """
