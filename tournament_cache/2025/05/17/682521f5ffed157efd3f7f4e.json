@@ -1,0 +1,255 @@
+{
+  "tournament_id": "682521f5ffed157efd3f7f4e",
+  "name": "Mach Punch #1 10 USD prize (2025)",
+  "timestamp": 1747443600000,
+  "format": "Standard",
+  "player_count": 41,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "My",
+      "record": "8 - 0 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "MistShuriken",
+      "record": "6 - 2 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "osfar",
+      "record": "5 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "FranzueRT",
+      "record": "5 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Dragsgyn",
+      "record": "4 - 2 - 0",
+      "archetype": "beedrill-ex-a2b-beedrill-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "PenguinForster",
+      "record": "4 - 2 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "victorardiles",
+      "record": "4 - 2 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 8,
+      "player_name": "SAURABH S",
+      "record": "3 - 3 - 0",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "EdgyFellow",
+      "record": "3 - 2 - 0",
+      "archetype": "gengar-a2a-giratina-ex-a2b"
+    },
+    {
+      "placement": 10,
+      "player_name": "FreddieJu",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Pain055",
+      "record": "3 - 2 - 0",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 12,
+      "player_name": "Fefoss",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Yorunoyuhi",
+      "record": "3 - 2 - 0",
+      "archetype": "dragonite-a1-alolan-raichu-ex-a3"
+    },
+    {
+      "placement": 14,
+      "player_name": "IAmRamc",
+      "record": "3 - 2 - 0",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 15,
+      "player_name": "Marmsh",
+      "record": "2 - 2 - 0drop",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 16,
+      "player_name": "Annddyee",
+      "record": "2 - 3 - 0drop",
+      "archetype": "incineroar-ex-toucannon-a3"
+    },
+    {
+      "placement": 17,
+      "player_name": "Neitrox",
+      "record": "2 - 3 - 0",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 18,
+      "player_name": "\u30fb",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 19,
+      "player_name": "PGX| ElAtomico",
+      "record": "2 - 3 - 0",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 20,
+      "player_name": "DarkN",
+      "record": "2 - 3 - 0",
+      "archetype": "serperior-a1a-meowscarada-a2b"
+    },
+    {
+      "placement": 21,
+      "player_name": "TSantos",
+      "record": "2 - 3 - 0drop",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 22,
+      "player_name": "BenjaLlano",
+      "record": "1 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 23,
+      "player_name": "norf31",
+      "record": "1 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 24,
+      "player_name": "The_Epic",
+      "record": "1 - 4 - 0",
+      "archetype": "incineroar-ex-salazzle-a3"
+    },
+    {
+      "placement": 25,
+      "player_name": "DaJiaDouHenGuai",
+      "record": "1 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 26,
+      "player_name": "lael1034",
+      "record": "1 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 27,
+      "player_name": "BabyEatingBaby",
+      "record": "1 - 4 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 28,
+      "player_name": "eri_myname",
+      "record": "1 - 4 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 29,
+      "player_name": "Khan190",
+      "record": "1 - 2 - 0drop",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 30,
+      "player_name": "Gustaphon",
+      "record": "1 - 4 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 31,
+      "player_name": "Lilnoland12",
+      "record": "1 - 4 - 0drop",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 32,
+      "player_name": "Beaverthor5",
+      "record": "0 - 1 - 0drop",
+      "archetype": "charizard-ex-a2b-talonflame-a3"
+    },
+    {
+      "placement": 33,
+      "player_name": "Danielote_057",
+      "record": "0 - 1 - 0drop",
+      "archetype": "luxray-a2-oricorio-a3"
+    },
+    {
+      "placement": 34,
+      "player_name": "crustpunx2442",
+      "record": "0 - 4 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 35,
+      "player_name": "tcgcthulhu",
+      "record": "0 - 5 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 36,
+      "player_name": "Leoner",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 37,
+      "player_name": "Shadwxbxrn",
+      "record": "0 - 5 - 0",
+      "archetype": "greninja-a1-snorlax-a2a"
+    },
+    {
+      "placement": 38,
+      "player_name": "Morbidz",
+      "record": "0 - 5 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 39,
+      "player_name": "Montes",
+      "record": "0 - 5 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 40,
+      "player_name": "Chilwol20",
+      "record": "0 - 1 - 0drop",
+      "archetype": "alolan-muk-ex-a3-arbok-a1"
+    },
+    {
+      "placement": 41,
+      "player_name": "bhabha11",
+      "record": "0 - 5 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "tournament_id": "6821f19cd7ac342ba90543d4",
+  "name": "Pokemon Costa Rica TCG Pocket #1",
+  "timestamp": 1748203200000,
+  "format": "Standard",
+  "player_count": 18,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "DREAMZZ POY",
+      "record": "5 - 1 - 0",
+      "archetype": "giratina-ex-a2b-magnezone-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Flipsyde",
+      "record": "5 - 1 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Ele",
+      "record": "3 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Rorik58",
+      "record": "3 - 2 - 0",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "Hosi",
+      "record": "3 - 0 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Lopz",
+      "record": "2 - 2 - 0",
+      "archetype": "gengar-a2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Blackario",
+      "record": "2 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-dialga-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Keviucho",
+      "record": "2 - 2 - 0",
+      "archetype": "giratina-ex-a2b-arceus-ex-a2a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Errol_CR",
+      "record": "1 - 2 - 1",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "Grubby",
+      "record": "0 - 4 - 0",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "Sych0tik",
+      "record": "0 - 3 - 0drop",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "MGVoltJesk",
+      "record": "2 - 2 - 0drop",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 13,
+      "player_name": "jugodelimon",
+      "record": "0 - 3 - 0drop",
+      "archetype": "decidueye-ex-a3"
+    },
+    {
+      "placement": 14,
+      "player_name": "alxsson",
+      "record": "1 - 2 - 0drop",
+      "archetype": "gengar-a2a-tapu-lele-a3"
+    },
+    {
+      "placement": 15,
+      "player_name": "Dark_Shadow",
+      "record": "0 - 2 - 0drop",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 16,
+      "player_name": "SmallPhantom",
+      "record": "0 - 3 - 0drop",
+      "archetype": "giratina-ex-a2b-mewtwo-ex-a1"
+    },
+    {
+      "placement": 17,
+      "player_name": "immortalSQUEE72",
+      "record": "1 - 1 - 0drop",
+      "archetype": "charizard-ex-a2b-incineroar-ex-a3"
+    },
+    {
+      "placement": 18,
+      "player_name": "Caioba_M",
+      "record": "1 - 3 - 0drop",
+      "archetype": "lucario-rampardos-a2"
+    }
+  ]
+}

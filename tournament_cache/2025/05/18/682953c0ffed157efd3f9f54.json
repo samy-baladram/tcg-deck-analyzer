@@ -1,0 +1,27 @@
+{
+  "tournament_id": "682953c0ffed157efd3f9f54",
+  "name": "test",
+  "timestamp": 1747576800000,
+  "format": "Standard",
+  "player_count": 3,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Ursiidae",
+      "record": "Unknown",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "yungmung69",
+      "record": "Unknown",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Kaywi21",
+      "record": "Unknown",
+      "archetype": null
+    }
+  ]
+}

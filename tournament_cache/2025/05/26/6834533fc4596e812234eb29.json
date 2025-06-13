@@ -1,0 +1,735 @@
+{
+  "tournament_id": "6834533fc4596e812234eb29",
+  "name": "MST and uPantcho's 20$ KING OF THE HILL",
+  "timestamp": 1748296800000,
+  "format": "Standard",
+  "player_count": 121,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "SKY_SkyWolf93",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Ranker",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "yuu1027",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "[\ud835\ude4e\ud835\ude6b\ud835\ude46] | Stachy",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Mr. Gogi (:",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "srafaelitocs",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Ducelimone",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Jakey",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "Warpis",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 10,
+      "player_name": "Egovinicius",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 11,
+      "player_name": "yoji14",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 12,
+      "player_name": "SushiGabo",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 13,
+      "player_name": "Mrxtrem26",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 14,
+      "player_name": "redsanx11",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 15,
+      "player_name": "Pette9550",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 16,
+      "player_name": "SnowXin",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 17,
+      "player_name": "Yorunoyuhi",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 18,
+      "player_name": "SG | DarKus",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 19,
+      "player_name": "Xeancar",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 20,
+      "player_name": "RedVelvetAsh",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 21,
+      "player_name": "Newfirsniper",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 22,
+      "player_name": "EasyOnEmB",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 23,
+      "player_name": "Dark_Shadow",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 24,
+      "player_name": "Skap",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 25,
+      "player_name": "pedrolima",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 26,
+      "player_name": "blockbyJames",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 27,
+      "player_name": "xKiiii",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 28,
+      "player_name": "\u30fb",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 29,
+      "player_name": "Lv80Mewtwo",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 30,
+      "player_name": "elmatadorperu",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 31,
+      "player_name": "souhei719",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 32,
+      "player_name": "N3wA",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 33,
+      "player_name": "Kayyyy",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 34,
+      "player_name": "TDL/MSP | EllieDark",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 35,
+      "player_name": "DaisyVstar",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 36,
+      "player_name": "sensicloud",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 37,
+      "player_name": "Castela",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 38,
+      "player_name": "Especialista22",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 39,
+      "player_name": "Marcio",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 40,
+      "player_name": "DereckWho",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 41,
+      "player_name": "Ryu1",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 42,
+      "player_name": "MST",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 43,
+      "player_name": "Im_NotRyan",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 44,
+      "player_name": "Funky420",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 45,
+      "player_name": "CryssiKat",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 46,
+      "player_name": "DREAMZZ POY",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 47,
+      "player_name": "Jokker",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 48,
+      "player_name": "Zlatty",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 49,
+      "player_name": "theSAGA999",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 50,
+      "player_name": "Mart95NLC",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 51,
+      "player_name": "Soadmon",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 52,
+      "player_name": "correx",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 53,
+      "player_name": "Nhakho",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 54,
+      "player_name": "TheRealJona",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 55,
+      "player_name": "Envy1",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 56,
+      "player_name": "Jep1223",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 57,
+      "player_name": "thisistono1",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 58,
+      "player_name": "Ryukha",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 59,
+      "player_name": "Krohnos",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 60,
+      "player_name": "samz",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 61,
+      "player_name": "B0WFAH",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 62,
+      "player_name": "Vokyr",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 63,
+      "player_name": "OMarkzTV",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 64,
+      "player_name": "Kratoslux",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 65,
+      "player_name": "SRS  Real Soldier",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 66,
+      "player_name": "Shubham",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 67,
+      "player_name": "[\ud835\ude4e\ud835\ude6b\ud835\ude46] | Thanos",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 68,
+      "player_name": "Chilwol20",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 69,
+      "player_name": "Nouelito",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 70,
+      "player_name": "sunshineraf",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 71,
+      "player_name": "Larvaro",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 72,
+      "player_name": "Giancarlo",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 73,
+      "player_name": "WxChAn",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 74,
+      "player_name": "Vinegar84",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 75,
+      "player_name": "ShadowBR",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 76,
+      "player_name": "Rob_daPanda",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 77,
+      "player_name": "Lyzek",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 78,
+      "player_name": "LothaR1",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 79,
+      "player_name": "Abarczak",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 80,
+      "player_name": "mspinguino",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 81,
+      "player_name": "pikapikachu1989",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 82,
+      "player_name": "Yaser_AQ",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 83,
+      "player_name": "Tobaa",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 84,
+      "player_name": "loke",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 85,
+      "player_name": "AtlasChugged",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 86,
+      "player_name": "gustavo01gk",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 87,
+      "player_name": "antoniosafe",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 88,
+      "player_name": "Froysic",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 89,
+      "player_name": "TTV_jmpm9",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 90,
+      "player_name": "Kingpotato1219",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 91,
+      "player_name": "Ele",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 92,
+      "player_name": "gpacheco1999",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 93,
+      "player_name": "TKKazoo",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 94,
+      "player_name": "HD| Gato",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 95,
+      "player_name": "HellaciousWhiskey",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 96,
+      "player_name": "7earless",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 97,
+      "player_name": "FrogEX | Labryx",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 98,
+      "player_name": "Hamza007",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 99,
+      "player_name": "PikaIcetea",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 100,
+      "player_name": "HD| ERIKITOH",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 101,
+      "player_name": "khabibie",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 102,
+      "player_name": "xxepic_kid2",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 103,
+      "player_name": "PGX | Manumefisto56",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 104,
+      "player_name": "ybor",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 105,
+      "player_name": "victorardiles",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 106,
+      "player_name": "KusKus",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 107,
+      "player_name": "ThomasXavier21",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 108,
+      "player_name": "GdL",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 109,
+      "player_name": "thebigJF",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 110,
+      "player_name": "Witcher",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 111,
+      "player_name": "Arthur1248421",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 112,
+      "player_name": "DAVIDIGACI",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 113,
+      "player_name": "slendy_zzz",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 114,
+      "player_name": "Chocolate",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 115,
+      "player_name": "Stonerhood",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 116,
+      "player_name": "\u305d\u3046 \u305d\u3046",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 117,
+      "player_name": "Common_Candy",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 118,
+      "player_name": "dshook420",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 119,
+      "player_name": "AL_DittO",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 120,
+      "player_name": "zomo",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 121,
+      "player_name": "WhyAreYouGray",
+      "record": "",
+      "archetype": null
+    }
+  ]
+}

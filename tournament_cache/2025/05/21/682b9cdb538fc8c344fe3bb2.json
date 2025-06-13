@@ -1,0 +1,81 @@
+{
+  "tournament_id": "682b9cdb538fc8c344fe3bb2",
+  "name": "GeekoPoke Pocket VIII",
+  "timestamp": 1747785600000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Wolf721",
+      "record": "4 - 0 - 0",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "KanyeweMYC",
+      "record": "3 - 1 - 0",
+      "archetype": "celebi-ex-serperior-a1a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Jonless",
+      "record": "3 - 1 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "umeechaan",
+      "record": "3 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Calabazo",
+      "record": "2 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "MiteiNikki",
+      "record": "2 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "MarioB",
+      "record": "2 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "GusD307",
+      "record": "2 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "Kinji27",
+      "record": "1 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "PapiSaimon",
+      "record": "0 - 2 - 0drop",
+      "archetype": "celebi-ex-serperior-a1a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Alejmendesr",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    },
+    {
+      "placement": 12,
+      "player_name": "Bryant1512",
+      "record": "0 - 4 - 0",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    }
+  ]
+}

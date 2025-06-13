@@ -1,48 +1,48 @@
 {
-  "last_updated": 1749823554,
-  "total_tournaments": 82,
+  "last_updated": 1749832219,
+  "total_tournaments": 143,
   "format_distribution": {
-    "Standard": 63,
-    "STANDARD": 13,
-    "NOEX": 6
+    "Standard": 105,
+    "STANDARD": 23,
+    "NOEX": 15
   },
   "date_range": {
-    "earliest": "2025-05-27",
+    "earliest": "2025-05-16",
     "latest": "2025-06-12"
   },
   "top_archetypes": [
     "silvally-a3a-rampardos-a2",
+    "giratina-ex-a2b-darkrai-ex-a2",
     "buzzwole-ex-pheromosa-a3a",
     "solgaleo-ex-a3-shiinotic-a3a",
-    "giratina-ex-a2b-darkrai-ex-a2",
+    "meowscarada-a2b-decidueye-ex-a3",
     "buzzwole-ex-celesteela-a3a",
-    "charizard-ex-a2b-silvally-a3a",
-    "charizard-ex-a2b-incineroar-ex-a3",
-    "guzzlord-ex-nihilego-a3a",
-    "silvally-blacephalon-a3a",
-    "meowscarada-a2b-decidueye-ex-a3"
+    "giratina-ex-a2b-greninja-a1",
+    "garchomp-ex-a2a-rampardos-a2",
+    "magnezone-a2-oricorio-a3",
+    "charizard-ex-a2b-incineroar-ex-a3"
   ],
   "top_archetypes_by_format": {
     "Standard": [
       "silvally-a3a-rampardos-a2",
+      "giratina-ex-a2b-darkrai-ex-a2",
       "buzzwole-ex-pheromosa-a3a",
       "solgaleo-ex-a3-shiinotic-a3a",
-      "giratina-ex-a2b-darkrai-ex-a2",
-      "buzzwole-ex-celesteela-a3a"
+      "meowscarada-a2b-decidueye-ex-a3"
     ],
     "STANDARD": [
-      "solgaleo-ex-a3-shiinotic-a3a",
-      "silvally-a3a-rampardos-a2",
       "giratina-ex-a2b-darkrai-ex-a2",
-      "buzzwole-ex-pheromosa-a3a",
-      "charizard-ex-a2b-incineroar-ex-a3"
+      "meowscarada-a2b-decidueye-ex-a3",
+      "magnezone-a2-oricorio-a3",
+      "solgaleo-ex-a3-shiinotic-a3a",
+      "silvally-a3a-rampardos-a2"
     ],
     "NOEX": [
       "silvally-a3a-rampardos-a2",
-      "silvally-blacephalon-a3a",
-      "naganadel-nihilego-a3a",
-      "silvally-zeraora-a3a",
-      "celesteela-a3a-dusk-mane-necrozma-p-a"
+      "greninja-a1-pyukumuku-a3",
+      "lucario-rampardos-a2",
+      "tsareena-a3",
+      "gengar-a2a"
     ]
   },
   "recent_daily_meta": {}

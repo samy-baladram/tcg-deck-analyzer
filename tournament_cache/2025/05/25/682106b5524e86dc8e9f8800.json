@@ -1,0 +1,93 @@
+{
+  "tournament_id": "682106b5524e86dc8e9f8800",
+  "name": "Pelad\u00e3o Pocket \u2022 Stage #14",
+  "timestamp": 1748212200000,
+  "format": "STANDARD",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "zambsz",
+      "record": "4 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Palaxiiusq",
+      "record": "4 - 1 - 0",
+      "archetype": "lycanroc-a3-rampardos-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "FrogEX | Labryx",
+      "record": "3 - 1 - 1",
+      "archetype": "charizard-ex-a2b-turtonator-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "alxsson",
+      "record": "3 - 1 - 1",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "HellaciousWhiskey",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "wils172",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "Caioba_M",
+      "record": "1 - 3 - 0drop",
+      "archetype": "lucario-rampardos-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Saint_Joeski",
+      "record": "1 - 2 - 0drop",
+      "archetype": "gallade-ex-a2-pidgeot-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Claudia_uwu",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "TDL/MSP | EllieDark",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-magnezone-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Ele",
+      "record": "0 - 2 - 0drop",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Gegie",
+      "record": "0 - 3 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 13,
+      "player_name": "Eljerriko",
+      "record": "1 - 3 - 0drop",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 14,
+      "player_name": "Anan",
+      "record": "2 - 2 - 0drop",
+      "archetype": "magnezone-a2-oricorio-a3"
+    }
+  ]
+}
