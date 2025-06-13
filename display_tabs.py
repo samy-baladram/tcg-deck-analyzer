@@ -1973,7 +1973,7 @@ def display_meta_trend_tab(deck_info=None):
         st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
         
         st.caption(
-            f"Shows win rate trends over time for {formats_text} format(s). "
+            f"Shows win rate trends over time. "
             f"Green markers = above 50% win rate, Red markers = below 50% win rate. Dotted line shows 50% reference."
         )
     else:
@@ -2460,8 +2460,8 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         fig.add_hline(
             y=50, 
             line_dash="dot", 
-            line_color="rgba(128, 128, 128, 0.8)",
-            line_width=2,
+            line_color="rgba(128, 128, 128, 0.6)",
+            line_width=1,
             annotation_text="50% Win Rate",
             annotation_position="right"
         )
@@ -2509,7 +2509,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             y=df_filtered['win_percentage'],
             mode='lines+markers',
             name='Win %',
-            line=dict(color='#00A0FF', width=3),  # Use default blue for line
+            #line=dict(color='#00A0FF', width=3),  # Use default blue for line
             marker=dict(size=8, color=colors),  # Conditional colors for markers
             hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
             customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
@@ -2542,7 +2542,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[0, 110]  # Fixed range 0-100% with space for annotations
+                range=[25, 75]  # Fixed range 0-100% with space for annotations
             )
         )
         
