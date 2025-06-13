@@ -1894,9 +1894,6 @@ def display_meta_trend_tab(deck_info=None):
     
     st.write("#### Meta Share Evolution")
     
-    # Display indicator badges first
-    display_meta_indicators(deck_name)
-    
     # Get available formats from database
     available_formats = get_available_formats()
     
