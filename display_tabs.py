@@ -1873,3 +1873,272 @@ def display_matchup_tab(deck_info=None):
     st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
         # Display meta trend section
     display_meta_trend_section(deck_name)
+
+def display_meta_trend_tab(deck_info=None):
+    """
+    Display the Meta Trend tab with enhanced line chart and indicators
+    """
+    import pandas as pd
+    import sqlite3
+    import plotly.graph_objects as go
+    from datetime import datetime, timedelta
+    
+    # Use current deck if none provided
+    if not deck_info and 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+        set_name = st.session_state.analyze.get('set_name', 'A3')
+    elif deck_info:
+        deck_name = deck_info.get('deck_name', '')
+        set_name = deck_info.get('set', 'A3')
+    else:
+        st.warning("No deck selected for meta trend analysis.")
+        return
+    
+    st.write("#### Meta Share Evolution")
+    
+    # Create the enhanced meta trend chart
+    fig = create_enhanced_meta_trend_chart(deck_name)
+    
+    if fig:
+        # Display indicator badges first
+        display_meta_indicators(deck_name)
+        
+        # Display the chart
+        from config import PLOTLY_CONFIG
+        config = PLOTLY_CONFIG.copy()
+        config['displayModeBar'] = True  # Allow download for this chart
+        
+        st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
+        
+        # Add explanation
+        st.caption(
+            "Shows daily meta share percentage with set release markers and tier zones. "
+            "Green zone (8-15%) = Tier 1, Yellow zone (4-8%) = Tier 2, Red zone (0-4%) = Tier 3."
+        )
+    else:
+        st.info(f"No meta trend data available for this deck archetype.")
+
+def create_enhanced_meta_trend_chart(deck_name):
+    """
+    Create enhanced line chart with set markers and tier zones
+    """
+    import sqlite3
+    import pandas as pd
+    import plotly.graph_objects as go
+    from datetime import datetime
+    
+    try:
+        # Connect to SQLite database
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Query to get daily aggregated data for the specific archetype
+        query = """
+        SELECT 
+            t.date,
+            COALESCE(SUM(aa.count), 0) as archetype_players,
+            SUM(t.total_players) as total_players
+        FROM tournaments t
+        LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
+            AND aa.archetype = ?
+        GROUP BY t.date
+        HAVING total_players > 0
+        ORDER BY t.date
+        """
+        
+        # Execute query
+        df = pd.read_sql_query(query, conn, params=[deck_name])
+        conn.close()
+        
+        if df.empty:
+            print(f"No data found for archetype: {deck_name}")
+            return None
+        
+        # Calculate percentage for each date
+        df['meta_percentage'] = (df['archetype_players'] / df['total_players']) * 100
+        
+        # Convert date strings to datetime for better plotting
+        df['date'] = pd.to_datetime(df['date'])
+        
+        # Filter out dates where archetype had 0% (optional - removes gaps)
+        df_filtered = df[df['meta_percentage'] > 0].copy()
+        
+        if df_filtered.empty:
+            print(f"No appearances found for archetype: {deck_name}")
+            return None
+        
+        # Create the figure
+        fig = go.Figure()
+        
+        # Add tier zone backgrounds
+        fig.add_hrect(y0=8, y1=15, fillcolor="rgba(76, 175, 80, 0.1)", layer="below", line_width=0)  # Tier 1 - Green
+        fig.add_hrect(y0=4, y1=8, fillcolor="rgba(255, 235, 59, 0.1)", layer="below", line_width=0)   # Tier 2 - Yellow
+        fig.add_hrect(y0=0, y1=4, fillcolor="rgba(244, 67, 54, 0.1)", layer="below", line_width=0)    # Tier 3 - Red
+        
+        # Add set release markers (you'll need to define these dates)
+        set_releases = get_set_release_dates()
+        for release_date, set_name in set_releases:
+            if pd.to_datetime(release_date) >= df_filtered['date'].min() and pd.to_datetime(release_date) <= df_filtered['date'].max():
+                fig.add_vline(
+                    x=release_date, 
+                    line_dash="dash", 
+                    line_color="rgba(0, 0, 0, 0.5)",
+                    annotation_text=f"Set: {set_name}",
+                    annotation_position="top"
+                )
+        
+        # Add the main trend line
+        fig.add_trace(go.Scatter(
+            x=df_filtered['date'],
+            y=df_filtered['meta_percentage'],
+            mode='lines+markers',
+            name='Meta Share %',
+            line=dict(color='#00A0FF', width=3),
+            marker=dict(size=6, color='#00A0FF'),
+            hovertemplate='<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Players: %{customdata[0]}<br>Total: %{customdata[1]}<extra></extra>',
+            customdata=list(zip(df_filtered['archetype_players'], df_filtered['total_players']))
+        ))
+        
+        # Add peak annotation
+        peak_idx = df_filtered['meta_percentage'].idxmax()
+        peak_date = df_filtered.loc[peak_idx, 'date']
+        peak_value = df_filtered.loc[peak_idx, 'meta_percentage']
+        
+        fig.add_annotation(
+            x=peak_date,
+            y=peak_value,
+            text=f"Peak: {peak_value:.1f}%",
+            showarrow=True,
+            arrowhead=2,
+            arrowcolor="#00A0FF",
+            bgcolor="white",
+            bordercolor="#00A0FF"
+        )
+        
+        # Update layout
+        fig.update_layout(
+            title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}",
+            xaxis_title="Date",
+            yaxis_title="Meta Share (%)",
+            height=500,
+            margin=dict(t=80, l=50, r=20, b=50),
+            hovermode='x unified',
+            
+            # Styling to match your app
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(size=12),
+            
+            # Grid and axes styling
+            xaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)'
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor='rgba(128,128,128,0.2)',
+                showline=True,
+                linecolor='rgba(128,128,128,0.3)',
+                range=[0, max(16, df_filtered['meta_percentage'].max() * 1.1)]  # Ensure we see tier zones
+            )
+        )
+        
+        return fig
+        
+    except Exception as e:
+        print(f"Error creating enhanced meta trend chart: {e}")
+        return None
+
+def get_set_release_dates():
+    """
+    Return known set release dates for PTCGP
+    You'll need to update this with actual release dates
+    """
+    return [
+        ("2024-10-30", "Genetic Apex"),
+        ("2024-12-17", "Mythical Island"),
+        ("2025-01-29", "Space-Time Smackdown"),
+        ("2025-04-30", "Celestial Guardians"),
+        ("2025-06-26", "Extradimensional Crisis"),
+        # Add more as they're announced
+    ]
+
+def display_meta_indicators(deck_name):
+    """
+    Display indicator badges for the current deck
+    """
+    try:
+        # Get basic stats from database
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Get recent performance (last 7 days)
+        recent_query = """
+        SELECT 
+            t.date,
+            COALESCE(SUM(aa.count), 0) as archetype_players,
+            SUM(t.total_players) as total_players
+        FROM tournaments t
+        LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
+            AND aa.archetype = ?
+        WHERE t.date >= date('now', '-7 days')
+        GROUP BY t.date
+        ORDER BY t.date DESC
+        """
+        
+        recent_df = pd.read_sql_query(recent_query, conn, params=[deck_name])
+        
+        # Get overall stats
+        overall_query = """
+        SELECT 
+            MIN(t.date) as first_seen,
+            MAX(t.date) as last_seen,
+            MAX(COALESCE(aa.count, 0) * 100.0 / t.total_players) as peak_percentage
+        FROM tournaments t
+        LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
+            AND aa.archetype = ?
+        """
+        
+        overall_stats = pd.read_sql_query(overall_query, conn, params=[deck_name])
+        conn.close()
+        
+        # Calculate indicators
+        indicators = []
+        
+        # Days active
+        if not overall_stats.empty and overall_stats.iloc[0]['first_seen']:
+            first_seen = pd.to_datetime(overall_stats.iloc[0]['first_seen'])
+            days_active = (datetime.now() - first_seen).days
+            indicators.append(f"📅 {days_active} days active")
+        
+        # Peak performance
+        if not overall_stats.empty and overall_stats.iloc[0]['peak_percentage']:
+            peak = overall_stats.iloc[0]['peak_percentage']
+            if peak >= 10:
+                indicators.append(f"🏆 Peak: {peak:.1f}% (Tier 1)")
+            elif peak >= 5:
+                indicators.append(f"🥈 Peak: {peak:.1f}% (Tier 2)")
+            else:
+                indicators.append(f"📈 Peak: {peak:.1f}% (Tier 3)")
+        
+        # Recent trend
+        if len(recent_df) >= 2:
+            recent_df['meta_percentage'] = (recent_df['archetype_players'] / recent_df['total_players']) * 100
+            recent_trend = recent_df['meta_percentage'].diff().mean()
+            if recent_trend > 0.5:
+                indicators.append("📈 Rising trend")
+            elif recent_trend < -0.5:
+                indicators.append("📉 Declining trend")
+            else:
+                indicators.append("📊 Stable trend")
+        
+        # Display indicators in columns
+        if indicators:
+            cols = st.columns(len(indicators))
+            for i, indicator in enumerate(indicators):
+                with cols[i]:
+                    st.markdown(f"**{indicator}**")
+        
+    except Exception as e:
+        print(f"Error displaying meta indicators: {e}")
+        st.info("Trend indicators unavailable")
