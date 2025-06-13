@@ -286,6 +286,52 @@ def update_quick_index():
     
     print("✅ Quick index updated with format data")
 
+# Add this simple function
+def update_sets_index():
+    """Simple function to update sets index"""
+    try:
+        response = requests.get("https://pocket.limitlesstcg.com/cards")
+        soup = BeautifulSoup(response.text, 'html.parser')
+        lines = [line.strip() for line in soup.get_text().split('\n') if line.strip()]
+        
+        sets_data = []
+        for i in range(len(lines) - 3):
+            set_name, set_code, date_str, count_str = lines[i:i+4]
+            
+            if re.match(r'^[A-Z]\d[a-z]?$|^P-[A-Z]$', set_code) and count_str.isdigit():
+                # Parse date from format "29 May 25"
+                release_date = None
+                if re.match(r'^\d{1,2}\s+[A-Za-z]{3}\s+\d{2}$', date_str):
+                    try:
+                        date_obj = datetime.strptime(date_str, '%d %b %y')
+                        if date_obj.year < 1950:
+                            date_obj = date_obj.replace(year=date_obj.year + 2000)
+                        release_date = date_obj.strftime('%Y-%m-%d')
+                    except:
+                        pass
+                
+                sets_data.append({
+                    'set_name': set_name,
+                    'set_code': set_code,
+                    'release_date': release_date,
+                    'card_count': int(count_str)
+                })
+        
+        # Save to meta_analysis directory
+        sets_file = "meta_analysis/sets_index.json"
+        os.makedirs(os.path.dirname(sets_file), exist_ok=True)
+        
+        with open(sets_file, 'w') as f:
+            json.dump({
+                'last_updated': datetime.now().isoformat(),
+                'sets': sets_data
+            }, f, indent=2)
+        
+        print(f"✅ Updated sets index with {len(sets_data)} sets")
+        
+    except Exception as e:
+        print(f"❌ Error updating sets: {e}")
+        
 def update_tournament_cache():
     """Main function to update tournament cache and meta analysis"""
     cache_dir = "tournament_cache"
@@ -296,6 +342,9 @@ def update_tournament_cache():
     
     # Initialize meta database
     init_meta_database()
+
+    # Update sets index
+    update_sets_index()
     
     # Load existing cache index
     if os.path.exists(index_file):
