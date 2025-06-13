@@ -320,8 +320,8 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Deck Template", 
                                                                     "Card Usage",  
                                                                     "Meta Matchups",
-                                                                    "Metagame Overview",
                                                                     "Meta Trend",  # NEW TAB
+                                                                    "Metagame Overview",
                                                                     "Related Decks",
                                                                     "Raw Data"
                                                                     ])
@@ -357,11 +357,10 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     display_tabs.display_matchup_tab()
                     
                 with tab4:
-                    display_tabs.display_metagame_tab() 
-                    
-                # Then add the new tab content:
-                with tab5:  # This is the new Meta Trend tab
                     display_tabs.display_meta_trend_tab(original_deck_info)
+                   
+                with tab5:  
+                     display_tabs.display_metagame_tab() 
                 
                 # And shift the existing tabs:
                 with tab6:  # Related Decks (was tab5)
