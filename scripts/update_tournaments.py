@@ -264,18 +264,30 @@ def update_tournament_cache():
     tournament_ids = get_recent_tournament_ids(20)
     print(f"Found {len(tournament_ids)} recent tournaments")
     
-    # Find NEW tournaments
-    new_tournament_ids = [tid for tid in tournament_ids if tid not in index['tournaments']]
-    print(f"New tournaments to scrape: {len(new_tournament_ids)}")
+    # CHANGE: Find tournaments without actual files (not just index entries)
+    unprocessed_tournament_ids = []
+    for tid in tournament_ids:
+        # Check if tournament file actually exists
+        found_file = False
+        for date_path in index.get('tournaments_by_path', {}).keys():
+            tournament_file = f"{cache_dir}/{date_path}/{tid}.json"
+            if os.path.exists(tournament_file):
+                found_file = True
+                break
+        
+        if not found_file:
+            unprocessed_tournament_ids.append(tid)
     
-    if not new_tournament_ids:
-        print("No new tournaments found - nothing to scrape")
+    print(f"Unprocessed tournaments to scrape: {len(unprocessed_tournament_ids)}")
+    
+    if not unprocessed_tournament_ids:
+        print("No unprocessed tournaments found - nothing to scrape")
         return
     
     new_count = 0
     
-    # Process NEW tournaments
-    for tournament_id in new_tournament_ids:
+    # Process unprocessed tournaments
+    for tournament_id in unprocessed_tournament_ids:
         try:
             # Scrape tournament data
             data = scrape_tournament_data(tournament_id)
@@ -293,13 +305,15 @@ def update_tournament_cache():
                 process_tournament_meta(data)
                 
                 # Update index
-                index['tournaments'].append(tournament_id)
+                if tournament_id not in index['tournaments']:
+                    index['tournaments'].append(tournament_id)
                 if date_path not in index['tournaments_by_path']:
                     index['tournaments_by_path'][date_path] = []
-                index['tournaments_by_path'][date_path].append(tournament_id)
+                if tournament_id not in index['tournaments_by_path'][date_path]:
+                    index['tournaments_by_path'][date_path].append(tournament_id)
                 
                 new_count += 1
-                print(f"✅ NEW: {tournament_id} saved to {date_path}/ - {data['name'][:50]}... ({data['player_count']} players)")
+                print(f"✅ PROCESSED: {tournament_id} saved to {date_path}/ - {data['name'][:50]}... ({data['player_count']} players)")
             else:
                 print(f"❌ Failed to scrape {tournament_id}: no data returned")
         except Exception as e:
@@ -317,7 +331,7 @@ def update_tournament_cache():
     # Update quick index
     update_quick_index()
     
-    print(f"Update complete: {new_count} new tournaments cached")
+    print(f"Update complete: {new_count} tournaments processed")
     print(f"Total tournaments in cache: {index['total_tournaments']}")
 
 if __name__ == "__main__":
