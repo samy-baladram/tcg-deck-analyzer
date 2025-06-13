@@ -321,6 +321,7 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                                                                     "Card Usage",  
                                                                     "Meta Matchups",
                                                                     "Metagame Overview",
+                                                                    "Meta Trend",  # NEW TAB
                                                                     "Related Decks",
                                                                     "Raw Data"
                                                                     ])
@@ -358,11 +359,15 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 with tab4:
                     display_tabs.display_metagame_tab() 
                     
-                with tab5:
+                # Then add the new tab content:
+                with tab5:  # This is the new Meta Trend tab
+                    display_tabs.display_meta_trend_tab(original_deck_info)
+                
+                # And shift the existing tabs:
+                with tab6:  # Related Decks (was tab5)
                     display_tabs.display_related_decks_tab(original_deck_info, results)
                     
-                with tab6:
-                    # Pass variant_df safely
+                with tab7:  # Raw Data (was tab6)
                     if variant_df is not None:
                         display_tabs.display_raw_data_tab(results, variant_df)
                     else:
