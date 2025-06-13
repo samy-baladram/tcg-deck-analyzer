@@ -1,0 +1,33 @@
+{
+  "tournament_id": "682bed38b1af51fdf434302f",
+  "name": "Glitch Pocket League 2 Tem2 - Tour #3",
+  "timestamp": 1748481000000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "dMverto",
+      "record": "3 - 0 - 0",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "FLAXXO",
+      "record": "2 - 1 - 0",
+      "archetype": "gengar-a2a"
+    },
+    {
+      "placement": 3,
+      "player_name": "skyshot123",
+      "record": "1 - 2 - 0",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "Egaete",
+      "record": "0 - 3 - 0",
+      "archetype": "giratina-ex-a2b-greninja-a1"
+    }
+  ]
+}

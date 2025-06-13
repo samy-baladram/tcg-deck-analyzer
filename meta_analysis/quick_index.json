@@ -1,0 +1,49 @@
+{
+  "last_updated": 1749823554,
+  "total_tournaments": 82,
+  "format_distribution": {
+    "Standard": 63,
+    "STANDARD": 13,
+    "NOEX": 6
+  },
+  "date_range": {
+    "earliest": "2025-05-27",
+    "latest": "2025-06-12"
+  },
+  "top_archetypes": [
+    "silvally-a3a-rampardos-a2",
+    "buzzwole-ex-pheromosa-a3a",
+    "solgaleo-ex-a3-shiinotic-a3a",
+    "giratina-ex-a2b-darkrai-ex-a2",
+    "buzzwole-ex-celesteela-a3a",
+    "charizard-ex-a2b-silvally-a3a",
+    "charizard-ex-a2b-incineroar-ex-a3",
+    "guzzlord-ex-nihilego-a3a",
+    "silvally-blacephalon-a3a",
+    "meowscarada-a2b-decidueye-ex-a3"
+  ],
+  "top_archetypes_by_format": {
+    "Standard": [
+      "silvally-a3a-rampardos-a2",
+      "buzzwole-ex-pheromosa-a3a",
+      "solgaleo-ex-a3-shiinotic-a3a",
+      "giratina-ex-a2b-darkrai-ex-a2",
+      "buzzwole-ex-celesteela-a3a"
+    ],
+    "STANDARD": [
+      "solgaleo-ex-a3-shiinotic-a3a",
+      "silvally-a3a-rampardos-a2",
+      "giratina-ex-a2b-darkrai-ex-a2",
+      "buzzwole-ex-pheromosa-a3a",
+      "charizard-ex-a2b-incineroar-ex-a3"
+    ],
+    "NOEX": [
+      "silvally-a3a-rampardos-a2",
+      "silvally-blacephalon-a3a",
+      "naganadel-nihilego-a3a",
+      "silvally-zeraora-a3a",
+      "celesteela-a3a-dusk-mane-necrozma-p-a"
+    ]
+  },
+  "recent_daily_meta": {}
+}

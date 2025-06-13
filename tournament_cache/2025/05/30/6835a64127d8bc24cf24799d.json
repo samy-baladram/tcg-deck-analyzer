@@ -1,0 +1,39 @@
+{
+  "tournament_id": "6835a64127d8bc24cf24799d",
+  "name": "ThePokes - PTCGP Tournament #7 !!SET BATTLE!!",
+  "timestamp": 1748620800000,
+  "format": "Standard",
+  "player_count": 5,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "KidShadow",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Rad_Thad",
+      "record": "3 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "RsK",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "CHARRD",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Kay9Confetti",
+      "record": "1 - 3 - 0",
+      "archetype": null
+    }
+  ]
+}
