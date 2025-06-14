@@ -2208,6 +2208,28 @@ def get_deck_available_formats(deck_name):
         print(f"Error getting deck available formats: {e}")
         return ['Standard']  # Fallback
 
+def get_latest_set_release_date():
+    """
+    Get the latest set release date from the sets index file
+    
+    Returns:
+        str: ISO date string of latest release or None
+    """
+    try:
+        with open("meta_analysis/sets_index.json", 'r') as f:
+            sets_data = json.load(f)
+        
+        # Filter sets with release dates and sort by date (newest first)
+        sets_with_dates = [s for s in sets_data['sets'] if s.get('release_date')]
+        if sets_with_dates:
+            latest_set = sorted(sets_with_dates, key=lambda x: x['release_date'], reverse=True)[0]
+            return latest_set['release_date']
+            
+    except Exception as e:
+        print(f"Error getting latest set release date: {e}")
+    
+    return None
+
 def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, chart_subtitle=""):
     """
     Create enhanced line chart that combines formats into a single line
@@ -2227,6 +2249,17 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         # Create format filter for SQL query
         format_placeholders = ','.join(['?' for _ in selected_formats])
         
+        # Get latest set release date for filtering
+        latest_release = get_latest_set_release_date()
+        
+        # Add date filter to query if we have a latest release date
+        date_filter = ""
+        query_params = [deck_name] + selected_formats
+        
+        if latest_release:
+            date_filter = "AND t.date >= ?"
+            query_params.append(latest_release)
+        
         # Query to get daily data for the specific archetype and selected formats
         query = f"""
         SELECT 
@@ -2237,21 +2270,18 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         FROM tournaments t
         LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
             AND aa.archetype = ?
-        WHERE t.format IN ({format_placeholders})
+        WHERE t.format IN ({format_placeholders}) {date_filter}
         GROUP BY t.date, t.format
         HAVING total_players > 0
         ORDER BY t.date
         """
         
-        # Execute query with deck name and selected formats
-        query_params = [deck_name] + selected_formats
+        # Execute query
         df = pd.read_sql_query(query, conn, params=query_params)
         conn.close()
         
-        print(f"DEBUG: Query returned {len(df)} rows for {deck_name}")  # DEBUG
-        
         if df.empty:
-            print(f"No data found for archetype: {deck_name} in formats: {selected_formats}")
+            print(f"No data found for archetype: {deck_name} in formats: {selected_formats} since {latest_release}")
             return None
         
         # Calculate percentage for each date/format combination
@@ -2272,10 +2302,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         # Filter out dates where archetype had 0%
         df_filtered = df_combined[df_combined['meta_percentage'] > 0].copy()
         
-        print(f"DEBUG: After filtering, {len(df_filtered)} rows remain")  # DEBUG
-        
         if df_filtered.empty:
-            print(f"No appearances found for archetype: {deck_name} in formats: {selected_formats}")
+            print(f"No appearances found for archetype: {deck_name} in formats: {selected_formats} since {latest_release}")
             return None
         
         # Create the figure
@@ -2293,15 +2321,15 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 # Add vertical line
                 fig.add_vline(
                     x=release_date, 
-                    line_dash="dot", 
-                    line_color="rgba(128, 128, 128, 0.5)",
+                    line_dash="dash", 
+                    line_color="rgba(128, 128, 128, 0.6)",
                     line_width=1
                 )
                 
                 # Add set code annotation at the top with hover info
                 fig.add_annotation(
                     x=release_date,
-                    y=max_percentage * 1.1,  # Position at top of chart
+                    y=max_percentage * 1.05,  # Position at top of chart
                     text=set_code,
                     showarrow=False,
                     font=dict(size=10),
@@ -2313,7 +2341,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                     )
                 )
         
-        # Add the main trend line (single line combining all selected formats)
+        # Add the main trend line
         fig.add_trace(go.Scatter(
             x=df_filtered['date'],
             y=df_filtered['meta_percentage'],
@@ -2335,9 +2363,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             y=peak_value + (df_filtered['meta_percentage'].max() * 0.05),
             text=f"Peak: {peak_value:.1f}%",
             showarrow=False,
-            font=dict(color="#00A0FF", size=12),
-            bgcolor="rgba(0,0,0,0)",
-            bordercolor="rgba(0,0,0,0)"
+            font=dict(size=12)
         )
         
         # Update layout
@@ -2345,15 +2371,15 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}{chart_subtitle}",
             xaxis_title="",
             yaxis_title="Meta Share (%)",
-            #height=500,
-            margin=dict(t=80, l=10, r=10, b=0),
+            height=500,
+            margin=dict(t=80, l=50, r=20, b=50),
             hovermode='x unified',
             
             # Styling to match your app
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(size=12),
-            showlegend=False,  # Hide legend since we only have one line
+            showlegend=False,
             
             # Grid and axes styling
             xaxis=dict(
@@ -2367,7 +2393,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[0, df_filtered['meta_percentage'].max() * 1.1]
+                range=[0, df_filtered['meta_percentage'].max() * 1.15]
             )
         )
         
@@ -2377,14 +2403,9 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         print(f"Error creating enhanced meta trend chart: {e}")
         return None
 
-
 def create_performance_trend_chart(deck_name, selected_formats=None):
     """
-    Create performance trend chart showing win percentage over time with 50% reference
-    
-    Args:
-        deck_name: The deck archetype name
-        selected_formats: List of formats to include
+    Create performance trend chart showing win percentage over time with smart y-axis
     """
     import sqlite3
     import pandas as pd
@@ -2401,6 +2422,17 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Create format filter for SQL query
         format_placeholders = ','.join(['?' for _ in selected_formats])
         
+        # Get latest set release date for filtering
+        latest_release = get_latest_set_release_date()
+        
+        # Add date filter to query if we have a latest release date
+        date_filter = ""
+        query_params = [deck_name] + selected_formats
+        
+        if latest_release:
+            date_filter = "AND t.date >= ?"
+            query_params.append(latest_release)
+        
         # Query to get daily performance data
         query = f"""
         SELECT 
@@ -2412,19 +2444,18 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             COUNT(pp.player_name) as total_players
         FROM tournaments t
         JOIN player_performance pp ON t.tournament_id = pp.tournament_id
-        WHERE pp.archetype = ? AND t.format IN ({format_placeholders})
+        WHERE pp.archetype = ? AND t.format IN ({format_placeholders}) {date_filter}
         GROUP BY t.date, t.format
         HAVING total_players > 0
         ORDER BY t.date
         """
         
-        # Execute query with deck name and selected formats
-        query_params = [deck_name] + selected_formats
+        # Execute query
         df = pd.read_sql_query(query, conn, params=query_params)
         conn.close()
         
         if df.empty:
-            print(f"No performance data found for archetype: {deck_name} in formats: {selected_formats}")
+            print(f"No performance data found for archetype: {deck_name} in formats: {selected_formats} since {latest_release}")
             return None
         
         # Convert date strings to datetime
@@ -2450,21 +2481,36 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         df_filtered = df_combined[df_combined['total_games'] > 0].copy()
         
         if df_filtered.empty:
-            print(f"No performance data with games found for archetype: {deck_name}")
+            print(f"No performance data with games found for archetype: {deck_name} since {latest_release}")
             return None
+        
+        # Calculate smart y-axis range
+        min_win_rate = df_filtered['win_percentage'].min()
+        max_win_rate = df_filtered['win_percentage'].max()
+        
+        # Add 5% padding
+        y_min = max(0, min_win_rate - 5)
+        y_max = min(100, max_win_rate + 5)
+        
+        # Ensure minimum range of 20% for readability
+        if y_max - y_min < 20:
+            center = (y_min + y_max) / 2
+            y_min = max(0, center - 10)
+            y_max = min(100, center + 10)
         
         # Create the figure
         fig = go.Figure()
         
-        # Add 50% reference line
-        fig.add_hline(
-            y=50, 
-            line_dash="dot", 
-            line_color="rgba(128, 128, 128, 0.6)",
-            line_width=1,
-            annotation_text="50% Win Rate",
-            annotation_position="right"
-        )
+        # Add 50% reference line only if it's within the visible range
+        if y_min <= 50 <= y_max:
+            fig.add_hline(
+                y=50, 
+                line_dash="dot", 
+                line_color="rgba(128, 128, 128, 0.8)",
+                line_width=2,
+                annotation_text="50% Win Rate",
+                annotation_position="right"
+            )
         
         # Add set release markers
         set_releases = get_set_release_dates()
@@ -2477,18 +2523,19 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 # Add vertical line
                 fig.add_vline(
                     x=release_date, 
-                    line_dash="dot", 
+                    line_dash="dash", 
                     line_color="rgba(128, 128, 128, 0.6)",
                     line_width=1
                 )
                 
-                # Add set code annotation at the top
+                # Add set code annotation at the top of visible range
                 fig.add_annotation(
                     x=release_date,
-                    y=80,  # Fixed position at top
+                    y=y_max - 2,  # Position near top of visible range
                     text=set_code,
                     showarrow=False,
-                    font=dict(color="rgba(128, 128, 128, 0.8)", size=10),
+                    font=dict(size=10),
+                    borderwidth=1,
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
@@ -2506,15 +2553,15 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             y=df_filtered['win_percentage'],
             mode='lines+markers',
             name='Win %',
-            line=dict(color='#00A0FF', width=2),  # Use default blue for line
-            marker=dict(size=8, color=colors),  # Conditional colors for markers
+            line=dict(color='#00A0FF', width=3),
+            marker=dict(size=8, color=colors),
             hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
             customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
         ))
         
         # Update layout
         fig.update_layout(
-            title="",  # No title since it's under the main chart
+            title="",
             xaxis_title="",
             yaxis_title="Win Rate (%)",
             height=400,
@@ -2525,7 +2572,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(size=12),
-            showlegend=False,  # Hide legend since we only have one line
+            showlegend=False,
             
             # Grid and axes styling
             xaxis=dict(
@@ -2539,7 +2586,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[20, 80]  # Fixed range 0-100% with space for annotations
+                range=[y_min, y_max]  # Smart y-axis range
             )
         )
         
