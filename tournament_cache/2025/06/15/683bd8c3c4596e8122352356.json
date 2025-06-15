@@ -1,0 +1,279 @@
+{
+  "tournament_id": "683bd8c3c4596e8122352356",
+  "name": "\ud83c\udfb4 Narnia's Lamp League S3 #2 \ud83c\udfb4 Winner Takes $20",
+  "timestamp": 1749976200000,
+  "format": "Standard",
+  "player_count": 45,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Laaans",
+      "record": "7 - 2 - 0",
+      "archetype": "paldean-clodsire-ex-a2b-naganadel-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ishaan",
+      "record": "7 - 2 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "BabyEatingBaby",
+      "record": "7 - 1 - 0",
+      "archetype": "beedrill-ex-a2b-beedrill-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Brandon J",
+      "record": "5 - 3 - 0",
+      "archetype": "naganadel-a3a-weezing-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "\u0e13\u0e31\u0e10\u0e1e\u0e25 \u0e1a",
+      "record": "5 - 2 - 0",
+      "archetype": "weezing-a1-nihilego-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Slashu",
+      "record": "5 - 2 - 0",
+      "archetype": "incineroar-ex-a3-snorlax-a2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "krispiekrunch",
+      "record": "5 - 2 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 8,
+      "player_name": "crustpunx2442",
+      "record": "4 - 3 - 0",
+      "archetype": "arbok-a2b-naganadel-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "sostxt",
+      "record": "4 - 2 - 0",
+      "archetype": "naganadel-nihilego-a3a"
+    },
+    {
+      "placement": 10,
+      "player_name": "TWICEisL0ve",
+      "record": "4 - 2 - 0",
+      "archetype": "grafaiai-a2b-snorlax-a2a"
+    },
+    {
+      "placement": 11,
+      "player_name": "JustDefault2",
+      "record": "4 - 2 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 12,
+      "player_name": "Brendon68",
+      "record": "4 - 2 - 0",
+      "archetype": "paldean-clodsire-ex-a2b-naganadel-a3a"
+    },
+    {
+      "placement": 13,
+      "player_name": "PDon",
+      "record": "3 - 3 - 0",
+      "archetype": "incineroar-ex-a3-wigglytuff-a2b"
+    },
+    {
+      "placement": 14,
+      "player_name": "Warpis",
+      "record": "3 - 3 - 0",
+      "archetype": "toucannon-p-a-nihilego-a3a"
+    },
+    {
+      "placement": 15,
+      "player_name": "Yorunoyuhi",
+      "record": "3 - 3 - 0",
+      "archetype": "naganadel-nihilego-a3a"
+    },
+    {
+      "placement": 16,
+      "player_name": "PortlandPoliwags",
+      "record": "3 - 3 - 0",
+      "archetype": "paldean-clodsire-ex-a2b-nihilego-a3a"
+    },
+    {
+      "placement": 17,
+      "player_name": "SHAOXINZ",
+      "record": "3 - 3 - 0",
+      "archetype": "scolipede-a1a-nihilego-a3a"
+    },
+    {
+      "placement": 18,
+      "player_name": "jeyksu",
+      "record": "3 - 3 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 19,
+      "player_name": "ErronCloud",
+      "record": "3 - 3 - 0",
+      "archetype": "primarina-a3-toucannon-p-a"
+    },
+    {
+      "placement": 20,
+      "player_name": "vivE",
+      "record": "3 - 3 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 21,
+      "player_name": "timothyher",
+      "record": "3 - 3 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 22,
+      "player_name": "Pedron",
+      "record": "2 - 1 - 0drop",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 23,
+      "player_name": "seb96",
+      "record": "2 - 4 - 0",
+      "archetype": "alolan-muk-ex-a3-grafaiai-a2b"
+    },
+    {
+      "placement": 24,
+      "player_name": "Jinhiko",
+      "record": "2 - 2 - 0drop",
+      "archetype": "incineroar-ex-a3-snorlax-a2a"
+    },
+    {
+      "placement": 25,
+      "player_name": "JSG | Jiaxu",
+      "record": "2 - 4 - 0",
+      "archetype": "incineroar-ex-salazzle-a3"
+    },
+    {
+      "placement": 26,
+      "player_name": "Nhakho",
+      "record": "2 - 3 - 0drop",
+      "archetype": "incineroar-ex-salazzle-a3"
+    },
+    {
+      "placement": 27,
+      "player_name": "Baidwan",
+      "record": "2 - 4 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 28,
+      "player_name": "CheeryDog",
+      "record": "2 - 4 - 0",
+      "archetype": "snorlax-a2a-bewear-a3"
+    },
+    {
+      "placement": 29,
+      "player_name": "PikaIcetea",
+      "record": "1 - 2 - 0drop",
+      "archetype": "incineroar-ex-a3-snorlax-a2a"
+    },
+    {
+      "placement": 30,
+      "player_name": "Lamp Oomf",
+      "record": "1 - 1 - 0drop",
+      "archetype": "paldean-clodsire-ex-a2b-alolan-muk-ex-a3"
+    },
+    {
+      "placement": 31,
+      "player_name": "Zegger",
+      "record": "1 - 3 - 0drop",
+      "archetype": "paldean-clodsire-ex-a2b-naganadel-a3a"
+    },
+    {
+      "placement": 32,
+      "player_name": "syr",
+      "record": "1 - 2 - 0drop",
+      "archetype": "paldean-clodsire-ex-a2b-weezing-a1"
+    },
+    {
+      "placement": 33,
+      "player_name": "LAMP - herston",
+      "record": "1 - 4 - 0drop",
+      "archetype": "paldean-clodsire-ex-grafaiai-a2b"
+    },
+    {
+      "placement": 34,
+      "player_name": "NoirPoison",
+      "record": "1 - 2 - 0drop",
+      "archetype": "paldean-clodsire-ex-a2b-scolipede-a1a"
+    },
+    {
+      "placement": 35,
+      "player_name": "CornDog_XX",
+      "record": "1 - 3 - 0drop",
+      "archetype": "grafaiai-a2b-snorlax-a2a"
+    },
+    {
+      "placement": 36,
+      "player_name": "Ike1280",
+      "record": "1 - 5 - 0",
+      "archetype": "weezing-a1-naganadel-a3a"
+    },
+    {
+      "placement": 37,
+      "player_name": "DereckWho",
+      "record": "1 - 5 - 0drop",
+      "archetype": "alolan-muk-ex-a3-naganadel-a3a"
+    },
+    {
+      "placement": 38,
+      "player_name": "xKarll",
+      "record": "0 - 1 - 0drop",
+      "archetype": "paldean-clodsire-ex-grafaiai-a2b"
+    },
+    {
+      "placement": 39,
+      "player_name": "sZero | Abscissa",
+      "record": "0 - 2 - 0drop",
+      "archetype": "paldean-clodsire-ex-a2b-naganadel-a3a"
+    },
+    {
+      "placement": 40,
+      "player_name": "N3wA",
+      "record": "0 - 1 - 0drop",
+      "archetype": "incineroar-ex-salazzle-a3"
+    },
+    {
+      "placement": 41,
+      "player_name": "\ud835\udddc\ud835\udde7\ud835\udde3\ud835\uddf6 || fallen",
+      "record": "0 - 1 - 0drop",
+      "archetype": "naganadel-a3a-snorlax-a2a"
+    },
+    {
+      "placement": 42,
+      "player_name": "opalalexis",
+      "record": "0 - 6 - 0",
+      "archetype": "alolan-muk-ex-a3-naganadel-a3a"
+    },
+    {
+      "placement": 43,
+      "player_name": "WxChAn",
+      "record": "0 - 1 - 0drop",
+      "archetype": "arbok-a1-naganadel-a3a"
+    },
+    {
+      "placement": 44,
+      "player_name": "RustyCohle",
+      "record": "0 - 1 - 0drop",
+      "archetype": "wigglytuff-ex-a1-komala-a3"
+    },
+    {
+      "placement": 45,
+      "player_name": "MagikarpFish",
+      "record": "0 - 1 - 0drop",
+      "archetype": "incineroar-ex-a3-snorlax-a2a"
+    }
+  ]
+}
