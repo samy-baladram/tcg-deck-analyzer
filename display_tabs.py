@@ -1084,7 +1084,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         y=bin_data['meta_share'],
         marker_color=bar_colors,
         marker_line=dict(width=0),  # No outline
-        text=bin_data['meta_share'].apply(lambda x: f"{x:.1f}%" if x > 0 else ""),
+        text=bin_data['meta_share'].apply(lambda x: f"{x:.1f}" if x > 0 else ""),
         textposition='outside',
         textfont=dict(size=15),
         hovertemplate="<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Matchups: %{customdata}<extra></extra>",
