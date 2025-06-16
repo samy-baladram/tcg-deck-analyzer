@@ -1120,7 +1120,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         xaxis=dict(
             title="Win Rate (%)",
             title_font=dict(size=16),
-            tickfont=dict(size=14),
+            tickfont=dict(size=12),
             showgrid=False,
             showline=False,
             zeroline=False,
