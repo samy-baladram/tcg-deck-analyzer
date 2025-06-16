@@ -1101,10 +1101,10 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
 
     fig.add_annotation(
         x=50,  # Same index position
-        y=30.5,  # Slightly above the chart area
+        y=29,  # Slightly above the chart area
         text="50%",
         showarrow=False,
-        font=dict(size=14, color="rgba(128, 128, 128, 0.9)")
+        font=dict(size=12, color="rgba(128, 128, 128, 0.9)")
     )
 
     # Update layout - Clean and minimal
