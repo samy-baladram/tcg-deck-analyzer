@@ -1093,15 +1093,18 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
 
     # Add vertical line at 50% win rate
     fig.add_vline(
-        x=10,  # Position at 50% bin
-        line_dash="dash",
+        x=50,  # Position at 50% bin
+        line_dash="dot",
         line_color="rgba(128, 128, 128, 0.5)",
-        line_width=1,
-        annotation_text="50%",
-        annotation_position="top",
-        annotation=dict(
-            font=dict(size=12)
-        )
+        line_width=1
+    )
+
+    fig.add_annotation(
+        x=50,  # Same index position
+        y=30.5,  # Slightly above the chart area
+        text="50%",
+        showarrow=False,
+        font=dict(size=14, color="rgba(128, 128, 128, 0.9)")
     )
 
     # Update layout - Clean and minimal
