@@ -1119,14 +1119,13 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         # Clean axes
         xaxis=dict(
             title="Win Rate (%)",
-            title_font=dict(size=16),
+            title_font=dict(size=15),
             tickfont=dict(size=12),
             showgrid=False,
             showline=False,
             zeroline=False,
             # Show every 5% tick
             tickmode='array',
-            ticklabelposition="inside",
             tickvals=[f"{i}%" for i in range(0, 101, 5)],
             ticktext=[str(i) for i in range(0, 101, 5)]  # Show numbers without %
         ),
