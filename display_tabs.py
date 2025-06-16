@@ -1090,7 +1090,20 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         hovertemplate="<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Matchups: %{customdata}<extra></extra>",
         customdata=bin_data['opponent_name']
     ))
-    
+
+    # Add vertical line at 50% win rate
+    fig.add_vline(
+        x="50%",  # Position at 50% bin
+        line_dash="dash",
+        line_color="rgba(128, 128, 128, 0.5)",
+        line_width=1,
+        annotation_text="50%",
+        annotation_position="top",
+        annotation=dict(
+            font=dict(size=12)
+        )
+    )
+
     # Update layout - Clean and minimal
     fig.update_layout(
         height=300,
