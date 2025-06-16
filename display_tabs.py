@@ -1093,7 +1093,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
 
     # Add vertical line at 50% win rate
     fig.add_vline(
-        x="50%",  # Position at 50% bin
+        x=10,  # Position at 50% bin
         line_dash="dash",
         line_color="rgba(128, 128, 128, 0.5)",
         line_width=1,
