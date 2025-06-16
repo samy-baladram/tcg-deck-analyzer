@@ -1126,6 +1126,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             zeroline=False,
             # Show every 5% tick
             tickmode='array',
+            ticklabelstandoff=-5,
             tickvals=[f"{i}%" for i in range(0, 101, 5)],
             ticktext=[str(i) for i in range(0, 101, 5)]  # Show numbers without %
         ),
