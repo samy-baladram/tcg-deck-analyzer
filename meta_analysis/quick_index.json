@@ -1,10 +1,10 @@
 {
-  "last_updated": 1750104768,
-  "total_tournaments": 250,
+  "last_updated": 1750121770,
+  "total_tournaments": 252,
   "format_distribution": {
-    "Standard": 188,
+    "Standard": 189,
     "STANDARD": 35,
-    "NOEX": 27
+    "NOEX": 28
   },
   "date_range": {
     "earliest": "2025-04-27",
