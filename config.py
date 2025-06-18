@@ -14,7 +14,7 @@ CURRENT_SET = "A3a"
 ALGORITHM_VERSION = 1  # Increment this when you change algorithms like analyze_recent_performance
 
 # Tournament count
-TOURNAMENT_COUNT = 50
+TOURNAMENT_COUNT = 70
 MIN_MATCHUP_MATCHES = 5
 MIN_COUNTER_MATCHES = 8
 
