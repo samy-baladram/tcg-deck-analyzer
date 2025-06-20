@@ -16,7 +16,7 @@ from header_image_cache import get_header_image_cached
 SIDEBAR_SECTIONS_CONFIG = {
     "meta": {
         "type": "meta",
-        "banner_path": "sidebar_banner.webp",
+        "banner_path": "/img/sidebar_banner.webp",
         "fallback_title": "🏆 Top Meta Decks",
         "max_decks": 10,
         "show_key": "show_meta_decks",
@@ -34,7 +34,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "trending": {
         "type": "trending", 
-        "banner_path": "trending_banner.webp",
+        "banner_path": "/img/trending_banner.webp",
         "fallback_title": "📈 Trending Decks",
         "max_decks": 5,
         "show_key": "show_trending_decks", 
@@ -52,7 +52,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "gems": {
         "type": "gems",
-        "banner_path": "gems_banner.webp", 
+        "banner_path": "/img/gems_banner.webp", 
         "fallback_title": "💎 Hidden Gems",
         "max_decks": 5,
         "show_key": "show_gems_decks",
@@ -76,7 +76,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "counter_picker": {
         "type": "counter_picker",
-        "banner_path": "picker_banner.webp",
+        "banner_path": "/img/picker_banner.webp",
         "fallback_title": "🎯 Meta Counter Picker",
         "max_source_decks": 20,  # Max meta decks to choose from
         "max_result_decks": 5,   # Max counter results to show
