@@ -951,7 +951,7 @@ def create_deck_section(section_type):
             caption_text = "Shows meta share percentages"
         
         st.caption(f"{config['description']}. {caption_text}")
-    st.write("")
+    #st.write("")
     #st.write("")
     #st.write("")
     #st.markdown(f"""<hr style='margin-bottom:40px; border: 0.5px solid rgba(137, 148, 166, 0.3); margin-top:0px;'>""", unsafe_allow_html=True)        
