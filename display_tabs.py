@@ -611,7 +611,7 @@ def render_clean_sample_deck(variant_pokemon_names, energy_types, is_typical):
         deck_html = render_sidebar_deck(
             pokemon_cards, 
             trainer_cards,
-            card_width=70
+            card_width=65
         )
         st.markdown(deck_html, unsafe_allow_html=True)
     else:
@@ -677,7 +677,7 @@ def render_variant_deck(variant_pokemon, energy_types, is_typical):
     deck_html = render_sidebar_deck(
         pokemon_cards, 
         trainer_cards,
-        card_width=70
+        card_width=65
     )
     st.markdown(deck_html, unsafe_allow_html=True)
 
@@ -708,7 +708,7 @@ def render_sample_deck(energy_types, is_typical):
         deck_html = render_sidebar_deck(
             sample_deck['pokemon_cards'], 
             sample_deck['trainer_cards'],
-            card_width=70
+            card_width=65
         )
         st.markdown(deck_html, unsafe_allow_html=True)
     else:
@@ -826,7 +826,7 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
                 trainer_options_grid = CardGrid(card_width=65, gap=4, show_percentage=True)
                 trainer_options_grid.add_cards_from_dataframe(trainer_options)
                 trainer_options_grid.display()
-        st.caption("Meta Essentials: Cards appearing in 80%+ of competitive decks. Remaining Slots: Cards appearing in 25-80% of decks, offering flexibility for tech choices, with percentages show how often each card appears in top competitive decks.")
+        st.caption("Meta Essentials: Cards appearing in 80%+ of competitive decks. Remaining Slots: Cards appearing in 5-80% of decks, offering flexibility for tech choices, with percentages show how often each card appears in top competitive decks.")
     else:
         st.info("No remaining slots available for this deck.")
         
