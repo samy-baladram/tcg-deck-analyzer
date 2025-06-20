@@ -869,8 +869,8 @@ def create_deck_section(section_type):
     if os.path.exists(config['banner_path']):
         banner_base64 = get_cached_banner_image(config['banner_path'])
         if banner_base64:
-            st.markdown(f"""<div style="width:100%; text-align:center;">
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-top: -30px; margin-bottom:-20px;">
+            st.markdown(f"""<div style="width:100%; text-align:left;">
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:200px; margin-top: -30px; margin-bottom:-20px;">
             </div>
             """, unsafe_allow_html=True)
     else:
@@ -1135,8 +1135,8 @@ def display_counter_picker_sidebar():
     if os.path.exists(config['banner_path']):
         banner_base64 = get_cached_banner_image(config['banner_path'])
         if banner_base64:
-            st.markdown(f"""<div style="width:100%; text-align:center;">               
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:280px; margin-top: -20px; margin-bottom:0px;">
+            st.markdown(f"""<div style="width:100%; text-align:left;">               
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:200px; margin-top: -20px; margin-bottom:0px;">
             </div>
             """, unsafe_allow_html=True)
     else:
