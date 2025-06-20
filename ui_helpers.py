@@ -34,7 +34,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "trending": {
         "type": "trending", 
-        "banner_path": "img/trending_banner.webp",
+        "": "img/trending_banner.webp",
         "fallback_title": "📈 Trending Decks",
         "max_decks": 5,
         "show_key": "show_trending_decks", 
@@ -52,7 +52,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "gems": {
         "type": "gems",
-        "banner_path": "img/gems_banner.webp", 
+        "": "img/gems_banner.webp", 
         "fallback_title": "💎 Hidden Gems",
         "max_decks": 5,
         "show_key": "show_gems_decks",
@@ -76,7 +76,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "counter_picker": {
         "type": "counter_picker",
-        "banner_path": "img/picker_banner.webp",
+        "": "img/picker_banner.webp",
         "fallback_title": "🎯 Meta Counter Picker",
         "max_source_decks": 20,  # Max meta decks to choose from
         "max_result_decks": 5,   # Max counter results to show
@@ -715,7 +715,7 @@ def get_filtered_deck_data(section_type):
     
 #     # Display banner
 #     if os.path.exists(config['']):
-#         banner_base64 = get_cached_banner_image(config['banner_path'])
+#         banner_base64 = get_cached_banner_image(config[''])
 #         if banner_base64:
 #             st.markdown(f"""<div style="width:100%; text-align:center;">
 #                 <hr style='margin-bottom:20px; border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
@@ -870,7 +870,7 @@ def create_deck_section(section_type):
         banner_base64 = get_cached_banner_image(config['banner_path'])
         if banner_base64:
             st.markdown(f"""<div style="width:100%; text-align:center;">
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-top: -30px; margin-bottom:-5px;">
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-top: -30px; margin-bottom:-8px;">
             </div>
             """, unsafe_allow_html=True)
     else:
@@ -953,7 +953,7 @@ def create_deck_section(section_type):
         st.caption(f"{config['description']}. {caption_text}")
     st.write("")
     st.write("")
-    st.write("")
+    #st.write("")
     #st.markdown(f"""<hr style='margin-bottom:40px; border: 0.5px solid rgba(137, 148, 166, 0.3); margin-top:0px;'>""", unsafe_allow_html=True)        
      
 
@@ -1136,7 +1136,7 @@ def display_counter_picker_sidebar():
         banner_base64 = get_cached_banner_image(config['banner_path'])
         if banner_base64:
             st.markdown(f"""<div style="width:100%; text-align:center;">               
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-top: -30px; margin-bottom:7px;">
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px; margin-top: -30px; margin-bottom:5px;">
             </div>
             """, unsafe_allow_html=True)
     else:
