@@ -917,7 +917,7 @@ def create_deck_section(section_type):
     if header_image:
         st.markdown(f"""
         <div style="width: 100%; margin-top: -18px; position: relative;">
-            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 6px 6px 0px 0px; margin-bottom: -7px; z-index:-2;">
+            <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 6px 6px 0px 0px; margin-bottom: -12px; z-index:-2;">
             <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; margin-bottom: -7px; border-radius: 4px 0px 0px 0px; font-size: 0.7rem; font-weight: 500;">
                 {stats_text}
             </div>
