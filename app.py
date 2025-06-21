@@ -317,41 +317,41 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 display_tabs.display_deck_header(original_deck_info, results)
                 
                 # Create tab container
-                tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Deck Template", 
-                                                                    "Card Usage",  
+                tab1, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
                                                                     "Meta Matchups",
                                                                     "Meta Trend",  # NEW TAB
                                                                     "Metagame Overview",
-                                                                    "Related Decks",
-                                                                    "Raw Data"
+                                                                    "Related Decks"
                                                                     ])
                 
                 with tab1:
                     # Pass variant_df safely (could be None)
                     if variant_df is not None:
                         display_tabs.display_deck_template_tab(results, variant_df)
+                        display_tabs.display_card_usage_tab(results, total_decks, variant_df)
                     else:
                         # Create empty DataFrame if variant_df is None
                         import pandas as pd
                         empty_variant_df = pd.DataFrame()
                         display_tabs.display_deck_template_tab(results, empty_variant_df)
+                        display_tabs.display_card_usage_tab(results, total_decks, empty_variant_df)
                     
                     # ADD THIS: Display last update time for the current deck
-                    last_update = ui_helpers.display_deck_update_info(
-                        original_deck_info['deck_name'], 
-                        original_deck_info['set_name']
-                    )
-                    if last_update:
-                        st.caption(last_update)
+                    # last_update = ui_helpers.display_deck_update_info(
+                    #     original_deck_info['deck_name'], 
+                    #     original_deck_info['set_name']
+                    # )
+                    # if last_update:
+                    #     st.caption(last_update)
                 
-                with tab2:
-                    # Pass variant_df safely
-                    if variant_df is not None:
-                        display_tabs.display_card_usage_tab(results, total_decks, variant_df)
-                    else:
-                        import pandas as pd
-                        empty_variant_df = pd.DataFrame()
-                        display_tabs.display_card_usage_tab(results, total_decks, empty_variant_df)
+                # with tab2:
+                #     # Pass variant_df safely
+                #     if variant_df is not None:
+                #         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
+                #     else:
+                #         import pandas as pd
+                #         empty_variant_df = pd.DataFrame()
+                #         display_tabs.display_card_usage_tab(results, total_decks, empty_variant_df)
                     
                 with tab3:
                     display_tabs.display_matchup_tab()
@@ -366,13 +366,13 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 with tab6:  # Related Decks (was tab5)
                     display_tabs.display_related_decks_tab(original_deck_info, results)
                     
-                with tab7:  # Raw Data (was tab6)
-                    if variant_df is not None:
-                        display_tabs.display_raw_data_tab(results, variant_df)
-                    else:
-                        import pandas as pd
-                        empty_variant_df = pd.DataFrame()
-                        display_tabs.display_raw_data_tab(results, empty_variant_df)
+                # with tab7:  # Raw Data (was tab6)
+                #     if variant_df is not None:
+                #         display_tabs.display_raw_data_tab(results, variant_df)
+                #     else:
+                #         import pandas as pd
+                #         empty_variant_df = pd.DataFrame()
+                #         display_tabs.display_raw_data_tab(results, empty_variant_df)
         
         except Exception as e:
             st.error(f"Error displaying deck analysis: {str(e)}")
