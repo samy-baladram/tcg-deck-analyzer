@@ -1659,9 +1659,11 @@ def display_meta_trend_section(deck_name):
     
     if fig:
         # Display the chart
-        from config import PLOTLY_CONFIG
-        config = PLOTLY_CONFIG.copy()
-        config['displayModeBar'] = True  # Allow download for this chart
+        config = {
+        'displayModeBar': False,  # This hides the entire toolbar
+        'staticPlot': False,      # Keep interactivity (zoom, pan, hover)
+        'displaylogo': False,
+        }       
         
         st.plotly_chart(fig, use_container_width=True, config=config, key="meta_trend_chart")
         
@@ -1987,6 +1989,11 @@ def display_meta_trend_tab(deck_info=None):
     perf_fig = create_performance_trend_chart(deck_name, selected_formats)
     
     if perf_fig:
+        config = {
+            'displayModeBar': True,
+            'displaylogo': False,
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d']
+        }
         st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
         
         st.caption(
@@ -2137,13 +2144,12 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
         )
         
         # Update layout
-        formats_text = " + ".join(selected_formats)
         fig.update_layout(
-            title=f"Meta Evolution: {deck_name.replace('-', ' ').title()} ({formats_text})",
-            xaxis_title="",
+            title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}",
+            xaxis_title="",  # Removed "Date" title
             yaxis_title="Meta Share (%)",
-            #height=500,
-            margin=dict(t=80, l=10, r=10, b=00),
+            height=500,
+            margin=dict(t=80, l=50, r=20, b=50),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2163,7 +2169,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[0, df_filtered['meta_percentage'].max() * 1.1]
+                range=[0, df_filtered['meta_percentage'].max() * 1.1]  # Dynamic range
             )
         )
         
