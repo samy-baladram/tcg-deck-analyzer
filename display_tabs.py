@@ -81,7 +81,7 @@ def display_deck_header(deck_info, results):
 def display_card_usage_tab(results, total_decks, variant_df):
     """Display the Card Usage tab with energy-colored charts based on deck energy types"""
     # Create two columns for Pokemon and Trainer
-    st.write("#### Card Usage & Variants")
+    st.write("##### Card Usage & Variants")
     col1, col2 = st.columns([2, 3])
     
     # Get energy types using our improved function from ui_helpers
@@ -105,7 +105,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
         primary_energy = energy_types[0] if energy_types and len(energy_types) > 0 else None
       
     with col1:
-        st.write("##### Pokemon")
+        st.caption("Pokemon")
         type_cards = results[results['type'] == 'Pokemon']
         
         if not type_cards.empty:
@@ -152,7 +152,7 @@ def display_card_usage_tab(results, total_decks, variant_df):
         generate_energy_analysis(deck_info)
     
     with col2:
-        st.write("##### Trainer")
+        st.caption("Trainer")
         type_cards = results[results['type'] == 'Trainer']
         
         if not type_cards.empty:
@@ -170,12 +170,12 @@ def display_card_usage_tab(results, total_decks, variant_df):
         set_name = st.session_state.analyze.get('set_name', 'A3')
         
         # Get the last update info
-        last_update = display_deck_update_info(deck_name, set_name)
+        # last_update = display_deck_update_info(deck_name, set_name)
         
-        if last_update:
-            st.caption(f"Data of {total_decks} collected decks (with partial energy info). {last_update}")
-        else:
-            st.caption(f"Data of {total_decks} collected decks (with partial energy info).")
+        # if last_update:
+        #     st.caption(f"Data of {total_decks} collected decks (with partial energy info). {last_update}")
+        # else:
+        st.caption(f"Data of {total_decks} collected decks (with partial energy info).")
     else:
         # Fallback if no deck is selected
         st.caption(f"Data of {total_decks} collected decks (with partial energy info).")
