@@ -1107,18 +1107,18 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
         font=dict(size=12, color="rgba(128, 128, 128, 0.9)")
     )
 
-    fig.add_annotation(
-            x=0.5,  # Center horizontally
-            y=-0.15,  # Position below the plot
-            xref='paper',  # Use paper coordinates (0-1)
-            yref='paper',
-            text="Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage.",
-            showarrow=False,
-            font=dict(color="rgb(163, 168, 184)", size=11),
-            align="center",
-            bgcolor="rgba(0,0,0,0)",
-            bordercolor="rgba(0,0,0,0)"
-    )
+    # fig.add_annotation(
+    #         x=0.5,  # Center horizontally
+    #         y=-0.15,  # Position below the plot
+    #         xref='paper',  # Use paper coordinates (0-1)
+    #         yref='paper',
+    #         text="Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage.",
+    #         showarrow=False,
+    #         font=dict(color="rgb(163, 168, 184)", size=11),
+    #         align="center",
+    #         bgcolor="rgba(0,0,0,0)",
+    #         bordercolor="rgba(0,0,0,0)"
+    # )
 
     # Update layout - Clean and minimal
     fig.update_layout(
@@ -1166,9 +1166,9 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     st.plotly_chart(fig, use_container_width=True, config=custom_config, key="matchup_bar_chart")
     
     # Add explanation
-    # st.caption(
-    #     "Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage."
-    # )
+    st.caption(
+        "Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage."
+    )
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
