@@ -1614,7 +1614,7 @@ def create_meta_trend_chart(deck_name):
             y=df_filtered['meta_percentage'],
             mode='lines+markers',
             name='Meta Share %',
-            line=dict(color='#00A0FF', width=3),
+            line=dict(color='#8C9BB2', width=2),
             marker=dict(size=6, color='#00A0FF'),
             hovertemplate='<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Players: %{customdata[0]}<br>Total: %{customdata[1]}<extra></extra>',
             customdata=list(zip(df_filtered['archetype_players'], df_filtered['total_players']))
@@ -2135,7 +2135,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             y=df_filtered['meta_percentage'],
             mode='lines+markers',
             name='Meta Share %',
-            line=dict(color='#00A0FF', width=3),
+            line=dict(color='#00A0FF', width=2),
             marker=dict(size=6, color='#00A0FF'),
             hovertemplate='<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Players: %{customdata[0]}<br>Total: %{customdata[1]}<extra></extra>',
             customdata=list(zip(df_filtered['archetype_players'], df_filtered['total_players']))
@@ -2396,7 +2396,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             y=df_filtered['meta_percentage'],
             mode='lines+markers',
             name='Meta Share %',
-            line=dict(color='#00A0FF', width=3),
+            line=dict(color='#8C9BB2', width=2),
             marker=dict(size=6, color='#00A0FF'),
             hovertemplate='<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Players: %{customdata[0]}<br>Total: %{customdata[1]}<extra></extra>',
             customdata=list(zip(df_filtered['archetype_players'], df_filtered['total_players']))
@@ -2602,7 +2602,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             y=df_filtered['win_percentage'],
             mode='lines+markers',
             name='Win %',
-            line=dict(color='#00A0FF', width=3),
+            line=dict(color='#8C9BB2', width=2),
             marker=dict(size=8, color=colors),
             hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
             customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
