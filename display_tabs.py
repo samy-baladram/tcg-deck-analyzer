@@ -1911,7 +1911,7 @@ def display_meta_trend_tab(deck_info=None):
         st.warning("No deck selected for meta trend analysis.")
         return
     
-    st.write("##### Meta Share Evolution")
+    #st.write("##### Meta Share Evolution")
     
     # Display indicator badges first
     # display_meta_indicators(deck_name)
@@ -1984,7 +1984,7 @@ def display_meta_trend_tab(deck_info=None):
         st.info(f"No meta trend data available for this deck archetype.")
     
     # Add performance trend chart
-    st.write("##### Performance Trends")
+    #st.write("##### Performance Trends")
     
     perf_fig = create_performance_trend_chart(deck_name, selected_formats)
     
@@ -2584,7 +2584,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         
         # Update layout
         fig.update_layout(
-            title="",
+            title=f"Performance Trend",
             xaxis_title="",
             yaxis_title="Win Rate (%)",
             height=400,
