@@ -1960,9 +1960,9 @@ def display_meta_trend_tab(deck_info=None):
     if fig:
         # Enable interactivity
         config = {
-            'displayModeBar': True,
+            'displayModeBar': False,
             'displaylogo': False,
-            'modeBarButtonsToRemove': ['lasso2d', 'select2d']
+            'staticPlot': False
         }
         
         st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
@@ -1990,9 +1990,9 @@ def display_meta_trend_tab(deck_info=None):
     
     if perf_fig:
         config = {
-            'displayModeBar': True,
+            'displayModeBar': False,  # This hides the entire toolbar
+            'staticPlot': False,      # Keep interactivity (zoom, pan, hover)
             'displaylogo': False,
-            'modeBarButtonsToRemove': ['lasso2d', 'select2d']
         }
         st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
         
