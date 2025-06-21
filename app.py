@@ -328,12 +328,14 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     # Pass variant_df safely (could be None)
                     if variant_df is not None:
                         display_tabs.display_deck_template_tab(results, variant_df)
+                        st.divider()
                         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
                     else:
                         # Create empty DataFrame if variant_df is None
                         import pandas as pd
                         empty_variant_df = pd.DataFrame()
                         display_tabs.display_deck_template_tab(results, empty_variant_df)
+                        st.divider()
                         display_tabs.display_card_usage_tab(results, total_decks, empty_variant_df)
                     
                     # ADD THIS: Display last update time for the current deck
