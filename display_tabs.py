@@ -718,7 +718,7 @@ def render_sample_deck(energy_types, is_typical):
 def display_deck_composition(deck_info, energy_types, is_typical, total_cards, options, variant_df=None):
     """Display the deck composition section"""
     # Create header
-    # st.write("#### Deck Composition", unsafe_allow_html=True)
+    # st.write("##### Deck Composition", unsafe_allow_html=True)
     if energy_types:
         # Render energy icons for header
         energy_html = ""
@@ -833,18 +833,18 @@ def display_deck_composition(deck_info, energy_types, is_typical, total_cards, o
 def display_raw_data_tab(results, variant_df):
     """Display the Raw Data tab"""
     # Main analysis data
-    st.write("#### Card Usage Data")
+    st.write("##### Card Usage Data")
     st.dataframe(results, use_container_width=True)
     
     # Variant analysis data
     if not variant_df.empty:
-        st.write("#### Variant Analysis Data")
+        st.write("##### Variant Analysis Data")
         st.dataframe(variant_df, use_container_width=True)
 
 # In display_tabs.py, fix the display_metagame_tab function
 def display_metagame_tab():
     """Display the Metagame Overview tab with detailed performance data"""
-    st.write("#### Tournament Performance Data")
+    st.write("##### Tournament Performance Data")
     import pandas as pd
     import re
     
@@ -1173,7 +1173,7 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
     """Display the Related Decks tab with banner images and simple buttons"""
-    st.write("#### Related Decks")
+    st.write("##### Related Decks")
     
     # Get the current deck name
     current_deck_name = deck_info['deck_name']
@@ -1665,7 +1665,7 @@ def display_meta_trend_section(deck_name):
     """
     import streamlit as st
     
-    st.write("#### Meta Share Trend")
+    st.write("##### Meta Share Trend")
     
     # Create the chart
     fig = create_meta_trend_chart(deck_name)
