@@ -1612,7 +1612,7 @@ def create_meta_trend_chart(deck_name):
             title=f"Meta Trend: {deck_name.replace('-', ' ').title()}",
             xaxis_title="Date",
             yaxis_title="Meta Share (%)",
-            height=350,
+            height=400,
             margin=dict(t=10, l=10, r=10, b=10),
             hovermode='x unified',
             
@@ -2148,7 +2148,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}",
             xaxis_title="",  # Removed "Date" title
             yaxis_title="Meta Share (%)",
-            height=350,
+            height=400,
             margin=dict(t=30, l=50, r=20, b=50),
             hovermode='x unified',
             
@@ -2394,8 +2394,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}{chart_subtitle}",
             xaxis_title="",
             yaxis_title="Meta Share (%)",
-            height=350,
-            margin=dict(t=80, l=50, r=20, b=50),
+            height=400,
+            margin=dict(t=30, l=50, r=20, b=0),
             hovermode='x unified',
             
             # Styling to match your app
