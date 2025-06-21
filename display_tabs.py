@@ -1668,10 +1668,10 @@ def display_meta_trend_section(deck_name):
         st.plotly_chart(fig, use_container_width=True, config=config, key="meta_trend_chart")
         
         # Add explanation
-        # st.caption(
-        #     "Shows daily meta share percentage based on tournament data. "
-        #     "Each point represents the combined percentage across all tournaments on that date."
-        # )
+        st.caption(
+            "Shows daily meta share percentage based on tournament data. "
+            "Each point represents the combined percentage across all tournaments on that date."
+        )
     else:
         st.info(f"No meta trend data available for this deck archetype.")
         
@@ -2139,6 +2139,19 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             text=f"Peak: {peak_value:.1f}%",
             showarrow=False,
             font=dict(size=12),
+            bgcolor="rgba(0,0,0,0)",
+            bordercolor="rgba(0,0,0,0)"
+        )
+
+        fig.add_annotation(
+            x=0.5,  # Center horizontally
+            y=-0.15,  # Position below the plot
+            xref='paper',  # Use paper coordinates (0-1)
+            yref='paper',
+            text="Shows daily meta share percentage based on tournament data. Vertical dashed lines indicate set releases. Peak value is highlighted on the chart.",
+            showarrow=False,
+            font=dict(color="rgb(163, 168, 184)", size=11),
+            align="center",
             bgcolor="rgba(0,0,0,0)",
             bordercolor="rgba(0,0,0,0)"
         )
