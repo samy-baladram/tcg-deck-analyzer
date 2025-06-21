@@ -2370,7 +2370,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 # Add vertical line
                 fig.add_vline(
                     x=release_date, 
-                    line_dash="dash", 
+                    line_dash="dot", 
                     line_color="rgba(128, 128, 128, 0.6)",
                     line_width=1
                 )
@@ -2556,7 +2556,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 y=50, 
                 line_dash="dot", 
                 line_color="rgba(128, 128, 128, 0.8)",
-                line_width=2,
+                line_width=1,
                 annotation_text="50% Win Rate",
                 annotation_position="right"
             )
@@ -2572,7 +2572,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 # Add vertical line
                 fig.add_vline(
                     x=release_date, 
-                    line_dash="dash", 
+                    line_dash="dot", 
                     line_color="rgba(128, 128, 128, 0.6)",
                     line_width=1
                 )
