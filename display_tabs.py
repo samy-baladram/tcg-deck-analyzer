@@ -2149,7 +2149,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             xaxis_title="",  # Removed "Date" title
             yaxis_title="Meta Share (%)",
             height=400,
-            margin=dict(t=30, l=50, r=20, b=50),
+            margin=dict(t=30, l=50, r=20, b=10),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2395,7 +2395,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             xaxis_title="",
             yaxis_title="Meta Share (%)",
             height=400,
-            margin=dict(t=30, l=50, r=20, b=0),
+            margin=dict(t=30, l=50, r=20, b=10),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2587,8 +2587,8 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             title=f"Performance Trend",
             xaxis_title="",
             yaxis_title="Win Rate (%)",
-            height=350,
-            margin=dict(t=30, l=50, r=20, b=50),
+            height=400,
+            margin=dict(t=30, l=50, r=20, b=10),
             hovermode='x unified',
             
             # Styling to match your app
