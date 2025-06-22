@@ -8,27 +8,27 @@ from datetime import datetime, timedelta
 from formatters import format_deck_name, extract_pokemon_urls
 
 # Configuration constants (same as working version)
-MIN_META_SHARE = 0.5  # Minimum meta share threshold (0.5%)
-MIN_WIN_RATE = 45.0   # Minimum win rate threshold (45%)
+MIN_META_SHARE = 0.05  # Minimum meta share threshold (0.05%)
+MIN_WIN_RATE = 35.0   # Minimum win rate threshold (35%)
 
 def calculate_power_index(wins, losses):
     """
-    Calculate Power Index using same formula as current system.
-    
-    Args:
-        wins: Total wins
-        losses: Total losses
-        
-    Returns:
-        float: Power Index value
+    Calculate Power Index using Wilson score confidence interval
     """
-    total_games = wins + losses
-    if total_games == 0:
-        return 0.0
+    if wins + losses == 0:
+        return 0
     
-    # Same formula as current system: (wins - losses) / sqrt(wins + losses)
-    power_index = (wins - losses) / np.sqrt(total_games)
-    return power_index
+    n = wins + losses
+    p = wins / n
+    z = 1.96  # 95% confidence interval
+    
+    # Wilson score interval
+    denominator = 1 + z**2 / n
+    center = p + z**2 / (2 * n)
+    interval = z * (p * (1 - p) / n + z**2 / (4 * n**2))**0.5
+    
+    lower_bound = (center - interval) / denominator
+    return lower_bound * 100
 
 def generate_local_metagame_table():
     """
@@ -39,7 +39,7 @@ def generate_local_metagame_table():
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
         
         # Calculate cutoff date (last 3 days - same as working version)
-        cutoff_date = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
+        cutoff_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
         
         # Query with date filter (exact same as working version)
         query = """
@@ -197,12 +197,12 @@ def display_local_metagame_comparison():
                 "Icon1": st.column_config.ImageColumn(
                     "Icon 1",
                     help="First archetype Pokémon in the deck",
-                    width="small",
+                    width=50,
                 ),
                 "Icon2": st.column_config.ImageColumn(
                     "Icon 2", 
                     help="Second archetype Pokémon in the deck",
-                    width="small",
+                    width=50,
                 ),
                 "Deck": st.column_config.TextColumn(
                     "Deck",
@@ -243,7 +243,7 @@ def display_local_metagame_comparison():
             hide_index=True
         )
         
-        st.caption("Generated from local tournament database • Same filtering and calculations as current system")
+        st.caption(f"Local data from last 7 days • Shows decks with ≥{MIN_META_SHARE}% meta share and ≥{MIN_WIN_RATE}% win rate • Power Index calculated using Wilson score confidence interval")
         
     except Exception as e:
         st.error(f"Error displaying local metagame table: {e}")
