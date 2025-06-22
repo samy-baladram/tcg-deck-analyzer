@@ -2201,7 +2201,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
         fig.update_layout(
             title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}",
             xaxis_title=None,  # Removed "Date" title
-            yaxis_title="Meta Share (%)",
+            yaxis_title=None,
             height=400,
             margin=dict(t=30, l=50, r=20, b=10),
             hovermode='x unified',
