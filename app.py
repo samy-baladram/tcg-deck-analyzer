@@ -364,7 +364,7 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                    
                 with tab5:  
                      display_tabs.display_metagame_tab() 
-                     display_local_metagame_comparison()
+                     #display_local_metagame_comparison()
                 
                 # And shift the existing tabs:
                 with tab6:  # Related Decks (was tab5)
