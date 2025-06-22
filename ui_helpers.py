@@ -264,8 +264,8 @@ def display_banner(img_path, max_width=600):
     img_base64 = get_cached_banner_image(img_path)
     
     if img_base64:
-        st.markdown(f"""<div style="display: flex; justify-content: center; width: 100%; margin-top:-80px;">
-            <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px;  margin-bottom:-30px; height: auto;">
+        st.markdown(f"""<div style="display: flex; justify-content: center; width: 100%;">
+            <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px;  margin-top:-70px; margin-bottom:-30px; height: auto;">
         </div>
         """, unsafe_allow_html=True)
 
