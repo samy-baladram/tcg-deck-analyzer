@@ -1617,14 +1617,14 @@ def create_meta_trend_chart(deck_name):
 
         # Define color zones (every 2% with alpha 0.2)
         color_zones = [
-            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.2)"},    # FDE725
-            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.2)"},   # 9FDA3A
-            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.2)"},   # 49C16D
-            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.2)"},   # 20A087
-            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.2)"},  # 277F8E
-            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.2)"},  # 375B8D
-            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.2)"},  # 46337F
-            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.2)"},  # 450F54
+            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.4)"},    # FDE725
+            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.4)"},   # 9FDA3A
+            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.4)"},   # 49C16D
+            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.4)"},   # 20A087
+            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.4)"},  # 277F8E
+            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.4)"},  # 375B8D
+            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.4)"},  # 46337F
+            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.4)"},  # 450F54
         ]
         
         # Add background color zones
@@ -1642,8 +1642,8 @@ def create_meta_trend_chart(deck_name):
             y=df_filtered['meta_percentage'],
             mode='lines+markers',
             name='Meta Share %',
-            line=dict(color='#8C9BB2', width=2),
-            marker=dict(size=8, color='#00A0FF'),
+            line=dict(color='#FFFFFF', width=2),
+            marker=dict(size=8, color='#FFFFFF'),
             hovertemplate='<b>%{x}</b><br>Meta Share: %{y:.1f}%<br>Players: %{customdata[0]}<br>Total: %{customdata[1]}<extra></extra>',
             customdata=list(zip(df_filtered['archetype_players'], df_filtered['total_players']))
         ))
@@ -2388,14 +2388,14 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
 
         # Define color zones (every 2% with alpha 0.2)
         color_zones = [
-            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.2)"},    # FDE725
-            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.2)"},   # 9FDA3A
-            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.2)"},   # 49C16D
-            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.2)"},   # 20A087
-            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.2)"},  # 277F8E
-            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.2)"},  # 375B8D
-            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.2)"},  # 46337F
-            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.2)"},  # 450F54
+            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.4)"},    # FDE725
+            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.4)"},   # 9FDA3A
+            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.4)"},   # 49C16D
+            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.4)"},   # 20A087
+            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.4)"},  # 277F8E
+            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.4)"},  # 375B8D
+            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.4)"},  # 46337F
+            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.4)"},  # 450F54
         ]
         
         # Add background color zones
