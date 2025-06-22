@@ -2388,16 +2388,16 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
 
         # Define color zones (every 2% with alpha 0.2)
         color_zones = [
-            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.6)"},    # FDE725
-            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.6)"},   # 9FDA3A
-            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.6)"},   # 49C16D
-            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.6)"},   # 20A087
-            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.6)"},  # 277F8E
-            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.6)"},  # 375B8D
-            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.6)"},  # 46337F
-            {"range": [14, 16], "color": "rgba(69, 15, 84, 0.6)"},  # 450F54
-            {"range": [16, 18], "color": "rgba(39, 0, 44, 0.6)"},  # 450F54
-            {"range": [18, 100], "color": "rgba(9, 0, 4, 0.6)"},  # 450F54
+            {"range": [0, 2], "color": "rgba(253, 231, 37, 1)"},    # FDE725
+            {"range": [2, 4], "color": "rgba(159, 218, 58, 1)"},   # 9FDA3A
+            {"range": [4, 6], "color": "rgba(73, 193, 109, 1)"},   # 49C16D
+            {"range": [6, 8], "color": "rgba(32, 160, 135, 1)"},   # 20A087
+            {"range": [8, 10], "color": "rgba(39, 127, 142, 1)"},  # 277F8E
+            {"range": [10, 12], "color": "rgba(55, 91, 141, 1)"},  # 375B8D
+            {"range": [12, 14], "color": "rgba(70, 51, 127, 1)"},  # 46337F
+            {"range": [14, 16], "color": "rgba(69, 15, 84, 1)"},  # 450F54
+            {"range": [16, 18], "color": "rgba(39, 0, 44, 1)"},  # 450F54
+            {"range": [18, 100], "color": "rgba(9, 0, 4, 1)"},  # 450F54
         ]
         
         # Add background color zones
