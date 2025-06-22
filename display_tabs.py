@@ -2471,7 +2471,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         fig.update_layout(
             title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}{chart_subtitle}",
             xaxis_title=None,
-            yaxis_title="Meta Share (%)",
+            yaxis_title=None,
             height=400,
             margin=dict(t=30, l=50, r=20, b=10),
             hovermode='x unified',
