@@ -7,6 +7,7 @@ import ui_helpers
 import cache_manager
 import display_tabs
 import background
+from local_metagame import display_local_metagame_comparison
 from header_image_cache import clear_expired_cache, get_cache_stats
 from card_cache import clear_expired_cache as clear_card_cache
 from PIL import Image
@@ -363,6 +364,7 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                    
                 with tab5:  
                      display_tabs.display_metagame_tab() 
+                     display_local_metagame_comparison()
                 
                 # And shift the existing tabs:
                 with tab6:  # Related Decks (was tab5)
