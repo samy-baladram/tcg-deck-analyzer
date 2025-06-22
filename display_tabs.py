@@ -14,7 +14,7 @@ import pandas as pd
 import base64
 import os
 
-def display_deck_header(deck_info, results):
+def display_deck_header(deck_info, results):set_releases
     """Display the deck header with image and text that wraps properly"""
     header_image = get_header_image_cached(
         deck_info['deck_name'], 
@@ -2487,7 +2487,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 showgrid=True,
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
-                linecolor='rgba(128,128,128,0.3)'
+                linecolor='rgba(128,128,128,0.3)',
+                range=[set_releases[0][0] if set_releases else df_filtered['date'].min(), df_filtered['date'].max()]
             ),
             yaxis=dict(
                 showgrid=True,
