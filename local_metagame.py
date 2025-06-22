@@ -1,57 +1,60 @@
-# local_metagame.py - Fixed version
+# local_metagame.py - Fixed version that restores working functionality
 
-import streamlit as st
-import pandas as pd
 import sqlite3
+import pandas as pd
+import numpy as np
+import streamlit as st
 from datetime import datetime, timedelta
 from formatters import format_deck_name, extract_pokemon_urls
 
-# Configuration constants
+# Configuration constants (same as working version)
 MIN_META_SHARE = 0.5  # Minimum meta share threshold (0.5%)
 MIN_WIN_RATE = 45.0   # Minimum win rate threshold (45%)
 
 def calculate_power_index(wins, losses):
     """
-    Calculate Power Index using Wilson score confidence interval
+    Calculate Power Index using same formula as current system.
+    
+    Args:
+        wins: Total wins
+        losses: Total losses
+        
+    Returns:
+        float: Power Index value
     """
-    if wins + losses == 0:
-        return 0
+    total_games = wins + losses
+    if total_games == 0:
+        return 0.0
     
-    n = wins + losses
-    p = wins / n
-    z = 1.96  # 95% confidence interval
-    
-    # Wilson score interval
-    denominator = 1 + z**2 / n
-    center = p + z**2 / (2 * n)
-    interval = z * (p * (1 - p) / n + z**2 / (4 * n**2))**0.5
-    
-    lower_bound = (center - interval) / denominator
-    return lower_bound * 100
+    # Same formula as current system: (wins - losses) / sqrt(wins + losses)
+    power_index = (wins - losses) / np.sqrt(total_games)
+    return power_index
 
 def generate_local_metagame_table():
     """
-    Generate metagame table from local tournament database
+    Generate metagame table using local tournament database (last 3 days only).
+    Uses exact same query structure as working version.
     """
     try:
-        # Connect to database
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
         
-        # Set cutoff date (last 30 days)
-        cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        # Calculate cutoff date (last 3 days - same as working version)
+        cutoff_date = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
         
-        # Query for archetype performance data
+        # Query with date filter (exact same as working version)
         query = """
         SELECT 
             aa.archetype as deck_name,
-            COUNT(DISTINCT aa.tournament_id) as tournaments_played,
-            COUNT(*) as total_appearances,
+            SUM(aa.count) as total_appearances,
             SUM(t.total_players) as total_tournament_players,
-            SUM(aa.wins) as total_wins,
-            SUM(aa.losses) as total_losses,
-            SUM(aa.ties) as total_ties
+            SUM(pp.wins) as total_wins,
+            SUM(pp.losses) as total_losses,
+            SUM(pp.ties) as total_ties,
+            COUNT(pp.id) as best_finishes
         FROM archetype_appearances aa
         JOIN tournaments t ON aa.tournament_id = t.tournament_id
+        LEFT JOIN player_performance pp ON aa.tournament_id = pp.tournament_id 
+            AND aa.archetype = pp.archetype
         WHERE t.date >= ?
         GROUP BY aa.archetype
         HAVING total_appearances > 0
@@ -103,8 +106,9 @@ def generate_local_metagame_table():
 
 def display_local_metagame_comparison():
     """
-    Display local metagame table that mimics the display_tabs.py implementation.
+    Display local metagame table under current table.
     Uses existing functions for images and formatting.
+    Exact same structure as working version but with fixed table display.
     """
     # Generate local metagame table
     with st.spinner("Generating local metagame analysis..."):
@@ -119,10 +123,9 @@ def display_local_metagame_comparison():
     st.markdown("### 🔬 **Local Data Processing (Testing)**")
     st.caption("This table is generated using local tournament database instead of Limitless API calls")
     
-    # Create display dataframe (similar to display_tabs.py)
+    # Reuse the same display logic from display_tabs.py
+    # Add rank column and current deck indicator (similar to current system)
     display_df = local_df.copy()
-    
-    # Add rank column 
     display_df['rank_int'] = range(1, len(display_df) + 1)
     
     # Get current deck name for highlighting
@@ -136,8 +139,9 @@ def display_local_metagame_comparison():
         axis=1
     )
     
-    # Extract Pokemon URLs for each row (same as display_metagame_tab)
+    # Try to add Pokemon images (reusing existing logic)
     try:
+        # Extract Pokemon URLs for each row (same as display_metagame_tab)
         pokemon_data = []
         for _, row in display_df.iterrows():
             try:
@@ -157,36 +161,37 @@ def display_local_metagame_comparison():
         display_df['pokemon_url1'] = None
         display_df['pokemon_url2'] = None
     
-    # Select and rename columns for display (same structure as display_tabs.py)
-    display_cols = {
-        'rank_display': 'Rank',
-        'displayed_name': 'Deck',
-        'share': 'Meta Share %',
-        'tournaments_played': 'Best Finishes',
-        'total_wins': 'Wins',
-        'total_losses': 'Losses',
-        'total_ties': 'Ties',
-        'win_rate': 'Win %',
-        'power_index': 'Index',
-    }
-    
-    # Create final display dataframe
+    # Create final display version with proper column structure
     try:
-        final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
+        # Create the styled dataframe with Pokemon images
+        final_columns = ['rank_display', 'pokemon_url1', 'pokemon_url2', 'displayed_name', 
+                        'power_index', 'share', 'best_finishes', 'win_rate', 
+                        'total_wins', 'total_losses', 'total_ties']
         
-        # Add Pokemon image columns in the same positions as display_tabs.py
-        final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
-        final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
+        # Make sure all columns exist
+        for col in final_columns:
+            if col not in display_df.columns:
+                if col.startswith('pokemon_url'):
+                    display_df[col] = None
+                else:
+                    display_df[col] = 0
         
-        # Display dataframe with same column configuration as display_tabs.py
+        # Select only the columns we need
+        final_df = display_df[final_columns].copy()
+        
+        # Rename columns for display
+        final_df.columns = ['Rank', 'Icon1', 'Icon2', 'Deck', 'Index', 'Meta Share %', 
+                           'Best Finishes', 'Win %', 'Wins', 'Losses', 'Ties']
+        
+        # Display with proper styling (same as display_tabs.py)
         st.dataframe(
             final_df,
             use_container_width=True,
-            height=400,  # Smaller height for comparison table
+            height=400,
             column_config={
                 "Rank": st.column_config.TextColumn(
                     "Rank",
-                    help="Position in the meta based on Power Index",
+                    help="Position in the meta based on Power Index from local data",
                     width="small"
                 ),
                 "Icon1": st.column_config.ImageColumn(
@@ -201,69 +206,51 @@ def display_local_metagame_comparison():
                 ),
                 "Deck": st.column_config.TextColumn(
                     "Deck",
-                    help="Deck archetype name"
+                    help="Deck archetype name from local data"
+                ),
+                "Index": st.column_config.NumberColumn(
+                    "Index",
+                    help="Performance metric from local tournament data",
+                    format="%.2f"
                 ),
                 "Meta Share %": st.column_config.NumberColumn(
                     "Meta Share %",
-                    help="Percentage of total tournament appearances",
+                    help="Percentage representation from local tournaments",
                     format="%.2f%%"
                 ),
                 "Best Finishes": st.column_config.NumberColumn(
                     "Best Finishes",
-                    help="Number of tournaments with recorded results"
+                    help="Tournament entries from local database"
+                ),
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    help="Win percentage from local match records",
+                    format="%.1f%%"
                 ),
                 "Wins": st.column_config.NumberColumn(
                     "Wins",
-                    help="Total wins across all tournaments"
+                    help="Total wins from local data"
                 ),
                 "Losses": st.column_config.NumberColumn(
-                    "Losses", 
-                    help="Total losses across all tournaments"
+                    "Losses",
+                    help="Total losses from local data"
                 ),
                 "Ties": st.column_config.NumberColumn(
                     "Ties",
-                    help="Total ties across all tournaments"
-                ),
-                "Win %": st.column_config.NumberColumn(
-                    "Win %",
-                    help="Overall win percentage across all matches",
-                    format="%.1f%%"
-                ),
-                "Index": st.column_config.NumberColumn(
-                    "Index",
-                    help="Performance metric: The Wilson score (see sidebar for details)",
-                    format="%.2f"
-                ),
+                    help="Total ties from local data"
+                )
             },
             hide_index=True
         )
+        
+        st.caption("Generated from local tournament database • Same filtering and calculations as current system")
         
     except Exception as e:
-        # Fallback to simpler version if there's an issue with images
-        st.error(f"Error displaying styled dataframe with images: {str(e)}")
-        st.write("Showing basic version without styling and images:")
-        
-        # Remove image columns for fallback
-        basic_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
-        st.dataframe(
-            basic_df,
-            use_container_width=True,
-            column_config={
-                "Win %": st.column_config.NumberColumn(
-                    "Win %",
-                    format="%.1f%%",
-                ),
-                "Meta Share %": st.column_config.NumberColumn(
-                    "Meta Share %",
-                    format="%.2f%%"
-                ),
-                "Index": st.column_config.NumberColumn(
-                    "Index",
-                    format="%.2f"
-                ),
-            },
-            hide_index=True
-        )
-    
-    # Add footer note
-    st.caption("Generated from local tournament database. Data may differ from live API results.")
+        st.error(f"Error displaying local metagame table: {e}")
+        # Show basic version without images
+        basic_df = display_df.drop(columns=['pokemon_url1', 'pokemon_url2'], errors='ignore')
+        basic_df = basic_df[['rank_display', 'displayed_name', 'power_index', 'share', 
+                           'best_finishes', 'win_rate', 'total_wins', 'total_losses', 'total_ties']]
+        basic_df.columns = ['Rank', 'Deck', 'Index', 'Meta Share %', 'Best Finishes', 
+                           'Win %', 'Wins', 'Losses', 'Ties']
+        st.dataframe(basic_df, use_container_width=True, hide_index=True)
