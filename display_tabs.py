@@ -2598,16 +2598,16 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         
         # Define background color zones based on win percentage ranges
         color_zones = [
-            {"range": [0, 10], "color": "rgba(165, 0, 38, 0.3)"},      # 0-10%
-            {"range": [10, 20], "color": "rgba(215, 48, 39, 0.3)"},    # 10-20%
-            {"range": [20, 30], "color": "rgba(244, 109, 67, 0.3)"},   # 20-30%
-            {"range": [30, 40], "color": "rgba(255, 166, 79, 0.3)"},   # 30-40%
-            {"range": [40, 50], "color": "rgba(255, 209, 79, 0.3)"},   # 40-50%
-            {"range": [50, 60], "color": "rgba(184, 219, 59, 0.3)"},   # 50-60%
-            {"range": [60, 70], "color": "rgba(135, 209, 47, 0.3)"},   # 60-70%
-            {"range": [70, 80], "color": "rgba(83, 186, 79, 0.3)"},    # 70-80%
-            {"range": [80, 90], "color": "rgba(26, 152, 80, 0.3)"},    # 80-90%
-            {"range": [90, 100], "color": "rgba(0, 104, 55, 0.3)"},    # 90-100%
+            {"range": [0, 10], "color": "rgba(165, 0, 38, 1)"},      # 0-10%
+            {"range": [10, 20], "color": "rgba(215, 48, 39, 1)"},    # 10-20%
+            {"range": [20, 30], "color": "rgba(244, 109, 67, 1)"},   # 20-30%
+            {"range": [30, 40], "color": "rgba(255, 166, 79, 1)"},   # 30-40%
+            {"range": [40, 50], "color": "rgba(255, 209, 79, 1)"},   # 40-50%
+            {"range": [50, 60], "color": "rgba(184, 219, 59, 1)"},   # 50-60%
+            {"range": [60, 70], "color": "rgba(135, 209, 47, 1)"},   # 60-70%
+            {"range": [70, 80], "color": "rgba(83, 186, 79, 1)"},    # 70-80%
+            {"range": [80, 90], "color": "rgba(26, 152, 80, 1)"},    # 80-90%
+            {"range": [90, 100], "color": "rgba(0, 104, 55, 1)"},    # 90-100%
         ]
         
         # Add background color zones
