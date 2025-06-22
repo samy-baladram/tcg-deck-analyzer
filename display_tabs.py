@@ -2396,8 +2396,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             {"range": [10, 12], "color": "rgba(55, 91, 141, 0.4)"},  # 375B8D
             {"range": [12, 14], "color": "rgba(70, 51, 127, 0.4)"},  # 46337F
             {"range": [14, 16], "color": "rgba(69, 15, 84, 0.4)"},  # 450F54
-            {"range": [16, 18], "color": "rgba(69, 0, 44, 0.4)"},  # 450F54
-            {"range": [18, 100], "color": "rgba(69, 0, 4, 0.4)"},  # 450F54
+            {"range": [16, 18], "color": "rgba(39, 0, 44, 0.4)"},  # 450F54
+            {"range": [18, 100], "color": "rgba(9, 0, 4, 0.4)"},  # 450F54
         ]
         
         # Add background color zones
@@ -2494,7 +2494,10 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[0, df_filtered['meta_percentage'].max() * 1.15]
+                range=[0, df_filtered['meta_percentage'].max() * 1.15],
+                tickmode='array',
+                tickvals=list(range(0, y_max + 2, 2)),
+                ticktext=[f"{val}%" for val in list(range(0, y_max + 2, 2))]
             )
         )
         
