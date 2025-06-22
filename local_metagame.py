@@ -1,5 +1,5 @@
 # local_metagame.py - Fixed version that restores working functionality
-
+import json
 import sqlite3
 import pandas as pd
 import numpy as np
@@ -48,6 +48,28 @@ def calculate_power_index(wins, losses, ties=0):
     
     return power_index
 
+def get_latest_set_release_date():
+    """
+    Get the latest set release date from the sets index file
+    
+    Returns:
+        str: ISO date string of latest release or None
+    """
+    try:
+        with open("meta_analysis/sets_index.json", 'r') as f:
+            sets_data = json.load(f)
+        
+        # Filter sets with release dates and sort by date (newest first)
+        sets_with_dates = [s for s in sets_data['sets'] if s.get('release_date')]
+        if sets_with_dates:
+            latest_set = sorted(sets_with_dates, key=lambda x: x['release_date'], reverse=True)[0]
+            return latest_set['release_date']
+            
+    except Exception as e:
+        print(f"Error getting latest set release date: {e}")
+    
+    return None
+    
 def generate_local_metagame_table():
     """
     Generate metagame table using local tournament database (last 3 days only).
@@ -57,7 +79,16 @@ def generate_local_metagame_table():
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
         
         # Calculate cutoff date (last 3 days - same as working version)
-        cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        latest_release = get_latest_set_release_date()
+        
+        if latest_release:
+            cutoff_date = latest_release
+            print(f"Using set release date as cutoff: {cutoff_date}")
+        else:
+            # Fallback to 7 days if no set release date found
+            cutoff_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+            print(f"Fallback to 7 days cutoff: {cutoff_date}")
+
         
         # Query with date filter (exact same as working version)
         query = """
@@ -260,7 +291,17 @@ def display_local_metagame_comparison():
             hide_index=True
         )
         
-        st.caption(f"Local data from last 7 days • Shows decks with ≥{MIN_META_SHARE}% meta share and ≥{MIN_WIN_RATE}% win rate • Power Index calculated using Wilson score confidence interval")
+        try:
+            latest_release = get_latest_set_release_date()
+            if latest_release:
+                from datetime import datetime
+                release_date_obj = datetime.strptime(latest_release, '%Y-%m-%d')
+                release_date_formatted = release_date_obj.strftime('%B %d, %Y')
+                st.caption(f"Local data since current set release ({release_date_formatted}) • Filtered by ≥{MIN_META_SHARE}% meta share and ≥{MIN_WIN_RATE}% win rate • Power Index calculated using Wilson score confidence interval")
+            else:
+                st.caption(f"Local data from last 7 days • Filtered by ≥{MIN_META_SHARE}% meta share and ≥{MIN_WIN_RATE}% win rate • Power Index calculated using Wilson score confidence interval")
+        except:
+            st.caption(f"Local data • Filtered by ≥{MIN_META_SHARE}% meta share and ≥{MIN_WIN_RATE}% win rate • Power Index calculated using Wilson score confidence interval")
         
     except Exception as e:
         st.error(f"Error displaying local metagame table: {e}")
