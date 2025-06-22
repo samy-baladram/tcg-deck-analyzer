@@ -2307,6 +2307,17 @@ def get_latest_set_release_date():
     
     return None
 
+def get_current_set_start_from_releases(current_set, set_releases):
+    """
+    Find the start date for the current set from set_releases data
+    """
+    for release_date, set_code, set_name in set_releases:
+        if set_code == current_set:
+            return release_date
+    
+    # Fallback to earliest release if current set not found
+    return set_releases[0][0] if set_releases else None
+    
 def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, chart_subtitle=""):
     """
     Create enhanced line chart that combines formats into a single line
@@ -2488,7 +2499,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[set_releases[0][0] if set_releases else df_filtered['date'].min(), df_filtered['date'].max()]
+                range=[get_current_set_start_from_releases(set_name, set_releases), df_filtered['date'].max()]
             ),
             yaxis=dict(
                 showgrid=True,
