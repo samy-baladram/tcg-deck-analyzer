@@ -2388,7 +2388,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
 
         # Define color zones (every 2% with alpha 0.2)
         color_zones = [
-            {"range": [0, 2], "color": "rgba(253, 231, 37, 1)"},    # FDE725
+            {"range": [0, 2], "color": "rgba(241, 217, 2, 1)"},    # FDE725
             {"range": [2, 4], "color": "rgba(159, 218, 58, 1)"},   # 9FDA3A
             {"range": [4, 6], "color": "rgba(73, 193, 109, 1)"},   # 49C16D
             {"range": [6, 8], "color": "rgba(32, 160, 135, 1)"},   # 20A087
