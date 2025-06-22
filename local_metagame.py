@@ -10,6 +10,51 @@ import numpy as np
 import streamlit as st
 from config import MIN_META_SHARE, MIN_WIN_RATE
 
+def format_deck_name(deck_name):
+    """
+    Format deck name for display (same as current system uses).
+    Converts "charizard-ex-arcanine-ex" to "Charizard ex / Arcanine ex"
+    """
+    if not deck_name:
+        return deck_name
+    
+    # Split by hyphens
+    parts = deck_name.split('-')
+    
+    # Process each part
+    formatted_parts = []
+    current_pokemon = []
+    
+    for part in parts:
+        # Check if this is a suffix (ex, v, vmax, etc.)
+        if part.lower() in ['ex', 'v', 'vmax', 'vstar', 'gx']:
+            current_pokemon.append(part)
+            # Complete this Pokemon and add to formatted_parts
+            if current_pokemon:
+                pokemon_name = ' '.join(current_pokemon).title()
+                # Keep 'ex' lowercase
+                pokemon_name = pokemon_name.replace('Ex', 'ex')
+                formatted_parts.append(pokemon_name)
+                current_pokemon = []
+        else:
+            # If we have a pending Pokemon, finish it first
+            if current_pokemon:
+                pokemon_name = ' '.join(current_pokemon).title()
+                formatted_parts.append(pokemon_name)
+                current_pokemon = []
+            
+            # Start new Pokemon
+            current_pokemon = [part]
+    
+    # Handle any remaining Pokemon
+    if current_pokemon:
+        pokemon_name = ' '.join(current_pokemon).title()
+        pokemon_name = pokemon_name.replace('Ex', 'ex')
+        formatted_parts.append(pokemon_name)
+    
+    # Join with " / " for multiple Pokemon
+    return ' / '.join(formatted_parts)
+    
 def calculate_power_index(wins, losses):
     """
     Calculate Power Index using same formula as current system.
@@ -45,7 +90,6 @@ def generate_local_metagame_table():
         query = """
         SELECT 
             aa.archetype as deck_name,
-            aa.archetype as displayed_name,
             SUM(aa.count) as total_appearances,
             SUM(t.total_players) as total_tournament_players,
             SUM(pp.wins) as total_wins,
@@ -63,7 +107,6 @@ def generate_local_metagame_table():
         """
         
         df = pd.read_sql_query(query, conn, params=[cutoff_date])
- 
         conn.close()
         
         if df.empty:
@@ -88,6 +131,9 @@ def generate_local_metagame_table():
         
         # Sort by Power Index (descending)
         df_filtered = df_filtered.sort_values('power_index', ascending=False)
+        
+        # Add formatted display names
+        df_filtered['displayed_name'] = df_filtered['deck_name'].apply(format_deck_name)
         
         # Add set information (defaulting to current set)
         df_filtered['set'] = 'A3a'  # Current set placeholder
