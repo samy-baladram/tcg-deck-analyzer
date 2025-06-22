@@ -1614,7 +1614,29 @@ def create_meta_trend_chart(deck_name):
         
         # Create the line chart
         fig = go.Figure()
+
+        # Define color zones (every 2% with alpha 0.2)
+        color_zones = [
+            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.2)"},    # FDE725
+            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.2)"},   # 9FDA3A
+            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.2)"},   # 49C16D
+            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.2)"},   # 20A087
+            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.2)"},  # 277F8E
+            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.2)"},  # 375B8D
+            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.2)"},  # 46337F
+            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.2)"},  # 450F54
+        ]
         
+        # Add background color zones
+        for zone in color_zones:
+            fig.add_hrect(
+                y0=zone["range"][0], 
+                y1=zone["range"][1],
+                fillcolor=zone["color"],
+                line_width=0,
+                layer="below"
+            )
+            
         fig.add_trace(go.Scatter(
             x=df_filtered['date'],
             y=df_filtered['meta_percentage'],
@@ -2363,7 +2385,29 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         
         # Create the figure
         fig = go.Figure()
+
+        # Define color zones (every 2% with alpha 0.2)
+        color_zones = [
+            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.2)"},    # FDE725
+            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.2)"},   # 9FDA3A
+            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.2)"},   # 49C16D
+            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.2)"},   # 20A087
+            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.2)"},  # 277F8E
+            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.2)"},  # 375B8D
+            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.2)"},  # 46337F
+            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.2)"},  # 450F54
+        ]
         
+        # Add background color zones
+        for zone in color_zones:
+            fig.add_hrect(
+                y0=zone["range"][0], 
+                y1=zone["range"][1],
+                fillcolor=zone["color"],
+                line_width=0,
+                layer="below"
+            )
+            
         # Add set release markers with improved annotations
         set_releases = get_set_release_dates()
         min_date = df_filtered['date'].min()
