@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from formatters import format_deck_name, extract_pokemon_urls
 
 # Configuration constants (same as working version)
-MIN_META_SHARE = 0.04  # Minimum meta share threshold (0.05%)
+MIN_META_SHARE = 0.02  # Minimum meta share threshold (0.05%)
 MIN_WIN_RATE = 35.0   # Minimum win rate threshold (35%)
 
 def calculate_power_index(wins, losses, ties=0):
@@ -115,22 +115,10 @@ def generate_local_metagame_table():
         
         if df.empty:
             return pd.DataFrame()
-        
-        # Calculate meta share percentage
-        conn2 = sqlite3.connect("meta_analysis/tournament_meta.db")
-        cursor = conn2.execute("""
-            SELECT SUM(t.total_players) as total_unique_players
-            FROM tournaments t
-            WHERE t.date >= ?
-        """, (cutoff_date,))
-        total_unique_players = cursor.fetchone()[0] or 0
-        conn2.close()
-        
-        # Now calculate meta share correctly
-        if total_unique_players > 0:
-            df['share'] = (df['total_appearances'] / total_unique_players) * 100
-        else:
-            df['share'] = 0
+
+        # Use this (the original):
+        total_players_all_tournaments = df['total_tournament_players'].sum()
+        df['share'] = (df['total_appearances'] / total_players_all_tournaments) * 100
         
         # Calculate win rate
         total_games = df['total_wins'] + df['total_losses'] + df['total_ties']
