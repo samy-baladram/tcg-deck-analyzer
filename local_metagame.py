@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from formatters import format_deck_name, extract_pokemon_urls
 
 # Configuration constants (same as working version)
-MIN_META_SHARE = 0.05  # Minimum meta share threshold (0.05%)
+MIN_META_SHARE = 0.04  # Minimum meta share threshold (0.05%)
 MIN_WIN_RATE = 35.0   # Minimum win rate threshold (35%)
 
 def calculate_power_index(wins, losses, ties=0):
