@@ -1617,14 +1617,14 @@ def create_meta_trend_chart(deck_name):
 
         # Define color zones (every 2% with alpha 0.2)
         color_zones = [
-            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.4)"},    # FDE725
-            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.4)"},   # 9FDA3A
-            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.4)"},   # 49C16D
-            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.4)"},   # 20A087
-            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.4)"},  # 277F8E
-            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.4)"},  # 375B8D
-            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.4)"},  # 46337F
-            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.4)"},  # 450F54
+            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.6)"},    # FDE725
+            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.6)"},   # 9FDA3A
+            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.6)"},   # 49C16D
+            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.6)"},   # 20A087
+            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.6)"},  # 277F8E
+            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.6)"},  # 375B8D
+            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.6)"},  # 46337F
+            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.6)"},  # 450F54
         ]
         
         # Add background color zones
@@ -2388,16 +2388,16 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
 
         # Define color zones (every 2% with alpha 0.2)
         color_zones = [
-            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.4)"},    # FDE725
-            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.4)"},   # 9FDA3A
-            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.4)"},   # 49C16D
-            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.4)"},   # 20A087
-            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.4)"},  # 277F8E
-            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.4)"},  # 375B8D
-            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.4)"},  # 46337F
-            {"range": [14, 16], "color": "rgba(69, 15, 84, 0.4)"},  # 450F54
-            {"range": [16, 18], "color": "rgba(39, 0, 44, 0.4)"},  # 450F54
-            {"range": [18, 100], "color": "rgba(9, 0, 4, 0.4)"},  # 450F54
+            {"range": [0, 2], "color": "rgba(253, 231, 37, 0.6)"},    # FDE725
+            {"range": [2, 4], "color": "rgba(159, 218, 58, 0.6)"},   # 9FDA3A
+            {"range": [4, 6], "color": "rgba(73, 193, 109, 0.6)"},   # 49C16D
+            {"range": [6, 8], "color": "rgba(32, 160, 135, 0.6)"},   # 20A087
+            {"range": [8, 10], "color": "rgba(39, 127, 142, 0.6)"},  # 277F8E
+            {"range": [10, 12], "color": "rgba(55, 91, 141, 0.6)"},  # 375B8D
+            {"range": [12, 14], "color": "rgba(70, 51, 127, 0.6)"},  # 46337F
+            {"range": [14, 16], "color": "rgba(69, 15, 84, 0.6)"},  # 450F54
+            {"range": [16, 18], "color": "rgba(39, 0, 44, 0.6)"},  # 450F54
+            {"range": [18, 100], "color": "rgba(9, 0, 4, 0.6)"},  # 450F54
         ]
         
         # Add background color zones
@@ -2423,7 +2423,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 fig.add_vline(
                     x=release_date, 
                     line_dash="dot", 
-                    line_color="rgba(128, 128, 128, 0.6)",
+                    line_color="rgba(255, 255, 255,
                     line_width=1
                 )
                 
@@ -2433,7 +2433,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                     y=max_percentage * 1.05,  # Position at top of chart
                     text=set_code,
                     showarrow=False,
-                    font=dict(size=10),
+                    font=dict(size=10, color="#FFFFFF"),
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
@@ -2464,7 +2464,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             y=peak_value + (df_filtered['meta_percentage'].max() * 0.05),
             text=f"Peak: {peak_value:.1f}%",
             showarrow=False,
-            font=dict(size=12)
+            font=dict(size=12, color="#FFFFFF")
         )
         
         # Update layout
@@ -2629,7 +2629,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 fig.add_vline(
                     x=release_date, 
                     line_dash="dot", 
-                    line_color="rgba(128, 128, 128, 0.6)",
+                    line_color="rgba(128, 128, 128,
                     line_width=1
                 )
                 
