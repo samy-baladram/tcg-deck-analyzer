@@ -870,7 +870,7 @@ def create_deck_section(section_type):
         banner_base64 = get_cached_banner_image(config['banner_path'])
         if banner_base64:
             st.markdown(f"""<div style="width:100%; text-align:left; margin-bottom: 0px;">
-                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:210px; margin-top: 0px;">
+                <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:210px; margin-top: -30px;">
             </div>
             """, unsafe_allow_html=True)
     else:
