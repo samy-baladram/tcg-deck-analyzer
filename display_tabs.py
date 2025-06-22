@@ -2395,7 +2395,9 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             {"range": [8, 10], "color": "rgba(39, 127, 142, 0.4)"},  # 277F8E
             {"range": [10, 12], "color": "rgba(55, 91, 141, 0.4)"},  # 375B8D
             {"range": [12, 14], "color": "rgba(70, 51, 127, 0.4)"},  # 46337F
-            {"range": [14, 100], "color": "rgba(69, 15, 84, 0.4)"},  # 450F54
+            {"range": [14, 16], "color": "rgba(69, 15, 84, 0.4)"},  # 450F54
+            {"range": [16, 18], "color": "rgba(69, 0, 44, 0.4)"},  # 450F54
+            {"range": [18, 100], "color": "rgba(69, 0, 4, 0.4)"},  # 450F54
         ]
         
         # Add background color zones
