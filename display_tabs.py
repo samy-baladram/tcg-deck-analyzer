@@ -2495,9 +2495,10 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
                 range=[0, df_filtered['meta_percentage'].max() * 1.15],
-                tickmode='array',
-                tickvals=list(range(0, y_max + 2, 2)),
-                ticktext=[f"{val}%" for val in list(range(0, y_max + 2, 2))]
+                tickmode='linear',
+                tick0=0,
+                dtick=2,
+                ticksuffix='%'
             )
         )
         
