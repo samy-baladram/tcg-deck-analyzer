@@ -2510,7 +2510,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
 
 def create_performance_trend_chart(deck_name, selected_formats=None):
     """
-    Create performance trend chart showing win percentage over time with smart y-axis
+    Create performance trend chart showing win percentage over time with background color zones
     """
     import sqlite3
     import pandas as pd
@@ -2549,9 +2549,10 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             COUNT(pp.player_name) as total_players
         FROM tournaments t
         JOIN player_performance pp ON t.tournament_id = pp.tournament_id
-        WHERE pp.archetype = ? AND t.format IN ({format_placeholders}) {date_filter}
+        WHERE pp.archetype = ?
+        AND t.format IN ({format_placeholders})
+        {date_filter}
         GROUP BY t.date, t.format
-        HAVING total_players > 0
         ORDER BY t.date
         """
         
@@ -2560,45 +2561,34 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         conn.close()
         
         if df.empty:
-            print(f"No performance data found for archetype: {deck_name} in formats: {selected_formats} since {latest_release}")
+            print(f"No performance data found for archetype: {deck_name}")
             return None
         
-        # Convert date strings to datetime
+        # Calculate win percentage and total games for each date
+        df['total_games'] = df['total_wins'] + df['total_losses'] + df['total_ties']
+        df['win_percentage'] = (df['total_wins'] / df['total_games']) * 100
+        
+        # Convert date strings to datetime for better plotting
         df['date'] = pd.to_datetime(df['date'])
         
-        # Calculate total games and percentages
-        df['total_games'] = df['total_wins'] + df['total_losses'] + df['total_ties']
-        df['win_percentage'] = (df['total_wins'] / df['total_games'] * 100).fillna(0)
-        
-        # Combine all formats for each date (aggregate by date)
-        df_combined = df.groupby('date').agg({
-            'total_wins': 'sum',
-            'total_losses': 'sum',
-            'total_ties': 'sum',
-            'total_players': 'sum'
-        }).reset_index()
-        
-        # Recalculate percentages after combining formats
-        df_combined['total_games'] = df_combined['total_wins'] + df_combined['total_losses'] + df_combined['total_ties']
-        df_combined['win_percentage'] = (df_combined['total_wins'] / df_combined['total_games'] * 100).fillna(0)
-        
-        # Filter out dates with no games
-        df_filtered = df_combined[df_combined['total_games'] > 0].copy()
+        # Filter out dates with insufficient data (less than 3 games)
+        df_filtered = df[df['total_games'] >= 3].copy()
         
         if df_filtered.empty:
-            print(f"No performance data with games found for archetype: {deck_name} since {latest_release}")
+            print(f"No sufficient performance data found for archetype: {deck_name}")
             return None
         
         # Calculate smart y-axis range
         min_win_rate = df_filtered['win_percentage'].min()
         max_win_rate = df_filtered['win_percentage'].max()
         
-        # Add 5% padding
-        y_min = max(0, min_win_rate - 5)
-        y_max = min(100, max_win_rate + 5)
+        # Add 5% padding to top and bottom
+        padding = 5
+        y_min = max(0, min_win_rate - padding)
+        y_max = min(100, max_win_rate + padding)
         
-        # Ensure minimum range of 20% for readability
-        if y_max - y_min < 20:
+        # Ensure minimum range of 20%
+        if (y_max - y_min) < 20:
             center = (y_min + y_max) / 2
             y_min = max(0, center - 10)
             y_max = min(100, center + 10)
@@ -2606,74 +2596,67 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Create the figure
         fig = go.Figure()
         
-        # Add 50% reference line only if it's within the visible range
-        if y_min <= 50 <= y_max:
-            fig.add_hline(
-                y=50, 
-                line_dash="dot", 
-                line_color="rgba(128, 128, 128, 0.8)",
-                line_width=1,
-                annotation_text="50% Win Rate",
-                annotation_position="right"
-            )
+        # Define background color zones based on win percentage ranges
+        color_zones = [
+            {"range": [0, 10], "color": "rgba(165, 0, 38, 0.3)"},      # 0-10%
+            {"range": [10, 20], "color": "rgba(215, 48, 39, 0.3)"},    # 10-20%
+            {"range": [20, 30], "color": "rgba(244, 109, 67, 0.3)"},   # 20-30%
+            {"range": [30, 40], "color": "rgba(255, 166, 79, 0.3)"},   # 30-40%
+            {"range": [40, 50], "color": "rgba(255, 209, 79, 0.3)"},   # 40-50%
+            {"range": [50, 60], "color": "rgba(184, 219, 59, 0.3)"},   # 50-60%
+            {"range": [60, 70], "color": "rgba(135, 209, 47, 0.3)"},   # 60-70%
+            {"range": [70, 80], "color": "rgba(83, 186, 79, 0.3)"},    # 70-80%
+            {"range": [80, 90], "color": "rgba(26, 152, 80, 0.3)"},    # 80-90%
+            {"range": [90, 100], "color": "rgba(0, 104, 55, 0.3)"},    # 90-100%
+        ]
         
-        # Add set release markers
-        set_releases = get_set_release_dates()
-        min_date = df_filtered['date'].min()
-        max_date = df_filtered['date'].max()
-        
-        for release_date, set_code, set_name in set_releases:
-            release_dt = pd.to_datetime(release_date)
-            if release_dt >= min_date and release_dt <= max_date:
-                # Add vertical line
-                fig.add_vline(
-                    x=release_date, 
-                    line_dash="dot", 
-                    line_color="rgba(128, 128, 128, 0.6)",
-                    line_width=1
-                )
-                
-                # Add set code annotation at the top of visible range
-                fig.add_annotation(
-                    x=release_date,
-                    y=y_max - 2,  # Position near top of visible range
-                    text=set_code,
-                    showarrow=False,
-                    font=dict(size=10),
-                    borderwidth=1,
-                    hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
-                    hoverlabel=dict(
-                        bgcolor="white",
-                        bordercolor="gray",
-                        font=dict(color="black")
-                    )
+        # Add background color zones
+        for zone in color_zones:
+            # Only add zones that intersect with our y-axis range
+            if zone["range"][1] > y_min and zone["range"][0] < y_max:
+                fig.add_hrect(
+                    y0=max(zone["range"][0], y_min),
+                    y1=min(zone["range"][1], y_max),
+                    fillcolor=zone["color"],
+                    line_width=0,
+                    layer="below"
                 )
         
-        # Create conditional colors for each point
-        colors = ['#28A745' if wp >= 50 else '#DC3545' for wp in df_filtered['win_percentage']]
-        
-        # Add win percentage line with conditional coloring
+        # Add win percentage line with white line and markers
         fig.add_trace(go.Scatter(
             x=df_filtered['date'],
             y=df_filtered['win_percentage'],
             mode='lines+markers',
             name='Win %',
-            line=dict(color='#8C9BB2', width=2),
-            marker=dict(size=8, color=colors),
+            line=dict(color='#FFFFFF', width=1),  # White line, width 1
+            marker=dict(size=8, color='#FFFFFF'),  # White markers
             hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
             customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
         ))
         
+        # Add peak annotation in white
+        peak_idx = df_filtered['win_percentage'].idxmax()
+        peak_date = df_filtered.loc[peak_idx, 'date']
+        peak_value = df_filtered.loc[peak_idx, 'win_percentage']
+        
+        fig.add_annotation(
+            x=peak_date,
+            y=peak_value + (y_max - y_min) * 0.05,
+            text=f"Peak: {peak_value:.1f}%",
+            showarrow=False,
+            font=dict(size=12, color="#FFFFFF")  # White annotation
+        )
+        
         # Update layout
         fig.update_layout(
-            title=f"Performance Trend",
+            title=f"Performance Trend: {deck_name.replace('-', ' ').title()}",
             xaxis_title=None,
-            yaxis_title="Win Rate (%)",
+            yaxis_title=None,  # Remove y-axis title
             height=400,
             margin=dict(t=30, l=50, r=20, b=10),
             hovermode='x unified',
             
-            # Styling to match your app
+            # Styling to match meta evolution chart
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(size=12),
@@ -2691,7 +2674,11 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                range=[y_min, y_max]  # Smart y-axis range
+                range=[y_min, y_max],
+                tickmode='linear',
+                tick0=0,
+                dtick=10,  # Show ticks every 10%
+                ticksuffix='%'  # Add percentage format like meta evolution chart
             )
         )
         
