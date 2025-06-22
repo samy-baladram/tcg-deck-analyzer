@@ -57,7 +57,7 @@ def generate_local_metagame_table():
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
         
         # Calculate cutoff date (last 3 days - same as working version)
-        cutoff_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+        cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         
         # Query with date filter (exact same as working version)
         query = """
