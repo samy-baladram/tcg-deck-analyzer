@@ -187,12 +187,11 @@ def display_local_metagame_comparison():
         st.dataframe(
             final_df,
             use_container_width=True,
-            height=400,
             column_config={
                 "Rank": st.column_config.TextColumn(
                     "Rank",
                     help="Position in the meta based on Power Index from local data",
-                    width="small"
+                    width=50,
                 ),
                 "Icon1": st.column_config.ImageColumn(
                     "Icon 1",
