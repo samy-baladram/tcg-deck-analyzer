@@ -31,15 +31,17 @@ def calculate_power_index(wins, losses):
 
 def generate_local_metagame_table():
     """
-    Generate metagame table using local tournament database.
-    
-    Returns:
-        pd.DataFrame: Metagame table with same structure as current system
+    Generate metagame table using local tournament database (last 3 days only).
     """
+    from datetime import datetime, timedelta
+    
     try:
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
         
-        # Query to get archetype performance data
+        # Calculate cutoff date (last 3 days)
+        cutoff_date = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
+        
+        # Query with date filter
         query = """
         SELECT 
             aa.archetype as deck_name,
@@ -54,12 +56,14 @@ def generate_local_metagame_table():
         JOIN tournaments t ON aa.tournament_id = t.tournament_id
         LEFT JOIN player_performance pp ON aa.tournament_id = pp.tournament_id 
             AND aa.archetype = pp.archetype
+        WHERE t.date >= ?
         GROUP BY aa.archetype
         HAVING total_appearances > 0
         ORDER BY total_appearances DESC
         """
         
-        df = pd.read_sql_query(query, conn)
+        df = pd.read_sql_query(query, conn, params=[cutoff_date])
+ 
         conn.close()
         
         if df.empty:
@@ -135,100 +139,104 @@ def display_local_metagame_comparison():
     
     # Try to add Pokemon images (reusing existing logic)
     try:
-        import re
-        from card_cache import get_header_image_cached
+        # Import the exact function used in display_tabs.py
+        from image_processor import extract_pokemon_urls
         
-        # Extract Pokemon URLs for each row (similar to current display_metagame_tab)
+        # Extract Pokemon URLs for each row (same as display_metagame_tab)
         pokemon_data = []
         for _, row in display_df.iterrows():
             try:
-                # Extract primary Pokemon from deck name
-                deck_name = row['deck_name']
-                pokemon_parts = deck_name.split('-')
-                
-                if len(pokemon_parts) >= 2:
-                    primary_pokemon = pokemon_parts[0]
-                    secondary_pokemon = pokemon_parts[1] if len(pokemon_parts) > 1 else primary_pokemon
-                    
-                    # Get cached images
-                    primary_image = get_header_image_cached(primary_pokemon, row['set'])
-                    secondary_image = get_header_image_cached(secondary_pokemon, row['set'])
-                    
-                    if primary_image and secondary_image:
-                        pokemon_data.append({
-                            'Icon1': f"data:image/png;base64,{primary_image}",
-                            'Icon2': f"data:image/png;base64,{secondary_image}"
-                        })
-                    else:
-                        pokemon_data.append({'Icon1': '', 'Icon2': ''})
-                else:
-                    pokemon_data.append({'Icon1': '', 'Icon2': ''})
-                    
+                url1, url2 = extract_pokemon_urls(row['deck_name'])
+                pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
             except Exception as e:
-                print(f"Error getting images for {row['deck_name']}: {e}")
-                pokemon_data.append({'Icon1': '', 'Icon2': ''})
+                print(f"Error extracting Pokemon URLs for {row['deck_name']}: {e}")
+                pokemon_data.append({'pokemon_url1': None, 'pokemon_url2': None})
         
-        # Add image columns to dataframe
+        # Convert to DataFrame and join with display_df
         pokemon_df = pd.DataFrame(pokemon_data)
         display_df = pd.concat([display_df.reset_index(drop=True), pokemon_df], axis=1)
         
     except Exception as e:
-        print(f"Error adding Pokemon images: {e}")
-        # Continue without images
-        display_df['Icon1'] = ''
-        display_df['Icon2'] = ''
+        print(f"Error processing Pokemon URLs: {e}")
+        # Continue without Pokemon images
+        display_df['pokemon_url1'] = None
+        display_df['pokemon_url2'] = None
     
-    # Display the table with same styling as current system
+    # Create final display dataframe with exact same structure
     try:
+        # Select and rename columns exactly like display_metagame_tab
+        display_cols = {
+            'rank_display': 'Rank',
+            'displayed_name': 'Deck',
+            'share': 'Meta Share %',
+            'best_finishes': 'Best Finishes', 
+            'total_wins': 'Wins',
+            'total_losses': 'Losses',
+            'total_ties': 'Ties',
+            'win_rate': 'Win %',
+            'power_index': 'Index',
+        }
+        
+        final_df = display_df[list(display_cols.keys())].rename(columns=display_cols)
+        
+        # Add Pokémon image columns in exact same position
+        final_df.insert(1, 'Icon1', display_df['pokemon_url1'])
+        final_df.insert(2, 'Icon2', display_df['pokemon_url2'])
+        
+        # Use exact same column config as display_metagame_tab
         st.dataframe(
-            display_df,
+            final_df,
             use_container_width=True,
+            height=850,
             column_config={
-                "rank_display": st.column_config.TextColumn(
+                "Rank": st.column_config.TextColumn(
                     "Rank",
-                    help="Ranking based on Power Index from local tournament data"
+                    help="Position in the meta based on Power Index (Local Data)",
+                    width="20px"
                 ),
                 "Icon1": st.column_config.ImageColumn(
-                    "Primary",
-                    help="Primary Pokemon in this deck archetype"
+                    "Icon 1",
+                    help="First archetype Pokémon in the deck",
+                    width="20px",
                 ),
                 "Icon2": st.column_config.ImageColumn(
-                    "Secondary", 
-                    help="Secondary Pokemon in this deck archetype"
+                    "Icon 2", 
+                    help="Second archetype Pokémon in the deck",
+                    width="20px",
                 ),
-                "displayed_name": st.column_config.TextColumn(
-                    "Deck Name",
+                "Deck": st.column_config.TextColumn(
+                    "Deck",
                     help="Deck archetype name from local data"
                 ),
-                "power_index": st.column_config.NumberColumn(
-                    "Power Index",
-                    help="Statistical ranking using local tournament data",
+                "Index": st.column_config.NumberColumn(
+                    "Index",
+                    help="Performance metric from local tournament data",
                     format="%.2f"
                 ),
-                "share": st.column_config.NumberColumn(
+                "Meta Share %": st.column_config.NumberColumn(
                     "Meta Share %",
                     help="Percentage representation from local tournaments",
                     format="%.2f%%"
                 ),
-                "best_finishes": st.column_config.NumberColumn(
+                "Best Finishes": st.column_config.NumberColumn(
                     "Best Finishes",
                     help="Tournament entries from local database"
                 ),
-                "win_rate": st.column_config.NumberColumn(
+                "Win %": st.column_config.NumberColumn(
                     "Win %",
-                    help="Win percentage from local match records", 
+                    help="Win percentage from local match records",
                     format="%.1f%%"
                 ),
-                "total_wins": st.column_config.NumberColumn(
+                "Wins": st.column_config.NumberColumn(
                     "Wins",
                     help="Total wins from local data"
                 ),
-                "total_losses": st.column_config.NumberColumn(
+                "Losses": st.column_config.NumberColumn(
                     "Losses",
                     help="Total losses from local data"
                 ),
-                "total_ties": st.column_config.NumberColumn(
-                    "Ties", 
+                "Ties": st.column_config.NumberColumn(
+                    "Ties",
                     help="Total ties from local data"
                 )
             },
