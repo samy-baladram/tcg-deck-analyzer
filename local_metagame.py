@@ -11,24 +11,42 @@ from formatters import format_deck_name, extract_pokemon_urls
 MIN_META_SHARE = 0.05  # Minimum meta share threshold (0.05%)
 MIN_WIN_RATE = 35.0   # Minimum win rate threshold (35%)
 
-def calculate_power_index(wins, losses):
+def calculate_power_index(wins, losses, ties=0):
     """
-    Calculate Power Index using Wilson score confidence interval
+    Calculate Power Index using Wilson Score confidence interval (same as main metagame overview)
     """
-    if wins + losses == 0:
-        return 0
+    import math
     
-    n = wins + losses
-    p = wins / n
-    z = 1.96  # 95% confidence interval
+    # Calculate total games
+    total_games = wins + losses + ties
     
-    # Wilson score interval
-    denominator = 1 + z**2 / n
-    center = p + z**2 / (2 * n)
-    interval = z * (p * (1 - p) / n + z**2 / (4 * n**2))**0.5
+    if total_games == 0:
+        return 0.0
     
-    lower_bound = (center - interval) / denominator
-    return lower_bound * 100
+    # Handle ties as half-wins (common in card games)
+    adjusted_wins = wins + (0.5 * ties)
+    
+    # Calculate win proportion
+    win_proportion = adjusted_wins / total_games
+    
+    # Wilson Score Interval parameters
+    z = 1.96  # 95% confidence level
+    z_squared = z * z
+    
+    # Calculate Wilson Score lower bound
+    numerator = (win_proportion + (z_squared / (2 * total_games)) - 
+                 z * math.sqrt((win_proportion * (1 - win_proportion) + 
+                               (z_squared / (4 * total_games))) / total_games))
+    
+    denominator = 1 + (z_squared / total_games)
+    
+    # Wilson Score lower bound (conservative estimate of true win rate)
+    wilson_score = numerator / denominator
+    
+    # Scale to make more intuitive
+    power_index = (wilson_score - 0.5) * 10
+    
+    return power_index
 
 def generate_local_metagame_table():
     """
@@ -76,7 +94,7 @@ def generate_local_metagame_table():
         df['win_rate'] = ((df['total_wins'] + 0.5 * df['total_ties']) / total_games * 100).fillna(0)
         
         # Calculate Power Index
-        df['power_index'] = df.apply(lambda row: calculate_power_index(row['total_wins'], row['total_losses']), axis=1)
+        df['power_index'] = df.apply(lambda row: calculate_power_index(row['total_wins'], row['total_losses'], row['total_ties']), axis=1)
         
         # Filter by thresholds (same as current system)
         df_filtered = df[
