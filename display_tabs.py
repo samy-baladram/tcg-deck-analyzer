@@ -2629,7 +2629,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                 fig.add_vline(
                     x=release_date, 
                     line_dash="dot", 
-                    line_color="rgba(128, 128, 128, 0.6)"
+                    line_color="rgba(128, 128, 128, 0.6)",
                     line_width=1
                 )
                 
