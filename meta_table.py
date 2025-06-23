@@ -27,6 +27,12 @@ def fetch_top_archetypes(limit=20):
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
         
         query = """
+        WITH total_players_recent AS (
+            SELECT SUM(aa.count) as total_count
+            FROM archetype_appearances aa
+            JOIN tournaments t ON aa.tournament_id = t.tournament_id
+            WHERE t.date >= date('now', '-30 days')
+        )
         SELECT 
             aa.archetype as deck_name,
             COUNT(DISTINCT aa.tournament_id) as tournament_count,
@@ -34,16 +40,14 @@ def fetch_top_archetypes(limit=20):
             SUM(pp.wins) as total_wins,
             SUM(pp.losses) as total_losses,
             SUM(pp.ties) as total_ties,
-            (CAST(SUM(aa.count) AS FLOAT) / 
-             (SELECT SUM(count) FROM archetype_appearances aa2 
-              JOIN tournaments t2 ON aa2.tournament_id = t2.tournament_id 
-              WHERE t2.date >= date('now', '-30 days')) * 100) as current_share
+            (CAST(SUM(aa.count) AS FLOAT) / tp.total_count * 100) as current_share
         FROM archetype_appearances aa
         JOIN tournaments t ON aa.tournament_id = t.tournament_id
         LEFT JOIN player_performance pp ON aa.tournament_id = pp.tournament_id 
             AND aa.archetype = pp.archetype
+        CROSS JOIN total_players_recent tp
         WHERE t.date >= date('now', '-30 days')
-        GROUP BY aa.archetype
+        GROUP BY aa.archetype, tp.total_count
         HAVING total_players >= 10
         ORDER BY current_share DESC
         LIMIT ?
@@ -58,7 +62,7 @@ def fetch_top_archetypes(limit=20):
         df['total_ties'] = df['total_ties'].fillna(0)
         
         total_games = df['total_wins'] + df['total_losses'] + df['total_ties']
-        df['win_rate'] = ((df['total_wins'] + 0.5 * df['total_ties']) / total_games * 100).fillna(50.0)  # Default to 50% if no game data
+        df['win_rate'] = ((df['total_wins'] + 0.5 * df['total_ties']) / total_games * 100).fillna(50.0)
         
         return df
         
