@@ -81,64 +81,6 @@ def fetch_archetype_trend_data_detailed(deck_name, days_back=7):
         return {f'day_{i+1}': 0.0 for i in range(7)}
 
 
-def build_meta_table_data():
-    """
-    Build complete data for the meta table with daily breakdown
-    """
-    print("Building meta table data...")
-    
-    # 1. Get top archetypes
-    archetypes_df = fetch_top_archetypes(20)
-    
-    if archetypes_df.empty:
-        print("No archetype data found")
-        return pd.DataFrame()
-    
-    # 2. Build complete table data
-    table_data = []
-    
-    for _, row in archetypes_df.iterrows():
-        deck_name = row['deck_name']
-        print(f"Processing {deck_name}...")
-        
-        # Get trend data
-        trend_df = fetch_archetype_trend_data(deck_name)
-        
-        # Calculate moving averages
-        ma_data = calculate_moving_averages(trend_df)
-        
-        # Get detailed daily data for last 7 days
-        daily_data = fetch_archetype_trend_data_detailed(deck_name)
-        
-        # Build row data with daily breakdowns
-        row_data = {
-            'deck_name': deck_name,
-            'display_name': deck_name.replace('-', ' ').title(),
-            'current_share': round(row['current_share'], 2),
-            'win_rate': round(row['win_rate'], 1),
-            'ma_7d': ma_data['ma_7d'],
-            'ma_3d': ma_data['ma_3d'],
-            'trend_change': ma_data['trend_change'],
-            'trend_direction': ma_data['trend_direction'],
-            # Add daily data
-            'day_1': daily_data['day_1'],  # Today
-            'day_2': daily_data['day_2'],  # Yesterday  
-            'day_3': daily_data['day_3'],  # 2 days ago
-            'day_4': daily_data['day_4'],  # 3 days ago
-            'day_5': daily_data['day_5'],  # 4 days ago
-            'day_6': daily_data['day_6'],  # 5 days ago
-            'day_7': daily_data['day_7'],  # 6 days ago
-        }
-        
-        table_data.append(row_data)
-    
-    # Convert to DataFrame
-    result_df = pd.DataFrame(table_data)
-    
-    print(f"Built meta table with {len(result_df)} archetypes")
-    return result_df
-
-
 def fetch_top_archetypes(limit=20):
     """
     Fetch top archetypes with meta share and basic performance data
@@ -429,10 +371,7 @@ def get_pokemon_image_url(pokemon_name, position=1):
 
 def build_meta_table_data():
     """
-    Build complete data for the meta table
-    
-    Returns:
-        DataFrame ready for display
+    Build complete data for the meta table with daily breakdown
     """
     print("Building meta table data...")
     
@@ -456,10 +395,13 @@ def build_meta_table_data():
         # Calculate moving averages
         ma_data = calculate_moving_averages(trend_df)
         
+        # Get detailed daily data for last 7 days
+        daily_data = fetch_archetype_trend_data_detailed(deck_name)
+        
         # Generate sparkline chart
         chart_img = generate_sparkline_chart(trend_df, deck_name)
         
-        # Build row data
+        # Build row data with daily breakdowns
         row_data = {
             'deck_name': deck_name,
             'display_name': deck_name.replace('-', ' ').title(),
@@ -469,7 +411,15 @@ def build_meta_table_data():
             'ma_3d': ma_data['ma_3d'],
             'trend_change': ma_data['trend_change'],
             'trend_direction': ma_data['trend_direction'],
-            'chart_img': chart_img
+            'chart_img': chart_img,
+            # Add daily data
+            'day_1': daily_data['day_1'],  # Today
+            'day_2': daily_data['day_2'],  # Yesterday  
+            'day_3': daily_data['day_3'],  # 2 days ago
+            'day_4': daily_data['day_4'],  # 3 days ago
+            'day_5': daily_data['day_5'],  # 4 days ago
+            'day_6': daily_data['day_6'],  # 5 days ago
+            'day_7': daily_data['day_7'],  # 6 days ago
         }
         
         table_data.append(row_data)
