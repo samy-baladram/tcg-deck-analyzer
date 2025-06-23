@@ -478,3 +478,44 @@ def fetch_archetype_trend_data_detailed(deck_name, days_back=7):
     """Legacy function - use ArchetypeAnalyzer.get_daily_trend_data() instead"""
     analyzer = ArchetypeAnalyzer()
     return analyzer.get_daily_trend_data(deck_name, days_back)
+
+def debug_deck_appearances(deck_name="mewtwo-ex-gardevoir-a1"):
+   """Debug function to show deck appearances by day in last 7 days"""
+   try:
+       conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+       
+       query = """
+       SELECT 
+           t.date,
+           t.tournament_id,
+           t.total_players,
+           aa.count as archetype_count,
+           ROUND((CAST(aa.count AS FLOAT) / t.total_players * 100), 2) as deck_share
+       FROM tournaments t
+       JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id
+       WHERE aa.archetype = ? 
+         AND t.date >= date('now', '-7 days')
+       ORDER BY t.date DESC, t.tournament_id
+       """
+       
+       df = pd.read_sql_query(query, conn, params=[deck_name])
+       conn.close()
+       
+       if df.empty:
+           st.write(f"**DEBUG**: No appearances found for {deck_name} in last 7 days")
+           return
+       
+       st.write(f"**DEBUG**: {deck_name} appearances in last 7 days:")
+       
+       for date in df['date'].unique():
+           day_data = df[df['date'] == date]
+           total_appearances = day_data['archetype_count'].sum()
+           total_players = day_data['total_players'].sum()
+           daily_share = (total_appearances / total_players * 100) if total_players > 0 else 0
+           
+           st.write(f"**{date}**: {total_appearances} appearances / {total_players} total players = {daily_share:.2f}%")
+           for _, row in day_data.iterrows():
+               st.write(f"  - Tournament {row['tournament_id']}: {row['archetype_count']}/{row['total_players']} players ({row['deck_share']:.2f}%)")
+               
+   except Exception as e:
+       st.write(f"**DEBUG ERROR**: {e}")
