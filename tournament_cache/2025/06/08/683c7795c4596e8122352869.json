@@ -1,0 +1,39 @@
+{
+  "tournament_id": "683c7795c4596e8122352869",
+  "name": "\ud83c\udfc6P.P.i.T\ud83c\udfc6 Pocket Champions Cup GIRONE DIALGA",
+  "timestamp": 1749409200000,
+  "format": "Standard",
+  "player_count": 5,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udddc\ud835\udde7\ud835\udde3 || XY",
+      "record": "3 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udddc\ud835\udde7\ud835\udde3 || JustGab",
+      "record": "3 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Mr. Bago",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "thespoler",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "ienicus",
+      "record": "0 - 4 - 0",
+      "archetype": null
+    }
+  ]
+}

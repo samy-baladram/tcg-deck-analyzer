@@ -1,0 +1,117 @@
+{
+  "tournament_id": "684ee25c27d8bc24cf254da7",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Open #4",
+  "timestamp": 1750460400000,
+  "format": "Standard",
+  "player_count": 18,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Owhdusl Ramenzoni",
+      "record": "6 - 1 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Cristian Diaz",
+      "record": "4 - 2 - 1",
+      "archetype": "tapu-koko-ex-a3a-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Diego Castillo",
+      "record": "4 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Christopher King Moreno Saucedo",
+      "record": "3 - 2 - 1",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Big Pana",
+      "record": "3 - 1 - 1",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Humberto Cortez",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Diego Carcamo",
+      "record": "3 - 2 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Ignacio Villar Ponce",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "Nicolas Villagra",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 10,
+      "player_name": "Beto Salinas",
+      "record": "2 - 3 - 0",
+      "archetype": "silvally-blacephalon-a3a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Juan Diaz",
+      "record": "2 - 3 - 0",
+      "archetype": "charizard-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Mario Garc\u00eda",
+      "record": "2 - 3 - 0",
+      "archetype": "banette-mimikyu-a3"
+    },
+    {
+      "placement": 13,
+      "player_name": "Jose Ceballos",
+      "record": "1 - 4 - 0",
+      "archetype": "glaceon-ex-a2a-crabominable-ex-a3"
+    },
+    {
+      "placement": 14,
+      "player_name": "Pedro Pinho",
+      "record": "1 - 4 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 15,
+      "player_name": "Cold Pop",
+      "record": "1 - 2 - 1drop",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 16,
+      "player_name": "Johnathan Wilson",
+      "record": "1 - 2 - 0drop",
+      "archetype": "gengar-ex-gengar-a1"
+    },
+    {
+      "placement": 17,
+      "player_name": "Javier Alvarez",
+      "record": "0 - 1 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 18,
+      "player_name": "\u30a2\u30fc\u30eb \u30a2\u30fc\u30eb",
+      "record": "1 - 2 - 0drop",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    }
+  ]
+}
