@@ -1,9 +1,9 @@
 {
-  "last_updated": 1750687472,
-  "total_tournaments": 262,
+  "last_updated": 1750695264,
+  "total_tournaments": 263,
   "format_distribution": {
     "Standard": 202,
-    "STANDARD": 39,
+    "STANDARD": 40,
     "NOEX": 21
   },
   "date_range": {
@@ -19,8 +19,8 @@
     "charizard-ex-a2b-incineroar-ex-a3",
     "arceus-ex-crobat-a2a",
     "meowscarada-a2b-decidueye-ex-a3",
-    "garchomp-ex-a2a-rampardos-a2",
-    "buzzwole-ex-celesteela-a3a"
+    "buzzwole-ex-celesteela-a3a",
+    "garchomp-ex-a2a-rampardos-a2"
   ],
   "top_archetypes_by_format": {
     "Standard": [
