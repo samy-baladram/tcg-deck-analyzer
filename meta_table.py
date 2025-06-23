@@ -422,14 +422,78 @@ def calculate_cumulative_shares(trend_df):
     }
 
 
+def fetch_top_archetypes_by_7d_share(limit=20):
+    """
+    Fetch top archetypes based on 7-day share instead of 30-day share
+    
+    Args:
+        limit: Number of top archetypes to return
+        
+    Returns:
+        DataFrame with archetype performance data, sorted by 7-day share
+    """
+    try:
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        query = """
+        WITH archetype_7d_share AS (
+            SELECT 
+                aa.archetype,
+                SUM(aa.count) as archetype_count_7d,
+                (SELECT SUM(count) FROM archetype_appearances aa2 
+                 JOIN tournaments t2 ON aa2.tournament_id = t2.tournament_id 
+                 WHERE t2.date >= date('now', '-7 days')) as total_count_7d,
+                COUNT(DISTINCT aa.tournament_id) as tournament_count,
+                SUM(pp.wins) as total_wins,
+                SUM(pp.losses) as total_losses,  
+                SUM(pp.ties) as total_ties
+            FROM archetype_appearances aa
+            JOIN tournaments t ON aa.tournament_id = t.tournament_id
+            LEFT JOIN player_performance pp ON aa.tournament_id = pp.tournament_id 
+                AND aa.archetype = pp.archetype
+            WHERE t.date >= date('now', '-7 days')
+            GROUP BY aa.archetype
+            HAVING archetype_count_7d >= 5
+        )
+        SELECT 
+            archetype as deck_name,
+            tournament_count,
+            archetype_count_7d as total_players,
+            total_wins,
+            total_losses,
+            total_ties,
+            (CAST(archetype_count_7d AS FLOAT) / total_count_7d * 100) as share_7d
+        FROM archetype_7d_share
+        ORDER BY share_7d DESC
+        LIMIT ?
+        """
+        
+        df = pd.read_sql_query(query, conn, params=[limit])
+        conn.close()
+        
+        # Calculate win rate (handle case where no performance data exists)
+        df['total_wins'] = df['total_wins'].fillna(0)
+        df['total_losses'] = df['total_losses'].fillna(0)
+        df['total_ties'] = df['total_ties'].fillna(0)
+        
+        total_games = df['total_wins'] + df['total_losses'] + df['total_ties']
+        df['win_rate'] = ((df['total_wins'] + 0.5 * df['total_ties']) / total_games * 100).fillna(50.0)
+        
+        return df
+        
+    except Exception as e:
+        print(f"Error fetching top archetypes by 7d share: {e}")
+        return pd.DataFrame()
+
+
 def build_meta_table_data():
     """
-    Build complete data for the meta table with daily breakdown
+    Build complete data for the meta table with period-based calculations
     """
     print("Building meta table data...")
     
-    # 1. Get top archetypes
-    archetypes_df = fetch_top_archetypes(20)
+    # 1. Get top archetypes based on 7-day share
+    archetypes_df = fetch_top_archetypes_by_7d_share(20)
     
     if archetypes_df.empty:
         print("No archetype data found")
@@ -442,39 +506,34 @@ def build_meta_table_data():
         deck_name = row['deck_name']
         print(f"Processing {deck_name}...")
         
-        # Get trend data
-        trend_df = fetch_archetype_trend_data(deck_name)
+        # Calculate period-based shares (this will recalculate but ensures consistency)
+        period_data = calculate_period_shares(deck_name)
         
-        # Calculate cumulative shares instead of moving averages
-        cumulative_data = calculate_cumulative_shares(trend_df)
-        
-        # Get detailed daily data for last 7 days
+        # Get detailed daily data for last 7 days (for verification)
         daily_data = fetch_archetype_trend_data_detailed(deck_name)
         
-        # Generate sparkline chart
-        chart_img = generate_sparkline_chart(trend_df, deck_name)
-        
-        # Build row data with daily breakdowns
+        # Build row data
         row_data = {
             'deck_name': deck_name,
             'display_name': deck_name.replace('-', ' ').title(),
-            'current_share': round(row['current_share'], 2),
+            'current_share': round(row['share_7d'], 2),  # Use 7d share as current
             'win_rate': round(row['win_rate'], 1),
-            'cumulative_7d': cumulative_data['cumulative_7d'],
-            'cumulative_3d': cumulative_data['cumulative_3d'],
-            'avg_7d': cumulative_data['avg_7d'],
-            'avg_3d': cumulative_data['avg_3d'],
-            'trend_change': cumulative_data['trend_change'],
-            'trend_direction': cumulative_data['trend_direction'],
-            'chart_img': chart_img,
-            # Add daily data
-            'day_1': daily_data['day_1'],  # Today
-            'day_2': daily_data['day_2'],  # Yesterday  
-            'day_3': daily_data['day_3'],  # 2 days ago
-            'day_4': daily_data['day_4'],  # 3 days ago
-            'day_5': daily_data['day_5'],  # 4 days ago
-            'day_6': daily_data['day_6'],  # 5 days ago
-            'day_7': daily_data['day_7'],  # 6 days ago
+            'archetype_count_7d': period_data['archetype_count_7d'],
+            'total_count_7d': period_data['total_count_7d'],
+            'archetype_count_3d': period_data['archetype_count_3d'],
+            'total_count_3d': period_data['total_count_3d'],
+            'share_7d': period_data['share_7d'],
+            'share_3d': period_data['share_3d'],
+            'trend_change': period_data['trend_change'],
+            'trend_direction': period_data['trend_direction'],
+            # Add daily data for verification
+            'day_1': daily_data['day_1'],
+            'day_2': daily_data['day_2'],
+            'day_3': daily_data['day_3'],
+            'day_4': daily_data['day_4'],
+            'day_5': daily_data['day_5'],
+            'day_6': daily_data['day_6'],
+            'day_7': daily_data['day_7'],
         }
         
         table_data.append(row_data)
