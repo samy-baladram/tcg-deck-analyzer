@@ -30,16 +30,18 @@ def fetch_top_archetypes(limit=20):
         SELECT 
             aa.archetype as deck_name,
             COUNT(DISTINCT aa.tournament_id) as tournament_count,
-            SUM(aa.player_count) as total_players,
-            SUM(aa.total_wins) as total_wins,
-            SUM(aa.total_losses) as total_losses,
-            SUM(aa.total_ties) as total_ties,
-            (CAST(SUM(aa.player_count) AS FLOAT) / 
-             (SELECT SUM(player_count) FROM archetype_appearances aa2 
+            SUM(aa.count) as total_players,
+            SUM(pp.wins) as total_wins,
+            SUM(pp.losses) as total_losses,
+            SUM(pp.ties) as total_ties,
+            (CAST(SUM(aa.count) AS FLOAT) / 
+             (SELECT SUM(count) FROM archetype_appearances aa2 
               JOIN tournaments t2 ON aa2.tournament_id = t2.tournament_id 
-              WHERE t2.date >= (SELECT MAX(date) FROM tournaments) - 30) * 100) as current_share
+              WHERE t2.date >= date('now', '-30 days')) * 100) as current_share
         FROM archetype_appearances aa
         JOIN tournaments t ON aa.tournament_id = t.tournament_id
+        LEFT JOIN player_performance pp ON aa.tournament_id = pp.tournament_id 
+            AND aa.archetype = pp.archetype
         WHERE t.date >= date('now', '-30 days')
         GROUP BY aa.archetype
         HAVING total_players >= 10
@@ -50,9 +52,13 @@ def fetch_top_archetypes(limit=20):
         df = pd.read_sql_query(query, conn, params=[limit])
         conn.close()
         
-        # Calculate win rate
+        # Calculate win rate (handle case where no performance data exists)
+        df['total_wins'] = df['total_wins'].fillna(0)
+        df['total_losses'] = df['total_losses'].fillna(0)
+        df['total_ties'] = df['total_ties'].fillna(0)
+        
         total_games = df['total_wins'] + df['total_losses'] + df['total_ties']
-        df['win_rate'] = ((df['total_wins'] + 0.5 * df['total_ties']) / total_games * 100).fillna(0)
+        df['win_rate'] = ((df['total_wins'] + 0.5 * df['total_ties']) / total_games * 100).fillna(50.0)  # Default to 50% if no game data
         
         return df
         
@@ -79,7 +85,7 @@ def fetch_archetype_trend_data(deck_name, days_back=30):
         WITH daily_totals AS (
             SELECT 
                 t.date,
-                SUM(aa.player_count) as total_players
+                SUM(aa.count) as total_players
             FROM tournaments t
             JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id
             WHERE t.date >= date('now', '-{} days')
@@ -88,7 +94,7 @@ def fetch_archetype_trend_data(deck_name, days_back=30):
         archetype_daily AS (
             SELECT 
                 t.date,
-                COALESCE(SUM(aa.player_count), 0) as archetype_players
+                COALESCE(SUM(aa.count), 0) as archetype_players
             FROM tournaments t
             LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
                 AND aa.archetype = ?
