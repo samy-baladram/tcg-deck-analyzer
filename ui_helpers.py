@@ -1263,7 +1263,7 @@ def render_sidebar_from_cache():
     """, unsafe_allow_html=True)
     
     # Create three tabs in sidebar
-    tab1, tab2, tab3 = st.tabs(["Meta", "Trend", "Stats"])
+    tab1, tab2, tab3 = st.tabs(["Meta", "Trend", "Matchup"])
 
     
     with tab1:
