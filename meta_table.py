@@ -398,35 +398,35 @@ def display_meta_overview_table():
         # Configure column display
         column_config = {
             'Icon1': st.column_config.ImageColumn(
-                "Icon 1", width=40, help="Primary Pokemon"
+                "1", width=30, help="Primary Pokemon"
             ),
             'Icon2': st.column_config.ImageColumn(
-                "Icon 2", width=40, help="Secondary Pokemon"
+                "2", width=30, help="Secondary Pokemon"
             ),
             'Deck': st.column_config.TextColumn("Deck", width="medium"),
             'Count-7d': st.column_config.NumberColumn(
                 "Count-7d", width=150, help="Archetype appearances in last 7 days", format="%d"
             ),
-            'Total-7d': st.column_config.NumberColumn(
-                "Total-7d", help="Total tournament players in last 7 days", format="%d"
-            ),
+            # 'Total-7d': st.column_config.NumberColumn(
+            #     "Total-7d", help="Total tournament players in last 7 days", format="%d"
+            # ),
             'Share-7d': st.column_config.NumberColumn(
-                "Share-7d", help="Meta share in last 7 days", format="%.2f%%"
+                "Share-7d", width=70, help="Meta share in last 7 days", format="%.2f%%"
             ),
-            'Count-3d': st.column_config.NumberColumn(
-                "Count-3d", help="Archetype appearances in last 3 days", format="%d"
-            ),
-            'Total-3d': st.column_config.NumberColumn(
-                "Total-3d", help="Total tournament players in last 3 days", format="%d"
-            ),
-            'Share-3d': st.column_config.NumberColumn(
-                "Share-3d", help="Meta share in last 3 days", format="%.2f%%"
-            ),
+            # 'Count-3d': st.column_config.NumberColumn(
+            #     "Count-3d", help="Archetype appearances in last 3 days", format="%d"
+            # ),
+            # 'Total-3d': st.column_config.NumberColumn(
+            #     "Total-3d", help="Total tournament players in last 3 days", format="%d"
+            # ),
+            # 'Share-3d': st.column_config.NumberColumn(
+            #     "Share-3d", help="Meta share in last 3 days", format="%.2f%%"
+            # ),
             'Change': st.column_config.TextColumn(
-                "Change", help="Trend from 7d to 3d average", width="small"
+                "Change", width=70, help="Trend from 7d to 3d average", width="small"
             ),
             'Win %': st.column_config.NumberColumn(
-                "Win %", help="Win rate percentage", format="%.1f%%"
+                "Win %", width=70, help="Win rate percentage", format="%.1f%%"
             )
         }
         
