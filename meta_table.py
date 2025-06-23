@@ -493,7 +493,7 @@ def build_meta_table_data():
     print("Building meta table data...")
     
     # 1. Get top archetypes based on 7-day share
-    archetypes_df = fetch_top_archetypes_by_7d_share(20)
+    archetypes_df = fetch_top_archetypes_by_7d_share(30)
     
     if archetypes_df.empty:
         print("No archetype data found")
