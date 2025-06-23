@@ -1,5 +1,5 @@
 """
-Meta Table Module - Clean archetype performance analysis with trend data
+Meta Table Module - Clean archetype performance analysis with corrected counting logic
 """
 
 import sqlite3
@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 
 class MetaAnalyzer:
-    """Main class for meta analysis operations"""
+    """Base class for meta analysis operations"""
     
     def __init__(self, db_path="meta_analysis/tournament_meta.db"):
         self.db_path = db_path
@@ -20,11 +20,11 @@ class MetaAnalyzer:
 
 
 class ArchetypeAnalyzer(MetaAnalyzer):
-    """Handle archetype-specific analysis"""
+    """Handle archetype-specific analysis with corrected counting logic"""
     
     def fetch_top_archetypes_by_share(self, period_days=7, limit=20):
         """
-        Fetch top archetypes based on recent share data
+        Fetch top archetypes based on recent share data - CORRECTED VERSION
         
         Args:
             period_days: Days to look back for analysis
@@ -83,7 +83,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
     
     def calculate_period_comparison(self, deck_name):
         """
-        Compare archetype performance between different time periods
+        Compare archetype performance between different time periods - CORRECTED VERSION
         
         Args:
             deck_name: The archetype name
@@ -243,7 +243,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
 
 
 class MetaTableBuilder(MetaAnalyzer):
-    """Build formatted meta table data"""
+    """Build formatted meta table data with corrected calculations"""
     
     def __init__(self, db_path="meta_analysis/tournament_meta.db"):
         super().__init__(db_path)
@@ -251,7 +251,7 @@ class MetaTableBuilder(MetaAnalyzer):
     
     def build_complete_meta_table(self, limit=20):
         """
-        Build complete meta table with all analysis data
+        Build complete meta table with all analysis data - CORRECTED VERSION
         
         Args:
             limit: Number of archetypes to include
@@ -362,7 +362,7 @@ class MetaDisplayFormatter:
 
 
 def display_meta_overview_table():
-    """Main function to display the meta overview table"""
+    """Main function to display the meta overview table with corrected calculations"""
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
@@ -405,10 +405,10 @@ def display_meta_overview_table():
             ),
             'Deck': st.column_config.TextColumn("Deck", width="medium"),
             'Count-7d': st.column_config.NumberColumn(
-                "Count-7d", help="Archetype appearances in last 7 days", format="%d"
+                "Count-7d", width=150, help="Archetype appearances in last 7 days", format="%d"
             ),
             'Total-7d': st.column_config.NumberColumn(
-                "Total-7d", help="Total appearances in last 7 days", format="%d"
+                "Total-7d", help="Total tournament players in last 7 days", format="%d"
             ),
             'Share-7d': st.column_config.NumberColumn(
                 "Share-7d", help="Meta share in last 7 days", format="%.2f%%"
@@ -417,7 +417,7 @@ def display_meta_overview_table():
                 "Count-3d", help="Archetype appearances in last 3 days", format="%d"
             ),
             'Total-3d': st.column_config.NumberColumn(
-                "Total-3d", help="Total appearances in last 3 days", format="%d"
+                "Total-3d", help="Total tournament players in last 3 days", format="%d"
             ),
             'Share-3d': st.column_config.NumberColumn(
                 "Share-3d", help="Meta share in last 3 days", format="%.2f%%"
@@ -435,9 +435,15 @@ def display_meta_overview_table():
             final_df,
             column_config=column_config,
             hide_index=True,
-            height=750,
+            height=600,
             use_container_width=True
         )
+        
+        # Add explanation note
+        st.caption("""
+        **Note**: Meta shares are calculated as (Archetype Players) / (Total Tournament Players) × 100. 
+        This ensures accurate percentages based on actual tournament sizes, not just archetype appearance counts.
+        """)
         
     except Exception as e:
         st.error(f"Error displaying meta table: {str(e)}")
@@ -466,3 +472,9 @@ def fetch_top_archetypes_by_7d_share(limit=20):
 def format_trend_indicator(trend_change, trend_direction):
     """Legacy function - use MetaDisplayFormatter.format_trend_indicator() instead"""
     return MetaDisplayFormatter.format_trend_indicator(trend_change, trend_direction)
+
+
+def fetch_archetype_trend_data_detailed(deck_name, days_back=7):
+    """Legacy function - use ArchetypeAnalyzer.get_daily_trend_data() instead"""
+    analyzer = ArchetypeAnalyzer()
+    return analyzer.get_daily_trend_data(deck_name, days_back)
