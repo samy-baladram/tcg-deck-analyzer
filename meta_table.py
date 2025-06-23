@@ -478,39 +478,32 @@ def display_meta_overview_table():
     st.write("##### Meta Overview - Top 20 Archetypes")
     
     try:
-        # Create final display dataframe with same structure as Tournament Performance Data
+        # Create final display dataframe - REMOVED Trend and Share % columns
         final_df = pd.DataFrame({
             'Icon1': meta_df['pokemon_url1'],
             'Icon2': meta_df['pokemon_url2'], 
-            'Deck': meta_df['formatted_deck_name'],  # Use properly formatted deck names
-            'Trend': meta_df['chart_img'],
+            'Deck': meta_df['formatted_deck_name'],
             '7-Day Avg': meta_df['ma_7d'],
             'Change': meta_df['trend_indicator'],
-            'Share %': meta_df['current_share'],
             'Win %': meta_df['win_rate']
         })
         
-        # Configure column display (same style as Tournament Performance Data)
+        # Configure column display
         column_config = {
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
                 help="First archetype Pokémon in the deck",
-                width=40,
+                width="small",
             ),
             "Icon2": st.column_config.ImageColumn(
                 "Icon 2",
                 help="Second archetype Pokémon in the deck", 
-                width=40,
+                width="small",
             ),
             "Deck": st.column_config.TextColumn(
                 "Deck",
                 help="Deck archetype name",
-                width=80
-            ),
-            "Trend": st.column_config.ImageColumn(
-                "Trend",
-                help="Meta share trend over last 30 days",
-                width="small"
+                width="medium"
             ),
             "7-Day Avg": st.column_config.NumberColumn(
                 "7-Day Avg",
@@ -521,12 +514,6 @@ def display_meta_overview_table():
             "Change": st.column_config.TextColumn(
                 "Change",
                 help="Change: 7-day average vs 3-day average",
-                width="small"
-            ),
-            "Share %": st.column_config.NumberColumn(
-                "Share %",
-                help="Current meta share percentage",
-                format="%.2f%%",
                 width="small"
             ),
             "Win %": st.column_config.NumberColumn(
@@ -543,8 +530,21 @@ def display_meta_overview_table():
             column_config=column_config,
             use_container_width=True,
             hide_index=True,
-            height=600  # Fixed height for scrolling
+            height=600,
+            # ADD CSS FOR TEXT WRAPPING
+            column_order=["Icon1", "Icon2", "Deck", "7-Day Avg", "Change", "Win %"]
         )
+        
+        # Add custom CSS for text wrapping in the Deck column
+        st.markdown("""
+        <style>
+        .stDataFrame [data-testid="column"] [data-testid="cell"] {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            max-width: 150px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
         
         # Add explanatory notes
         st.caption(
