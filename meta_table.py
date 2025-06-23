@@ -12,6 +12,132 @@ import re
 from io import BytesIO
 import base64
 
+def fetch_archetype_trend_data_detailed(deck_name, days_back=7):
+    """
+    Fetch daily meta share data for a specific archetype with individual day columns
+    
+    Args:
+        deck_name: The archetype name
+        days_back: Number of days to look back
+        
+    Returns:
+        Dict with daily percentages for last 7 days
+    """
+    try:
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        query = """
+        WITH daily_totals AS (
+            SELECT 
+                t.date,
+                SUM(aa.count) as total_players
+            FROM tournaments t
+            JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id
+            WHERE t.date >= date('now', '-{} days')
+            GROUP BY t.date
+        ),
+        archetype_daily AS (
+            SELECT 
+                t.date,
+                COALESCE(SUM(aa.count), 0) as archetype_players
+            FROM tournaments t
+            LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
+                AND aa.archetype = ?
+            WHERE t.date >= date('now', '-{} days')
+            GROUP BY t.date
+        )
+        SELECT 
+            dt.date,
+            ad.archetype_players,
+            dt.total_players,
+            CASE 
+                WHEN dt.total_players > 0 
+                THEN (CAST(ad.archetype_players AS FLOAT) / dt.total_players) * 100
+                ELSE 0 
+            END as meta_percentage
+        FROM daily_totals dt
+        JOIN archetype_daily ad ON dt.date = ad.date
+        WHERE dt.total_players > 0
+        ORDER BY dt.date DESC
+        LIMIT 7
+        """.format(days_back, days_back)
+        
+        df = pd.read_sql_query(query, conn, params=[deck_name])
+        conn.close()
+        
+        # Create dict with last 7 days
+        daily_data = {}
+        for i in range(7):
+            day_key = f'day_{i+1}'  # day_1 = today, day_2 = yesterday, etc.
+            if i < len(df):
+                daily_data[day_key] = round(df.iloc[i]['meta_percentage'], 2)
+            else:
+                daily_data[day_key] = 0.0
+                
+        return daily_data
+        
+    except Exception as e:
+        print(f"Error fetching detailed trend data for {deck_name}: {e}")
+        return {f'day_{i+1}': 0.0 for i in range(7)}
+
+
+def build_meta_table_data():
+    """
+    Build complete data for the meta table with daily breakdown
+    """
+    print("Building meta table data...")
+    
+    # 1. Get top archetypes
+    archetypes_df = fetch_top_archetypes(20)
+    
+    if archetypes_df.empty:
+        print("No archetype data found")
+        return pd.DataFrame()
+    
+    # 2. Build complete table data
+    table_data = []
+    
+    for _, row in archetypes_df.iterrows():
+        deck_name = row['deck_name']
+        print(f"Processing {deck_name}...")
+        
+        # Get trend data
+        trend_df = fetch_archetype_trend_data(deck_name)
+        
+        # Calculate moving averages
+        ma_data = calculate_moving_averages(trend_df)
+        
+        # Get detailed daily data for last 7 days
+        daily_data = fetch_archetype_trend_data_detailed(deck_name)
+        
+        # Build row data with daily breakdowns
+        row_data = {
+            'deck_name': deck_name,
+            'display_name': deck_name.replace('-', ' ').title(),
+            'current_share': round(row['current_share'], 2),
+            'win_rate': round(row['win_rate'], 1),
+            'ma_7d': ma_data['ma_7d'],
+            'ma_3d': ma_data['ma_3d'],
+            'trend_change': ma_data['trend_change'],
+            'trend_direction': ma_data['trend_direction'],
+            # Add daily data
+            'day_1': daily_data['day_1'],  # Today
+            'day_2': daily_data['day_2'],  # Yesterday  
+            'day_3': daily_data['day_3'],  # 2 days ago
+            'day_4': daily_data['day_4'],  # 3 days ago
+            'day_5': daily_data['day_5'],  # 4 days ago
+            'day_6': daily_data['day_6'],  # 5 days ago
+            'day_7': daily_data['day_7'],  # 6 days ago
+        }
+        
+        table_data.append(row_data)
+    
+    # Convert to DataFrame
+    result_df = pd.DataFrame(table_data)
+    
+    print(f"Built meta table with {len(result_df)} archetypes")
+    return result_df
+
 
 def fetch_top_archetypes(limit=20):
     """
@@ -509,16 +635,18 @@ def display_meta_overview_table():
     st.write("##### Meta Overview - Top 20 Archetypes")
     
     try:
-        # Apply text wrapping to deck names
-        deck_names = meta_df['formatted_deck_name'].tolist()
-        width = 30
-        wrapped_deck_names = wrap_text(deck_names, width)
-        
-        # Create final display dataframe - REMOVED Trend and Share % columns
+        # Create final display dataframe with daily columns for debugging
         final_df = pd.DataFrame({
             'Icon1': meta_df['pokemon_url1'],
             'Icon2': meta_df['pokemon_url2'], 
-            'Deck': wrapped_deck_names,
+            'Deck': meta_df['formatted_deck_name'],
+            'Today': meta_df['day_1'],
+            'Day-1': meta_df['day_2'], 
+            'Day-2': meta_df['day_3'],
+            'Day-3': meta_df['day_4'],
+            'Day-4': meta_df['day_5'],
+            'Day-5': meta_df['day_6'],
+            'Day-6': meta_df['day_7'],
             '7-Day Avg': meta_df['ma_7d'],
             'Change': meta_df['trend_indicator'],
             'Win %': meta_df['win_rate']
@@ -526,61 +654,29 @@ def display_meta_overview_table():
         
         # Configure column display
         column_config = {
-            "Icon1": st.column_config.ImageColumn(
-                "-",
-                help="First archetype Pokémon in the deck",
-                width=40,
-            ),
-            "Icon2": st.column_config.ImageColumn(
-                "-",
-                help="Second archetype Pokémon in the deck", 
-                width=40,
-            ),
-            "Deck": st.column_config.TextColumn(
-                "Deck",
-                help="Deck archetype name",
-                width=150
-            ),
-            "7-Day Avg": st.column_config.NumberColumn(
-                "7-DayAvg",
-                help="7-day moving average meta share",
-                format="%.2f%%",
-                width=60
-            ),
-            "Change": st.column_config.TextColumn(
-                "Change",
-                help="Change: 7-day average vs 3-day average",
-                width=80
-            ),
-            "Win %": st.column_config.NumberColumn(
-                "Win %",
-                help="Overall win rate percentage",
-                format="%.1f%%",
-                width=80
-            )
+            "Icon1": st.column_config.ImageColumn("Icon 1", width=60),
+            "Icon2": st.column_config.ImageColumn("Icon 2", width=60),
+            "Deck": st.column_config.TextColumn("Deck", width=150),
+            "Today": st.column_config.NumberColumn("Today", format="%.2f%%", width=60),
+            "Day-1": st.column_config.NumberColumn("Day-1", format="%.2f%%", width=60),
+            "Day-2": st.column_config.NumberColumn("Day-2", format="%.2f%%", width=60),
+            "Day-3": st.column_config.NumberColumn("Day-3", format="%.2f%%", width=60),
+            "Day-4": st.column_config.NumberColumn("Day-4", format="%.2f%%", width=60),
+            "Day-5": st.column_config.NumberColumn("Day-5", format="%.2f%%", width=60),
+            "Day-6": st.column_config.NumberColumn("Day-6", format="%.2f%%", width=60),
+            "7-Day Avg": st.column_config.NumberColumn("7-Day Avg", format="%.2f%%", width=60),
+            "Change": st.column_config.TextColumn("Change", width=60),
+            "Win %": st.column_config.NumberColumn("Win %", format="%.1f%%", width=60)
         }
         
-        # Display the dataframe with custom styling
+        # Display the dataframe
         st.dataframe(
             final_df,
             column_config=column_config,
             use_container_width=True,
             hide_index=True,
-            height=600,
-            # ADD CSS FOR TEXT WRAPPING
-            column_order=["Icon1", "Icon2", "Deck", "7-Day Avg", "Change", "Win %"]
+            height=600
         )
-        
-        # Add custom CSS for text wrapping in the Deck column
-        st.markdown("""
-        <style>
-        .stDataFrame [data-testid="column"] [data-testid="cell"] {
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            max-width: 70px !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
         
         # Add explanatory notes
         st.caption(
