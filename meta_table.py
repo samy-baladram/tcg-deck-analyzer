@@ -713,65 +713,6 @@ def calculate_period_shares(deck_name):
             'trend_change': 0.0, 'trend_direction': 'neutral'
         }
 
-
-def build_meta_table_data():
-    """
-    Build complete data for the meta table with period-based calculations
-    """
-    print("Building meta table data...")
-    
-    # 1. Get top archetypes
-    archetypes_df = fetch_top_archetypes(20)
-    
-    if archetypes_df.empty:
-        print("No archetype data found")
-        return pd.DataFrame()
-    
-    # 2. Build complete table data
-    table_data = []
-    
-    for _, row in archetypes_df.iterrows():
-        deck_name = row['deck_name']
-        print(f"Processing {deck_name}...")
-        
-        # Calculate period-based shares
-        period_data = calculate_period_shares(deck_name)
-        
-        # Get detailed daily data for last 7 days (for verification)
-        daily_data = fetch_archetype_trend_data_detailed(deck_name)
-        
-        # Build row data
-        row_data = {
-            'deck_name': deck_name,
-            'display_name': deck_name.replace('-', ' ').title(),
-            'current_share': round(row['current_share'], 2),
-            'win_rate': round(row['win_rate'], 1),
-            'archetype_count_7d': period_data['archetype_count_7d'],
-            'total_count_7d': period_data['total_count_7d'],
-            'archetype_count_3d': period_data['archetype_count_3d'],
-            'total_count_3d': period_data['total_count_3d'],
-            'share_7d': period_data['share_7d'],
-            'share_3d': period_data['share_3d'],
-            'trend_change': period_data['trend_change'],
-            'trend_direction': period_data['trend_direction'],
-            # Add daily data for verification
-            'day_1': daily_data['day_1'],
-            'day_2': daily_data['day_2'],
-            'day_3': daily_data['day_3'],
-            'day_4': daily_data['day_4'],
-            'day_5': daily_data['day_5'],
-            'day_6': daily_data['day_6'],
-            'day_7': daily_data['day_7'],
-        }
-        
-        table_data.append(row_data)
-    
-    # Convert to DataFrame
-    result_df = pd.DataFrame(table_data)
-    
-    print(f"Built meta table with {len(result_df)} archetypes")
-    return result_df
-
 def display_meta_overview_table():
     """
     Main function to display the complete meta overview table in sidebar tab 2
