@@ -412,7 +412,38 @@ def prepare_display_dataframe(meta_df):
     
     return display_df[display_columns]
 
+def wrap_text(sentences, width):
+    """
+    This function takes a list of sentences and a width and returns a list of lists,
+    where each inner list contains the wrapped lines for the corresponding sentence.
 
+    Args:
+    sentences: A list of strings, where each string is a sentence.
+    width: An integer representing the maximum character width per line.
+
+    Returns:
+    A list of lists, where each inner list contains wrapped lines for a sentence.
+    """
+    wrapped_sentences = []
+    for sentence in sentences:
+        # Split the sentence on word boundaries (ensures no mid-word breaks)
+        words = re.findall(r"\b\w+\b", sentence)
+        lines = []
+        current_line = []
+        for word in words:
+            # Check if adding the word exceeds the line width
+            if len(" ".join(current_line + [word])) <= width:
+                current_line.append(word)
+            else:
+                # Add the current line and start a new one
+                lines.append(" ".join(current_line))
+                current_line = [word]
+        # Add the last line (if any)
+        if current_line:
+            lines.append(" ".join(current_line))
+        wrapped_sentences.append("<br>".join(lines))
+    return wrapped_sentences
+    
 def display_meta_overview_table():
     """
     Main function to display the complete meta overview table in sidebar tab 2
@@ -478,11 +509,16 @@ def display_meta_overview_table():
     st.write("##### Meta Overview - Top 20 Archetypes")
     
     try:
+        # Apply text wrapping to deck names
+        deck_names = meta_df['formatted_deck_name'].tolist()
+        width = 30
+        wrapped_deck_names = wrap_text(deck_names, width)
+        
         # Create final display dataframe - REMOVED Trend and Share % columns
         final_df = pd.DataFrame({
             'Icon1': meta_df['pokemon_url1'],
             'Icon2': meta_df['pokemon_url2'], 
-            'Deck': meta_df['formatted_deck_name'],
+            'Deck': wrapped_deck_names,
             '7-Day Avg': meta_df['ma_7d'],
             'Change': meta_df['trend_indicator'],
             'Win %': meta_df['win_rate']
