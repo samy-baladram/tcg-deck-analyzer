@@ -491,19 +491,19 @@ def display_meta_overview_table():
         # Configure column display
         column_config = {
             "Icon1": st.column_config.ImageColumn(
-                "Icon 1",
+                "-",
                 help="First archetype Pokémon in the deck",
-                width="small",
+                width=40,
             ),
             "Icon2": st.column_config.ImageColumn(
-                "Icon 2",
+                "-",
                 help="Second archetype Pokémon in the deck", 
-                width="small",
+                width=40,
             ),
             "Deck": st.column_config.TextColumn(
                 "Deck",
                 help="Deck archetype name",
-                width="medium"
+                width=70
             ),
             "7-Day Avg": st.column_config.NumberColumn(
                 "7-Day Avg",
@@ -541,7 +541,7 @@ def display_meta_overview_table():
         .stDataFrame [data-testid="column"] [data-testid="cell"] {
             white-space: normal !important;
             word-wrap: break-word !important;
-            max-width: 150px !important;
+            max-width: 70px !important;
         }
         </style>
         """, unsafe_allow_html=True)
