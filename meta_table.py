@@ -416,10 +416,6 @@ def prepare_display_dataframe(meta_df):
 def display_meta_overview_table():
     """
     Main function to display the complete meta overview table in sidebar tab 2
-    
-    This is the single function to import and use in your sidebar tab.
-    Handles all data loading, processing, and display.
-    Uses the same extract_pokemon_urls function as Tournament Performance Data.
     """
     
     # Add loading message
@@ -431,9 +427,13 @@ def display_meta_overview_table():
         st.warning("No meta data available at this time.")
         return
     
-    # Add rank column
+    # SORT BY 7-DAY AVERAGE INSTEAD OF CURRENT SHARE
+    meta_df = meta_df.sort_values('ma_7d', ascending=False).reset_index(drop=True)
+    
+    # Add rank column AFTER sorting
     meta_df['rank_int'] = range(1, len(meta_df) + 1)
     
+    # Rest of the function remains the same...
     # Format trend indicators
     meta_df['trend_indicator'] = meta_df.apply(
         lambda row: format_trend_indicator(row['trend_change'], row['trend_direction']), 
