@@ -34,13 +34,15 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             DataFrame with archetype performance data
         """
         query = """
-        WITH archetype_share AS (
+        WITH total_players_in_period AS (
+            SELECT SUM(t.total_players) as total_count
+            FROM tournaments t
+            WHERE t.date >= date('now', '-{} days')
+        ),
+        archetype_share AS (
             SELECT 
                 aa.archetype,
                 SUM(aa.count) as archetype_count,
-                (SELECT SUM(count) FROM archetype_appearances aa2 
-                 JOIN tournaments t2 ON aa2.tournament_id = t2.tournament_id 
-                 WHERE t2.date >= date('now', '-{} days')) as total_count,
                 COUNT(DISTINCT aa.tournament_id) as tournament_count,
                 SUM(pp.wins) as total_wins,
                 SUM(pp.losses) as total_losses,  
@@ -60,8 +62,9 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             total_wins,
             total_losses,
             total_ties,
-            (CAST(archetype_count AS FLOAT) / total_count * 100) as share
+            (CAST(archetype_count AS FLOAT) / tp.total_count * 100) as share
         FROM archetype_share
+        CROSS JOIN total_players_in_period tp
         ORDER BY share DESC
         LIMIT ?
         """.format(period_days, period_days)
@@ -110,7 +113,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
     
     def get_daily_trend_data(self, deck_name, days_back=7):
         """
-        Get daily meta share data for trend analysis
+        Get daily meta share data for trend analysis - CORRECTED VERSION
         
         Args:
             deck_name: The archetype name
@@ -119,13 +122,13 @@ class ArchetypeAnalyzer(MetaAnalyzer):
         Returns:
             Dict with daily percentages
         """
+        # CRITICAL FIX: Use tournaments.total_players for daily totals
         query = """
-        WITH daily_totals AS (
+        WITH daily_tournament_totals AS (
             SELECT 
                 t.date,
-                SUM(aa.count) as total_players
+                SUM(t.total_players) as total_players
             FROM tournaments t
-            JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id
             WHERE t.date >= date('now', '-{} days')
             GROUP BY t.date
         ),
@@ -148,7 +151,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
                 THEN (CAST(ad.archetype_players AS FLOAT) / dt.total_players) * 100
                 ELSE 0 
             END as meta_percentage
-        FROM daily_totals dt
+        FROM daily_tournament_totals dt
         JOIN archetype_daily ad ON dt.date = ad.date
         WHERE dt.total_players > 0
         ORDER BY dt.date DESC
@@ -174,14 +177,29 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             return {f'day_{i+1}': 0.0 for i in range(days_back)}
     
     def _get_period_data(self, deck_name, days):
-        """Get data for a specific time period"""
+        """Get data for a specific time period - CORRECTED VERSION"""
+        # CRITICAL FIX: Use tournaments.total_players instead of sum of archetype appearances
         query = """
+        WITH period_tournaments AS (
+            SELECT tournament_id, total_players
+            FROM tournaments t
+            WHERE t.date >= date('now', '-{} days')
+        ),
+        archetype_count AS (
+            SELECT COALESCE(SUM(aa.count), 0) as archetype_count
+            FROM archetype_appearances aa
+            WHERE aa.tournament_id IN (SELECT tournament_id FROM period_tournaments)
+              AND aa.archetype = ?
+        ),
+        total_count AS (
+            SELECT SUM(total_players) as total_count
+            FROM period_tournaments
+        )
         SELECT 
-            SUM(CASE WHEN aa.archetype = ? THEN aa.count ELSE 0 END) as archetype_count,
-            SUM(aa.count) as total_count
-        FROM archetype_appearances aa
-        JOIN tournaments t ON aa.tournament_id = t.tournament_id
-        WHERE t.date >= date('now', '-{} days')
+            ac.archetype_count,
+            tc.total_count
+        FROM archetype_count ac
+        CROSS JOIN total_count tc
         """.format(days)
         
         try:
@@ -380,10 +398,10 @@ def display_meta_overview_table():
         # Configure column display
         column_config = {
             'Icon1': st.column_config.ImageColumn(
-                "Icon 1", width="small", help="Primary Pokemon"
+                "Icon 1", width=40, help="Primary Pokemon"
             ),
             'Icon2': st.column_config.ImageColumn(
-                "Icon 2", width="small", help="Secondary Pokemon"
+                "Icon 2", width=40, help="Secondary Pokemon"
             ),
             'Deck': st.column_config.TextColumn("Deck", width="medium"),
             'Count-7d': st.column_config.NumberColumn(
@@ -417,13 +435,26 @@ def display_meta_overview_table():
             final_df,
             column_config=column_config,
             hide_index=True,
-            height=600,
+            height=750,
             use_container_width=True
         )
         
     except Exception as e:
         st.error(f"Error displaying meta table: {str(e)}")
         print(f"Display error: {e}")
+
+
+# Legacy function aliases for backward compatibility
+def build_meta_table_data():
+    """Legacy function - use MetaTableBuilder.build_complete_meta_table() instead"""
+    builder = MetaTableBuilder()
+    return builder.build_complete_meta_table()
+
+
+def calculate_period_shares(deck_name):
+    """Legacy function - use ArchetypeAnalyzer.calculate_period_comparison() instead"""
+    analyzer = ArchetypeAnalyzer()
+    return analyzer.calculate_period_comparison(deck_name)
 
 
 def fetch_top_archetypes_by_7d_share(limit=20):
