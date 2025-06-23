@@ -682,7 +682,7 @@ def display_meta_overview_table():
             column_config=column_config,
             use_container_width=True,
             hide_index=True,
-            height=600
+            height=800
         )
         
         # Add explanatory notes
