@@ -1295,8 +1295,10 @@ def render_sidebar_from_cache():
         display_meta_overview_table()
         #debug_deck_appearances()
     
-    with tab3:
-        st.write("Coming soon...")
+with tab3:
+    from meta_table import display_gainers_table
+    display_gainers_table()
 
-    with tab4:
-        st.write("Coming soon...")
+with tab4:
+    from meta_table import display_losers_table
+    display_losers_table()
