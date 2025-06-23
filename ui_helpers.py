@@ -1243,47 +1243,57 @@ def render_about_section():
         """)
     
 def render_sidebar_from_cache():
-    """Render sidebar with fully unified configuration approach"""
+    """Render sidebar with tabbed interface"""
     check_and_update_tournament_data()
 
     if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
         st.warning("No performance data available")
         return
 
-    # Add last update caption at the very top
-    if 'performance_fetch_time' in st.session_state:
-        performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
-        update_text = f"Data updated {performance_time_str}"
+    # Create three tabs in sidebar
+    tab1, tab2, tab3 = st.tabs(["Meta", "Tools", "Stats"])
+    
+    with tab1:
+        # ALL YOUR CURRENT SIDEBAR CONTENT GOES HERE
+        # Add last update caption at the very top
+        if 'performance_fetch_time' in st.session_state:
+            performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+            update_text = f"Data updated {performance_time_str}"
      
-    st.markdown(f"""
-    <div style="font-size: 0.85rem; color: rgb(163, 168, 184); margin-top: -50px; margin-bottom: 10px; text-align: left;">
-        {update_text}
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="font-size: 0.85rem; color: rgb(163, 168, 184); margin-top: -50px; margin-bottom: 10px; text-align: left;">
+            {update_text}
+        </div>
+        """, unsafe_allow_html=True)
+            
+        # Render all deck sections
+        create_deck_section("meta")
+        create_deck_section("trending")
+        create_deck_section("gems")
         
-    # Render all deck sections
-    create_deck_section("meta")
-
-    # NEW: Add the meta table after the existing sections
-    # meta_table_html = create_meta_table()
-    # st.markdown(meta_table_html, unsafe_allow_html=True)
-
-    create_deck_section("trending")
-    create_deck_section("gems")
+        # Render counter picker using unified approach
+        with st.spinner("Loading counter picker..."):
+            display_counter_picker_sidebar()
+        
+        # Rest of current content...
+        st.markdown("<hr style='margin:25px; border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
+        with st.expander("🔍 About the Power Index"):
+            from datetime import datetime
+            current_month_year = datetime.now().strftime("%B %Y")
+            formatted_explanation = POWER_INDEX_EXPLANATION.format(
+                tournament_count=TOURNAMENT_COUNT,
+                current_month_year=current_month_year
+            )
+            st.markdown(formatted_explanation)
+        
+        render_about_section()
     
-    # Render counter picker using unified approach
-    with st.spinner("Loading counter picker..."):
-        display_counter_picker_sidebar()
+    with tab2:
+        # Empty tab for experimental tools
+        st.write("🛠️ Tools")
+        st.write("Coming soon...")
     
-    # Rest remains the same...
-    st.markdown("<hr style='margin:25px; border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
-    with st.expander("🔍 About the Power Index"):
-        from datetime import datetime
-        current_month_year = datetime.now().strftime("%B %Y")
-        formatted_explanation = POWER_INDEX_EXPLANATION.format(
-            tournament_count=TOURNAMENT_COUNT,
-            current_month_year=current_month_year
-        )
-        st.markdown(formatted_explanation)
-    
-    render_about_section()
+    with tab3:
+        # Empty tab for experimental stats
+        st.write("📊 Statistics")
+        st.write("Coming soon...")
