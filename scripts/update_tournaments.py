@@ -7,7 +7,7 @@ import os
 import sqlite3
 from datetime import datetime
 
-def get_recent_tournament_ids(max_fetch=100):
+def get_recent_tournament_ids(max_fetch=150):
     """Get recent tournament IDs - limited to 20"""
     url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&show={max_fetch}"
     
