@@ -7,9 +7,9 @@ import os
 import sqlite3
 from datetime import datetime
 
-def get_recent_tournament_ids(max_fetch=20):
+def get_recent_tournament_ids(max_fetch=100):
     """Get recent tournament IDs - limited to 20"""
-    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=all&platform=all&type=all&show={max_fetch}"
+    url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&show={max_fetch}"
     
     response = requests.get(url)
     response.raise_for_status()
@@ -458,7 +458,7 @@ def update_tournament_cache():
             print(f"❌ Failed to process {json_file}: {e}")
     
     # Get recent tournament IDs
-    tournament_ids = get_recent_tournament_ids(20)
+    tournament_ids = get_recent_tournament_ids()
     print(f"Found {len(tournament_ids)} recent tournaments")
     
     # Find NEW tournaments
