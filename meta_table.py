@@ -440,10 +440,10 @@ def display_meta_overview_table():
         )
         
         # Add explanation note
-        st.caption("""
-        **Note**: Meta shares are calculated as (Archetype Players) / (Total Tournament Players) × 100. 
-        This ensures accurate percentages based on actual tournament sizes, not just archetype appearance counts.
-        """)
+        # st.caption("""
+        # **Note**: Meta shares are calculated as (Archetype Players) / (Total Tournament Players) × 100. 
+        # This ensures accurate percentages based on actual tournament sizes, not just archetype appearance counts.
+        # """)
         
     except Exception as e:
         st.error(f"Error displaying meta table: {str(e)}")
@@ -472,7 +472,6 @@ def fetch_top_archetypes_by_7d_share(limit=20):
 def format_trend_indicator(trend_change, trend_direction):
     """Legacy function - use MetaDisplayFormatter.format_trend_indicator() instead"""
     return MetaDisplayFormatter.format_trend_indicator(trend_change, trend_direction)
-
 
 def fetch_archetype_trend_data_detailed(deck_name, days_back=7):
     """Legacy function - use ArchetypeAnalyzer.get_daily_trend_data() instead"""
