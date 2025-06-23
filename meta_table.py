@@ -542,21 +542,21 @@ def display_meta_overview_table():
                 width=150
             ),
             "7-Day Avg": st.column_config.NumberColumn(
-                "7-Day Avg",
+                "7-DayAvg",
                 help="7-day moving average meta share",
                 format="%.2f%%",
-                width="small"
+                width=60
             ),
             "Change": st.column_config.TextColumn(
                 "Change",
                 help="Change: 7-day average vs 3-day average",
-                width="small"
+                width=80
             ),
             "Win %": st.column_config.NumberColumn(
                 "Win %",
                 help="Overall win rate percentage",
                 format="%.1f%%",
-                width="small"
+                width=80
             )
         }
         
