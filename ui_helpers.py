@@ -1263,7 +1263,7 @@ def render_sidebar_from_cache():
     """, unsafe_allow_html=True)
     
     # Create three tabs in sidebar
-    tab1, tab2, tab3 = st.tabs(["Meta", "Trend", "Matchups"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Meta", "Trend", "Gainers", "Losers"])
 
     
     with tab1:
@@ -1296,6 +1296,7 @@ def render_sidebar_from_cache():
         #debug_deck_appearances()
     
     with tab3:
-        # Empty tab for experimental stats
-        st.write("📊 Statistics")
+        st.write("Coming soon...")
+
+    with tab4:
         st.write("Coming soon...")
