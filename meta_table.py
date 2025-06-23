@@ -495,17 +495,17 @@ def display_meta_overview_table():
             "Icon1": st.column_config.ImageColumn(
                 "Icon 1",
                 help="First archetype Pokémon in the deck",
-                width="small",
+                width=40,
             ),
             "Icon2": st.column_config.ImageColumn(
                 "Icon 2",
                 help="Second archetype Pokémon in the deck", 
-                width="small",
+                width=40,
             ),
             "Deck": st.column_config.TextColumn(
                 "Deck",
                 help="Deck archetype name",
-                width="medium"
+                width=80
             ),
             "Trend": st.column_config.ImageColumn(
                 "Trend",
