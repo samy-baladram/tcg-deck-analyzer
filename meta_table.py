@@ -539,7 +539,7 @@ def display_meta_overview_table():
             "Deck": st.column_config.TextColumn(
                 "Deck",
                 help="Deck archetype name",
-                width=70
+                width=150
             ),
             "7-Day Avg": st.column_config.NumberColumn(
                 "7-Day Avg",
