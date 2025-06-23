@@ -518,3 +518,135 @@ def debug_deck_appearances(deck_name="mewtwo-ex-gardevoir-a1"):
                
    except Exception as e:
        st.write(f"**DEBUG ERROR**: {e}")
+
+
+def display_gainers_table():
+    """Display meta table sorted by gainers (highest trend change first)"""
+    
+    with st.spinner("Loading gainers data..."):
+        builder = MetaTableBuilder()
+        meta_df = builder.build_complete_meta_table(20)
+    
+    if meta_df.empty:
+        st.warning("No meta data available at this time.")
+        return
+    
+    # Sort by trend change descending (highest gains first)
+    gainers_df = meta_df.sort_values('trend_change', ascending=False)
+    
+    # Format for display
+    formatter = MetaDisplayFormatter()
+    gainers_df = formatter.prepare_display_dataframe(gainers_df)
+    
+    # Display table header
+    st.write("##### 📈 Biggest Gainers - Top 20 Archetypes")
+    
+    try:
+        # Create final display DataFrame
+        final_df = pd.DataFrame({
+            'Icon1': gainers_df['pokemon_url1'],
+            'Icon2': gainers_df['pokemon_url2'], 
+            'Deck': gainers_df['formatted_deck_name'],
+            'Share-7d': gainers_df['share_7d'],
+            'Change': gainers_df['trend_indicator'],
+            'Win %': gainers_df['win_rate']
+        })
+        
+        # Configure column display
+        column_config = {
+            'Icon1': st.column_config.ImageColumn(
+                "1", width=30, help="Primary Pokemon"
+            ),
+            'Icon2': st.column_config.ImageColumn(
+                "2", width=30, help="Secondary Pokemon"
+            ),
+            'Deck': st.column_config.TextColumn("Deck", width=150),
+            'Share-7d': st.column_config.NumberColumn(
+                "Share-7d", width=70, help="Meta share in last 7 days", format="%.2f%%"
+            ),
+            'Change': st.column_config.TextColumn(
+                "Change", width=80, help="Trend from 7d to 3d average", 
+            ),
+            'Win %': st.column_config.NumberColumn(
+                "Win %", width=70, help="Win rate percentage", format="%.1f%%"
+            )
+        }
+        
+        # Display the data table
+        st.dataframe(
+            final_df,
+            column_config=column_config,
+            hide_index=True,
+            height=750,
+            use_container_width=True
+        )
+        
+    except Exception as e:
+        st.error(f"Error displaying gainers table: {str(e)}")
+        print(f"Display error: {e}")
+
+
+def display_losers_table():
+    """Display meta table sorted by losers (lowest trend change first)"""
+    
+    with st.spinner("Loading losers data..."):
+        builder = MetaTableBuilder()
+        meta_df = builder.build_complete_meta_table(20)
+    
+    if meta_df.empty:
+        st.warning("No meta data available at this time.")
+        return
+    
+    # Sort by trend change ascending (biggest losses first)
+    losers_df = meta_df.sort_values('trend_change', ascending=True)
+    
+    # Format for display
+    formatter = MetaDisplayFormatter()
+    losers_df = formatter.prepare_display_dataframe(losers_df)
+    
+    # Display table header
+    st.write("##### 📉 Biggest Losers - Top 20 Archetypes")
+    
+    try:
+        # Create final display DataFrame
+        final_df = pd.DataFrame({
+            'Icon1': losers_df['pokemon_url1'],
+            'Icon2': losers_df['pokemon_url2'], 
+            'Deck': losers_df['formatted_deck_name'],
+            'Share-7d': losers_df['share_7d'],
+            'Change': losers_df['trend_indicator'],
+            'Win %': losers_df['win_rate']
+        })
+        
+        # Configure column display
+        column_config = {
+            'Icon1': st.column_config.ImageColumn(
+                "1", width=30, help="Primary Pokemon"
+            ),
+            'Icon2': st.column_config.ImageColumn(
+                "2", width=30, help="Secondary Pokemon"
+            ),
+            'Deck': st.column_config.TextColumn("Deck", width=150),
+            'Share-7d': st.column_config.NumberColumn(
+                "Share-7d", width=70, help="Meta share in last 7 days", format="%.2f%%"
+            ),
+            'Change': st.column_config.TextColumn(
+                "Change", width=80, help="Trend from 7d to 3d average", 
+            ),
+            'Win %': st.column_config.NumberColumn(
+                "Win %", width=70, help="Win rate percentage", format="%.1f%%"
+            )
+        }
+        
+        # Display the data table
+        st.dataframe(
+            final_df,
+            column_config=column_config,
+            hide_index=True,
+            height=750,
+            use_container_width=True
+        )
+        
+    except Exception as e:
+        st.error(f"Error displaying losers table: {str(e)}")
+        print(f"Display error: {e}")
