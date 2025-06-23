@@ -329,9 +329,6 @@ def build_meta_table_data():
         # Generate sparkline chart
         chart_img = generate_sparkline_chart(trend_df, deck_name)
         
-        # Extract Pokemon info
-        pokemon_names = extract_pokemon_names(deck_name)
-        
         # Build row data
         row_data = {
             'deck_name': deck_name,
@@ -342,11 +339,7 @@ def build_meta_table_data():
             'ma_3d': ma_data['ma_3d'],
             'trend_change': ma_data['trend_change'],
             'trend_direction': ma_data['trend_direction'],
-            'chart_img': chart_img,
-            'pokemon_1': pokemon_names[0] if len(pokemon_names) > 0 else '',
-            'pokemon_2': pokemon_names[1] if len(pokemon_names) > 1 else '',
-            'icon_1_url': get_pokemon_image_url(pokemon_names[0], 1) if len(pokemon_names) > 0 else '',
-            'icon_2_url': get_pokemon_image_url(pokemon_names[1], 2) if len(pokemon_names) > 1 else ''
+            'chart_img': chart_img
         }
         
         table_data.append(row_data)
@@ -422,6 +415,7 @@ def display_meta_overview_table():
     
     This is the single function to import and use in your sidebar tab.
     Handles all data loading, processing, and display.
+    Uses the same extract_pokemon_urls function as Tournament Performance Data.
     """
     
     # Add loading message
@@ -433,49 +427,97 @@ def display_meta_overview_table():
         st.warning("No meta data available at this time.")
         return
     
-    # Prepare data for display
-    display_df = prepare_display_dataframe(meta_df)
+    # Add rank column
+    meta_df['rank_int'] = range(1, len(meta_df) + 1)
+    
+    # Format trend indicators
+    meta_df['trend_indicator'] = meta_df.apply(
+        lambda row: format_trend_indicator(row['trend_change'], row['trend_direction']), 
+        axis=1
+    )
+    
+    # MIMICK EXACT LOGIC FROM display_metagame_tab: Extract Pokemon URLs
+    try:
+        # Import the exact same function used in Tournament Performance Data
+        from scraper import extract_pokemon_urls
+        
+        # Extract Pokemon URLs for each row (same as display_metagame_tab)
+        pokemon_data = []
+        for _, row in meta_df.iterrows():
+            try:
+                url1, url2 = extract_pokemon_urls(row['deck_name'])
+                pokemon_data.append({'pokemon_url1': url1, 'pokemon_url2': url2})
+            except Exception as e:
+                print(f"Error extracting Pokemon URLs for {row['deck_name']}: {e}")
+                pokemon_data.append({'pokemon_url1': None, 'pokemon_url2': None})
+        
+        # Convert to DataFrame and join with meta_df
+        pokemon_df = pd.DataFrame(pokemon_data)
+        meta_df = pd.concat([meta_df.reset_index(drop=True), pokemon_df], axis=1)
+        
+    except Exception as e:
+        st.error(f"Error processing Pokemon URLs: {str(e)}")
+        # Continue without Pokemon images
+        meta_df['pokemon_url1'] = None
+        meta_df['pokemon_url2'] = None
     
     # Display the table header
     st.write("##### Meta Overview - Top 20 Archetypes")
     
     try:
-        # Configure column display
+        # Create final display dataframe with same structure as Tournament Performance Data
+        final_df = pd.DataFrame({
+            'Icon1': meta_df['pokemon_url1'],
+            'Icon2': meta_df['pokemon_url2'], 
+            'Deck': meta_df['display_name'],
+            'Trend': meta_df['chart_img'],
+            '7-Day Avg': meta_df['ma_7d'],
+            'Change': meta_df['trend_indicator'],
+            'Share %': meta_df['current_share'],
+            'Win %': meta_df['win_rate']
+        })
+        
+        # Configure column display (same style as Tournament Performance Data)
         column_config = {
-            "rank": st.column_config.NumberColumn(
-                "#",
-                help="Current meta ranking",
-                width="small"
+            "Icon1": st.column_config.ImageColumn(
+                "Icon 1",
+                help="First archetype Pokémon in the deck",
+                width="small",
             ),
-            "display_name": st.column_config.TextColumn(
-                "Archetype",
+            "Icon2": st.column_config.ImageColumn(
+                "Icon 2",
+                help="Second archetype Pokémon in the deck", 
+                width="small",
+            ),
+            "Deck": st.column_config.TextColumn(
+                "Deck",
                 help="Deck archetype name",
                 width="medium"
             ),
-            "chart_img": st.column_config.ImageColumn(
+            "Trend": st.column_config.ImageColumn(
                 "Trend",
                 help="Meta share trend over last 30 days",
                 width="small"
             ),
-            "ma_7d": st.column_config.NumberColumn(
+            "7-Day Avg": st.column_config.NumberColumn(
                 "7-Day Avg",
                 help="7-day moving average meta share",
                 format="%.2f%%",
                 width="small"
             ),
-            "trend_indicator": st.column_config.TextColumn(
-                "Trend",
+            "Change": st.column_config.TextColumn(
+                "Change",
                 help="Change: 7-day average vs 3-day average",
                 width="small"
             ),
-            "current_share": st.column_config.NumberColumn(
-                "Current Share",
+            "Share %": st.column_config.NumberColumn(
+                "Share %",
                 help="Current meta share percentage",
                 format="%.2f%%",
                 width="small"
             ),
-            "win_rate": st.column_config.NumberColumn(
-                "Win Rate",
+            "Win %": st.column_config.NumberColumn(
+                "Win %",
                 help="Overall win rate percentage",
                 format="%.1f%%",
                 width="small"
@@ -484,7 +526,7 @@ def display_meta_overview_table():
         
         # Display the dataframe with custom styling
         st.dataframe(
-            display_df,
+            final_df,
             column_config=column_config,
             use_container_width=True,
             hide_index=True,
@@ -503,7 +545,8 @@ def display_meta_overview_table():
         
         # Fallback to basic table without images
         st.write("Showing simplified version:")
-        basic_df = display_df.drop(columns=['chart_img'], errors='ignore')
+        basic_df = meta_df[['rank_int', 'display_name', 'ma_7d', 'trend_indicator', 'current_share', 'win_rate']].copy()
+        basic_df.columns = ['Rank', 'Deck', '7-Day Avg', 'Change', 'Share %', 'Win %']
         st.dataframe(
             basic_df,
             use_container_width=True,
