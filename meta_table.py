@@ -385,12 +385,12 @@ def display_meta_overview_table():
             'Icon1': meta_df['pokemon_url1'],
             'Icon2': meta_df['pokemon_url2'], 
             'Deck': meta_df['formatted_deck_name'],
-            'Count-7d': meta_df['archetype_count_7d'],
-            'Total-7d': meta_df['total_count_7d'],
+            #'Count-7d': meta_df['archetype_count_7d'],
+            #'Total-7d': meta_df['total_count_7d'],
             'Share-7d': meta_df['share_7d'],
-            'Count-3d': meta_df['archetype_count_3d'],
-            'Total-3d': meta_df['total_count_3d'],
-            'Share-3d': meta_df['share_3d'],
+            #'Count-3d': meta_df['archetype_count_3d'],
+            #'Total-3d': meta_df['total_count_3d'],
+            #'Share-3d': meta_df['share_3d'],
             'Change': meta_df['trend_indicator'],
             'Win %': meta_df['win_rate']
         })
@@ -403,10 +403,10 @@ def display_meta_overview_table():
             'Icon2': st.column_config.ImageColumn(
                 "2", width=30, help="Secondary Pokemon"
             ),
-            'Deck': st.column_config.TextColumn("Deck", width="medium"),
-            'Count-7d': st.column_config.NumberColumn(
-                "Count-7d", width=150, help="Archetype appearances in last 7 days", format="%d"
-            ),
+            'Deck': st.column_config.TextColumn("Deck", width=150),
+            # 'Count-7d': st.column_config.NumberColumn(
+            #     "Count-7d", width=150, help="Archetype appearances in last 7 days", format="%d"
+            # ),
             # 'Total-7d': st.column_config.NumberColumn(
             #     "Total-7d", help="Total tournament players in last 7 days", format="%d"
             # ),
