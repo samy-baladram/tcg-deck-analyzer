@@ -1291,7 +1291,6 @@ def render_sidebar_from_cache():
     
     with tab2:
         # Empty tab for experimental tools
-        st.write("(Still Experimental)")
         display_meta_overview_table()
         #debug_deck_appearances()
     
