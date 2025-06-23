@@ -436,10 +436,19 @@ def display_meta_overview_table():
         axis=1
     )
     
+    # PROPER DECK NAME FORMATTING: Use the same format_deck_name function as Tournament Performance Data
+    try:
+        from formatters import format_deck_name
+        meta_df['formatted_deck_name'] = meta_df['deck_name'].apply(format_deck_name)
+    except Exception as e:
+        print(f"Error formatting deck names: {e}")
+        # Fallback to simple formatting
+        meta_df['formatted_deck_name'] = meta_df['deck_name'].str.replace('-', ' ').str.title()
+    
     # MIMICK EXACT LOGIC FROM display_metagame_tab: Extract Pokemon URLs
     try:
         # Import the exact same function used in Tournament Performance Data
-        from scraper import extract_pokemon_urls
+        from formatters import extract_pokemon_urls
         
         # Extract Pokemon URLs for each row (same as display_metagame_tab)
         pokemon_data = []
@@ -469,7 +478,7 @@ def display_meta_overview_table():
         final_df = pd.DataFrame({
             'Icon1': meta_df['pokemon_url1'],
             'Icon2': meta_df['pokemon_url2'], 
-            'Deck': meta_df['display_name'],
+            'Deck': meta_df['formatted_deck_name'],  # Use properly formatted deck names
             'Trend': meta_df['chart_img'],
             '7-Day Avg': meta_df['ma_7d'],
             'Change': meta_df['trend_indicator'],
@@ -545,7 +554,7 @@ def display_meta_overview_table():
         
         # Fallback to basic table without images
         st.write("Showing simplified version:")
-        basic_df = meta_df[['rank_int', 'display_name', 'ma_7d', 'trend_indicator', 'current_share', 'win_rate']].copy()
+        basic_df = meta_df[['rank_int', 'formatted_deck_name', 'ma_7d', 'trend_indicator', 'current_share', 'win_rate']].copy()
         basic_df.columns = ['Rank', 'Deck', '7-Day Avg', 'Change', 'Share %', 'Win %']
         st.dataframe(
             basic_df,
