@@ -369,6 +369,59 @@ def get_pokemon_image_url(pokemon_name, position=1):
         return f"https://assets.pokemon.com/assets/cms2/img/pokedex/full/{mapped_name}.png"
 
 
+def calculate_cumulative_shares(trend_df):
+    """
+    Calculate cumulative shares over 7 days vs 3 days for trend comparison
+    
+    Args:
+        trend_df: DataFrame with daily meta percentages
+        
+    Returns:
+        Dict with cumulative shares and trend comparison
+    """
+    if trend_df.empty or len(trend_df) < 3:
+        return {
+            'cumulative_7d': 0.0,
+            'cumulative_3d': 0.0,
+            'trend_change': 0.0,
+            'trend_direction': 'neutral'
+        }
+    
+    # Sort by date to ensure proper order (most recent first)
+    trend_df = trend_df.sort_values('date', ascending=False)
+    
+    # Get last 7 days and last 3 days
+    last_7_days = trend_df.head(7)
+    last_3_days = trend_df.head(3)
+    
+    # Calculate cumulative shares (sum of daily percentages)
+    cumulative_7d = last_7_days['meta_percentage'].sum()
+    cumulative_3d = last_3_days['meta_percentage'].sum()
+    
+    # Calculate trend change (compare 3-day vs 7-day average)
+    avg_7d = cumulative_7d / 7 if len(last_7_days) > 0 else 0
+    avg_3d = cumulative_3d / 3 if len(last_3_days) > 0 else 0
+    
+    trend_change = avg_3d - avg_7d  # Positive = recent trend is higher
+    
+    # Determine trend direction
+    if abs(trend_change) < 0.1:
+        trend_direction = 'neutral'
+    elif trend_change > 0:
+        trend_direction = 'up'  # Recent 3 days higher than 7-day average
+    else:
+        trend_direction = 'down'  # Recent 3 days lower than 7-day average
+    
+    return {
+        'cumulative_7d': round(cumulative_7d, 2),
+        'cumulative_3d': round(cumulative_3d, 2),
+        'avg_7d': round(avg_7d, 2),
+        'avg_3d': round(avg_3d, 2),
+        'trend_change': round(trend_change, 2),
+        'trend_direction': trend_direction
+    }
+
+
 def build_meta_table_data():
     """
     Build complete data for the meta table with daily breakdown
@@ -392,8 +445,8 @@ def build_meta_table_data():
         # Get trend data
         trend_df = fetch_archetype_trend_data(deck_name)
         
-        # Calculate moving averages
-        ma_data = calculate_moving_averages(trend_df)
+        # Calculate cumulative shares instead of moving averages
+        cumulative_data = calculate_cumulative_shares(trend_df)
         
         # Get detailed daily data for last 7 days
         daily_data = fetch_archetype_trend_data_detailed(deck_name)
@@ -407,10 +460,12 @@ def build_meta_table_data():
             'display_name': deck_name.replace('-', ' ').title(),
             'current_share': round(row['current_share'], 2),
             'win_rate': round(row['win_rate'], 1),
-            'ma_7d': ma_data['ma_7d'],
-            'ma_3d': ma_data['ma_3d'],
-            'trend_change': ma_data['trend_change'],
-            'trend_direction': ma_data['trend_direction'],
+            'cumulative_7d': cumulative_data['cumulative_7d'],
+            'cumulative_3d': cumulative_data['cumulative_3d'],
+            'avg_7d': cumulative_data['avg_7d'],
+            'avg_3d': cumulative_data['avg_3d'],
+            'trend_change': cumulative_data['trend_change'],
+            'trend_direction': cumulative_data['trend_direction'],
             'chart_img': chart_img,
             # Add daily data
             'day_1': daily_data['day_1'],  # Today
@@ -535,7 +590,7 @@ def display_meta_overview_table():
         return
     
     # SORT BY 7-DAY AVERAGE INSTEAD OF CURRENT SHARE
-    meta_df = meta_df.sort_values('ma_7d', ascending=False).reset_index(drop=True)
+    meta_df = meta_df.sort_values('avg_7d', ascending=False).reset_index(drop=True)
     
     # Add rank column AFTER sorting
     meta_df['rank_int'] = range(1, len(meta_df) + 1)
@@ -597,7 +652,8 @@ def display_meta_overview_table():
             'Day-4': meta_df['day_5'],
             'Day-5': meta_df['day_6'],
             'Day-6': meta_df['day_7'],
-            '7-Day Avg': meta_df['ma_7d'],
+            '7-Day Avg': meta_df['avg_7d'],        # Changed from ma_7d
+            '3-Day Avg': meta_df['avg_3d'],        # Added 3-day average
             'Change': meta_df['trend_indicator'],
             'Win %': meta_df['win_rate']
         })
@@ -615,6 +671,7 @@ def display_meta_overview_table():
             "Day-5": st.column_config.NumberColumn("Day-5", format="%.2f%%", width=60),
             "Day-6": st.column_config.NumberColumn("Day-6", format="%.2f%%", width=60),
             "7-Day Avg": st.column_config.NumberColumn("7-Day Avg", format="%.2f%%", width=60),
+            "3-Day Avg": st.column_config.NumberColumn("3-Day Avg", format="%.2f%%", width=60),
             "Change": st.column_config.TextColumn("Change", width=60),
             "Win %": st.column_config.NumberColumn("Win %", format="%.1f%%", width=60)
         }
