@@ -1250,19 +1250,20 @@ def render_sidebar_from_cache():
         st.warning("No performance data available")
         return
 
-    # Create three tabs in sidebar
-    tab1, tab2, tab3 = st.tabs(["Meta", "Tools", "Stats"])
-
     # Add last update caption at the very top
     if 'performance_fetch_time' in st.session_state:
         performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
         update_text = f"Data updated {performance_time_str}"
  
     st.markdown(f"""
-    <div style="font-size: 0.85rem; color: rgb(163, 168, 184);  margin-top: -100px; margin-bottom: 10px; text-align: left;">
+    <div style="font-size: 0.85rem; color: rgb(163, 168, 184);  margin-top: 10px; margin-bottom: 10px; text-align: left;">
         {update_text}
     </div>
     """, unsafe_allow_html=True)
+    
+    # Create three tabs in sidebar
+    tab1, tab2, tab3 = st.tabs(["Meta", "Tools", "Stats"])
+
     
     with tab1:
         # Render all deck sections
