@@ -574,7 +574,145 @@ def wrap_text(sentences, width):
             lines.append(" ".join(current_line))
         wrapped_sentences.append("<br>".join(lines))
     return wrapped_sentences
+
+def calculate_period_shares(deck_name):
+    """
+    Calculate meta share based on total archetype count over 7 days vs 3 days
     
+    Args:
+        deck_name: The archetype name
+        
+    Returns:
+        Dict with period shares and trend comparison
+    """
+    try:
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Get 7-day totals
+        query_7d = """
+        SELECT 
+            SUM(CASE WHEN aa.archetype = ? THEN aa.count ELSE 0 END) as archetype_count_7d,
+            SUM(aa.count) as total_count_7d
+        FROM archetype_appearances aa
+        JOIN tournaments t ON aa.tournament_id = t.tournament_id
+        WHERE t.date >= date('now', '-7 days')
+        """
+        
+        result_7d = pd.read_sql_query(query_7d, conn, params=[deck_name])
+        
+        # Get 3-day totals  
+        query_3d = """
+        SELECT 
+            SUM(CASE WHEN aa.archetype = ? THEN aa.count ELSE 0 END) as archetype_count_3d,
+            SUM(aa.count) as total_count_3d
+        FROM archetype_appearances aa
+        JOIN tournaments t ON aa.tournament_id = t.tournament_id
+        WHERE t.date >= date('now', '-3 days')
+        """
+        
+        result_3d = pd.read_sql_query(query_3d, conn, params=[deck_name])
+        conn.close()
+        
+        # Extract values
+        archetype_count_7d = result_7d.iloc[0]['archetype_count_7d'] or 0
+        total_count_7d = result_7d.iloc[0]['total_count_7d'] or 0
+        archetype_count_3d = result_3d.iloc[0]['archetype_count_3d'] or 0  
+        total_count_3d = result_3d.iloc[0]['total_count_3d'] or 0
+        
+        # Calculate percentages
+        share_7d = (archetype_count_7d / total_count_7d * 100) if total_count_7d > 0 else 0
+        share_3d = (archetype_count_3d / total_count_3d * 100) if total_count_3d > 0 else 0
+        
+        # Calculate trend change
+        trend_change = share_3d - share_7d
+        
+        # Determine trend direction
+        if abs(trend_change) < 0.1:
+            trend_direction = 'neutral'
+        elif trend_change > 0:
+            trend_direction = 'up'
+        else:
+            trend_direction = 'down'
+        
+        return {
+            'archetype_count_7d': int(archetype_count_7d),
+            'total_count_7d': int(total_count_7d),
+            'archetype_count_3d': int(archetype_count_3d),
+            'total_count_3d': int(total_count_3d),
+            'share_7d': round(share_7d, 2),
+            'share_3d': round(share_3d, 2),
+            'trend_change': round(trend_change, 2),
+            'trend_direction': trend_direction
+        }
+        
+    except Exception as e:
+        print(f"Error calculating period shares for {deck_name}: {e}")
+        return {
+            'archetype_count_7d': 0, 'total_count_7d': 0,
+            'archetype_count_3d': 0, 'total_count_3d': 0,
+            'share_7d': 0.0, 'share_3d': 0.0,
+            'trend_change': 0.0, 'trend_direction': 'neutral'
+        }
+
+
+def build_meta_table_data():
+    """
+    Build complete data for the meta table with period-based calculations
+    """
+    print("Building meta table data...")
+    
+    # 1. Get top archetypes
+    archetypes_df = fetch_top_archetypes(20)
+    
+    if archetypes_df.empty:
+        print("No archetype data found")
+        return pd.DataFrame()
+    
+    # 2. Build complete table data
+    table_data = []
+    
+    for _, row in archetypes_df.iterrows():
+        deck_name = row['deck_name']
+        print(f"Processing {deck_name}...")
+        
+        # Calculate period-based shares
+        period_data = calculate_period_shares(deck_name)
+        
+        # Get detailed daily data for last 7 days (for verification)
+        daily_data = fetch_archetype_trend_data_detailed(deck_name)
+        
+        # Build row data
+        row_data = {
+            'deck_name': deck_name,
+            'display_name': deck_name.replace('-', ' ').title(),
+            'current_share': round(row['current_share'], 2),
+            'win_rate': round(row['win_rate'], 1),
+            'archetype_count_7d': period_data['archetype_count_7d'],
+            'total_count_7d': period_data['total_count_7d'],
+            'archetype_count_3d': period_data['archetype_count_3d'],
+            'total_count_3d': period_data['total_count_3d'],
+            'share_7d': period_data['share_7d'],
+            'share_3d': period_data['share_3d'],
+            'trend_change': period_data['trend_change'],
+            'trend_direction': period_data['trend_direction'],
+            # Add daily data for verification
+            'day_1': daily_data['day_1'],
+            'day_2': daily_data['day_2'],
+            'day_3': daily_data['day_3'],
+            'day_4': daily_data['day_4'],
+            'day_5': daily_data['day_5'],
+            'day_6': daily_data['day_6'],
+            'day_7': daily_data['day_7'],
+        }
+        
+        table_data.append(row_data)
+    
+    # Convert to DataFrame
+    result_df = pd.DataFrame(table_data)
+    
+    print(f"Built meta table with {len(result_df)} archetypes")
+    return result_df
+
 def display_meta_overview_table():
     """
     Main function to display the complete meta overview table in sidebar tab 2
@@ -590,7 +728,7 @@ def display_meta_overview_table():
         return
     
     # SORT BY 7-DAY AVERAGE INSTEAD OF CURRENT SHARE
-    meta_df = meta_df.sort_values('avg_7d', ascending=False).reset_index(drop=True)
+    meta_df = meta_df.sort_values('share_7d', ascending=False).reset_index(drop=True)
     
     # Add rank column AFTER sorting
     meta_df['rank_int'] = range(1, len(meta_df) + 1)
@@ -640,39 +778,33 @@ def display_meta_overview_table():
     st.write("##### Meta Overview - Top 20 Archetypes")
     
     try:
-        # Create final display dataframe with daily columns for debugging
+        # Create final display dataframe showing counts and calculated shares
         final_df = pd.DataFrame({
             'Icon1': meta_df['pokemon_url1'],
             'Icon2': meta_df['pokemon_url2'], 
             'Deck': meta_df['formatted_deck_name'],
-            'Today': meta_df['day_1'],
-            'Day-1': meta_df['day_2'], 
-            'Day-2': meta_df['day_3'],
-            'Day-3': meta_df['day_4'],
-            'Day-4': meta_df['day_5'],
-            'Day-5': meta_df['day_6'],
-            'Day-6': meta_df['day_7'],
-            '7-Day Avg': meta_df['avg_7d'],        # Changed from ma_7d
-            '3-Day Avg': meta_df['avg_3d'],        # Added 3-day average
+            'Count-7d': meta_df['archetype_count_7d'],    # Total archetype appearances in 7 days
+            'Total-7d': meta_df['total_count_7d'],         # Total all appearances in 7 days  
+            'Share-7d': meta_df['share_7d'],               # Calculated: Count-7d / Total-7d * 100
+            'Count-3d': meta_df['archetype_count_3d'],     # Total archetype appearances in 3 days
+            'Total-3d': meta_df['total_count_3d'],         # Total all appearances in 3 days
+            'Share-3d': meta_df['share_3d'],               # Calculated: Count-3d / Total-3d * 100
             'Change': meta_df['trend_indicator'],
             'Win %': meta_df['win_rate']
         })
         
-        # Configure column display
+        # Configure column display to show the calculation breakdown
         column_config = {
             "Icon1": st.column_config.ImageColumn("Icon 1", width=60),
             "Icon2": st.column_config.ImageColumn("Icon 2", width=60),
             "Deck": st.column_config.TextColumn("Deck", width=150),
-            "Today": st.column_config.NumberColumn("Today", format="%.2f%%", width=60),
-            "Day-1": st.column_config.NumberColumn("Day-1", format="%.2f%%", width=60),
-            "Day-2": st.column_config.NumberColumn("Day-2", format="%.2f%%", width=60),
-            "Day-3": st.column_config.NumberColumn("Day-3", format="%.2f%%", width=60),
-            "Day-4": st.column_config.NumberColumn("Day-4", format="%.2f%%", width=60),
-            "Day-5": st.column_config.NumberColumn("Day-5", format="%.2f%%", width=60),
-            "Day-6": st.column_config.NumberColumn("Day-6", format="%.2f%%", width=60),
-            "7-Day Avg": st.column_config.NumberColumn("7-Day Avg", format="%.2f%%", width=60),
-            "3-Day Avg": st.column_config.NumberColumn("3-Day Avg", format="%.2f%%", width=60),
-            "Change": st.column_config.TextColumn("Change", width=60),
+            "Count-7d": st.column_config.NumberColumn("Count-7d", help="Archetype appearances in last 7 days", width=60),
+            "Total-7d": st.column_config.NumberColumn("Total-7d", help="All appearances in last 7 days", width=60),
+            "Share-7d": st.column_config.NumberColumn("Share-7d", format="%.2f%%", help="Count-7d / Total-7d * 100", width=60),
+            "Count-3d": st.column_config.NumberColumn("Count-3d", help="Archetype appearances in last 3 days", width=60),
+            "Total-3d": st.column_config.NumberColumn("Total-3d", help="All appearances in last 3 days", width=60), 
+            "Share-3d": st.column_config.NumberColumn("Share-3d", format="%.2f%%", help="Count-3d / Total-3d * 100", width=60),
+            "Change": st.column_config.TextColumn("Change", help="Share-3d - Share-7d", width=60),
             "Win %": st.column_config.NumberColumn("Win %", format="%.1f%%", width=60)
         }
         
