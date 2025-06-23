@@ -1293,7 +1293,7 @@ def render_sidebar_from_cache():
         # Empty tab for experimental tools
         st.write("(Still Experimental)")
         display_meta_overview_table()
-        debug_deck_appearances()
+        #debug_deck_appearances()
     
     with tab3:
         # Empty tab for experimental stats
