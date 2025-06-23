@@ -423,7 +423,7 @@ def display_meta_overview_table():
             #     "Share-3d", help="Meta share in last 3 days", format="%.2f%%"
             # ),
             'Change': st.column_config.TextColumn(
-                "Change", width=70, help="Trend from 7d to 3d average", width="small"
+                "Change", width=80, help="Trend from 7d to 3d average", 
             ),
             'Win %': st.column_config.NumberColumn(
                 "Win %", width=70, help="Win rate percentage", format="%.1f%%"
