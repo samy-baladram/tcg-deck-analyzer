@@ -685,23 +685,55 @@ def display_meta_overview_table_with_buttons():
     .deck-button:hover {
         color: #0080CC !important;
     }
+    
+    /* Force left alignment for buttons even when wrapping */
+    div[data-testid="column"] button {
+        text-align: left !important;
+        justify-content: flex-start !important;
+    }
+    
+    div[data-testid="column"] button p {
+        text-align: left !important;
+        width: 100% !important;
+    }
+    
+    /* Additional specificity for wrapped button text */
+    .stButton > button {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+    }
+    
+    .stButton > button p {
+        text-align: left !important;
+        margin: 0 !important;
+    }
+
+    .share-column {
+        text-align: right !important;
+    }
+    
     .change-positive {
-    color: #58C855 !important;
-    font-size: 0.8rem !important;
-    margin-top: -15px !important;
-    line-height: 1 !important;
+        color: #58C855 !important;
+        font-size: 0.8rem !important;
+        margin-top: -15px !important;
+        line-height: 1 !important;
+        text-align: right !important;
     }
     .change-negative {
         color: #FD6C6C !important;
         font-size: 0.8rem !important;
         margin-top: -15px !important;
         line-height: 1 !important;
+        text-align: right !important;
     }
     .change-neutral {
         color: #888888 !important;
         font-size: 0.8rem !important;
         margin-top: -15px !important;
         line-height: 1 !important;
+        text-align: right !important;
     }
     .icons-container {
         display: flex !important;
@@ -718,7 +750,7 @@ def display_meta_overview_table_with_buttons():
     with col2:
         st.write("**Deck**")
     with col3:
-        st.write("**Share-7d**")
+        st.markdown('<div class="share-column"><strong>Share-7d</strong></div>', unsafe_allow_html=True)
     
     st.markdown('<hr style="margin: 5px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
     
@@ -755,10 +787,10 @@ def display_meta_overview_table_with_buttons():
             icons_html = '<div class="icons-container">'
             
             if row['pokemon_url1']:
-                icons_html += f'<img src="{row["pokemon_url1"]}" width="20" style="border-radius: 4px;">'
+                icons_html += f'<img src="{row["pokemon_url1"]}" width="23" style="border-radius: 0px;">'
             
             if row['pokemon_url2']:
-                icons_html += f'<img src="{row["pokemon_url2"]}" width="20" style="border-radius: 4px;">'
+                icons_html += f'<img src="{row["pokemon_url2"]}" width="23" style="border-radius: 0px;">'
             
             icons_html += '</div>'
             st.markdown(icons_html, unsafe_allow_html=True)
@@ -771,9 +803,9 @@ def display_meta_overview_table_with_buttons():
                 st.rerun()
         
         # Share with change underneath
-        with col3:
-            # Main share value
-            st.write(f"{row['share_7d']:.2f}%")
+         with col3:
+            # Main share value - right aligned
+            st.markdown(f'<div class="share-column">{row["share_7d"]:.2f}%</div>', unsafe_allow_html=True)
             
             # Change value underneath with color coding
             trend_value, trend_type = extract_trend_value(row['trend_indicator'])
