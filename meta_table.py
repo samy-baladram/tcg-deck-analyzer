@@ -803,7 +803,7 @@ def display_meta_overview_table_with_buttons():
                 st.rerun()
         
         # Share with change underneath
-         with col3:
+        with col3:
             # Main share value - right aligned
             st.markdown(f'<div class="share-column">{row["share_7d"]:.2f}%</div>', unsafe_allow_html=True)
             
