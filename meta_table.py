@@ -651,221 +651,8 @@ def display_losers_table():
         st.error(f"Error displaying losers table: {str(e)}")
         print(f"Display error: {e}")
 
-# def display_meta_overview_table_with_buttons():
-#     """Display meta overview table with manual deck selection buttons - enhanced compact layout"""
-    
-#     with st.spinner("Loading meta overview data..."):
-#         builder = MetaTableBuilder()
-#         meta_df = builder.build_complete_meta_table(20)
-    
-#     if meta_df.empty:
-#         st.warning("No meta data available at this time.")
-#         return
-    
-#     # Format for display
-#     formatter = MetaDisplayFormatter()
-#     meta_df = formatter.prepare_display_dataframe(meta_df)
-    
-#     # Display table header
-#     st.write("##### Meta Overview - Top 20 Archetypes")
-    
-#     # Custom CSS for styling
-#     st.markdown("""
-#     <style>
-#     /* Force all column containers to stay horizontal */
-#     .stColumns {
-#         display: flex !important;
-#         flex-direction: row !important;
-#         flex-wrap: nowrap !important;
-#         width: 100% !important;
-#     }
-    
-#     .stColumns > div {
-#         display: flex !important;
-#         flex-direction: column !important;
-#     }
-    
-#     /* Specific column widths */
-#     .stColumns > div:nth-child(1) {
-#         flex: 0 0 20% !important;  /* Icons */
-#         max-width: 20% !important;
-#     }
-    
-#     .stColumns > div:nth-child(2) {
-#         flex: 1 1 50% !important;  /* Deck name */
-#         max-width: 50% !important;
-#     }
-    
-#     .stColumns > div:nth-child(3) {
-#         flex: 0 0 30% !important;  /* Share */
-#         max-width: 30% !important;
-#     }
-    
-#     /* Override mobile stacking completely */
-#     @media screen and (max-width: 768px) {
-#         .stColumns {
-#             display: flex !important;
-#             flex-direction: row !important;
-#             flex-wrap: nowrap !important;
-#         }
-#     }
-    
-#     .deck-button {
-#         background: none !important;
-#         border: none !important;
-#         padding: 0 !important;
-#         color: #00A0FF !important;
-#         text-decoration: underline !important;
-#         cursor: pointer !important;
-#         font-size: inherit !important;
-#         font-family: inherit !important;
-#     }
-#     .deck-button:hover {
-#         color: #0080CC !important;
-#     }
-    
-#     /* Force left alignment for buttons even when wrapping */
-#     div[data-testid="column"] button {
-#         text-align: left !important;
-#         justify-content: flex-start !important;
-#     }
-    
-#     div[data-testid="column"] button p {
-#         text-align: left !important;
-#         width: 100% !important;
-#     }
-    
-#     /* Additional specificity for wrapped button text */
-#     .stButton > button {
-#         text-align: left !important;
-#         justify-content: flex-start !important;
-#         white-space: normal !important;
-#         word-wrap: break-word !important;
-#         line-height: 1.1 !important;  /* Reduce line height */
-#         padding: 4px 8px !important;
-#     }
-    
-#     .stButton > button p {
-#         text-align: left !important;
-#         margin: 0 !important;
-#     }
-
-#     .share-column {
-#         text-align: right !important;
-#     }
-    
-#     .change-positive {
-#         color: #58C855 !important;
-#         font-size: 0.8rem !important;
-#         margin-top: -2px !important;
-#         line-height: 1 !important;
-#         text-align: right !important;
-#     }
-#     .change-negative {
-#         color: #FD6C6C !important;
-#         font-size: 0.8rem !important;
-#         margin-top: -2px !important;
-#         line-height: 1 !important;
-#         text-align: right !important;
-#     }
-#     .change-neutral {
-#         color: #888888 !important;
-#         font-size: 0.8rem !important;
-#         margin-top: -2px !important;
-#         line-height: 1 !important;
-#         text-align: right !important;
-#     }
-#     .icons-container {
-#         display: flex !important;
-#         align-items: center !important;
-#         gap: 2px !important;
-#     }
-#     </style>
-#     """, unsafe_allow_html=True)
-    
-#     # Header row with updated layout
-#     # col1, col2, col3 = st.columns([1, 3, 1.2])
-#     # with col1:
-#     #     st.write(" ")
-#     # with col2:
-#     #     st.write("**Deck**")
-#     # with col3:
-#     #     st.markdown('<div class="share-column"><strong>Share-7d</strong></div>', unsafe_allow_html=True)
-    
-#     # st.markdown('<hr style="margin: 0px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
-    
-#     # Helper function to extract numeric value from trend indicator
-#     def extract_trend_value(trend_indicator):
-#         """Extract numeric value and determine color from trend indicator"""
-#         if not trend_indicator or trend_indicator == "➡️ 0.00%":
-#             return 0, "neutral"
-        
-#         # Remove emoji and extract number
-#         if "📈" in trend_indicator:
-#             value_str = trend_indicator.replace("📈 +", "").replace("%", "")
-#             try:
-#                 value = float(value_str)
-#                 return value, "positive"
-#             except:
-#                 return 0, "neutral"
-#         elif "📉" in trend_indicator:
-#             value_str = trend_indicator.replace("📉 -", "").replace("%", "")
-#             try:
-#                 value = float(value_str)
-#                 return -value, "negative"
-#             except:
-#                 return 0, "neutral"
-#         else:
-#             return 0, "neutral"
-    
-#     # Data rows
-#     for idx, row in meta_df.iterrows():
-#         col1, col2, col3 = st.columns([1, 3, 1.2])
-        
-#         # Combined Pokemon icons
-#         with col1:
-#             icons_html = '<div class="icons-container">'
-            
-#             if row['pokemon_url1']:
-#                 icons_html += f'<img src="{row["pokemon_url1"]}" height="28" style="border-radius: 0px;">'
-            
-#             if row['pokemon_url2']:
-#                 icons_html += f'<img src="{row["pokemon_url2"]}" height="28" style="border-radius: 0px; margin-right:3px;">'
-            
-#             icons_html += '</div>'
-#             st.markdown(icons_html, unsafe_allow_html=True)
-        
-#         # Clickable deck name
-#         with col2:
-#             button_key = f"deck_select_{idx}_{row['deck_name']}"
-#             if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
-#                 st.session_state.deck_to_analyze = row['deck_name']
-#                 st.rerun()
-        
-#         # Share with change underneath
-#         with col3:
-#             # Main share value - right aligned
-#             st.markdown(f'<div class="share-column">{row["share_7d"]:.2f}%</div>', unsafe_allow_html=True)
-            
-#             # Change value underneath with color coding
-#             trend_value, trend_type = extract_trend_value(row['trend_indicator'])
-            
-#             if trend_type == "positive":
-#                 change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
-#             elif trend_type == "negative":
-#                 change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
-#             else:
-#                 change_html = f'<div class="change-neutral">0.00%</div>'
-            
-#             st.markdown(change_html, unsafe_allow_html=True)
-    
-#     # Add explanation
-#     st.caption(
-#         "**Click on any deck name** to analyze it in detail. "
-#         "Green/red values show 7d to 3d trend changes."
-#     )
 def display_meta_overview_table_with_buttons():
-    """Display meta overview table with manual deck selection buttons - enhanced compact layout"""
+    """Display meta overview table with manual deck selection buttons - container-based layout"""
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
@@ -885,15 +672,50 @@ def display_meta_overview_table_with_buttons():
     # Custom CSS for styling
     st.markdown("""
     <style>
-    /* CSS Grid container styling */
-    .grid-container {
-        display: grid !important;
-        grid-template-columns: 20% 50% 30% !important;
-        gap: 8px !important;
+    /* Container-based horizontal layout */
+    .deck-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
         align-items: center !important;
-        padding: 8px 0 !important;
-        border-bottom: 1px solid rgba(137, 148, 166, 0.1) !important;
         width: 100% !important;
+        padding: 8px 0 !important;
+        border-bottom: 0.5px solid rgba(137, 148, 166, 0.2) !important;
+    }
+    
+    .deck-icons {
+        flex: 0 0 60px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+    }
+    
+    .deck-name {
+        flex: 1 1 auto !important;
+        padding: 0 8px !important;
+        min-width: 0 !important;
+    }
+    
+    .deck-share {
+        flex: 0 0 80px !important;
+        text-align: right !important;
+    }
+    
+    /* Force this layout even on mobile */
+    @media screen and (max-width: 768px) {
+        .deck-row {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+        }
+        
+        .deck-icons {
+            flex: 0 0 50px !important;
+        }
+        
+        .deck-share {
+            flex: 0 0 70px !important;
+        }
     }
     
     .deck-button {
@@ -910,7 +732,7 @@ def display_meta_overview_table_with_buttons():
         color: #0080CC !important;
     }
     
-    /* Force left alignment for buttons even when wrapping */
+    /* Button styling */
     .stButton > button {
         text-align: left !important;
         justify-content: flex-start !important;
@@ -956,13 +778,6 @@ def display_meta_overview_table_with_buttons():
         align-items: center !important;
         gap: 2px !important;
     }
-    
-    /* Prevent mobile stacking with CSS Grid */
-    @media screen and (max-width: 768px) {
-        .grid-container {
-            grid-template-columns: 15% 55% 30% !important;
-        }
-    }
     </style>
     """, unsafe_allow_html=True)
     
@@ -990,59 +805,50 @@ def display_meta_overview_table_with_buttons():
         else:
             return 0, "neutral"
     
-    # Data rows using CSS Grid approach
+    # Data rows
     for idx, row in meta_df.iterrows():
-        # Create a container with CSS Grid
-        st.markdown(f'''
-        <div style="
-            display: grid !important;
-            grid-template-columns: 20% 50% 30% !important;
-            gap: 8px !important;
-            align-items: center !important;
-            padding: 8px 0 !important;
-            border-bottom: 1px solid rgba(137, 148, 166, 0.1) !important;
-            min-height: 40px !important;
-        ">
-            <div class="icons-container">
-        ''', unsafe_allow_html=True)
-        
-        # Icons in first grid cell
-        icons_html = ""
-        if row['pokemon_url1']:
-            icons_html += f'<img src="{row["pokemon_url1"]}" height="28" style="border-radius: 0px;">'
-        if row['pokemon_url2']:
-            icons_html += f'<img src="{row["pokemon_url2"]}" height="28" style="border-radius: 0px; margin-right:3px;">'
-        
-        st.markdown(f'''
-                {icons_html}
-            </div>
-            <div style="grid-column: 2;">
-        ''', unsafe_allow_html=True)
-        
-        # Button in second grid cell
-        button_key = f"deck_select_{idx}_{row['deck_name']}"
-        if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
-            st.session_state.deck_to_analyze = row['deck_name']
-            st.rerun()
-        
-        # Share and trend in third grid cell
-        trend_value, trend_type = extract_trend_value(row['trend_indicator'])
-        
-        if trend_type == "positive":
-            change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
-        elif trend_type == "negative":
-            change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
-        else:
-            change_html = f'<div class="change-neutral">0.00%</div>'
-        
-        st.markdown(f'''
-            </div>
-            <div style="grid-column: 3; text-align: right;">
+        with st.container():
+            # Start the flex row
+            st.markdown('<div class="deck-row">', unsafe_allow_html=True)
+            
+            # Icons section
+            icons_html = '<div class="deck-icons">'
+            if row['pokemon_url1']:
+                icons_html += f'<img src="{row["pokemon_url1"]}" height="28" style="border-radius: 0px;">'
+            if row['pokemon_url2']:
+                icons_html += f'<img src="{row["pokemon_url2"]}" height="28" style="border-radius: 0px; margin-right:3px;">'
+            icons_html += '</div>'
+            
+            st.markdown(icons_html, unsafe_allow_html=True)
+            
+            # Deck name section (with button)
+            st.markdown('<div class="deck-name">', unsafe_allow_html=True)
+            button_key = f"deck_select_{idx}_{row['deck_name']}"
+            if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
+                st.session_state.deck_to_analyze = row['deck_name']
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            # Share section
+            trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+            
+            if trend_type == "positive":
+                change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
+            elif trend_type == "negative":
+                change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
+            else:
+                change_html = f'<div class="change-neutral">0.00%</div>'
+            
+            share_html = f'''
+            <div class="deck-share">
                 <div class="share-column">{row["share_7d"]:.2f}%</div>
                 {change_html}
             </div>
-        </div>
-        ''', unsafe_allow_html=True)
+            '''
+            st.markdown(share_html, unsafe_allow_html=True)
+            
+            # Close the flex row
+            st.markdown('</div>', unsafe_allow_html=True)
     
     # Add explanation
     st.caption(
