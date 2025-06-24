@@ -686,19 +686,22 @@ def display_meta_overview_table_with_buttons():
         color: #0080CC !important;
     }
     .change-positive {
-        color: #4FCC20 !important;
-        font-size: 0.8rem !important;
-        margin-top: 2px !important;
+    color: #5DD130 !important;
+    font-size: 0.8rem !important;
+    margin-top: -5px !important;
+    line-height: 1 !important;
     }
     .change-negative {
-        color: #FF4B4B !important;
+        color: #FD6C6C !important;
         font-size: 0.8rem !important;
-        margin-top: 2px !important;
+        margin-top: -5px !important;
+        line-height: 1 !important;
     }
     .change-neutral {
         color: #888888 !important;
         font-size: 0.8rem !important;
-        margin-top: 2px !important;
+        margin-top: -5px !important;
+        line-height: 1 !important;
     }
     .icons-container {
         display: flex !important;
@@ -717,7 +720,7 @@ def display_meta_overview_table_with_buttons():
     with col3:
         st.write("**Share-7d**")
     
-    st.divider()
+    st.markdown('<hr style="margin: 5px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
     
     # Helper function to extract numeric value from trend indicator
     def extract_trend_value(trend_indicator):
@@ -763,7 +766,7 @@ def display_meta_overview_table_with_buttons():
         # Clickable deck name
         with col2:
             button_key = f"deck_select_{idx}_{row['deck_name']}"
-            if st.button(row['formatted_deck_name'], key=button_key, type="tertiary", use_container_width=True):
+            if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
                 st.session_state.deck_to_analyze = row['deck_name']
                 st.rerun()
         
