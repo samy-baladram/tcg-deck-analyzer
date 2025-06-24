@@ -686,21 +686,21 @@ def display_meta_overview_table_with_buttons():
         color: #0080CC !important;
     }
     .change-positive {
-    color: #5DD130 !important;
+    color: #58C855 !important;
     font-size: 0.8rem !important;
-    margin-top: -5px !important;
+    margin-top: -15px !important;
     line-height: 1 !important;
     }
     .change-negative {
         color: #FD6C6C !important;
         font-size: 0.8rem !important;
-        margin-top: -5px !important;
+        margin-top: -15px !important;
         line-height: 1 !important;
     }
     .change-neutral {
         color: #888888 !important;
         font-size: 0.8rem !important;
-        margin-top: -5px !important;
+        margin-top: -15px !important;
         line-height: 1 !important;
     }
     .icons-container {
@@ -755,10 +755,10 @@ def display_meta_overview_table_with_buttons():
             icons_html = '<div class="icons-container">'
             
             if row['pokemon_url1']:
-                icons_html += f'<img src="{row["pokemon_url1"]}" width="28" style="border-radius: 4px;">'
+                icons_html += f'<img src="{row["pokemon_url1"]}" width="20" style="border-radius: 4px;">'
             
             if row['pokemon_url2']:
-                icons_html += f'<img src="{row["pokemon_url2"]}" width="28" style="border-radius: 4px;">'
+                icons_html += f'<img src="{row["pokemon_url2"]}" width="20" style="border-radius: 4px;">'
             
             icons_html += '</div>'
             st.markdown(icons_html, unsafe_allow_html=True)
