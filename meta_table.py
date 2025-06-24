@@ -703,6 +703,8 @@ def display_meta_overview_table_with_buttons():
         justify-content: flex-start !important;
         white-space: normal !important;
         word-wrap: break-word !important;
+        line-height: 1.1 !important;  /* Reduce line height */
+        padding: 4px 8px !important;
     }
     
     .stButton > button p {
@@ -717,21 +719,21 @@ def display_meta_overview_table_with_buttons():
     .change-positive {
         color: #58C855 !important;
         font-size: 0.8rem !important;
-        margin-top: -10px !important;
+        margin-top: -5px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-negative {
         color: #FD6C6C !important;
         font-size: 0.8rem !important;
-        margin-top: -10px !important;
+        margin-top: -5px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-neutral {
         color: #888888 !important;
         font-size: 0.8rem !important;
-        margin-top: -10px !important;
+        margin-top: -5px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
