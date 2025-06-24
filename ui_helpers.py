@@ -11,7 +11,7 @@ import base64
 import os
 from display_tabs import fetch_matchup_data
 from header_image_cache import get_header_image_cached
-from meta_table import display_meta_overview_table, debug_deck_appearances
+from meta_table import display_meta_overview_table, display_meta_overview_table_with_buttons
 
 # Add this at the top of ui_helpers.py after imports
 SIDEBAR_SECTIONS_CONFIG = {
@@ -1292,7 +1292,9 @@ def render_sidebar_from_cache():
     with tab2:
         # Empty tab for experimental tools
         display_meta_overview_table()
-        #debug_deck_appearances()
+        st.divider()
+        st.write("Experimental")
+        display_meta_overview_table_with_buttons()
     
     with tab3:
         from meta_table import display_gainers_table
