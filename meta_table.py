@@ -865,33 +865,27 @@ def display_meta_overview_table_with_buttons():
     #     "Green/red values show 7d to 3d trend changes."
     # )
     for idx, row in meta_df.iterrows():
-        button_key = f"deck_select_{idx}_{row['deck_name']}"
-        
-        # Create HTML row
-        html_row = f"""
-        <div style="display: flex; align-items: center; padding: 5px 0; border-bottom: 1px solid #eee;">
-            <div style="flex: 0 0 60px; display: flex; gap: 2px;">
-                <img src="{row.get('pokemon_url1', '')}" width="28" style="border-radius: 4px;">
-                <img src="{row.get('pokemon_url2', '')}" width="28" style="border-radius: 4px;">
-            </div>
-            <div style="flex: 1; padding: 0 10px;">
-                <div style="color: #00A0FF; cursor: pointer;" onclick="clickDeck('{row['deck_name']}')">{row['formatted_deck_name']}</div>
-            </div>
-            <div style="flex: 0 0 80px; text-align: right;">
-                <div>{row['share_7d']:.2f}%</div>
-                <div style="font-size: 0.8rem; color: {'#4FCC20' if '+' in str(row['trend_indicator']) else '#FF4B4B'};">
-                    {extract_trend_value(row['trend_indicator'])[0]:+.2f}%
+        # Use a container for each row
+        with st.container():
+            # Split into name and stats
+            col_name, col_stats = st.columns([3, 1])
+            
+            with col_name:
+                button_key = f"deck_select_{idx}_{row['deck_name']}"
+                if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
+                    st.session_state.deck_to_analyze = row['deck_name']
+                    st.rerun()
+            
+            with col_stats:
+                trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+                color = "#4FCC20" if trend_type == "positive" else "#FF4B4B" if trend_type == "negative" else "#888"
+                
+                st.markdown(f"""
+                <div style="text-align: right;">
+                    <div>{row['share_7d']:.1f}%</div>
+                    <div style="color: {color}; font-size: 0.8rem;">{trend_value:+.1f}%</div>
                 </div>
-            </div>
-        </div>
-        """
-        
-        st.markdown(html_row, unsafe_allow_html=True)
-        
-        # Add button separately (invisible)
-        if st.button("", key=button_key, type="tertiary", 
-                    help=f"Select {row['formatted_deck_name']}", 
-                    disabled=False):
-            st.session_state.deck_to_analyze = row['deck_name']
-            st.rerun()
- 
+                """, unsafe_allow_html=True)
+            
+            # Small separator
+            st.markdown('<hr style="margin: 3px 0; opacity: 0.3;">', unsafe_allow_html=True)
