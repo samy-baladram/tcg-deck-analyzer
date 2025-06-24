@@ -672,6 +672,60 @@ def display_meta_overview_table_with_buttons():
     # Custom CSS for styling
     st.markdown("""
     <style>
+    /* Force columns to stay horizontal on all screen sizes */
+    div[data-testid="column"] {
+        width: auto !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+    
+    div[data-testid="column"]:nth-child(1) {
+        flex: 0 0 60px !important;  /* Icons column - fixed width */
+        min-width: 60px !important;
+    }
+    
+    div[data-testid="column"]:nth-child(2) {
+        flex: 1 1 auto !important;  /* Deck name - flexible */
+        min-width: 100px !important;
+    }
+    
+    div[data-testid="column"]:nth-child(3) {
+        flex: 0 0 80px !important;  /* Share column - fixed width */
+        min-width: 80px !important;
+        max-width: 80px !important;
+    }
+    
+    /* Force the row container to stay horizontal */
+    .row-widget.stHorizontal {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    /* Override Streamlit's mobile responsive behavior */
+    @media (max-width: 768px) {
+        div[data-testid="column"] {
+            width: auto !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+        }
+        
+        .row-widget.stHorizontal {
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+        }
+        
+        div[data-testid="column"]:nth-child(1) {
+            flex: 0 0 50px !important;  /* Smaller icons on mobile */
+            min-width: 50px !important;
+        }
+        
+        div[data-testid="column"]:nth-child(3) {
+            flex: 0 0 70px !important;  /* Smaller share column on mobile */
+            min-width: 70px !important;
+            max-width: 70px !important;
+        }
+    }
+    
     .deck-button {
         background: none !important;
         border: none !important;
@@ -719,21 +773,21 @@ def display_meta_overview_table_with_buttons():
     .change-positive {
         color: #58C855 !important;
         font-size: 0.8rem !important;
-        margin-top: -5px !important;
+        margin-top: 0px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-negative {
         color: #FD6C6C !important;
         font-size: 0.8rem !important;
-        margin-top: -5px !important;
+        margin-top: 0px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-neutral {
         color: #888888 !important;
         font-size: 0.8rem !important;
-        margin-top: -5px !important;
+        margin-top: 0px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
@@ -746,15 +800,15 @@ def display_meta_overview_table_with_buttons():
     """, unsafe_allow_html=True)
     
     # Header row with updated layout
-    col1, col2, col3 = st.columns([1, 3, 1.2])
-    with col1:
-        st.write(" ")
-    with col2:
-        st.write("**Deck**")
-    with col3:
-        st.markdown('<div class="share-column"><strong>Share-7d</strong></div>', unsafe_allow_html=True)
+    # col1, col2, col3 = st.columns([1, 3, 1.2])
+    # with col1:
+    #     st.write(" ")
+    # with col2:
+    #     st.write("**Deck**")
+    # with col3:
+    #     st.markdown('<div class="share-column"><strong>Share-7d</strong></div>', unsafe_allow_html=True)
     
-    st.markdown('<hr style="margin: 0px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
+    # st.markdown('<hr style="margin: 0px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
     
     # Helper function to extract numeric value from trend indicator
     def extract_trend_value(trend_indicator):
@@ -789,10 +843,10 @@ def display_meta_overview_table_with_buttons():
             icons_html = '<div class="icons-container">'
             
             if row['pokemon_url1']:
-                icons_html += f'<img src="{row["pokemon_url1"]}" width="23" style="border-radius: 0px;">'
+                icons_html += f'<img src="{row["pokemon_url1"]}" height="28" style="border-radius: 0px;">'
             
             if row['pokemon_url2']:
-                icons_html += f'<img src="{row["pokemon_url2"]}" width="23" style="border-radius: 0px; margin-right:3px;">'
+                icons_html += f'<img src="{row["pokemon_url2"]}" height="28" style="border-radius: 0px; margin-right:3px;">'
             
             icons_html += '</div>'
             st.markdown(icons_html, unsafe_allow_html=True)
