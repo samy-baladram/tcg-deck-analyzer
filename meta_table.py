@@ -672,57 +672,41 @@ def display_meta_overview_table_with_buttons():
     # Custom CSS for styling
     st.markdown("""
     <style>
-    /* Force columns to stay horizontal on all screen sizes */
-    div[data-testid="column"] {
-        width: auto !important;
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-    }
-    
-    div[data-testid="column"]:nth-child(1) {
-        flex: 0 0 60px !important;  /* Icons column - fixed width */
-        min-width: 60px !important;
-    }
-    
-    div[data-testid="column"]:nth-child(2) {
-        flex: 1 1 auto !important;  /* Deck name - flexible */
-        min-width: 100px !important;
-    }
-    
-    div[data-testid="column"]:nth-child(3) {
-        flex: 0 0 80px !important;  /* Share column - fixed width */
-        min-width: 80px !important;
-        max-width: 80px !important;
-    }
-    
-    /* Force the row container to stay horizontal */
-    .row-widget.stHorizontal {
+    /* Force all column containers to stay horizontal */
+    .stColumns {
+        display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
+        width: 100% !important;
     }
     
-    /* Override Streamlit's mobile responsive behavior */
-    @media (max-width: 768px) {
-        div[data-testid="column"] {
-            width: auto !important;
-            flex: 1 1 auto !important;
-            min-width: 0 !important;
-        }
-        
-        .row-widget.stHorizontal {
+    .stColumns > div {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    /* Specific column widths */
+    .stColumns > div:nth-child(1) {
+        flex: 0 0 20% !important;  /* Icons */
+        max-width: 20% !important;
+    }
+    
+    .stColumns > div:nth-child(2) {
+        flex: 1 1 50% !important;  /* Deck name */
+        max-width: 50% !important;
+    }
+    
+    .stColumns > div:nth-child(3) {
+        flex: 0 0 30% !important;  /* Share */
+        max-width: 30% !important;
+    }
+    
+    /* Override mobile stacking completely */
+    @media screen and (max-width: 768px) {
+        .stColumns {
+            display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
-        }
-        
-        div[data-testid="column"]:nth-child(1) {
-            flex: 0 0 50px !important;  /* Smaller icons on mobile */
-            min-width: 50px !important;
-        }
-        
-        div[data-testid="column"]:nth-child(3) {
-            flex: 0 0 70px !important;  /* Smaller share column on mobile */
-            min-width: 70px !important;
-            max-width: 70px !important;
         }
     }
     
@@ -773,21 +757,21 @@ def display_meta_overview_table_with_buttons():
     .change-positive {
         color: #58C855 !important;
         font-size: 0.8rem !important;
-        margin-top: 0px !important;
+        margin-top: -2px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-negative {
         color: #FD6C6C !important;
         font-size: 0.8rem !important;
-        margin-top: 0px !important;
+        margin-top: -2px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-neutral {
         color: #888888 !important;
         font-size: 0.8rem !important;
-        margin-top: 0px !important;
+        margin-top: -2px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
