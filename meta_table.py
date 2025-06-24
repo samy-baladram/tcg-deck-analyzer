@@ -652,7 +652,7 @@ def display_losers_table():
         print(f"Display error: {e}")
 
 def display_meta_overview_table_with_buttons():
-    """Display meta overview table with manual deck selection buttons"""
+    """Display meta overview table with manual deck selection buttons - enhanced compact layout"""
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
@@ -669,7 +669,7 @@ def display_meta_overview_table_with_buttons():
     # Display table header
     st.write("##### Meta Overview - Top 20 Archetypes")
     
-    # Custom CSS for button styling
+    # Custom CSS for styling
     st.markdown("""
     <style>
     .deck-button {
@@ -685,63 +685,107 @@ def display_meta_overview_table_with_buttons():
     .deck-button:hover {
         color: #0080CC !important;
     }
+    .change-positive {
+        color: #4FCC20 !important;
+        font-size: 0.8rem !important;
+        margin-top: 2px !important;
+    }
+    .change-negative {
+        color: #FF4B4B !important;
+        font-size: 0.8rem !important;
+        margin-top: 2px !important;
+    }
+    .change-neutral {
+        color: #888888 !important;
+        font-size: 0.8rem !important;
+        margin-top: 2px !important;
+    }
+    .icons-container {
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+    }
     </style>
     """, unsafe_allow_html=True)
     
-    # Create table with manual layout
-    # Header row
-    col1, col2, col3, col4, col5, col6 = st.columns([0.5, 0.5, 3, 1, 1, 1])
+    # Header row with updated layout
+    col1, col2, col3 = st.columns([1, 3, 1.2])
     with col1:
-        st.write("**1**")
+        st.write("**Icons**")
     with col2:
-        st.write("**2**")
-    with col3:
         st.write("**Deck**")
-    with col4:
+    with col3:
         st.write("**Share-7d**")
-    with col5:
-        st.write("**Change**")
-    with col6:
-        st.write("**Win %**")
     
     st.divider()
     
+    # Helper function to extract numeric value from trend indicator
+    def extract_trend_value(trend_indicator):
+        """Extract numeric value and determine color from trend indicator"""
+        if not trend_indicator or trend_indicator == "➡️ 0.00%":
+            return 0, "neutral"
+        
+        # Remove emoji and extract number
+        if "📈" in trend_indicator:
+            value_str = trend_indicator.replace("📈 +", "").replace("%", "")
+            try:
+                value = float(value_str)
+                return value, "positive"
+            except:
+                return 0, "neutral"
+        elif "📉" in trend_indicator:
+            value_str = trend_indicator.replace("📉 -", "").replace("%", "")
+            try:
+                value = float(value_str)
+                return -value, "negative"
+            except:
+                return 0, "neutral"
+        else:
+            return 0, "neutral"
+    
     # Data rows
     for idx, row in meta_df.iterrows():
-        col1, col2, col3, col4, col5, col6 = st.columns([0.5, 0.5, 3, 1, 1, 1])
+        col1, col2, col3 = st.columns([1, 3, 1.2])
         
-        # Pokemon icons
+        # Combined Pokemon icons
         with col1:
+            icons_html = '<div class="icons-container">'
+            
             if row['pokemon_url1']:
-                st.image(row['pokemon_url1'], width=30)
-            else:
-                st.write("")
-        
-        with col2:
+                icons_html += f'<img src="{row["pokemon_url1"]}" width="28" style="border-radius: 4px;">'
+            
             if row['pokemon_url2']:
-                st.image(row['pokemon_url2'], width=30)
-            else:
-                st.write("")
+                icons_html += f'<img src="{row["pokemon_url2"]}" width="28" style="border-radius: 4px;">'
+            
+            icons_html += '</div>'
+            st.markdown(icons_html, unsafe_allow_html=True)
         
         # Clickable deck name
-        with col3:
+        with col2:
             button_key = f"deck_select_{idx}_{row['deck_name']}"
             if st.button(row['formatted_deck_name'], key=button_key, type="tertiary", use_container_width=True):
                 st.session_state.deck_to_analyze = row['deck_name']
                 st.rerun()
         
-        # Stats
-        with col4:
+        # Share with change underneath
+        with col3:
+            # Main share value
             st.write(f"{row['share_7d']:.2f}%")
-        
-        with col5:
-            st.write(row['trend_indicator'])
-        
-        with col6:
-            st.write(f"{row['win_rate']:.1f}%")
+            
+            # Change value underneath with color coding
+            trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+            
+            if trend_type == "positive":
+                change_html = f'<div class="change-positive">+{trend_value:.2f}%</div>'
+            elif trend_type == "negative":
+                change_html = f'<div class="change-negative">{trend_value:.2f}%</div>'
+            else:
+                change_html = f'<div class="change-neutral">0.00%</div>'
+            
+            st.markdown(change_html, unsafe_allow_html=True)
     
     # Add explanation
     st.caption(
         "**Click on any deck name** to analyze it in detail. "
-        "Meta shares calculated from recent tournament data."
+        "Green/red values show 7d to 3d trend changes."
     )
