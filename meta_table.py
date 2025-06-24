@@ -650,3 +650,98 @@ def display_losers_table():
     except Exception as e:
         st.error(f"Error displaying losers table: {str(e)}")
         print(f"Display error: {e}")
+
+def display_meta_overview_table_with_buttons():
+    """Display meta overview table with manual deck selection buttons"""
+    
+    with st.spinner("Loading meta overview data..."):
+        builder = MetaTableBuilder()
+        meta_df = builder.build_complete_meta_table(20)
+    
+    if meta_df.empty:
+        st.warning("No meta data available at this time.")
+        return
+    
+    # Format for display
+    formatter = MetaDisplayFormatter()
+    meta_df = formatter.prepare_display_dataframe(meta_df)
+    
+    # Display table header
+    st.write("##### Meta Overview - Top 20 Archetypes")
+    
+    # Custom CSS for button styling
+    st.markdown("""
+    <style>
+    .deck-button {
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #00A0FF !important;
+        text-decoration: underline !important;
+        cursor: pointer !important;
+        font-size: inherit !important;
+        font-family: inherit !important;
+    }
+    .deck-button:hover {
+        color: #0080CC !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Create table with manual layout
+    # Header row
+    col1, col2, col3, col4, col5, col6 = st.columns([0.5, 0.5, 3, 1, 1, 1])
+    with col1:
+        st.write("**1**")
+    with col2:
+        st.write("**2**")
+    with col3:
+        st.write("**Deck**")
+    with col4:
+        st.write("**Share-7d**")
+    with col5:
+        st.write("**Change**")
+    with col6:
+        st.write("**Win %**")
+    
+    st.divider()
+    
+    # Data rows
+    for idx, row in meta_df.iterrows():
+        col1, col2, col3, col4, col5, col6 = st.columns([0.5, 0.5, 3, 1, 1, 1])
+        
+        # Pokemon icons
+        with col1:
+            if row['pokemon_url1']:
+                st.image(row['pokemon_url1'], width=30)
+            else:
+                st.write("")
+        
+        with col2:
+            if row['pokemon_url2']:
+                st.image(row['pokemon_url2'], width=30)
+            else:
+                st.write("")
+        
+        # Clickable deck name
+        with col3:
+            button_key = f"deck_select_{idx}_{row['deck_name']}"
+            if st.button(row['formatted_deck_name'], key=button_key, type="tertiary", use_container_width=True):
+                st.session_state.deck_to_analyze = row['deck_name']
+                st.rerun()
+        
+        # Stats
+        with col4:
+            st.write(f"{row['share_7d']:.2f}%")
+        
+        with col5:
+            st.write(row['trend_indicator'])
+        
+        with col6:
+            st.write(f"{row['win_rate']:.1f}%")
+    
+    # Add explanation
+    st.caption(
+        "**Click on any deck name** to analyze it in detail. "
+        "Meta shares calculated from recent tournament data."
+    )
