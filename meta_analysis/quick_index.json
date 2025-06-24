@@ -1,8 +1,8 @@
 {
-  "last_updated": 1750781656,
-  "total_tournaments": 267,
+  "last_updated": 1750795983,
+  "total_tournaments": 268,
   "format_distribution": {
-    "Standard": 205,
+    "Standard": 206,
     "STANDARD": 41,
     "NOEX": 21
   },
@@ -14,12 +14,12 @@
     "giratina-ex-a2b-darkrai-ex-a2",
     "silvally-a3a-rampardos-a2",
     "buzzwole-ex-pheromosa-a3a",
-    "giratina-ex-a2b-greninja-a1",
     "solgaleo-ex-a3-shiinotic-a3a",
+    "giratina-ex-a2b-greninja-a1",
     "charizard-ex-a2b-incineroar-ex-a3",
     "arceus-ex-crobat-a2a",
-    "meowscarada-a2b-decidueye-ex-a3",
     "buzzwole-ex-celesteela-a3a",
+    "meowscarada-a2b-decidueye-ex-a3",
     "garchomp-ex-a2a-rampardos-a2"
   ],
   "top_archetypes_by_format": {
@@ -27,8 +27,8 @@
       "giratina-ex-a2b-darkrai-ex-a2",
       "silvally-a3a-rampardos-a2",
       "buzzwole-ex-pheromosa-a3a",
-      "giratina-ex-a2b-greninja-a1",
-      "solgaleo-ex-a3-shiinotic-a3a"
+      "solgaleo-ex-a3-shiinotic-a3a",
+      "giratina-ex-a2b-greninja-a1"
     ],
     "STANDARD": [
       "giratina-ex-a2b-darkrai-ex-a2",
