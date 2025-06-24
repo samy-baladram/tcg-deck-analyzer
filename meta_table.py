@@ -865,7 +865,7 @@ def display_losers_table():
 #         "Green/red values show 7d to 3d trend changes."
 #     )
 def display_meta_overview_table_with_buttons():
-    """Display meta overview table with manual deck selection buttons - HTML layout"""
+    """Display meta overview table with manual deck selection buttons - enhanced compact layout"""
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
@@ -882,103 +882,170 @@ def display_meta_overview_table_with_buttons():
     # Display table header
     st.write("##### Meta Overview - Top 20 Archetypes")
     
-    # Custom CSS
+    # Custom CSS for styling
     st.markdown("""
     <style>
-    .meta-table {
-        width: 100%;
-        border-collapse: collapse;
+    /* CSS Grid container styling */
+    .grid-container {
+        display: grid !important;
+        grid-template-columns: 20% 50% 30% !important;
+        gap: 8px !important;
+        align-items: center !important;
+        padding: 8px 0 !important;
+        border-bottom: 1px solid rgba(137, 148, 166, 0.1) !important;
+        width: 100% !important;
     }
-    .meta-row {
-        display: flex;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(137, 148, 166, 0.2);
+    
+    .deck-button {
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #00A0FF !important;
+        text-decoration: underline !important;
+        cursor: pointer !important;
+        font-size: inherit !important;
+        font-family: inherit !important;
     }
-    .meta-icons {
-        flex: 0 0 60px;
-        display: flex;
-        gap: 2px;
+    .deck-button:hover {
+        color: #0080CC !important;
     }
-    .meta-deck {
-        flex: 1;
-        padding: 0 8px;
+    
+    /* Force left alignment for buttons even when wrapping */
+    .stButton > button {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        line-height: 1.1 !important;
+        padding: 4px 8px !important;
+        width: 100% !important;
     }
-    .meta-share {
-        flex: 0 0 80px;
-        text-align: right;
+    
+    .stButton > button p {
+        text-align: left !important;
+        margin: 0 !important;
     }
-    .change-positive { color: #4FCC20; font-size: 0.8rem; }
-    .change-negative { color: #FF4B4B; font-size: 0.8rem; }
-    .change-neutral { color: #888888; font-size: 0.8rem; }
+
+    .share-column {
+        text-align: right !important;
+    }
+    
+    .change-positive {
+        color: #58C855 !important;
+        font-size: 0.8rem !important;
+        margin-top: -2px !important;
+        line-height: 1 !important;
+        text-align: right !important;
+    }
+    .change-negative {
+        color: #FD6C6C !important;
+        font-size: 0.8rem !important;
+        margin-top: -2px !important;
+        line-height: 1 !important;
+        text-align: right !important;
+    }
+    .change-neutral {
+        color: #888888 !important;
+        font-size: 0.8rem !important;
+        margin-top: -2px !important;
+        line-height: 1 !important;
+        text-align: right !important;
+    }
+    .icons-container {
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+    }
+    
+    /* Prevent mobile stacking with CSS Grid */
+    @media screen and (max-width: 768px) {
+        .grid-container {
+            grid-template-columns: 15% 55% 30% !important;
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
     
-    # Header
-    st.markdown("""
-    <div class="meta-row" style="font-weight: bold; border-bottom: 2px solid rgba(137, 148, 166, 0.4);">
-        <div class="meta-icons">Icons</div>
-        <div class="meta-deck">Deck</div>
-        <div class="meta-share">Share-7d</div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Helper function for trend values
+    # Helper function to extract numeric value from trend indicator
     def extract_trend_value(trend_indicator):
-        if not trend_indicator or "➡️" in trend_indicator:
+        """Extract numeric value and determine color from trend indicator"""
+        if not trend_indicator or trend_indicator == "➡️ 0.00%":
             return 0, "neutral"
+        
+        # Remove emoji and extract number
         if "📈" in trend_indicator:
             value_str = trend_indicator.replace("📈 +", "").replace("%", "")
             try:
-                return float(value_str), "positive"
+                value = float(value_str)
+                return value, "positive"
             except:
                 return 0, "neutral"
         elif "📉" in trend_indicator:
             value_str = trend_indicator.replace("📉 -", "").replace("%", "")
             try:
-                return float(value_str), "negative"
+                value = float(value_str)
+                return -value, "negative"
             except:
                 return 0, "neutral"
-        return 0, "neutral"
+        else:
+            return 0, "neutral"
     
-    # Data rows with buttons
+    # Data rows using CSS Grid approach
     for idx, row in meta_df.iterrows():
-        # Create HTML row
+        # Create a container with CSS Grid
+        st.markdown(f'''
+        <div style="
+            display: grid !important;
+            grid-template-columns: 20% 50% 30% !important;
+            gap: 8px !important;
+            align-items: center !important;
+            padding: 8px 0 !important;
+            border-bottom: 1px solid rgba(137, 148, 166, 0.1) !important;
+            min-height: 40px !important;
+        ">
+            <div class="icons-container">
+        ''', unsafe_allow_html=True)
+        
+        # Icons in first grid cell
         icons_html = ""
         if row['pokemon_url1']:
-            icons_html += f'<img src="{row["pokemon_url1"]}" width="28" style="border-radius: 4px;">'
+            icons_html += f'<img src="{row["pokemon_url1"]}" height="28" style="border-radius: 0px;">'
         if row['pokemon_url2']:
-            icons_html += f'<img src="{row["pokemon_url2"]}" width="28" style="border-radius: 4px;">'
+            icons_html += f'<img src="{row["pokemon_url2"]}" height="28" style="border-radius: 0px; margin-right:3px;">'
         
+        st.markdown(f'''
+                {icons_html}
+            </div>
+            <div style="grid-column: 2;">
+        ''', unsafe_allow_html=True)
+        
+        # Button in second grid cell
+        button_key = f"deck_select_{idx}_{row['deck_name']}"
+        if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
+            st.session_state.deck_to_analyze = row['deck_name']
+            st.rerun()
+        
+        # Share and trend in third grid cell
         trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+        
         if trend_type == "positive":
-            change_html = f'<div class="change-positive">+{trend_value:.2f}%</div>'
+            change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
         elif trend_type == "negative":
-            change_html = f'<div class="change-negative">{trend_value:.2f}%</div>'
+            change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
         else:
             change_html = f'<div class="change-neutral">0.00%</div>'
         
-        # Use container with columns for the button
-        with st.container():
-            st.markdown(f"""
-            <div class="meta-row">
-                <div class="meta-icons">{icons_html}</div>
-                <div class="meta-deck">
-            """, unsafe_allow_html=True)
-            
-            # Button in the middle
-            button_key = f"deck_select_{idx}_{row['deck_name']}"
-            if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
-                st.session_state.deck_to_analyze = row['deck_name']
-                st.rerun()
-            
-            st.markdown(f"""
-                </div>
-                <div class="meta-share">
-                    {row['share_7d']:.2f}%
-                    {change_html}
-                </div>
+        st.markdown(f'''
             </div>
-            """, unsafe_allow_html=True)
+            <div style="grid-column: 3; text-align: right;">
+                <div class="share-column">{row["share_7d"]:.2f}%</div>
+                {change_html}
+            </div>
+        </div>
+        ''', unsafe_allow_html=True)
     
-    st.caption("**Click on any deck name** to analyze it in detail.")
+    # Add explanation
+    st.caption(
+        "**Click on any deck name** to analyze it in detail. "
+        "Green/red values show 7d to 3d trend changes."
+    )
