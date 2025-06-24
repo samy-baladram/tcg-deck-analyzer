@@ -717,21 +717,21 @@ def display_meta_overview_table_with_buttons():
     .change-positive {
         color: #58C855 !important;
         font-size: 0.8rem !important;
-        margin-top: -15px !important;
+        margin-top: -10px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-negative {
         color: #FD6C6C !important;
         font-size: 0.8rem !important;
-        margin-top: -15px !important;
+        margin-top: -10px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
     .change-neutral {
         color: #888888 !important;
         font-size: 0.8rem !important;
-        margin-top: -15px !important;
+        margin-top: -10px !important;
         line-height: 1 !important;
         text-align: right !important;
     }
@@ -790,7 +790,7 @@ def display_meta_overview_table_with_buttons():
                 icons_html += f'<img src="{row["pokemon_url1"]}" width="23" style="border-radius: 0px;">'
             
             if row['pokemon_url2']:
-                icons_html += f'<img src="{row["pokemon_url2"]}" width="23" style="border-radius: 0px;">'
+                icons_html += f'<img src="{row["pokemon_url2"]}" width="23" style="border-radius: 0px; margin-right:3px;">'
             
             icons_html += '</div>'
             st.markdown(icons_html, unsafe_allow_html=True)
@@ -811,9 +811,9 @@ def display_meta_overview_table_with_buttons():
             trend_value, trend_type = extract_trend_value(row['trend_indicator'])
             
             if trend_type == "positive":
-                change_html = f'<div class="change-positive">+{trend_value:.2f}%</div>'
+                change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
             elif trend_type == "negative":
-                change_html = f'<div class="change-negative">{trend_value:.2f}%</div>'
+                change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
             else:
                 change_html = f'<div class="change-neutral">0.00%</div>'
             
