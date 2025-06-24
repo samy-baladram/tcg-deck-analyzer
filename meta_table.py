@@ -746,13 +746,13 @@ def display_meta_overview_table_with_buttons():
     # Header row with updated layout
     col1, col2, col3 = st.columns([1, 3, 1.2])
     with col1:
-        st.write("**Icons**")
+        st.write(" ")
     with col2:
         st.write("**Deck**")
     with col3:
         st.markdown('<div class="share-column"><strong>Share-7d</strong></div>', unsafe_allow_html=True)
     
-    st.markdown('<hr style="margin: 5px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
+    st.markdown('<hr style="margin: 0px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
     
     # Helper function to extract numeric value from trend indicator
     def extract_trend_value(trend_indicator):
