@@ -865,27 +865,22 @@ def display_meta_overview_table_with_buttons():
     #     "Green/red values show 7d to 3d trend changes."
     # )
     for idx, row in meta_df.iterrows():
-        # Use a container for each row
-        with st.container():
-            # Split into name and stats
-            col_name, col_stats = st.columns([3, 1])
+            trend_value, trend_type = extract_trend_value(row['trend_indicator'])
             
-            with col_name:
-                button_key = f"deck_select_{idx}_{row['deck_name']}"
-                if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
-                    st.session_state.deck_to_analyze = row['deck_name']
-                    st.rerun()
+            # Color code the trend
+            if trend_type == "positive":
+                trend_display = f"📈+{trend_value:.1f}%"
+            elif trend_type == "negative":
+                trend_display = f"📉{trend_value:.1f}%"
+            else:
+                trend_display = "➡️0.0%"
             
-            with col_stats:
-                trend_value, trend_type = extract_trend_value(row['trend_indicator'])
-                color = "#4FCC20" if trend_type == "positive" else "#FF4B4B" if trend_type == "negative" else "#888"
-                
-                st.markdown(f"""
-                <div style="text-align: right;">
-                    <div>{row['share_7d']:.1f}%</div>
-                    <div style="color: {color}; font-size: 0.8rem;">{trend_value:+.1f}%</div>
-                </div>
-                """, unsafe_allow_html=True)
+            # Single button with all info
+            button_text = f"{row['formatted_deck_name']} • {row['share_7d']:.1f}% {trend_display}"
+            button_key = f"deck_select_{idx}_{row['deck_name']}"
             
-            # Small separator
-            st.markdown('<hr style="margin: 3px 0; opacity: 0.3;">', unsafe_allow_html=True)
+            if st.button(button_text, key=button_key, type="tertiary", use_container_width=True):
+                st.session_state.deck_to_analyze = row['deck_name']
+                st.rerun()
+        
+        st.caption("**Click on any deck name** to analyze it in detail.")
