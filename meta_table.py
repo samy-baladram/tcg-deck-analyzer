@@ -1,3 +1,4 @@
+
 """
 Meta Table Module - Clean archetype performance analysis with corrected counting logic
 """
@@ -401,29 +402,51 @@ def display_meta_overview_table():
     st.write("##### Meta Overview - Top 20 Archetypes")
     
     try:
-        # Even more compact version
+        # Create final display DataFrame
         final_df = pd.DataFrame({
-            '': meta_df['pokemon_url1'],      # Empty for icon1
-            ' ': meta_df['pokemon_url2'],     # Space for icon2  
+            'Icon1': meta_df['pokemon_url1'],
+            'Icon2': meta_df['pokemon_url2'], 
             'Deck': meta_df['formatted_deck_name'],
-            '%': meta_df['share_7d'],         # Just % symbol
-            'Δ': meta_df['trend_indicator'],  # Delta for change
+            'Share-7d': meta_df['share_7d'],
+            'Change': meta_df['trend_indicator'],
+            'Win %': meta_df['win_rate']
         })
+        
+        # Define styling function for Change column
+        def style_change_column(val):
+            """Apply conditional styling to Change column"""
+            if not val or val == "0.00%":
+                return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
+            elif val.startswith('+'):
+                return 'color: #58C855; font-size: 0.8rem; font-weight: bold;'
+            elif val.startswith('-'):
+                return 'color: #FD6C6C; font-size: 0.8rem; font-weight: bold;'
+            else:
+                return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
+        
+        # Apply styling to the dataframe
+        styled_df = final_df.style.applymap(
+            style_change_column, 
+            subset=['Change']
+        )
         
         # Configure column display
         column_config = {
-            '': st.column_config.ImageColumn(
-                "", width=25, help="Primary Pokemon"
+            'Icon1': st.column_config.ImageColumn(
+                "1", width=25, help="Primary Pokemon"
             ),
-            ' ': st.column_config.ImageColumn(
-                "", width=25, help="Secondary Pokemon"
+            'Icon2': st.column_config.ImageColumn(
+                "2", width=25, help="Secondary Pokemon"
             ),
             'Deck': st.column_config.TextColumn("Deck", width=120),
-            '%': st.column_config.NumberColumn(
-                "%", width=45, help="Meta share percentage", format="%.1f"  # No %% in format since header is %
+            'Share-7d': st.column_config.NumberColumn(
+                "Share-7d", width=50, help="Meta share in last 7 days", format="%.2f%%"
             ),
-            'Δ': st.column_config.TextColumn(
-                "Δ", width=35, help="Trend change"
+            'Change': st.column_config.TextColumn(
+                "Change", width=50, help="Trend from 7d to 3d average"
+            ),
+            'Win %': st.column_config.NumberColumn(
+                "Win %", width=50, help="Win rate percentage", format="%.1f%%"
             )
         }
         
