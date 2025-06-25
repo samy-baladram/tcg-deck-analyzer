@@ -1292,9 +1292,9 @@ def render_sidebar_from_cache():
     with tab2:
         # Empty tab for experimental tools
         display_meta_overview_table()
-        st.divider()
-        st.write("Experimental")
-        display_meta_overview_table_with_buttons()
+        # st.divider()
+        # st.write("Experimental")
+        # display_meta_overview_table_with_buttons()
     
     with tab3:
         from meta_table import display_gainers_table
