@@ -712,13 +712,6 @@ def display_meta_overview_table_with_buttons():
         flex-direction: row !important;
     }
     
-    /* Your existing styles continue here... */
-    </style>
-    """, unsafe_allow_html=True)
-
-    # Custom CSS for styling
-    st.markdown("""
-    <style>
     /* Force all column containers to stay horizontal */
     .stColumns {
         display: flex !important;
