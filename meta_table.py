@@ -401,7 +401,7 @@ def display_meta_overview_table():
         if row['share_7d'] == 0:
             return "0.0x"
         ratio = row['share_3d'] / row['share_7d']
-        return f"{ratio:.1f}×"
+        return f"{ratio:.1f}x"
     
     # Clean the trend indicators and add ratio
     meta_df['trend_indicator'] = meta_df['trend_indicator'].apply(clean_trend_indicator)
@@ -417,7 +417,7 @@ def display_meta_overview_table():
             ' ': meta_df['pokemon_url2'],     # Space for icon2  
             'Deck': meta_df['formatted_deck_name'],
             '%': meta_df['share_7d'],         # Just % symbol
-           # 'Δ': meta_df['trend_indicator'],  # Delta for change
+            'Δ': meta_df['trend_indicator'],  # Delta for change
             'R': meta_df['ratio'],            # Recent vs overall ratio
         })
         
@@ -457,6 +457,9 @@ def display_meta_overview_table():
         
         # Apply styling to the dataframe
         styled_df = final_df.style.applymap(
+            style_change_column, 
+            subset=['R']
+        ).applymap(
             style_ratio_column,
             subset=['R']
         )
@@ -471,7 +474,7 @@ def display_meta_overview_table():
             ),
             'Deck': st.column_config.TextColumn("Deck", width=110),  # Slightly smaller
             '%': st.column_config.NumberColumn(
-                "%", width=40, help="Meta share percentage", format="%.2f%%"
+                "%", width=40, help="Meta share percentage", format="%.2f"
             ),
             'Δ': st.column_config.TextColumn(
                 "Δ", width=30, help="Trend change"
