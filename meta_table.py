@@ -671,19 +671,7 @@ def display_meta_overview_table_with_buttons():
     
     # Custom CSS for styling
     st.markdown("""
-    <style>
-    /* Nuclear but exclude specific elements */
-    *:not(.stButton):not(.stMarkdown):not(.stText):not(p):not(span):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
-        flex-direction: row !important;
-    }
-    
-    /* Specifically restore vertical layout for elements that need it */
-    .stButton, .stMarkdown, .stText, p, span, h1, h2, h3, h4, h5, h6,
-    [data-testid="stMarkdownContainer"],
-    [data-testid="stText"] {
-        flex-direction: column !important;
-    }
-    
+    <style>    
     .deck-button {
         background: none !important;
         border: none !important;
