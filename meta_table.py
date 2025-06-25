@@ -781,49 +781,79 @@ def display_meta_overview_table_with_buttons():
             return 0, "neutral"
     
     # Data rows
-    for idx, row in meta_df.iterrows():
-        col1, col2, col3 = st.columns([1, 3, 1.2])
+    # for idx, row in meta_df.iterrows():
+    #     col1, col2, col3 = st.columns([1, 3, 1.2])
         
-        # Combined Pokemon icons
-        with col1:
-            icons_html = '<div class="icons-container">'
+    #     # Combined Pokemon icons
+    #     with col1:
+    #         icons_html = '<div class="icons-container">'
             
-            if row['pokemon_url1']:
-                icons_html += f'<img src="{row["pokemon_url1"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
+    #         if row['pokemon_url1']:
+    #             icons_html += f'<img src="{row["pokemon_url1"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
             
-            if row['pokemon_url2']:
-                icons_html += f'<img src="{row["pokemon_url2"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
+    #         if row['pokemon_url2']:
+    #             icons_html += f'<img src="{row["pokemon_url2"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
             
-            icons_html += '</div>'
-            st.markdown(icons_html, unsafe_allow_html=True)
+    #         icons_html += '</div>'
+    #         st.markdown(icons_html, unsafe_allow_html=True)
         
-        # Clickable deck name
-        with col2:
-            button_key = f"deck_select_{idx}_{row['deck_name']}"
-            if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
-                st.session_state.deck_to_analyze = row['deck_name']
-                st.rerun()
+    #     # Clickable deck name
+    #     with col2:
+    #         button_key = f"deck_select_{idx}_{row['deck_name']}"
+    #         if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
+    #             st.session_state.deck_to_analyze = row['deck_name']
+    #             st.rerun()
         
-        # Share with change underneath
-        with col3:
-            # Main share value - right aligned
-            st.markdown(f'<div class="share-column">{row["share_7d"]:.2f}%</div>', unsafe_allow_html=True)
+    #     # Share with change underneath
+    #     with col3:
+    #         # Main share value - right aligned
+    #         st.markdown(f'<div class="share-column">{row["share_7d"]:.2f}%</div>', unsafe_allow_html=True)
             
-            # Change value underneath with color coding
-            trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+    #         # Change value underneath with color coding
+    #         trend_value, trend_type = extract_trend_value(row['trend_indicator'])
             
-            if trend_type == "positive":
-                change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
-            elif trend_type == "negative":
-                change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
-            else:
-                change_html = f'<div class="change-neutral">0.00%</div>'
+    #         if trend_type == "positive":
+    #             change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
+    #         elif trend_type == "negative":
+    #             change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
+    #         else:
+    #             change_html = f'<div class="change-neutral">0.00%</div>'
             
-            st.markdown(change_html, unsafe_allow_html=True)
+    #         st.markdown(change_html, unsafe_allow_html=True)
     
-    # Add explanation
-    st.caption(
-        "**Click on any deck name** to analyze it in detail. "
-        "Green/red values show 7d to 3d trend changes."
-    )
-            
+    # # Add explanation
+    # st.caption(
+    #     "**Click on any deck name** to analyze it in detail. "
+    #     "Green/red values show 7d to 3d trend changes."
+    # )
+
+    # Custom CSS for multi-line buttons
+    st.markdown("""
+    <style>
+    .stButton > button {
+        height: auto !important;
+        padding: 8px 12px !important;
+        white-space: pre-line !important;
+        text-align: left !important;
+        line-height: 1.3 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    for idx, row in meta_df.iterrows():
+        trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+        
+        if trend_type == "positive":
+            trend_display = f"🟢 +{trend_value:.1f}%"
+        elif trend_type == "negative":
+            trend_display = f"🔴 {trend_value:.1f}%"
+        else:
+            trend_display = f"⚪ 0.0%"
+        
+        # Two-line format: name on first line, stats on second
+        button_text = f"{row['formatted_deck_name']}\n📊 {row['share_7d']:.1f}% • {trend_display}"
+        button_key = f"deck_select_{idx}_{row['deck_name']}"
+        
+        if st.button(button_text, key=button_key, type="tertiary", use_container_width=True):
+            st.session_state.deck_to_analyze = row['deck_name']
+            st.rerun()
