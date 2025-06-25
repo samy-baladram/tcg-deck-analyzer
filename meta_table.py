@@ -827,6 +827,75 @@ def display_meta_overview_table_with_buttons():
     #     "Green/red values show 7d to 3d trend changes."
     # )
     # Create custom button layout for each deck
+
+    # CSS for proper overlay button positioning
+    st.markdown("""
+    <style>
+    .card-container {
+        position: relative !important;
+        margin: 5px 0 !important;
+    }
+    
+    .deck-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 10px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .deck-card:hover {
+        background: #f0f0f0;
+        border-color: #00A0FF;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .overlay-button {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 2 !important;
+        background: transparent !important;
+        border: none !important;
+        cursor: pointer !important;
+        border-radius: 8px !important;
+    }
+    
+    .stButton > button {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        z-index: 2 !important;
+        cursor: pointer !important;
+        border-radius: 8px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .stButton > button:hover {
+        background: transparent !important;
+        border: none !important;
+    }
+    
+    .stButton > button p {
+        display: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
     for idx, row in meta_df.iterrows():
         with st.container():
             trend_value, trend_type = extract_trend_value(row['trend_indicator'])
