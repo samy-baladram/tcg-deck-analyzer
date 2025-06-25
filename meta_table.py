@@ -668,26 +668,10 @@ def display_meta_overview_table_with_buttons():
     
     # Display table header
     st.write("##### Meta Overview - Top 20 Archetypes")
-
-    # Add this at the very beginning of your function:
+    
+    # Custom CSS for styling
     st.markdown("""
-    <meta name="viewport" content="width=1200, initial-scale=0.5, user-scalable=yes">
     <style>
-    /* Force minimum page width */
-    .main .block-container {
-        min-width: 800px !important;
-    }
-    
-    
-    /* Nuclear option - override ALL flex directions */
-    * {
-        flex-direction: row !important;
-    }
-    
-    *[style*="flex-direction: column"] {
-        flex-direction: row !important;
-    }
-    
     /* Force all column containers to stay horizontal */
     .stColumns {
         display: flex !important;
@@ -880,3 +864,4 @@ def display_meta_overview_table_with_buttons():
         "**Click on any deck name** to analyze it in detail. "
         "Green/red values show 7d to 3d trend changes."
     )
+            
