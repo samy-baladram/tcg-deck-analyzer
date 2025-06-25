@@ -831,72 +831,60 @@ def display_meta_overview_table_with_buttons():
     # CSS for proper overlay button positioning
     st.markdown("""
     <style>
-    .card-container {
-        position: relative !important;
-        margin: 5px 0 !important;
-    }
-    
-    .deck-card {
+    .deck-info-card {
         border: 1px solid #e0e0e0;
-        border-radius: 8px;
+        border-radius: 8px 8px 0 0;
         padding: 10px;
         background: #fafafa;
         display: flex;
         align-items: center;
         gap: 10px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        position: relative;
-        z-index: 1;
+        margin-bottom: -1px;
     }
     
-    .deck-card:hover {
-        background: #f0f0f0;
-        border-color: #00A0FF;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .overlay-button {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        z-index: 2 !important;
-        background: transparent !important;
-        border: none !important;
-        cursor: pointer !important;
-        border-radius: 8px !important;
+    .deck-button-container {
+        margin-top: -1px;
     }
     
     .stButton > button {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        background: transparent !important;
-        border: none !important;
-        z-index: 2 !important;
-        cursor: pointer !important;
-        border-radius: 8px !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        width: 100% !important;
+        border-radius: 0 0 8px 8px !important;
+        border-top: none !important;
+        border: 1px solid #e0e0e0 !important;
+        background: #f8f9fa !important;
+        color: #00A0FF !important;
+        font-weight: bold !important;
+        padding: 8px 12px !important;
+        transition: all 0.2s ease !important;
     }
     
     .stButton > button:hover {
-        background: transparent !important;
-        border: none !important;
+        background: #00A0FF !important;
+        color: white !important;
+        border-color: #00A0FF !important;
     }
     
     .stButton > button p {
-        display: none !important;
+        margin: 0 !important;
+        text-align: center !important;
+    }
+    
+    .card-complete {
+        margin: 5px 0 15px 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .card-complete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
     </style>
     """, unsafe_allow_html=True)
     
-    # Create cards with proper button overlay
+    # Create each deck as a card with separate info section and button
     for idx, row in meta_df.iterrows():
         trend_value, trend_type = extract_trend_value(row['trend_indicator'])
         
@@ -911,36 +899,45 @@ def display_meta_overview_table_with_buttons():
             trend_color = "#888888"
             trend_text = "0.0%"
         
-        # Create container with relative positioning
-        st.markdown('<div class="card-container">', unsafe_allow_html=True)
+        # Create container for the complete card
+        st.markdown('<div class="card-complete">', unsafe_allow_html=True)
         
-        # Create the visual card
-        card_html = f"""
-        <div class="deck-card">
+        # Info section (not clickable)
+        info_card_html = f"""
+        <div class="deck-info-card">
             <div style="display: flex; gap: 3px; min-width: 60px;">
                 <img src="{row.get('pokemon_url1', '')}" style="width: 28px; height: 28px; border-radius: 4px;">
                 <img src="{row.get('pokemon_url2', '')}" style="width: 28px; height: 28px; border-radius: 4px;">
             </div>
             <div style="flex: 1; min-width: 0;">
-                <div style="font-weight: bold; color: #333; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <div style="font-weight: bold; color: #333; font-size: 0.95rem; margin-bottom: 2px;">
                     {row['formatted_deck_name']}
                 </div>
+                <div style="font-size: 0.8rem; color: #666;">
+                    Meta Share: {row['share_7d']:.1f}% • Change: <span style="color: {trend_color};">{trend_text}</span>
+                </div>
             </div>
-            <div style="text-align: right; min-width: 80px;">
-                <div style="font-weight: bold; color: #00A0FF;">{row['share_7d']:.1f}%</div>
-                <div style="color: {trend_color}; font-size: 0.8rem;">{trend_text}</div>
+            <div style="text-align: right; min-width: 50px;">
+                <div style="font-size: 0.8rem; color: #666;">Rank</div>
+                <div style="font-weight: bold; color: #00A0FF; font-size: 1.1rem;">#{idx + 1}</div>
             </div>
         </div>
         """
         
-        st.markdown(card_html, unsafe_allow_html=True)
+        st.markdown(info_card_html, unsafe_allow_html=True)
         
-        # Create invisible overlay button
+        # Button section (guaranteed to work)
+        st.markdown('<div class="deck-button-container">', unsafe_allow_html=True)
         button_key = f"deck_select_{idx}_{row['deck_name']}"
-        if st.button("", key=button_key, type="tertiary", help=f"Analyze {row['formatted_deck_name']}"):
+        
+        if st.button(f"📊 Analyze {row['formatted_deck_name']}", 
+                    key=button_key, 
+                    type="tertiary", 
+                    use_container_width=True):
             st.session_state.deck_to_analyze = row['deck_name']
             st.rerun()
         
         st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
     
-    st.caption("**Click on any card** to analyze that deck in detail.")
+    st.caption("**Click the analyze buttons** to examine each deck in detail.")
