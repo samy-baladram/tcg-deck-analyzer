@@ -684,7 +684,16 @@ def display_meta_overview_table_with_buttons():
         display: flex !important;
         flex-direction: column !important;
     }
+
+    /* Nuclear option - override ALL flex directions */
+    * {
+        flex-direction: row !important;
+    }
     
+    *[style*="flex-direction: column"] {
+        flex-direction: row !important;
+    }
+
     /* Specific column widths */
     .stColumns > div:nth-child(1) {
         flex: 0 0 20% !important;  /* Icons */
