@@ -678,23 +678,6 @@ def display_meta_overview_table_with_buttons():
         min-width: 800px !important;
     }
     
-    /* Target the parent container more aggressively */
-    div[data-testid="column"]:first-child {
-        flex: 0 0 80px !important;
-        min-width: 80px !important;
-        max-width: 80px !important;
-    }
-    
-    div[data-testid="column"]:nth-child(2) {
-        flex: 1 1 auto !important;
-        min-width: 120px !important;
-    }
-    
-    div[data-testid="column"]:last-child {
-        flex: 0 0 100px !important;
-        min-width: 100px !important;
-        max-width: 100px !important;
-    }
     
     /* Nuclear option - override ALL flex directions */
     * {
