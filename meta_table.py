@@ -417,7 +417,7 @@ def display_meta_overview_table():
             ' ': meta_df['pokemon_url2'],     # Space for icon2  
             'Deck': meta_df['formatted_deck_name'],
             '%': meta_df['share_7d'],         # Just % symbol
-            'Δ': meta_df['trend_indicator'],  # Delta for change
+            #'Δ': meta_df['trend_indicator'],  # Delta for change
             'R': meta_df['ratio'],            # Recent vs overall ratio
         })
         
@@ -472,7 +472,7 @@ def display_meta_overview_table():
             ' ': st.column_config.ImageColumn(
                 "", width=25, help="Secondary Pokemon"
             ),
-            'Deck': st.column_config.TextColumn("Deck", width=110),  # Slightly smaller
+            'Deck': st.column_config.TextColumn("Deck", width=140),  # Slightly smaller
             '%': st.column_config.NumberColumn(
                 "%", width=40, help="Meta share percentage", format="%.2f"
             ),
