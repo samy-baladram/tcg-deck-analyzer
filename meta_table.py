@@ -432,17 +432,17 @@ def display_meta_overview_table():
         # Configure column display
         column_config = {
             'Icon1': st.column_config.ImageColumn(
-                "1", width=30, help="Primary Pokemon"
+                "1", width=25, help="Primary Pokemon"
             ),
             'Icon2': st.column_config.ImageColumn(
-                "2", width=30, help="Secondary Pokemon"
+                "2", width=25, help="Secondary Pokemon"
             ),
             'Deck': st.column_config.TextColumn("Deck", width=120),
             'Share-7d': st.column_config.NumberColumn(
-                "Share-7d", width=60, help="Meta share in last 7 days", format="%.2f%%"
+                "Share-7d", width=50, help="Meta share in last 7 days", format="%.2f%%"
             ),
             'Change': st.column_config.TextColumn(
-                "Change", width=60, help="Trend from 7d to 3d average"
+                "Change", width=50, help="Trend from 7d to 3d average"
             ),
             'Win %': st.column_config.NumberColumn(
                 "Win %", width=50, help="Win rate percentage", format="%.1f%%"
