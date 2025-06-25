@@ -408,7 +408,7 @@ def display_meta_overview_table():
     meta_df['ratio'] = meta_df.apply(calculate_ratio, axis=1)
     
     # Display table header
-    st.write("##### Meta Overview - Top 20 Archetypes")
+    st.write("##### Meta Overview - Top 20 Archetypes Share")
     
     try:
         # Create final display DataFrame
