@@ -673,29 +673,10 @@ def display_meta_overview_table_with_buttons():
     st.markdown("""
     <style>
     /* Target elements that have multiple column children */
-    div:has(> div[data-testid="column"]) {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-    }
-    
-    /* Force any div containing columns to be horizontal */
-    div[data-testid="column"]:first-child:not(:only-child) {
-        display: inline-flex !important;
-    }
-    
-    div[data-testid="column"]:first-child:not(:only-child) ~ div[data-testid="column"] {
-        display: inline-flex !important;
-    }
-    
-    /* Target containers with column children - parent level */
-    div > div[data-testid="column"]:first-child {
-        display: flex !important;
-    }
-    
-    div > div[data-testid="column"]:first-child:parent {
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
+    div:has(> [data-testid="column"] + [data-testid="column"]) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     }
     
     .deck-button {
