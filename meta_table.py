@@ -704,7 +704,21 @@ def display_meta_overview_table_with_buttons():
         flex: 0 0 30% !important;  /* Share */
         max-width: 30% !important;
     }
+
+    /* Target only the horizontal container that holds columns */
+    .row-widget.stHorizontal {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+    }
     
+    /* More specific - target only divs that contain column test-ids */
+    div:has([data-testid="column"]) {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+    }
+
     /* Override mobile stacking completely */
     @media screen and (max-width: 768px) {
         .stColumns {
