@@ -312,11 +312,11 @@ class MetaDisplayFormatter:
     def format_trend_indicator(trend_change, trend_direction):
         """Format trend change as colored indicator"""
         if trend_direction == 'up':
-            return f"📈 +{abs(trend_change):.2f}%"
+            return f"+{abs(trend_change):.2f}%"
         elif trend_direction == 'down':
-            return f"📉 -{abs(trend_change):.2f}%"
+            return f"-{abs(trend_change):.2f}%"
         else:
-            return f"➡️ {trend_change:.2f}%"
+            return f"{trend_change:.2f}%"
     
     @staticmethod
     def prepare_display_dataframe(meta_df):
@@ -362,7 +362,7 @@ class MetaDisplayFormatter:
 
 
 def display_meta_overview_table():
-    """Main function to display the meta overview table with corrected calculations"""
+    """Main function to display the meta overview table with styled change column"""
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
@@ -376,6 +376,27 @@ def display_meta_overview_table():
     formatter = MetaDisplayFormatter()
     meta_df = formatter.prepare_display_dataframe(meta_df)
     
+    # Clean up trend indicators - remove emojis
+    def clean_trend_indicator(trend_indicator):
+        """Remove emojis and return clean percentage"""
+        if not trend_indicator:
+            return "0.00%"
+        
+        # Remove emojis and clean up
+        clean_str = trend_indicator.replace("📈", "").replace("📉", "").replace("➡️", "").strip()
+        
+        # Ensure proper +/- formatting
+        if not clean_str.startswith(('+', '-')) and clean_str != "0.00%":
+            if "+" in trend_indicator or "📈" in trend_indicator:
+                clean_str = "+" + clean_str
+            elif "-" in trend_indicator or "📉" in trend_indicator:
+                clean_str = "-" + clean_str
+        
+        return clean_str
+    
+    # Clean the trend indicators
+    meta_df['trend_indicator'] = meta_df['trend_indicator'].apply(clean_trend_indicator)
+    
     # Display table header
     st.write("##### Meta Overview - Top 20 Archetypes")
     
@@ -385,15 +406,28 @@ def display_meta_overview_table():
             'Icon1': meta_df['pokemon_url1'],
             'Icon2': meta_df['pokemon_url2'], 
             'Deck': meta_df['formatted_deck_name'],
-            #'Count-7d': meta_df['archetype_count_7d'],
-            #'Total-7d': meta_df['total_count_7d'],
             'Share-7d': meta_df['share_7d'],
-            #'Count-3d': meta_df['archetype_count_3d'],
-            #'Total-3d': meta_df['total_count_3d'],
-            #'Share-3d': meta_df['share_3d'],
             'Change': meta_df['trend_indicator'],
             'Win %': meta_df['win_rate']
         })
+        
+        # Define styling function for Change column
+        def style_change_column(val):
+            """Apply conditional styling to Change column"""
+            if not val or val == "0.00%":
+                return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
+            elif val.startswith('+'):
+                return 'color: #58C855; font-size: 0.8rem; font-weight: bold;'
+            elif val.startswith('-'):
+                return 'color: #FD6C6C; font-size: 0.8rem; font-weight: bold;'
+            else:
+                return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
+        
+        # Apply styling to the dataframe
+        styled_df = final_df.style.applymap(
+            style_change_column, 
+            subset=['Change']
+        )
         
         # Configure column display
         column_config = {
@@ -403,47 +437,26 @@ def display_meta_overview_table():
             'Icon2': st.column_config.ImageColumn(
                 "2", width=30, help="Secondary Pokemon"
             ),
-            'Deck': st.column_config.TextColumn("Deck", width=150),
-            # 'Count-7d': st.column_config.NumberColumn(
-            #     "Count-7d", width=150, help="Archetype appearances in last 7 days", format="%d"
-            # ),
-            # 'Total-7d': st.column_config.NumberColumn(
-            #     "Total-7d", help="Total tournament players in last 7 days", format="%d"
-            # ),
+            'Deck': st.column_config.TextColumn("Deck", width=120),
             'Share-7d': st.column_config.NumberColumn(
-                "Share-7d", width=70, help="Meta share in last 7 days", format="%.2f%%"
+                "Share-7d", width=60, help="Meta share in last 7 days", format="%.2f%%"
             ),
-            # 'Count-3d': st.column_config.NumberColumn(
-            #     "Count-3d", help="Archetype appearances in last 3 days", format="%d"
-            # ),
-            # 'Total-3d': st.column_config.NumberColumn(
-            #     "Total-3d", help="Total tournament players in last 3 days", format="%d"
-            # ),
-            # 'Share-3d': st.column_config.NumberColumn(
-            #     "Share-3d", help="Meta share in last 3 days", format="%.2f%%"
-            # ),
             'Change': st.column_config.TextColumn(
-                "Change", width=80, help="Trend from 7d to 3d average", 
+                "Change", width=60, help="Trend from 7d to 3d average"
             ),
             'Win %': st.column_config.NumberColumn(
-                "Win %", width=70, help="Win rate percentage", format="%.1f%%"
+                "Win %", width=50, help="Win rate percentage", format="%.1f%%"
             )
         }
         
-        # Display the data table
+        # Display the styled dataframe
         st.dataframe(
-            final_df,
+            styled_df,
             column_config=column_config,
             hide_index=True,
             height=750,
             use_container_width=True
         )
-        
-        # Add explanation note
-        # st.caption("""
-        # **Note**: Meta shares are calculated as (Archetype Players) / (Total Tournament Players) × 100. 
-        # This ensures accurate percentages based on actual tournament sizes, not just archetype appearance counts.
-        # """)
         
     except Exception as e:
         st.error(f"Error displaying meta table: {str(e)}")
