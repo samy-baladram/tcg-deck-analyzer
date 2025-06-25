@@ -705,6 +705,27 @@ def display_meta_overview_table_with_buttons():
         max-width: 30% !important;
     }
 
+    div[data-testid="column"] {
+    display: flex !important;
+    flex-direction: column !important;
+    }
+    
+    /* Target the parent container of columns */
+    div[data-testid="column"]:first-child {
+        flex: 0 0 20% !important;
+        min-width: 60px !important;
+    }
+    
+    div[data-testid="column"]:nth-child(2) {
+        flex: 1 1 50% !important;
+        min-width: 100px !important;
+    }
+    
+    div[data-testid="column"]:last-child {
+        flex: 0 0 30% !important;
+        min-width: 80px !important;
+    }
+    
     /* Target only the horizontal container that holds columns */
     .row-widget.stHorizontal {
         display: flex !important;
