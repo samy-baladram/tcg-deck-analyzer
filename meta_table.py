@@ -678,13 +678,6 @@ def display_meta_overview_table_with_buttons():
         min-width: 800px !important;
     }
     
-    /* Your existing styles but with even more aggressive overrides */
-    div[data-testid="column"] {
-        display: flex !important;
-        flex-direction: column !important;
-        min-width: 0 !important;
-    }
-    
     /* Target the parent container more aggressively */
     div[data-testid="column"]:first-child {
         flex: 0 0 80px !important;
