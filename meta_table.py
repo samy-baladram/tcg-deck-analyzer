@@ -827,10 +827,10 @@ def display_meta_overview_table_with_buttons():
             icons_html = '<div class="icons-container">'
             
             if row['pokemon_url1']:
-                icons_html += f'<img src="{row["pokemon_url1"]}" style="max-height:28px; max-width: 50%; border-radius: 0px;">'
+                icons_html += f'<img src="{row["pokemon_url1"]}" style="max-height:28px; max-width: 70%; border-radius: 0px;">'
             
             if row['pokemon_url2']:
-                icons_html += f'<img src="{row["pokemon_url2"]}" style="max-height:28px; max-width: 50%; border-radius: 0px;">'
+                icons_html += f'<img src="{row["pokemon_url2"]}" style="max-height:28px; max-width: 70%; border-radius: 0px;">'
             
             icons_html += '</div>'
             st.markdown(icons_html, unsafe_allow_html=True)
