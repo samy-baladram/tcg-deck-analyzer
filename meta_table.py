@@ -672,70 +672,28 @@ def display_meta_overview_table_with_buttons():
     # Custom CSS for styling
     st.markdown("""
     <style>
-    /* Force all column containers to stay horizontal */
-    .stColumns {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        width: 100% !important;
-    }
-    
-    .stColumns > div {
-        display: flex !important;
-        flex-direction: column !important;
-    }
-    
-    *[style*="flex-direction: column"] {
-        flex-direction: row !important;
-    }
-
-    /* Specific column widths */
-    .stColumns > div:nth-child(1) {
-        flex: 0 0 20% !important;  /* Icons */
-        max-width: 20% !important;
-    }
-    
-    .stColumns > div:nth-child(2) {
-        flex: 1 1 50% !important;  /* Deck name */
-        max-width: 50% !important;
-    }
-    
-    .stColumns > div:nth-child(3) {
-        flex: 0 0 30% !important;  /* Share */
-        max-width: 30% !important;
-    }
-
-    div[data-testid="column"] {
-    display: flex !important;
-    flex-direction: column !important;
-    }
-    
-    /* Target the parent container of columns */
-    div[data-testid="column"]:first-child {
-        flex: 0 0 20% !important;
-        min-width: 60px !important;
-    }
-    
-    div[data-testid="column"]:nth-child(2) {
-        flex: 1 1 50% !important;
-        min-width: 100px !important;
-    }
-    
-    div[data-testid="column"]:last-child {
-        flex: 0 0 30% !important;
-        min-width: 80px !important;
-    }
-    
-    /* Target only the horizontal container that holds columns */
-    .row-widget.stHorizontal {
+    /* Target elements that have multiple column children */
+    div:has(> div[data-testid="column"]) {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
     }
     
-    /* More specific - target only divs that contain column test-ids */
-    div:has([data-testid="column"]) {
+    /* Force any div containing columns to be horizontal */
+    div[data-testid="column"]:first-child:not(:only-child) {
+        display: inline-flex !important;
+    }
+    
+    div[data-testid="column"]:first-child:not(:only-child) ~ div[data-testid="column"] {
+        display: inline-flex !important;
+    }
+    
+    /* Target containers with column children - parent level */
+    div > div[data-testid="column"]:first-child {
         display: flex !important;
+    }
+    
+    div > div[data-testid="column"]:first-child:parent {
         flex-direction: row !important;
         flex-wrap: nowrap !important;
     }
