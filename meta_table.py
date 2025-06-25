@@ -672,15 +672,12 @@ def display_meta_overview_table_with_buttons():
     # Custom CSS for styling
     st.markdown("""
     <style>
-    /* Target any element that contains column test-ids */
-    *:has([data-testid="column"]) {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-    }
-    
-    /* Exclude specific elements that shouldn't be horizontal */
-    *:has([data-testid="column"]):not(.stButton):not(.stMarkdown):not(.stText) {
+    /* Target Streamlit's row classes - you'll need to inspect element to find exact names */
+    .row-widget,
+    .css-ocqkz7,  /* Common Streamlit column container class */
+    .css-1kyxreq, /* Another common class */
+    [class*="css-"][class*="row"],
+    [class*="css-"]:has([data-testid="column"]) {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
