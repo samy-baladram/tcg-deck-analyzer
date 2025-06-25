@@ -426,7 +426,7 @@ def display_meta_overview_table():
         # Apply styling to the dataframe
         styled_df = final_df.style.applymap(
             style_change_column, 
-            subset=['Change']
+            subset=['Δ']
         )
         
         # Configure column display
