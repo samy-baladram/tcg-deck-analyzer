@@ -377,17 +377,17 @@ def display_meta_overview_table():
     formatter = MetaDisplayFormatter()
     meta_df = formatter.prepare_display_dataframe(meta_df)
     
-    # Clean up trend indicators - remove emojis
+    # Clean up trend indicators - remove emojis and %
     def clean_trend_indicator(trend_indicator):
-        """Remove emojis and return clean percentage"""
+        """Remove emojis and % symbol, return clean number"""
         if not trend_indicator:
-            return "0.00%"
+            return "0.00"
         
-        # Remove emojis and clean up
-        clean_str = trend_indicator.replace("📈", "").replace("📉", "").replace("➡️", "").strip()
+        # Remove emojis, %, and clean up
+        clean_str = trend_indicator.replace("📈", "").replace("📉", "").replace("➡️", "").replace("%", "").strip()
         
         # Ensure proper +/- formatting
-        if not clean_str.startswith(('+', '-')) and clean_str != "0.00%":
+        if not clean_str.startswith(('+', '-')) and clean_str != "0.00":
             if "+" in trend_indicator or "📈" in trend_indicator:
                 clean_str = "+" + clean_str
             elif "-" in trend_indicator or "📉" in trend_indicator:
@@ -395,8 +395,17 @@ def display_meta_overview_table():
         
         return clean_str
     
-    # Clean the trend indicators
+    # Calculate recent vs overall ratio
+    def calculate_ratio(row):
+        """Calculate recent (3d) vs overall (7d) ratio"""
+        if row['share_7d'] == 0:
+            return "0.0x"
+        ratio = row['share_3d'] / row['share_7d']
+        return f"{ratio:.1f}x"
+    
+    # Clean the trend indicators and add ratio
     meta_df['trend_indicator'] = meta_df['trend_indicator'].apply(clean_trend_indicator)
+    meta_df['ratio'] = meta_df.apply(calculate_ratio, axis=1)
     
     # Display table header
     st.write("##### Meta Overview - Top 20 Archetypes")
@@ -409,12 +418,13 @@ def display_meta_overview_table():
             'Deck': meta_df['formatted_deck_name'],
             '%': meta_df['share_7d'],         # Just % symbol
             'Δ': meta_df['trend_indicator'],  # Delta for change
+            'R': meta_df['ratio'],            # Recent vs overall ratio
         })
         
         # Define styling function for Change column
         def style_change_column(val):
             """Apply conditional styling to Change column"""
-            if not val or val == "0.00%":
+            if not val or val == "0.00":
                 return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
             elif val.startswith('+'):
                 return 'color: #58C855; font-size: 0.8rem; font-weight: bold;'
@@ -423,26 +433,54 @@ def display_meta_overview_table():
             else:
                 return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
         
+        # Define styling function for Ratio column
+        def style_ratio_column(val):
+            """Apply conditional styling to Ratio column"""
+            if not val or val == "0.0x":
+                return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
+            
+            # Extract numeric value
+            try:
+                ratio_num = float(val.replace('x', ''))
+                if ratio_num > 1.2:
+                    return 'color: #58C855; font-size: 0.8rem; font-weight: bold;'  # Strong green
+                elif ratio_num > 1.0:
+                    return 'color: #58C855; font-size: 0.8rem; font-weight: normal;'  # Light green
+                elif ratio_num < 0.8:
+                    return 'color: #FD6C6C; font-size: 0.8rem; font-weight: bold;'  # Strong red
+                elif ratio_num < 1.0:
+                    return 'color: #FD6C6C; font-size: 0.8rem; font-weight: normal;'  # Light red
+                else:
+                    return 'color: #888888; font-size: 0.8rem; font-weight: normal;'  # Neutral
+            except:
+                return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
+        
         # Apply styling to the dataframe
         styled_df = final_df.style.applymap(
             style_change_column, 
             subset=['Δ']
+        ).applymap(
+            style_ratio_column,
+            subset=['R']
         )
         
         # Configure column display
         column_config = {
             '': st.column_config.ImageColumn(
-                "", width=22, help="Primary Pokemon"
+                "", width=25, help="Primary Pokemon"
             ),
             ' ': st.column_config.ImageColumn(
-                "", width=22, help="Secondary Pokemon"
+                "", width=25, help="Secondary Pokemon"
             ),
-            'Deck': st.column_config.TextColumn("Deck", width=120),
+            'Deck': st.column_config.TextColumn("Deck", width=110),  # Slightly smaller
             '%': st.column_config.NumberColumn(
-                "%", width=45, help="Meta share percentage", format="%.2f"  # No %% in format since header is %
+                "%", width=40, help="Meta share percentage", format="%.2f"
             ),
             'Δ': st.column_config.TextColumn(
-                "Δ", width=40, help="Trend change"
+                "Δ", width=30, help="Trend change"
+            ),
+            'R': st.column_config.TextColumn(
+                "R", width=30, help="Recent (3d) vs Overall (7d) ratio"
             )
         }
         
