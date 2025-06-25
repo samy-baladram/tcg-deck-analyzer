@@ -672,11 +672,18 @@ def display_meta_overview_table_with_buttons():
     # Custom CSS for styling
     st.markdown("""
     <style>
-    /* Target elements that have multiple column children */
-    div:has(> [data-testid="column"] + [data-testid="column"]) {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    /* Target any element that contains column test-ids */
+    *:has([data-testid="column"]) {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    /* Exclude specific elements that shouldn't be horizontal */
+    *:has([data-testid="column"]):not(.stButton):not(.stMarkdown):not(.stText) {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
     }
     
     .deck-button {
