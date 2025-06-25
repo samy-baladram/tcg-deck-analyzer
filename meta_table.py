@@ -439,7 +439,7 @@ def display_meta_overview_table():
             ),
             'Deck': st.column_config.TextColumn("Deck", width=120),
             '%': st.column_config.NumberColumn(
-                "%", width=45, help="Meta share percentage", format="%.1f"  # No %% in format since header is %
+                "%", width=45, help="Meta share percentage", format="%.2f"  # No %% in format since header is %
             ),
             'Δ': st.column_config.TextColumn(
                 "Δ", width=35, help="Trend change"
