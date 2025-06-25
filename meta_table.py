@@ -651,184 +651,8 @@ def display_losers_table():
         st.error(f"Error displaying losers table: {str(e)}")
         print(f"Display error: {e}")
 
-# def display_meta_overview_table_with_buttons():
-#     """Display meta overview table with manual deck selection buttons - enhanced compact layout"""
-    
-#     with st.spinner("Loading meta overview data..."):
-#         builder = MetaTableBuilder()
-#         meta_df = builder.build_complete_meta_table(20)
-    
-#     if meta_df.empty:
-#         st.warning("No meta data available at this time.")
-#         return
-    
-#     # Format for display
-#     formatter = MetaDisplayFormatter()
-#     meta_df = formatter.prepare_display_dataframe(meta_df)
-    
-#     # Display table header
-#     st.write("##### Meta Overview - Top 20 Archetypes")
-    
-#     # Custom CSS for styling
-#     st.markdown("""
-#     <style>    
-#     .deck-button {
-#         background: none !important;
-#         border: none !important;
-#         padding: 0 !important;
-#         color: #00A0FF !important;
-#         text-decoration: underline !important;
-#         cursor: pointer !important;
-#         font-size: inherit !important;
-#         font-family: inherit !important;
-#     }
-#     .deck-button:hover {
-#         color: #0080CC !important;
-#     }
-    
-#     /* Force left alignment for buttons even when wrapping */
-#     div[data-testid="column"] button {
-#         text-align: left !important;
-#         justify-content: flex-start !important;
-#     }
-    
-#     div[data-testid="column"] button p {
-#         text-align: left !important;
-#         width: 100% !important;
-#     }
-    
-#     /* Additional specificity for wrapped button text */
-#     .stButton > button {
-#         text-align: left !important;
-#         justify-content: flex-start !important;
-#         white-space: normal !important;
-#         word-wrap: break-word !important;
-#         line-height: 1.1 !important;  /* Reduce line height */
-#         padding: 4px 8px !important;
-#     }
-    
-#     .stButton > button p {
-#         text-align: left !important;
-#         margin: 0 !important;
-#     }
-
-#     .share-column {
-#         text-align: right !important;
-#     }
-    
-#     .change-positive {
-#         color: #58C855 !important;
-#         font-size: 0.8rem !important;
-#         margin-top: -2px !important;
-#         line-height: 1 !important;
-#         text-align: right !important;
-#     }
-#     .change-negative {
-#         color: #FD6C6C !important;
-#         font-size: 0.8rem !important;
-#         margin-top: -2px !important;
-#         line-height: 1 !important;
-#         text-align: right !important;
-#     }
-#     .change-neutral {
-#         color: #888888 !important;
-#         font-size: 0.8rem !important;
-#         margin-top: -2px !important;
-#         line-height: 1 !important;
-#         text-align: right !important;
-#     }
-#     .icons-container {
-#         display: flex !important;
-#         align-items: center !important;
-#         gap: 2px !important;
-#     }
-#     </style>
-#     """, unsafe_allow_html=True)
-    
-#     #Header row with updated layout
-#     col1, col2, col3 = st.columns([1, 3, 1.2])
-#     with col1:
-#         st.write(" ")
-#     with col2:
-#         st.write("**Deck**")
-#     with col3:
-#         st.markdown('<div class="share-column"><strong>Share-7d</strong></div>', unsafe_allow_html=True)
-    
-#     st.markdown('<hr style="margin: 0px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
-    
-#     #Helper function to extract numeric value from trend indicator
-#     def extract_trend_value(trend_indicator):
-#         """Extract numeric value and determine color from trend indicator"""
-#         if not trend_indicator or trend_indicator == "➡️ 0.00%":
-#             return 0, "neutral"
-        
-#         # Remove emoji and extract number
-#         if "📈" in trend_indicator:
-#             value_str = trend_indicator.replace("📈 +", "").replace("%", "")
-#             try:
-#                 value = float(value_str)
-#                 return value, "positive"
-#             except:
-#                 return 0, "neutral"
-#         elif "📉" in trend_indicator:
-#             value_str = trend_indicator.replace("📉 -", "").replace("%", "")
-#             try:
-#                 value = float(value_str)
-#                 return -value, "negative"
-#             except:
-#                 return 0, "neutral"
-#         else:
-#             return 0, "neutral"
-    
-#     #Data rows
-#     for idx, row in meta_df.iterrows():
-#         col1, col2, col3 = st.columns([1, 3, 1.2])
-        
-#         # Combined Pokemon icons
-#         with col1:
-#             icons_html = '<div class="icons-container">'
-            
-#             if row['pokemon_url1']:
-#                 icons_html += f'<img src="{row["pokemon_url1"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
-            
-#             if row['pokemon_url2']:
-#                 icons_html += f'<img src="{row["pokemon_url2"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
-            
-#             icons_html += '</div>'
-#             st.markdown(icons_html, unsafe_allow_html=True)
-        
-#         # Clickable deck name
-#         with col2:
-#             button_key = f"deck_select_{idx}_{row['deck_name']}"
-#             if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
-#                 st.session_state.deck_to_analyze = row['deck_name']
-#                 st.rerun()
-        
-#         # Share with change underneath
-#         with col3:
-#             # Main share value - right aligned
-#             st.markdown(f'<div class="share-column">{row["share_7d"]:.2f}%</div>', unsafe_allow_html=True)
-            
-#             # Change value underneath with color coding
-#             trend_value, trend_type = extract_trend_value(row['trend_indicator'])
-            
-#             if trend_type == "positive":
-#                 change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
-#             elif trend_type == "negative":
-#                 change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
-#             else:
-#                 change_html = f'<div class="change-neutral">0.00%</div>'
-            
-#             st.markdown(change_html, unsafe_allow_html=True)
-    
-#     # Add explanation
-#     st.caption(
-#         "**Click on any deck name** to analyze it in detail. "
-#         "Green/red values show 7d to 3d trend changes."
-#     )
-
-def display_meta_overview_image_buttons():
-    """Buttons with Pokemon images and all stats"""
+def display_meta_overview_table_with_buttons():
+    """Display meta overview table with manual deck selection buttons - enhanced compact layout"""
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
@@ -842,12 +666,103 @@ def display_meta_overview_image_buttons():
     formatter = MetaDisplayFormatter()
     meta_df = formatter.prepare_display_dataframe(meta_df)
     
+    # Display table header
     st.write("##### Meta Overview - Top 20 Archetypes")
     
+    # Custom CSS for styling
+    st.markdown("""
+    <style>    
+    .deck-button {
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #00A0FF !important;
+        text-decoration: underline !important;
+        cursor: pointer !important;
+        font-size: inherit !important;
+        font-family: inherit !important;
+    }
+    .deck-button:hover {
+        color: #0080CC !important;
+    }
+    
+    /* Force left alignment for buttons even when wrapping */
+    div[data-testid="column"] button {
+        text-align: left !important;
+        justify-content: flex-start !important;
+    }
+    
+    div[data-testid="column"] button p {
+        text-align: left !important;
+        width: 100% !important;
+    }
+    
+    /* Additional specificity for wrapped button text */
+    .stButton > button {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        line-height: 1.1 !important;  /* Reduce line height */
+        padding: 4px 8px !important;
+    }
+    
+    .stButton > button p {
+        text-align: left !important;
+        margin: 0 !important;
+    }
+
+    .share-column {
+        text-align: right !important;
+    }
+    
+    .change-positive {
+        color: #58C855 !important;
+        font-size: 0.8rem !important;
+        margin-top: -2px !important;
+        line-height: 1 !important;
+        text-align: right !important;
+    }
+    .change-negative {
+        color: #FD6C6C !important;
+        font-size: 0.8rem !important;
+        margin-top: -2px !important;
+        line-height: 1 !important;
+        text-align: right !important;
+    }
+    .change-neutral {
+        color: #888888 !important;
+        font-size: 0.8rem !important;
+        margin-top: -2px !important;
+        line-height: 1 !important;
+        text-align: right !important;
+    }
+    .icons-container {
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    #Header row with updated layout
+    # col1, col2, col3 = st.columns([1, 3, 1.2])
+    # with col1:
+    #     st.write(" ")
+    # with col2:
+    #     st.write("**Deck**")
+    # with col3:
+    #     st.markdown('<div class="share-column"><strong>Share-7d</strong></div>', unsafe_allow_html=True)
+    
+    # st.markdown('<hr style="margin: 0px 0; border: 0.5px solid rgba(137, 148, 166, 0.2);">', unsafe_allow_html=True)
+    
+    #Helper function to extract numeric value from trend indicator
     def extract_trend_value(trend_indicator):
+        """Extract numeric value and determine color from trend indicator"""
         if not trend_indicator or trend_indicator == "➡️ 0.00%":
             return 0, "neutral"
         
+        # Remove emoji and extract number
         if "📈" in trend_indicator:
             value_str = trend_indicator.replace("📈 +", "").replace("%", "")
             try:
@@ -865,58 +780,49 @@ def display_meta_overview_image_buttons():
         else:
             return 0, "neutral"
     
-    # Create custom button layout for each deck
+    #Data rows
     for idx, row in meta_df.iterrows():
-        with st.container():
-            trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+        col1, col2, col3 = st.columns([1, 3, 1.2])
+        
+        # Combined Pokemon icons
+        with col1:
+            icons_html = '<div class="icons-container">'
             
-            # Color for trend
-            if trend_type == "positive":
-                trend_color = "#58C855"
-                trend_text = f"+{trend_value:.1f}%"
-            elif trend_type == "negative":
-                trend_color = "#FD6C6C"
-                trend_text = f"{trend_value:.1f}%"
-            else:
-                trend_color = "#888888"
-                trend_text = "0.0%"
+            if row['pokemon_url1']:
+                icons_html += f'<img src="{row["pokemon_url1"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
             
-            # Create HTML layout with images and stats
-            card_html = f"""
-            <div style="
-                border: 1px solid #e0e0e0; 
-                border-radius: 8px; 
-                padding: 10px; 
-                margin: 5px 0; 
-                background: #fafafa;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            ">
-                <div style="display: flex; gap: 3px; min-width: 60px;">
-                    <img src="{row.get('pokemon_url1', '')}" style="width: 28px; height: 28px; border-radius: 4px;">
-                    <img src="{row.get('pokemon_url2', '')}" style="width: 28px; height: 28px; border-radius: 4px;">
-                </div>
-                <div style="flex: 1; min-width: 0;">
-                    <div style="font-weight: bold; color: #333; font-size: 0.9rem;">{row['formatted_deck_name']}</div>
-                </div>
-                <div style="text-align: right; min-width: 80px;">
-                    <div style="font-weight: bold; color: #00A0FF;">{row['share_7d']:.1f}%</div>
-                    <div style="color: {trend_color}; font-size: 0.8rem;">{trend_text}</div>
-                </div>
-            </div>
-            """
+            if row['pokemon_url2']:
+                icons_html += f'<img src="{row["pokemon_url2"]}" style="max-height:28px; max-width: 70%; border-radius: 0px; margin-top:5px;">'
             
-            st.markdown(card_html, unsafe_allow_html=True)
-            
-            # Invisible button overlaying the card
+            icons_html += '</div>'
+            st.markdown(icons_html, unsafe_allow_html=True)
+        
+        # Clickable deck name
+        with col2:
             button_key = f"deck_select_{idx}_{row['deck_name']}"
-            st.markdown('<div style="margin-top: -70px; height: 70px;">', unsafe_allow_html=True)
-            if st.button("", key=button_key, type="tertiary", 
-                        use_container_width=True, 
-                        help=f"Analyze {row['formatted_deck_name']}"):
+            if st.button(row['formatted_deck_name'], key=button_key, type="tertiary"):
                 st.session_state.deck_to_analyze = row['deck_name']
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Share with change underneath
+        with col3:
+            # Main share value - right aligned
+            st.markdown(f'<div class="share-column">{row["share_7d"]:.2f}%</div>', unsafe_allow_html=True)
+            
+            # Change value underneath with color coding
+            trend_value, trend_type = extract_trend_value(row['trend_indicator'])
+            
+            if trend_type == "positive":
+                change_html = f'<div class="change-positive">+ {trend_value:.2f}%</div>'
+            elif trend_type == "negative":
+                change_html = f'<div class="change-negative">- {trend_value*-1:.2f}%</div>'
+            else:
+                change_html = f'<div class="change-neutral">0.00%</div>'
+            
+            st.markdown(change_html, unsafe_allow_html=True)
     
-    st.caption("**Click on any card** to analyze that deck in detail.")
+    # Add explanation
+    st.caption(
+        "**Click on any deck name** to analyze it in detail. "
+        "Green/red values show 7d to 3d trend changes."
+    )
