@@ -596,7 +596,7 @@ def display_meta_overview_table():
             styled_df,
             column_config=column_config,
             hide_index=True,
-            height=750,
+            height=1000,
             use_container_width=True
         )
         
