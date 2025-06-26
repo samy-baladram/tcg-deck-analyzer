@@ -1,6 +1,12 @@
 {
-  "last_updated": "2025-06-26T14:10:49.603570",
+  "last_updated": "2025-06-26T16:14:03.222166",
   "sets": [
+    {
+      "set_name": "Eevee Grove",
+      "set_code": "A3b",
+      "release_date": "2025-06-26",
+      "card_count": 107
+    },
     {
       "set_name": "Extradimensional Crisis",
       "set_code": "A3a",
