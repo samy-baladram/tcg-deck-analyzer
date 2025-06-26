@@ -680,7 +680,7 @@ def display_gainers_table():
     
     with st.spinner("Loading gainers data..."):
         builder = MetaTableBuilder()
-        meta_df = builder.build_complete_meta_table(20)
+        meta_df = builder.build_complete_meta_table(30)
     
     if meta_df.empty:
         st.warning("No meta data available at this time.")
