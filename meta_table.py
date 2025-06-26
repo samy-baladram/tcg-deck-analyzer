@@ -556,26 +556,26 @@ def display_meta_overview_table():
         # Configure column display
         column_config = {
             'Icon1': st.column_config.ImageColumn(
-                "1", width=30, help="Primary Pokemon"
+                "1", width=25, help="Primary Pokemon"
             ),
             'Icon2': st.column_config.ImageColumn(
-                "2", width=30, help="Secondary Pokemon"
+                "2", width=25, help="Secondary Pokemon"
             ),
             'Deck': st.column_config.TextColumn("Deck", width=140),
             'Share-7d': st.column_config.NumberColumn(
-                "Share-7d", width=70, help="Meta share in last 7 days", format="%.2f%%"
+                "Share-7d", width=60, help="Meta share in last 7 days", format="%.2f%%"
             ),
             'Trend': st.column_config.LineChartColumn(
                 "7d Trend", 
-                width=120,
+                width=100,
                 help="7-day percentage change trend",
                 y_min=0
             ),
             'R': st.column_config.NumberColumn(
-                "R", width=50, help="Recent vs Overall ratio", format="%.1fx"
+                "R", width=40, help="Recent vs Overall ratio", format="%.1fx"
             ),
             'Win %': st.column_config.NumberColumn(
-                "Win %", width=70, help="Win rate percentage", format="%.1f%%"
+                "Win %", width=50, help="Win rate percentage", format="%.1f%%"
             )
         }
         
@@ -710,14 +710,14 @@ def display_gainers_table():
         # Configure column display
         column_config = {
             'Icon1': st.column_config.ImageColumn(
-                "1", width=30, help="Primary Pokemon"
+                "1", width=28, help="Primary Pokemon"
             ),
             'Icon2': st.column_config.ImageColumn(
-                "2", width=30, help="Secondary Pokemon"
+                "2", width=28, help="Secondary Pokemon"
             ),
             'Deck': st.column_config.TextColumn("Deck", width=150),
             'Share-7d': st.column_config.NumberColumn(
-                "Share-7d", width=70, help="Meta share in last 7 days", format="%.2f%%"
+                "Share-7d", width=65, help="Meta share in last 7 days", format="%.2f%%"
             ),
             'Change': st.column_config.TextColumn(
                 "Change", width=80, help="Trend from 7d to 3d average", 
