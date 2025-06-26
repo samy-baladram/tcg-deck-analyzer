@@ -1263,7 +1263,8 @@ def render_sidebar_from_cache():
     """, unsafe_allow_html=True)
     
     # Create three tabs in sidebar
-    tab1, tab2, tab3, tab4 = st.tabs(["Meta", "Trend", "Gainers", "Losers"])
+    tab1, tab2 = st.tabs(["Top Lists", "Meta Trend"])
+    #tab1, tab2, tab3, tab4 = st.tabs(["Meta", "Trend", "Gainers", "Losers"])
 
     
     with tab1:
@@ -1296,10 +1297,10 @@ def render_sidebar_from_cache():
         # st.write("Experimental")
         # display_meta_overview_table_with_buttons()
     
-    with tab3:
-        from meta_table import display_gainers_table
-        display_gainers_table()
+    # with tab3:
+    #     from meta_table import display_gainers_table
+    #     display_gainers_table()
     
-    with tab4:
-        from meta_table import display_losers_table
-        display_losers_table()
+    # with tab4:
+    #     from meta_table import display_losers_table
+    #     display_losers_table()
