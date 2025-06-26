@@ -517,17 +517,23 @@ def display_meta_overview_table():
     def get_trend_history(deck_name):
         """Get 7-day percentage history for line chart"""
         try:
-            daily_data = builder.get_daily_trend_data(deck_name, days_back=7)
-            # Extract percentage values from daily data dict
+            # Use the existing builder's analyzer to get daily trend data
+            daily_data = builder.archetype_analyzer.get_daily_trend_data(deck_name, days_back=7)
+            
+            # Extract percentage values - keys are day_1, day_2, etc.
             percentages = []
-            for i in range(7):
-                day_key = f'day_{6-i}_percent'  # Reverse order for chronological
+            for i in range(1, 8):  # day_1 through day_7
+                day_key = f'day_{i}'
                 percentages.append(daily_data.get(day_key, 0))
+            
+            # Reverse to show chronological order (oldest to newest)
+            percentages.reverse()
             return percentages
+            
         except Exception as e:
             print(f"Error getting trend for {deck_name}: {e}")
             # Return sample trend data for demo
-            return [random.uniform(0, 10) for _ in range(7)]
+            return [random.uniform(0, 5) for _ in range(7)]
     
     # Add trend history column
     meta_df['trend_history'] = meta_df['deck_name'].apply(get_trend_history)
