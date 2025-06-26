@@ -539,7 +539,7 @@ def display_meta_overview_table():
     meta_df['trend_history'] = meta_df['deck_name'].apply(get_trend_history)
     
     # Display table header
-    st.write("##### Meta Overview - Top 20 Archetypes")
+    #st.write("##### Top 30 Archetypes Trend")
     
     try:
         # Create final display DataFrame
