@@ -407,7 +407,7 @@ st.markdown("""<div style="text-align: center; font-size: 0.8em; color: #777; ma
     Data and images sourced from <a href="https://play.limitlesstcg.com" target="_blank">Limitless TCG</a>. 
     This independent, fan-made analysis tool is for educational purposes only and is not affiliated with 
     any official entities or Limitless TCG.</p>
-    <p>App and analysis © 2025 Samy Baladram. All rights reserved.</p></div>""", unsafe_allow_html=True)
+    <p>App and analysis © 2025 Samy Baladram. Open source under MIT License.</p></div>""", unsafe_allow_html=True)
 
 # Rerun button at bottom
 st.markdown("<br>", unsafe_allow_html=True)
