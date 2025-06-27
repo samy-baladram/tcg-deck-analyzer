@@ -503,7 +503,7 @@ def display_meta_overview_table():
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
-        meta_df = builder.build_complete_meta_table(30)
+        meta_df = builder.build_complete_meta_table(40)
     
     if meta_df.empty:
         st.warning("No meta data available at this time.")
