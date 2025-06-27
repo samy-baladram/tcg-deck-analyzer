@@ -19,7 +19,7 @@ MIN_MATCHUP_MATCHES = 5
 MIN_COUNTER_MATCHES = 8
 
 # Display settings
-MIN_META_SHARE = 0.05  # Minimum meta share percentage to display
+MIN_META_SHARE = 0.04  # Minimum meta share percentage to display
 MIN_WIN_RATE = 45 # Minimum win rate share percentage to display
 
 CHART_COLORS = {
