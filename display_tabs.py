@@ -1561,23 +1561,21 @@ def display_matchup_summary(deck_name, set_name, working_df):
 def create_meta_trend_chart(deck_name):
     """
     Create a line chart showing meta percentage trend over time for a specific deck
-    
-    Args:
-        deck_name: The internal deck name (e.g., "charizard-ex-arcanine-ex")
-        
-    Returns:
-        Plotly figure or None if no data found
+    Modified to show last 30 days instead of from set release
     """
     import sqlite3
     import pandas as pd
     import plotly.graph_objects as go
-    from datetime import datetime
+    from datetime import datetime, timedelta
     
     try:
         # Connect to SQLite database
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
         
-        # Query to get daily aggregated data for the specific archetype
+        # Calculate cutoff date for last 30 days
+        cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        
+        # Query to get daily aggregated data for the specific archetype in last 30 days
         query = """
         SELECT 
             t.date,
@@ -1586,17 +1584,18 @@ def create_meta_trend_chart(deck_name):
         FROM tournaments t
         LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
             AND aa.archetype = ?
+        WHERE t.date >= ?
         GROUP BY t.date
         HAVING total_players > 0
         ORDER BY t.date
         """
         
-        # Execute query
-        df = pd.read_sql_query(query, conn, params=[deck_name])
+        # Execute query with deck name and 30-day cutoff
+        df = pd.read_sql_query(query, conn, params=[deck_name, cutoff_date])
         conn.close()
         
         if df.empty:
-            print(f"No data found for archetype: {deck_name}")
+            print(f"No data found for archetype: {deck_name} in last 30 days")
             return None
         
         # Calculate percentage for each date
@@ -1609,7 +1608,7 @@ def create_meta_trend_chart(deck_name):
         df_filtered = df[df['meta_percentage'] > 0].copy()
         
         if df_filtered.empty:
-            print(f"No appearances found for archetype: {deck_name}")
+            print(f"No appearances found for archetype: {deck_name} in last 30 days")
             return None
         
         # Create the line chart
@@ -1650,7 +1649,7 @@ def create_meta_trend_chart(deck_name):
         
         # Update layout
         fig.update_layout(
-            title=f"Meta Trend: {deck_name.replace('-', ' ').title()}",
+            title=f"Meta Trend: {deck_name.replace('-', ' ').title()} (Last 30 Days)",
             xaxis_title="Date",
             yaxis_title="Meta Share (%)",
             height=400,
@@ -1661,6 +1660,7 @@ def create_meta_trend_chart(deck_name):
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(size=12),
+            showlegend=False,
             
             # Grid and axes styling
             xaxis=dict(
@@ -1674,7 +1674,11 @@ def create_meta_trend_chart(deck_name):
                 gridcolor='rgba(128,128,128,0.2)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
-                rangemode='tozero'  # Start y-axis from 0
+                range=[0, df_filtered['meta_percentage'].max() * 1.15],
+                tickmode='linear',
+                tick0=0,
+                dtick=2,
+                ticksuffix='%'
             )
         )
         
@@ -2074,15 +2078,12 @@ def get_available_formats():
 def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
     """
     Create enhanced line chart with set markers, tier zones, and format filtering
-    
-    Args:
-        deck_name: The deck archetype name
-        selected_formats: List of formats to include (e.g., ['Standard', 'NOEX'])
+    Modified to show last 30 days instead of from set release
     """
     import sqlite3
     import pandas as pd
     import plotly.graph_objects as go
-    from datetime import datetime
+    from datetime import datetime, timedelta
     
     if selected_formats is None:
         selected_formats = ['Standard']
@@ -2094,7 +2095,10 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
         # Create format filter for SQL query
         format_placeholders = ','.join(['?' for _ in selected_formats])
         
-        # Query to get daily aggregated data for the specific archetype and selected formats
+        # Calculate cutoff date for last 30 days (replace the set release logic)
+        cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        
+        # Query to get daily data for the specific archetype and selected formats in last 30 days
         query = f"""
         SELECT 
             t.date,
@@ -2105,15 +2109,19 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
         LEFT JOIN archetype_appearances aa ON t.tournament_id = aa.tournament_id 
             AND aa.archetype = ?
         WHERE t.format IN ({format_placeholders})
+        AND t.date >= ?
         GROUP BY t.date, t.format
         HAVING total_players > 0
         ORDER BY t.date
         """
         
-        # Execute query with deck name and selected formats
-        query_params = [deck_name] + selected_formats
+        # Execute query with deck name, selected formats, and 30-day cutoff
+        query_params = [deck_name] + selected_formats + [cutoff_date]
         df = pd.read_sql_query(query, conn, params=query_params)
         conn.close()
+        
+        # Rest of the function remains the same...
+        # (continue with the existing logic for data processing and chart creation)
         
         if df.empty:
             print(f"No data found for archetype: {deck_name} in formats: {selected_formats}")
