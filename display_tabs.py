@@ -6,6 +6,7 @@ from formatters import format_deck_name, extract_pokemon_urls
 from related_decks import find_related_decks
 from visualizations import create_usage_bar_chart, display_chart, create_variant_bar_chart
 from analyzer import build_deck_template
+from datetime import datetime, timedelta
 from card_renderer import render_energy_icons
 from config import TOURNAMENT_COUNT, POWER_INDEX_EXPLANATION, MIN_MATCHUP_MATCHES
 from header_image_cache import get_header_image_cached
@@ -1002,7 +1003,6 @@ def display_metagame_tab():
         return
     
     # Add a small footnote about data source
-    from datetime import datetime
     current_month_year = datetime.now().strftime("%B %Y")
     st.caption(f"Data based on up to {TOURNAMENT_COUNT} most recent community tournaments on Limitless TCG.")
 
@@ -1566,8 +1566,6 @@ def create_meta_trend_chart(deck_name):
     import sqlite3
     import pandas as pd
     import plotly.graph_objects as go
-    from datetime import datetime, timedelta
-    
     try:
         # Connect to SQLite database
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
@@ -2083,7 +2081,6 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
     import sqlite3
     import pandas as pd
     import plotly.graph_objects as go
-    from datetime import datetime, timedelta
     
     if selected_formats is None:
         selected_formats = ['Standard']
@@ -2322,7 +2319,6 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
     import sqlite3
     import pandas as pd
     import plotly.graph_objects as go
-    from datetime import datetime
     
     if selected_formats is None:
         selected_formats = ['Standard']
@@ -2334,16 +2330,12 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         # Create format filter for SQL query
         format_placeholders = ','.join(['?' for _ in selected_formats])
         
-        # Get latest set release date for filtering
-        latest_release = get_latest_set_release_date()
+        # Calculate cutoff date for last 30 days
+        cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         
-        # Add date filter to query if we have a latest release date
-        date_filter = ""
-        query_params = [deck_name] + selected_formats
-        
-        if latest_release:
-            date_filter = "AND t.date >= ?"
-            query_params.append(latest_release)
+        # Add date filter for last 30 days
+        date_filter = "AND t.date >= ?"
+        query_params = [deck_name] + selected_formats + [cutoff_date]
         
         # Query to get daily data for the specific archetype and selected formats
         query = f"""
@@ -2523,7 +2515,6 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
     import sqlite3
     import pandas as pd
     import plotly.graph_objects as go
-    from datetime import datetime
     
     if selected_formats is None:
         selected_formats = ['Standard']
@@ -2535,16 +2526,12 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Create format filter for SQL query
         format_placeholders = ','.join(['?' for _ in selected_formats])
         
-        # Get latest set release date for filtering
-        latest_release = get_latest_set_release_date()
+        # Calculate cutoff date for last 30 days
+        cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         
-        # Add date filter to query if we have a latest release date
-        date_filter = ""
-        query_params = [deck_name] + selected_formats
-        
-        if latest_release:
-            date_filter = "AND t.date >= ?"
-            query_params.append(latest_release)
+        # Add date filter for last 30 days
+        date_filter = "AND t.date >= ?"
+        query_params = [deck_name] + selected_formats + [cutoff_date]
         
         # Query to get daily performance data
         query = f"""
