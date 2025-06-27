@@ -2511,10 +2511,12 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
 def create_performance_trend_chart(deck_name, selected_formats=None):
     """
     Create performance trend chart showing win percentage over time with background color zones
+    Fixed to properly aggregate multiple formats per date
     """
     import sqlite3
     import pandas as pd
     import plotly.graph_objects as go
+    from datetime import datetime, timedelta
     
     if selected_formats is None:
         selected_formats = ['Standard']
@@ -2526,18 +2528,13 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Create format filter for SQL query
         format_placeholders = ','.join(['?' for _ in selected_formats])
         
-        # Calculate cutoff date for last 30 days
+        # Calculate cutoff date for last 30 days (if you want 30-day filter)
         cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         
-        # Add date filter for last 30 days
-        date_filter = "AND t.date >= ?"
-        query_params = [deck_name] + selected_formats + [cutoff_date]
-        
-        # Query to get daily performance data
+        # Query to get daily performance data - GROUP BY date only, not format
         query = f"""
         SELECT 
             t.date,
-            t.format,
             SUM(pp.wins) as total_wins,
             SUM(pp.losses) as total_losses,
             SUM(pp.ties) as total_ties,
@@ -2546,12 +2543,13 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         JOIN player_performance pp ON t.tournament_id = pp.tournament_id
         WHERE pp.archetype = ?
         AND t.format IN ({format_placeholders})
-        {date_filter}
-        GROUP BY t.date, t.format
+        AND t.date >= ?
+        GROUP BY t.date
         ORDER BY t.date
         """
         
-        # Execute query
+        # Execute query with deck name, selected formats, and date cutoff
+        query_params = [deck_name] + selected_formats + [cutoff_date]
         df = pd.read_sql_query(query, conn, params=query_params)
         conn.close()
         
