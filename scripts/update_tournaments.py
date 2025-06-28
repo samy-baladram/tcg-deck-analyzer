@@ -189,6 +189,7 @@ def parse_record(record_str):
     """
     try:
         # Remove extra spaces and split by '-'
+        record_str = record_str.replace('drop', '')
         parts = [part.strip() for part in record_str.split('-')]
         
         if len(parts) >= 3:
