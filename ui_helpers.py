@@ -555,6 +555,8 @@ def create_deck_selector():
     
     return selected_option
     
+# Replace the existing get_filtered_deck_data function in ui_helpers.py with this:
+
 def get_filtered_deck_data(section_type):
     """Get filtered deck data based on section configuration using Extended Meta Trend Table"""
     
@@ -585,6 +587,10 @@ def get_filtered_deck_data(section_type):
         return pd.DataFrame()
     
     result_data = extended_df.copy()
+    
+    # Calculate missing columns if needed
+    if 'ratio' not in result_data.columns:
+        result_data['ratio'] = result_data['share_3d'] / result_data['share_7d'].replace(0, 0.01)  # Avoid division by zero
     
     # Apply section-specific filters and calculations
     if section_type == "trending":
