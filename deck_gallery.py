@@ -177,11 +177,13 @@ def display_single_deck_expander(deck_data, deck_number, energy_types, is_typica
     player_id = deck_data.get('player_id', '')
     wins, losses, ties = get_deck_record(tournament_id, player_id)
     
-    # Format record string
-    record_str = f"{wins}-{losses}-{ties}"
-    
-    # Create expander title
-    expander_title = f"Deck {deck_number}. Record {record_str}"
+    # Create expander title based on whether we found a record
+    if wins == 0 and losses == 0 and ties == 0:
+        # No record found
+        expander_title = f"Deck {deck_number}"
+    else:
+        # Record found
+        expander_title = f"Deck {deck_number} (Score: {wins}-{losses}-{ties})"
     
     # Create the expander
     with st.expander(expander_title, expanded=False):
@@ -263,15 +265,16 @@ def display_deck_gallery_tab():
     # For now, display up to 20 decks as requested
     max_decks = min(20, len(all_decks))
     
-    # Display decks in columns
+    # Display decks in columns, starting from 1
     for i in range(max_decks):
         deck = all_decks[i]
         column_index = i % 3  # Distribute across 3 columns
+        deck_number = i + 1  # Start from 1
         
         with columns[column_index]:
             display_single_deck_expander(
                 deck, 
-                deck.get('deck_num', i + 1), 
+                deck_number, 
                 energy_types, 
                 is_typical
             )
@@ -303,17 +306,17 @@ def display_deck_gallery_tab_simple():
     col1, col2, col3 = st.columns(3)
     columns = [col1, col2, col3]
     
-    # Create 20 expanders as requested
+    # Create 20 expanders as requested, starting from 1
     for i in range(20):
         column_index = i % 3  # Distribute across 3 columns
-        deck_number = i + 1
+        deck_number = i + 1  # Start from 1
         
         # Placeholder record for now
-        record_str = f"{2}-{1}-{0}"  # Placeholder win-lose-tie
-        expander_title = f"Deck {deck_number}. Record {record_str}"
+        record_str = f"(Score: 2-1-0)"  # Placeholder win-lose-tie
+        expander_title = f"Deck {deck_number} {record_str}"
         
         with columns[column_index]:
-            with st.expander(expander_title, expanded=False):
+            with st.expander(expander_title, expanded=True):
                 # Display energy types if available
                 if energy_types:
                     from card_renderer import render_energy_icons
@@ -328,7 +331,7 @@ def display_deck_gallery_tab_simple():
                     deck_html = render_sidebar_deck(
                         sample_deck['pokemon_cards'], 
                         sample_deck['trainer_cards'],
-                        card_width=65
+                        card_width=60
                     )
                     st.markdown(deck_html, unsafe_allow_html=True)
                 else:
@@ -336,4 +339,4 @@ def display_deck_gallery_tab_simple():
     
     # Display summary info
     st.divider()
-    st.caption(f"Showing 20 sample decks for {deck_name} archetype")
+    st.caption(f"Showing sample decks for {deck_name} archetype")
