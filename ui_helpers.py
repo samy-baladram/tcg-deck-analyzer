@@ -15,8 +15,6 @@ from meta_table import display_meta_overview_table, display_meta_overview_table_
 
 # Replace the existing SIDEBAR_SECTIONS_CONFIG in ui_helpers.py with this:
 
-# Replace the existing SIDEBAR_SECTIONS_CONFIG in ui_helpers.py with this:
-
 SIDEBAR_SECTIONS_CONFIG = {
     "meta": {
         "type": "meta",
@@ -33,8 +31,8 @@ SIDEBAR_SECTIONS_CONFIG = {
             "method": "head",
             "count": 10
         },
-        "description": f"Top performers from the past {TOURNAMENT_COUNT} tournaments",
-        "sorting_note": "Sorted by their 7-day meta share percentage"
+        "description": "Most popular decks from the past 7 days",
+        "sorting_note": "Sorted by 7-day meta share percentage"
     },
     "trending": {
         "type": "trending", 
@@ -54,8 +52,8 @@ SIDEBAR_SECTIONS_CONFIG = {
             "method": "head", 
             "count": 5
         },
-        "description": f"Most trending from the past {TOURNAMENT_COUNT} tournaments",
-        "sorting_note": "Sorted by 3d-share * ratio (trending momentum)"
+        "description": "Decks gaining momentum (3d vs 7d share ratio > 1.0)",
+        "sorting_note": "Sorted by trending momentum (3d-share × ratio)"
     },
     "gems": {
         "type": "gems",
@@ -77,12 +75,12 @@ SIDEBAR_SECTIONS_CONFIG = {
             "method": "head",
             "count": 5
         },
-        "description": f"Hidden gems from the past {TOURNAMENT_COUNT} tournaments", 
-        "sorting_note": "Sorted by (Win Rate-0.5)*(1-Share-3d) potential"
+        "description": "High win rate decks (>50%) with low representation (<1% share, ≥10 games)", 
+        "sorting_note": "Sorted by (Win Rate-50%) × (1-Share-3d) potential"
     },
     "counter_picker": {
         "type": "counter_picker",
-        "banner_path": "img/picker_banner.webp",
+        "banner_path": "img/counter_banner.webp",
         "fallback_title": "🎯 Counter Picker",
         "max_source_decks": 20,
         "max_counter_results": 8,
