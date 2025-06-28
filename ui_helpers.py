@@ -80,7 +80,7 @@ SIDEBAR_SECTIONS_CONFIG = {
     },
     "counter_picker": {
         "type": "counter_picker",
-        "banner_path": "img/counter_banner.webp",
+        "banner_path": "img/picker_banner.webp",
         "fallback_title": "🎯 Counter Picker",
         "max_source_decks": 20,
         "max_counter_results": 8,
