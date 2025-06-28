@@ -438,7 +438,7 @@ def create_deck_options():
     
     # Get latest set code for reference
     latest_set_info = get_latest_set_code()
-    latest_set_code = latest_set_info['set_code'] #if latest_set_info
+    latest_set_code = latest_set_info['set_code'] if latest_set_info else 'A3a'
     
     try:
         # Use Extended Meta Trend Table instead of performance_data
