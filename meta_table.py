@@ -1309,7 +1309,7 @@ def display_extended_meta_table():
                 "Trend", width=80, help="7-day meta share trend (oldest to newest)"
             ),
             'Win Rate': st.column_config.NumberColumn(
-                "Win Rate", width=60, help="Win rate percentage (last 7 days)", format="%.1f%%"
+                "Win Rate", width=55, help="Win rate percentage (last 7 days)", format="%.1f%%"
             ),
             'Wins': st.column_config.NumberColumn(
                 "Wins", width=45, help="Total wins in last 7 days"
@@ -1321,10 +1321,10 @@ def display_extended_meta_table():
                 "Ties", width=40, help="Total ties in last 7 days"
             ),
             'Share-7d': st.column_config.NumberColumn(
-                "Share-7d", width=65, help="Meta share in last 7 days", format="%.2f%%"
+                "Share-7d", width=55, help="Meta share in last 7 days", format="%.2f%%"
             ),
             'Share-3d': st.column_config.NumberColumn(
-                "Share-3d", width=65, help="Meta share in last 3 days", format="%.2f%%"
+                "Share-3d", width=55, help="Meta share in last 3 days", format="%.2f%%"
             ),
             'Ratio': st.column_config.NumberColumn(
                 "Ratio", width=50, help="Share-3d / Share-7d ratio", format="%.2f"
@@ -1338,7 +1338,7 @@ def display_extended_meta_table():
         st.dataframe(
             styled_df,
             column_config=column_config,
-            hide_index=False,
+            hide_index=True,
             height=3000,
             use_container_width=True
         )
