@@ -2135,7 +2135,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             text=f"Peak: {peak_value:.1f}%",
             showarrow=False,
             font=dict(size=12),
-            bgcolor="rgba(0,0,0,0)",
+            bgcolor="rgba(0,0,0,0.5)",
             bordercolor="rgba(0,0,0,0)"
         )
 
@@ -2380,10 +2380,11 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 # Add set code annotation at the top with hover info
                 fig.add_annotation(
                     x=release_date,
-                    y=max_percentage * 1.05,  # Position at top of chart
-                    text=set_code,
+                    y=max_percentage * 1.1,  # Position at top of chart
+                    text=f" {set_code}",  # Add space at beginning
                     showarrow=False,
                     font=dict(size=10, color="#FFFFFF"),
+                    align="left",
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
