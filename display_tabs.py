@@ -16,73 +16,23 @@ import base64
 import os
 
 def display_deck_header(deck_info, results):
-    """Display the deck header with image and text that wraps properly"""
+    """Display the deck header with image - simplified version"""
     header_image = get_header_image_cached(
         deck_info['deck_name'], 
         deck_info.get('set', 'A3'),
         results
     )
     
-    # Check if this is the first time showing a deck header
-    if 'first_deck_header_shown' not in st.session_state:
-        st.session_state.first_deck_header_shown = True
-        show_landing_message = True
-    else:
-        show_landing_message = False
-    
-    # Load and encode the featured image if it exists and we want to show it
-    featured_image_base64 = None
-    if show_landing_message:
-        featured_image_path = "featured_banner.webp"
-        if os.path.exists(featured_image_path):
-            with open(featured_image_path, "rb") as f:
-                featured_image_base64 = base64.b64encode(f.read()).decode()
-    
     if header_image:
-        # Conditional max-width for deck header image
-        deck_image_max_width = "800px" if show_landing_message and featured_image_base64 else "500px"
-        
-        # Simplified centered layout
+        # Simple centered deck image
         header_content = f"""
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.5rem; margin: 0rem 0 0.5rem 0; text-align: center;">
-            <div style="min-width: 200px;">"""
-        
-        # Add featured image if this is the first time and image exists
-        if show_landing_message and featured_image_base64:
-            header_content += f"""
-                <div style="margin-top: 0.5rem;">
-                    <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; max-height: 60px; border-radius: 10px;">
-                </div>"""
-        
-        # Add the deck name (h1 on left side)
-        header_content +=f"""<div><img src="data:image/png;base64,{header_image}" style="max-width: {deck_image_max_width}; width: 100%; height: auto; border: 3px solid #57585F;border-radius: 10px;"></div></div></div>"""
-        # header_content += f"""<div style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; line-height: 1; word-wrap: break-word; font-size: 3rem; margin: 0.5rem;">{format_deck_name(deck_info['deck_name'])}</div></div>
-        #     <div><img src="data:image/png;base64,{header_image}" style="max-width: {deck_image_max_width}; width: 100%; height: auto; border: 3px solid #57585F;border-radius: 10px;"></div></div>"""
+        <div style="display: flex; justify-content: center; align-items: center; margin: 0rem 0 0.5rem 0; text-align: center;">
+            <div style="min-width: 200px;">
+                <img src="data:image/png;base64,{header_image}" style="max-width: 500px; width: 100%; height: auto; border: 3px solid #57585F; border-radius: 10px;">
+            </div>
+        </div>"""
         
         st.markdown(header_content, unsafe_allow_html=True)
-        
-    else:
-        # No header image case - same as before
-        st.markdown("""
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@1,900&display=swap" rel="stylesheet">
-        """, unsafe_allow_html=True)
-        
-        # Build content for no-image case
-        # if show_landing_message and featured_image_base64:
-        #     st.markdown(f"""
-        #     <div style="text-align: center; margin-bottom: 1rem;">
-        #         <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px; border-radius: 10px;">
-        #     </div>
-        #     <h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>
-        #     """, unsafe_allow_html=True)
-        # else:
-        #     st.markdown(f"""<h1 style="text-align: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-style: italic; letter-spacing: -1px; line-height: 1.2; word-wrap: break-word;">{format_deck_name(deck_info['deck_name'])}</h1>""", unsafe_allow_html=True)
-        if show_landing_message and featured_image_base64:
-            st.markdown(f"""
-            <div style="text-align: center; margin-bottom: 1rem; margin-top:-0.5rem;">
-                <img src="data:image/png;base64,{featured_image_base64}" style="max-width: 100%; height: auto; max-height: 100px; border-radius: 10px;">
-            </div>""", unsafe_allow_html=True)
             
 # In display_card_usage_tab function in display_tabs.py
 def display_card_usage_tab(results, total_decks, variant_df):
