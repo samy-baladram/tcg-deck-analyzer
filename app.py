@@ -364,9 +364,10 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     display_tabs.display_meta_trend_tab(original_deck_info)
                    
                 with tab5:  
-                     from meta_table import get_tournament_summary
-                     st.caption(get_tournament_summary())
-                     display_extended_meta_table()
+                    from meta_table import format_tournament_summary
+                    summary_text = format_tournament_summary(period_days=7)  # Last 7 days
+                    st.caption(summary_text)
+                    display_extended_meta_table()
                 
                 # And shift the existing tabs:
                 with tab6:  # Related Decks (was tab5)
