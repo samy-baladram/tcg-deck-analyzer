@@ -1418,10 +1418,12 @@ def get_tournament_summary_stats(period_days=7):
         tournament_count = result[0] if result[0] else 0
         total_players = result[1] if result[1] else 0
         
-        # Get total matches (wins + losses + ties)
+        # Get total matches - CORRECTED CALCULATION
+        # Total matches = total wins (since each match has exactly one winner)
+        # OR alternatively: Total matches = (wins + losses + ties) / 2
         matches_query = """
         SELECT 
-            SUM(wins + losses + ties) as total_matches
+            SUM(wins) as total_matches
         FROM player_performance pp
         JOIN tournaments t ON pp.tournament_id = t.tournament_id
         WHERE t.date >= ?
