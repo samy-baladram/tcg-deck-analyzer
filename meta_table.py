@@ -1214,7 +1214,7 @@ def display_extended_meta_table():
     extended_df['rank'] = range(1, len(extended_df) + 1)
     
     # Display table header
-    st.write("##### Extended Tournament Performance Data")
+    #st.write("##### Extended Tournament Performance Data")
     
     # Custom CSS for styling (enhanced with ratio and win rate colors)
     st.markdown("""
@@ -1385,3 +1385,33 @@ def display_extended_meta_table():
     except Exception as e:
         st.error(f"Error displaying extended meta table: {str(e)}")
         print(f"Display error: {e}")
+
+def get_tournament_summary(period_days=7):
+    """Get tournament summary stats for display."""
+    try:
+        import sqlite3
+        from datetime import datetime, timedelta
+        
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        cutoff_date = (datetime.now() - timedelta(days=period_days)).strftime('%Y-%m-%d')
+        
+        # Single query to get all stats
+        query = """
+        SELECT 
+            COUNT(DISTINCT t.tournament_id) as tournaments,
+            SUM(t.total_players) as players,
+            SUM(pp.wins + pp.losses + pp.ties) as matches
+        FROM tournaments t
+        LEFT JOIN player_performance pp ON t.tournament_id = pp.tournament_id
+        WHERE t.date >= ?
+        """
+        
+        result = conn.execute(query, (cutoff_date,)).fetchone()
+        conn.close()
+        
+        tournaments, players, matches = result if result else (0, 0, 0)
+        return f"{tournaments or 0} tournaments, {players or 0} players, {matches or 0} matches"
+        
+    except Exception as e:
+        print(f"Error getting tournament summary: {e}")
+        return "Tournament data unavailable"
