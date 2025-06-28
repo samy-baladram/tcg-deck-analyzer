@@ -1076,12 +1076,13 @@ def display_extended_meta_table():
                 deck_name = row['deck_name']
                 
                 try:
-                    # Query to get performance data from last 7 days
+                    # IMPROVED query to handle missing performance data
                     perf_query = """
                     SELECT 
-                        SUM(pp.wins) as total_wins,
-                        SUM(pp.losses) as total_losses,
-                        SUM(pp.ties) as total_ties
+                        COALESCE(SUM(pp.wins), 0) as total_wins,
+                        COALESCE(SUM(pp.losses), 0) as total_losses,
+                        COALESCE(SUM(pp.ties), 0) as total_ties,
+                        COUNT(pp.id) as performance_records
                     FROM player_performance pp
                     JOIN tournaments t ON pp.tournament_id = t.tournament_id
                     WHERE pp.archetype = ?
@@ -1093,6 +1094,25 @@ def display_extended_meta_table():
                     wins = int(perf_result['total_wins'].iloc[0] or 0)
                     losses = int(perf_result['total_losses'].iloc[0] or 0)
                     ties = int(perf_result['total_ties'].iloc[0] or 0)
+                    performance_records = int(perf_result['performance_records'].iloc[0] or 0)
+                    
+                    # Debug: Check for data mismatch
+                    appearance_query = """
+                    SELECT SUM(aa.count) as total_appearances
+                    FROM archetype_appearances aa
+                    JOIN tournaments t ON aa.tournament_id = t.tournament_id
+                    WHERE aa.archetype = ?
+                    AND t.date >= date('now', '-7 days')
+                    """
+                    
+                    appearance_result = pd.read_sql_query(appearance_query, conn, params=[deck_name])
+                    total_appearances = int(appearance_result['total_appearances'].iloc[0] or 0)
+                    
+                    # Log data mismatches for debugging
+                    if total_appearances > 0 and performance_records == 0:
+                        print(f"⚠️ Data mismatch for {deck_name}: {total_appearances} appearances, {performance_records} performance records")
+                    elif performance_records > 0 and total_appearances == 0:
+                        print(f"⚠️ Reverse mismatch for {deck_name}: {performance_records} performance records, {total_appearances} appearances")
                     
                     wilson_index = calculate_wilson_score(wins, losses, ties)
                     
@@ -1102,6 +1122,9 @@ def display_extended_meta_table():
                         win_rate = round(((wins + 0.5 * ties) / total_games) * 100, 1)
                     else:
                         win_rate = 0.0
+                        # Additional debug for zero win rate cases
+                        if total_appearances > 0:
+                            print(f"📊 {deck_name}: 0% win rate despite {total_appearances} appearances - missing performance data")
                     
                     # Calculate ratio (Share-3d / Share-7d)
                     if row['share_7d'] > 0:
