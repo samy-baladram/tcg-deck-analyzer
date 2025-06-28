@@ -250,7 +250,7 @@ class MetaTableBuilder(MetaAnalyzer):
     def __init__(self, db_path="meta_analysis/tournament_meta.db"):
         super().__init__(db_path)
         self.archetype_analyzer = ArchetypeAnalyzer(db_path)
-    
+
     def build_complete_meta_table(self, limit=20):
         """
         Build complete meta table with all analysis data - CORRECTED VERSION
@@ -259,7 +259,7 @@ class MetaTableBuilder(MetaAnalyzer):
             limit: Number of archetypes to include
             
         Returns:
-            DataFrame with complete meta analysis
+            DataFrame with complete meta analysis including performance data
         """
         print("Building meta table data...")
         
@@ -282,14 +282,42 @@ class MetaTableBuilder(MetaAnalyzer):
             # Get daily trend data
             daily_data = self.archetype_analyzer.get_daily_trend_data(deck_name)
             
+            # Get performance data (wins, losses, ties)
+            try:
+                import sqlite3
+                with sqlite3.connect(self.db_path) as conn:
+                    perf_query = """
+                    SELECT 
+                        COALESCE(SUM(pp.wins), 0) as total_wins,
+                        COALESCE(SUM(pp.losses), 0) as total_losses,
+                        COALESCE(SUM(pp.ties), 0) as total_ties
+                    FROM player_performance pp
+                    JOIN tournaments t ON pp.tournament_id = t.tournament_id
+                    WHERE pp.archetype = ?
+                    AND t.date >= date('now', '-7 days')
+                    """
+                    
+                    perf_result = pd.read_sql_query(perf_query, conn, params=[deck_name])
+                    
+                    wins = int(perf_result['total_wins'].iloc[0] or 0)
+                    losses = int(perf_result['total_losses'].iloc[0] or 0)
+                    ties = int(perf_result['total_ties'].iloc[0] or 0)
+                    
+            except Exception as e:
+                print(f"Error fetching performance data for {deck_name}: {e}")
+                wins = losses = ties = 0
+            
             # Build complete row data
             row_data = {
                 'deck_name': deck_name,
-                'display_name': self._format_deck_name(deck_name),
+                'formatted_deck_name': self._format_deck_name(deck_name),
                 'current_share': round(row['share'], 2),
                 'win_rate': round(row['win_rate'], 1),
-                **period_data,  # Add all period comparison data
-                **daily_data    # Add all daily trend data
+                'wins': wins,           # Add performance data
+                'losses': losses,       # Add performance data  
+                'ties': ties,           # Add performance data
+                **period_data,          # Add all period comparison data
+                **daily_data            # Add all daily trend data
             }
             
             table_data.append(row_data)
@@ -299,7 +327,7 @@ class MetaTableBuilder(MetaAnalyzer):
         result_df = result_df.sort_values('share_7d', ascending=False).reset_index(drop=True)
         result_df['rank'] = range(1, len(result_df) + 1)
         
-        print(f"Built meta table with {len(result_df)} archetypes")
+        print(f"Built meta table with {len(result_df)} archetypes including performance data")
         return result_df.head(limit)
     
     def _format_deck_name(self, deck_name):
