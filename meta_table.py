@@ -458,7 +458,7 @@ class MetaDisplayFormatter:
 #             elif val.startswith('+'):
 #                 return 'color: #06B804; font-size: 0.8rem; font-weight: bold;'
 #             elif val.startswith('-'):
-#                 return 'color: #FD7042; font-size: 0.8rem; font-weight: bold;'
+#                 return 'color: #FD6C25; font-size: 0.8rem; font-weight: bold;'
 #             else:
 #                 return 'color: #888888; font-size: 0.8rem; font-weight: normal;'
         
@@ -476,9 +476,9 @@ class MetaDisplayFormatter:
 #                 elif ratio_num > 1.0:
 #                     return 'color: #06B804; font-size: 0.8rem; font-weight: normal;'  # Light green
 #                 elif ratio_num < 0.8:
-#                     return 'color: #FD7042; font-size: 0.8rem; font-weight: bold;'  # Strong red
+#                     return 'color: #FD6C25; font-size: 0.8rem; font-weight: bold;'  # Strong red
 #                 elif ratio_num < 1.0:
-#                     return 'color: #FD7042; font-size: 0.8rem; font-weight: normal;'  # Light red
+#                     return 'color: #FD6C25; font-size: 0.8rem; font-weight: normal;'  # Light red
 #                 else:
 #                     return 'color: #888888; font-size: 0.8rem; font-weight: normal;'  # Neutral
 #             except:
@@ -614,7 +614,7 @@ def display_meta_overview_table():
                 if val > 1:
                     return 'color: #06B804; font-weight: bold;'  # Green
                 else:
-                    return 'color: #FD7042; font-weight: bold;'  # Red
+                    return 'color: #FD6C25; font-weight: bold;'  # Red
             
             return df.style.applymap(color_r_column, subset=['R'])
         
@@ -909,7 +909,7 @@ def display_meta_overview_table_with_buttons():
         text-align: right !important;
     }
     .change-negative {
-        color: #FD7042 !important;
+        color: #FD6C25 !important;
         font-size: 0.8rem !important;
         margin-top: -2px !important;
         line-height: 1 !important;
@@ -1250,7 +1250,7 @@ def display_extended_meta_table():
     }
     
     .ratio-negative {
-        color: #FD7042 !important;
+        color: #FD6C25 !important;
         font-weight: bold !important;
     }
     
@@ -1265,7 +1265,7 @@ def display_extended_meta_table():
     }
     
     .winrate-negative {
-        color: #FD7042 !important;
+        color: #FD6C25 !important;
         font-weight: bold !important;
     }
     </style>
@@ -1299,9 +1299,9 @@ def display_extended_meta_table():
             elif val > 1.0:
                 return 'color: #06B804; font-weight: normal;'  # Light green for gains
             elif val < 0.8:
-                return 'color: #FD7042; font-weight: bold;'  # Strong red for big losses
+                return 'color: #FD6C25; font-weight: bold;'  # Strong red for big losses
             elif val < 1.0:
-                return 'color: #FD7042; font-weight: normal;'  # Light red for losses
+                return 'color: #FD6C25; font-weight: normal;'  # Light red for losses
             else:
                 return 'color: #888888; font-weight: normal;'  # Neutral
         
@@ -1312,7 +1312,7 @@ def display_extended_meta_table():
             elif val > 50:
                 return 'color: #06B804; font-weight: bold;'  # Green for winning
             else:
-                return 'color: #FD7042; font-weight: bold;'  # Red for losing
+                return 'color: #FD6C25; font-weight: bold;'  # Red for losing
         
         # Apply conditional styling
         styled_df = final_df.style.applymap(
