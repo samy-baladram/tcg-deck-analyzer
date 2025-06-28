@@ -733,7 +733,7 @@ def display_gainers_table():
         st.dataframe(
             final_df,
             column_config=column_config,
-            hide_index=True,
+            hide_index=False,
             height=750,
             use_container_width=True
         )
