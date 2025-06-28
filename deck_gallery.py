@@ -1,198 +1,199 @@
 # deck_gallery.py
-"""Deck Gallery display functions for showcasing all fetched decks"""
+"""Functions for displaying all fetched decks in the Deck Gallery tab"""
 
 import streamlit as st
-from card_renderer import CardRenderer, CardGrid
-from ui_helpers import format_deck_name
+import json
+import os
+from ui_helpers import get_energy_types_for_deck
+from card_renderer import render_sidebar_deck
+import cache_manager
 
-def display_deck_gallery(deck_name=None, set_name=None):
+def get_deck_record(tournament_id, player_id):
     """
-    Display all collected deck instances for the specified archetype in a three-column gallery format.
-    Each deck shows in an expander with format: "Deck {number}. Record {record}"
-    
-    Args:
-        deck_name: The deck archetype name (if None, gets from session state)
-        set_name: The set name (if None, gets from session state)
+    Get win-lose-tie record for a deck by matching tournament and player
+    Returns tuple (wins, losses, ties) or (0, 0, 0) if not found
     """
+    try:
+        # Check if we have performance data in session state
+        if 'performance_data' not in st.session_state:
+            return (0, 0, 0)
+        
+        # For now, return placeholder record since we need to implement
+        # the JSON matching logic based on your tournament data structure
+        # This would need to be implemented based on your specific JSON format
+        return (2, 1, 0)  # Placeholder
+        
+    except Exception as e:
+        print(f"Error getting deck record: {e}")
+        return (0, 0, 0)
+
+def display_single_deck_expander(deck_data, deck_number, energy_types, is_typical):
+    """
+    Display a single deck in an expander format
+    Similar to the existing expander in display_deck_template_tab
+    """
+    # Get record for this deck
+    tournament_id = deck_data.get('tournament_id', '')
+    player_id = deck_data.get('player_id', '')
+    wins, losses, ties = get_deck_record(tournament_id, player_id)
     
-    # Get current deck from session state if not provided
-    if deck_name is None or set_name is None:
-        if 'analyze' in st.session_state:
-            deck_name = st.session_state.analyze.get('deck_name')
-            set_name = st.session_state.analyze.get('set_name', 'A3')
+    # Format record string
+    record_str = f"{wins}-{losses}-{ties}"
+    
+    # Create expander title
+    expander_title = f"Deck {deck_number}. Record {record_str}"
+    
+    # Create the expander
+    with st.expander(expander_title, expanded=False):
+        # Display energy types if available
+        if energy_types:
+            from card_renderer import render_energy_icons
+            energy_html = render_energy_icons(energy_types, is_typical)
+            st.markdown(energy_html, unsafe_allow_html=True)
+        
+        # Get deck cards
+        cards = deck_data.get('cards', [])
+        
+        if cards:
+            # Separate Pokemon and Trainer cards
+            pokemon_cards = []
+            trainer_cards = []
+            
+            for card in cards:
+                if card.get('type', '').lower() == 'pokemon':
+                    pokemon_cards.append({
+                        'name': card.get('card_name', ''),
+                        'set': card.get('set', ''),
+                        'num': card.get('num', ''),
+                        'amount': card.get('amount', 1)
+                    })
+                else:
+                    trainer_cards.append({
+                        'name': card.get('card_name', ''),
+                        'set': card.get('set', ''),
+                        'num': card.get('num', ''),
+                        'amount': card.get('amount', 1)
+                    })
+            
+            # Render the deck using CardGrid
+            deck_html = render_sidebar_deck(
+                pokemon_cards, 
+                trainer_cards,
+                card_width=65
+            )
+            st.markdown(deck_html, unsafe_allow_html=True)
         else:
-            st.info("No deck selected. Please select a deck from the dropdown first.")
-            return
+            st.info("No deck data available")
+
+def display_deck_gallery_tab():
+    """
+    Display the Deck Gallery tab with all collected decks in 3 columns
+    """
+    st.write("##### Deck Gallery - All Collected Decks")
     
-    # Check if we have collected decks data for this specific archetype
+    # Get current deck info
+    if 'analyze' not in st.session_state:
+        st.info("Select a deck to view the gallery")
+        return
+    
+    deck_name = st.session_state.analyze.get('deck_name', '')
+    set_name = st.session_state.analyze.get('set_name', 'A3')
+    
+    # Get energy types for the current archetype
+    energy_types, is_typical = get_energy_types_for_deck(deck_name)
+    
+    # Get collected decks from session state
     deck_key = f"{deck_name}_{set_name}"
     
-    if ('collected_decks' not in st.session_state or 
-        deck_key not in st.session_state.collected_decks):
-        st.info(f"No collected deck data found for {deck_name}. Please analyze this deck first.")
+    if 'collected_decks' not in st.session_state or deck_key not in st.session_state.collected_decks:
+        st.info("No collected decks found for this archetype")
         return
     
-    deck_data = st.session_state.collected_decks[deck_key]
+    collected_data = st.session_state.collected_decks[deck_key]
+    all_decks = collected_data.get('decks', [])
     
-    if 'decks' not in deck_data or not deck_data['decks']:
-        st.info(f"No individual deck instances found for {deck_name}.")
+    if not all_decks:
+        st.info("No deck data available")
         return
     
-    # Get all individual deck instances for this archetype
-    deck_instances = deck_data['decks']
+    # Create 3 columns for layout
+    col1, col2, col3 = st.columns(3)
+    columns = [col1, col2, col3]
     
-    formatted_deck_name = format_deck_name(deck_name)
-    st.write(f"### {formatted_deck_name} - Individual Decks ({len(deck_instances)} decks)")
+    # For now, display up to 20 decks as requested
+    max_decks = min(20, len(all_decks))
     
-    # Create three-column layout
-    cols = st.columns(3)
-    
-    for i, deck_instance in enumerate(deck_instances):
-        col_idx = i % 3
+    # Display decks in columns
+    for i in range(max_decks):
+        deck = all_decks[i]
+        column_index = i % 3  # Distribute across 3 columns
         
-        with cols[col_idx]:
-            # Extract record and deck number
-            record = deck_instance.get('record', 'No record')
-            deck_num = deck_instance.get('deck_num', i + 1)  # fallback to index + 1
-            
-            # Format expander title
-            expander_title = f"Deck {deck_num}. Record {record}"
-            
-            with st.expander(expander_title, expanded=False):
-                # Display this specific deck instance's cards
-                if 'cards' in deck_instance and deck_instance['cards']:
-                    
-                    # Show deck metadata
-                    if 'player_name' in deck_instance:
-                        st.write(f"**Player:** {deck_instance['player_name']}")
-                    
-                    if 'tournament_name' in deck_instance:
-                        st.write(f"**Tournament:** {deck_instance['tournament_name']}")
-                    elif 'tournament_id' in deck_instance:
-                        st.write(f"**Tournament ID:** {deck_instance['tournament_id']}")
-                    
-                    if 'placement' in deck_instance:
-                        st.write(f"**Placement:** {deck_instance['placement']}")
-                    
-                    st.divider()
-                    
-                    # Separate cards by type
-                    pokemon_cards = []
-                    trainer_cards = []
-                    
-                    for card in deck_instance['cards']:
-                        if card.get('type') == 'Pokemon':
-                            pokemon_cards.append(card)
-                        else:
-                            trainer_cards.append(card)
-                    
-                    # Show energy types if available
-                    if 'energy_types' in deck_instance and deck_instance['energy_types']:
-                        st.write("**Energy Types:**")
-                        energy_types = deck_instance['energy_types']
-                        
-                        # Use the energy renderer from the main system
-                        try:
-                            from energy_utils import render_energy_icons
-                            energy_html = render_energy_icons(energy_types, is_typical=True)
-                            st.markdown(energy_html, unsafe_allow_html=True)
-                        except ImportError:
-                            # Fallback display
-                            energy_display = " • ".join(energy_types)
-                            st.markdown(f"*{energy_display}*")
-                        
-                        st.divider()
-                    
-                    # Render Pokemon cards using Card Renderer
-                    if pokemon_cards:
-                        total_pokemon = sum(card.get('count', 1) for card in pokemon_cards)
-                        CardRenderer.render_deck_section(
-                            pokemon_cards, 
-                            "Pokémon", 
-                            card_count=total_pokemon
-                        )
-                    
-                    # Render Trainer cards using Card Renderer  
-                    if trainer_cards:
-                        total_trainers = sum(card.get('count', 1) for card in trainer_cards)
-                        CardRenderer.render_deck_section(
-                            trainer_cards, 
-                            "Trainer", 
-                            card_count=total_trainers
-                        )
-                
-                else:
-                    st.info("Card list not available for this deck instance")
+        with columns[column_index]:
+            display_single_deck_expander(
+                deck, 
+                deck.get('deck_num', i + 1), 
+                energy_types, 
+                is_typical
+            )
+    
+    # Display summary info
+    st.divider()
+    st.caption(f"Showing {max_decks} of {len(all_decks)} collected decks for {deck_name}")
 
-def display_deck_gallery_simplified():
+# Alternative function for testing/development
+def display_deck_gallery_tab_simple():
     """
-    Simplified display showing only analyzed deck archetypes (for quick overview)
+    Simplified version for testing - just copies the expander code 20 times
+    This is what the user specifically requested for now
     """
+    st.write("##### Deck Gallery - All Collected Decks")
     
-    # Check if we have collected decks data
-    if 'collected_decks' not in st.session_state or not st.session_state.collected_decks:
-        st.info("No deck data available. Please analyze some decks first.")
+    # Get current deck info
+    if 'analyze' not in st.session_state:
+        st.info("Select a deck to view the gallery")
         return
     
-    # Get only archetypes that have been analyzed
-    analyzed_archetypes = []
+    deck_name = st.session_state.analyze.get('deck_name', '')
+    set_name = st.session_state.analyze.get('set_name', 'A3')
     
-    for deck_key, deck_data in st.session_state.collected_decks.items():
-        # Parse deck_key format: "deck_name_set_name"
-        parts = deck_key.rsplit('_', 1)
-        if len(parts) == 2:
-            deck_name, set_name = parts
-        else:
-            deck_name = deck_key
-            set_name = 'A3'
+    # Get energy types for the current archetype
+    energy_types, is_typical = get_energy_types_for_deck(deck_name)
+    
+    # Create 3 columns for layout
+    col1, col2, col3 = st.columns(3)
+    columns = [col1, col2, col3]
+    
+    # Create 20 expanders as requested
+    for i in range(20):
+        column_index = i % 3  # Distribute across 3 columns
+        deck_number = i + 1
         
-        # Check if this archetype has been analyzed
-        cache_key = f"full_deck_{deck_name}_{set_name}"
-        if ('analyzed_deck_cache' in st.session_state and 
-            cache_key in st.session_state.analyzed_deck_cache):
-            
-            deck_count = len(deck_data.get('decks', []))
-            
-            analyzed_archetypes.append({
-                'deck_name': deck_name,
-                'set_name': set_name,
-                'deck_key': deck_key,
-                'deck_count': deck_count
-            })
-    
-    if not analyzed_archetypes:
-        st.info("No analyzed deck archetypes found.")
-        return
-    
-    # Sort by deck count
-    analyzed_archetypes.sort(key=lambda x: x['deck_count'], reverse=True)
-    
-    st.write(f"### Analyzed Deck Archetypes ({len(analyzed_archetypes)} archetypes)")
-    
-    # Create three-column layout
-    cols = st.columns(3)
-    
-    for i, archetype in enumerate(analyzed_archetypes):
-        col_idx = i % 3
+        # Placeholder record for now
+        record_str = f"{2}-{1}-{0}"  # Placeholder win-lose-tie
+        expander_title = f"Deck {deck_number}. Record {record_str}"
         
-        with cols[col_idx]:
-            # Format expander title
-            formatted_name = format_deck_name(archetype['deck_name'])
-            expander_title = f"{formatted_name} ({archetype['deck_count']} decks)"
-            
+        with columns[column_index]:
             with st.expander(expander_title, expanded=False):
-                # Get analyzed results for this deck archetype
-                cache_key = f"full_deck_{archetype['deck_name']}_{archetype['set_name']}"
-                analyzed_data = st.session_state.analyzed_deck_cache[cache_key]
-                results = analyzed_data.get('results')
-                variant_df = analyzed_data.get('variant_df')
+                # Display energy types if available
+                if energy_types:
+                    from card_renderer import render_energy_icons
+                    energy_html = render_energy_icons(energy_types, is_typical)
+                    st.markdown(energy_html, unsafe_allow_html=True)
                 
-                if results is not None and not results.empty:
-                    # Display exactly like "Deck Info" tab
-                    try:
-                        from display_tabs import display_deck_template_tab
-                        display_deck_template_tab(results, variant_df)
-                    except Exception as e:
-                        st.error(f"Error displaying deck template: {str(e)}")
+                # Get sample deck data (using the same logic as the original)
+                sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+                
+                # Render the sample deck
+                if sample_deck:
+                    deck_html = render_sidebar_deck(
+                        sample_deck['pokemon_cards'], 
+                        sample_deck['trainer_cards'],
+                        card_width=65
+                    )
+                    st.markdown(deck_html, unsafe_allow_html=True)
                 else:
-                    st.info("No analysis results available")
+                    st.info(f"Sample deck {deck_number} - No data available")
+    
+    # Display summary info
+    st.divider()
+    st.caption(f"Showing 20 sample decks for {deck_name} archetype")
