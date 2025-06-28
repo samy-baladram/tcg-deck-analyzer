@@ -11,6 +11,7 @@ from local_metagame import display_local_metagame_comparison
 from header_image_cache import clear_expired_cache, get_cache_stats
 from card_cache import clear_expired_cache as clear_card_cache
 from meta_table import display_extended_meta_table
+from deck_gallery import display_deck_gallery
 from PIL import Image
 
 favicon = Image.open("favicon.png").convert('RGBA')
@@ -355,7 +356,7 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     #     st.caption(last_update)
                 
                 with tab2:
-                    st.write("Coming Soon")
+                    display_deck_gallery()
                 #     # Pass variant_df safely
                 #     if variant_df is not None:
                 #         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
