@@ -464,14 +464,30 @@ def get_latest_set_code():
         with open("meta_analysis/sets_index.json", 'r') as f:
             sets_data = json.load(f)
         
+        print(f"DEBUG: Loaded {len(sets_data['sets'])} sets from JSON")
+        
         # Filter sets with release dates and sort by date (newest first)
         sets_with_dates = [s for s in sets_data['sets'] if s.get('release_date')]
+        print(f"DEBUG: Found {len(sets_with_dates)} sets with release dates")
+        
         if sets_with_dates:
+            # Show the dates before sorting
+            dates = [s['release_date'] for s in sets_with_dates]
+            print(f"DEBUG: Release dates found: {dates}")
+            
             latest_set = sorted(sets_with_dates, key=lambda x: x['release_date'], reverse=True)[0]
+            print(f"DEBUG: Latest set determined: {latest_set['set_name']} ({latest_set['set_code']}) - {latest_set['release_date']}")
+            
             return latest_set['set_code']
+        else:
+            print("DEBUG: No sets with release dates found")
+            
     except Exception as e:
         print(f"Error getting latest set code: {e}")
+        import traceback
+        traceback.print_exc()
     
+    print("DEBUG: Returning None from get_latest_set_code()")
     return None
     
 def create_deck_selector():
