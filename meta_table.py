@@ -274,7 +274,7 @@ class MetaTableBuilder(MetaAnalyzer):
         
         for _, row in archetypes_df.iterrows():
             deck_name = row['deck_name']
-            print(f"Processing {deck_name}...")
+            #print(f"Processing {deck_name}...")
             
             # Get period comparison data
             period_data = self.archetype_analyzer.calculate_period_comparison(deck_name)
