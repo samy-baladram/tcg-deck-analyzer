@@ -302,6 +302,10 @@ def create_deck_options():
     deck_display_names = []
     deck_name_mapping = {}
     
+    # Get latest set code
+    latest_set_code = get_latest_set_code() or 'A3a'  # Fallback to A3a if not found
+    print(f"DEBUG: Using latest set code: {latest_set_code}")
+    
     try:
         # Use Extended Meta Trend Table instead of performance_data
         from meta_table import MetaTableBuilder
@@ -319,7 +323,7 @@ def create_deck_options():
                 deck_display_names.append(display_name)
                 deck_name_mapping[display_name] = {
                     'deck_name': row['deck_name'],
-                    'set': row.get('set', 'A3a')
+                    'set': latest_set_code  # Always use latest set instead of row.get('set', 'A3a')
                 }
         else:
             print("Extended Meta Trend Table is empty, using fallback")
@@ -327,7 +331,7 @@ def create_deck_options():
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': 'example-deck',
-                'set': 'A3a'
+                'set': latest_set_code  # Use latest set for fallback too
             }
             
     except Exception as e:
@@ -336,7 +340,7 @@ def create_deck_options():
         deck_display_names.append(display_name)
         deck_name_mapping[display_name] = {
             'deck_name': 'example-deck',
-            'set': 'A3a'
+            'set': latest_set_code  # Use latest set for error fallback too
         }
     
     # Cache the results
