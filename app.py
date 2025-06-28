@@ -100,7 +100,7 @@ if 'deck_to_analyze' in st.session_state and st.session_state.deck_to_analyze:
                 # Clear the deck_to_analyze flag
                 st.session_state.deck_to_analyze = None
                 break
-                
+
 # In app.py, after loading initial data but before UI rendering
 if 'deck_display_names' in st.session_state and st.session_state.deck_display_names:
     # If we have deck options but no analysis yet, set up the first deck
@@ -259,6 +259,11 @@ else:
         st.write("")
         #st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
 
+# Clear deck_switching flag after analysis is complete
+if 'deck_switching' in st.session_state:
+    st.session_state.deck_switching = False
+    #print("DEBUG: Cleared deck_switching flag - sidebar will reload on next run")
+    
 # Main content area
 if 'analyze' in st.session_state and selected_option and st.session_state.get('deck_display_names'):
     original_deck_info = st.session_state.analyze
