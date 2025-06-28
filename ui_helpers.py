@@ -1027,7 +1027,7 @@ def create_deck_section(section_type):
         else:
             caption_text = "Shows meta share percentages"
         
-        st.caption(f"{config['description']}. {caption_text}")
+        st.caption(f"{config['description']}. {config['sorting_note']}")
     #st.write("")
     #st.write("")
     #st.write("")
