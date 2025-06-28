@@ -928,7 +928,7 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
             st.markdown(f"""
             <div style="width: 100%; margin-top: -16px; margin-bottom: 7px; position: relative;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
-                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(38, 39, 48, 0.7); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
+                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(38, 39, 48, 0.75); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
                     {stats_text}
                 </div>
             </div>
@@ -1002,7 +1002,7 @@ def create_deck_section(section_type):
         st.markdown(f"""
         <div style="width: 100%; margin-top: -18px; position: relative;">
             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 6px 6px 0px 0px; margin-bottom: -7px; z-index:-2;">
-            <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; margin-bottom: -7px; border-radius: 4px 0px 0px 0px; font-size: 0.7rem; font-weight: 500;">
+            <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(38, 39, 48, 0.8); color: yellow; padding: 2px 4px; margin-bottom: -7px; border-radius: 4px 0px 0px 0px; font-size: 0.7rem; font-weight: 500;">
                 {stats_text}
             </div>
         </div>
