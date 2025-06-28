@@ -2585,7 +2585,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         fig.add_hline(
             y=50,
             line_dash="dot",
-            line_color="rgba(255, 255, 255, 0.7)",
+            line_color="rgba(255, 255, 255, 1)",
             line_width=1.5
         )
         
