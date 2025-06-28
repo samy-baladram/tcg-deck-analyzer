@@ -554,7 +554,7 @@ def create_deck_selector():
     
     # Create label and help text
     label_text = f"Current Set: {current_set}"
-    help_text = f"Showing decks with meta share ≥ {MIN_META_SHARE}% and win rate ≥ {MIN_WIN_RATE}%, ordered by Power Index (details in sidebar).\nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).\nUpdated {time_str}."
+    help_text = f"Ranked by 7-day meta share percentage from all tournaments in the past 7 days.  \nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).  \nUpdated {time_str}."
 
     # Display the selectbox
     selected_option = st.selectbox(
