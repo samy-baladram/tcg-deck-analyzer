@@ -454,6 +454,21 @@ def on_deck_change():
 #             del st.session_state['deck_display_names']
 
 #     return
+def get_latest_set_code():
+    """Get the latest set code from sets_index.json"""
+    try:
+        with open("meta_analysis/sets_index.json", 'r') as f:
+            sets_data = json.load(f)
+        
+        # Filter sets with release dates and sort by date (newest first)
+        sets_with_dates = [s for s in sets_data['sets'] if s.get('release_date')]
+        if sets_with_dates:
+            latest_set = sorted(sets_with_dates, key=lambda x: x['release_date'], reverse=True)[0]
+            return latest_set['set_code']
+    except Exception as e:
+        print(f"Error getting latest set code: {e}")
+    
+    return None
     
 def create_deck_selector():
     """Create and display the deck selector dropdown with minimal loading"""
@@ -482,18 +497,29 @@ def create_deck_selector():
         st.session_state.deck_display_names = deck_display_names
         st.session_state.deck_name_mapping = deck_name_mapping
         
-        # Always pre-select first deck on fresh load
-        print("DEBUG: Fresh app load - selecting first deck")
-        st.session_state.selected_deck_index = 0
+        # MODIFIED: Select deck from latest set instead of first deck
+        latest_set_code = get_latest_set_code()
+        selected_index = 0  # fallback to first deck
+        
+        if latest_set_code and deck_display_names:
+            # Find first deck from latest set
+            for i, display_name in enumerate(deck_display_names):
+                deck_info = deck_name_mapping[display_name]
+                if deck_info['set'] == latest_set_code:
+                    selected_index = i
+                    break
+        
+        st.session_state.selected_deck_index = selected_index
         
         if deck_display_names:
-            first_deck_display = deck_display_names[0]
-            first_deck_info = deck_name_mapping[first_deck_display]
+            selected_deck_display = deck_display_names[selected_index]
+            selected_deck_info = deck_name_mapping[selected_deck_display]
             st.session_state.analyze = {
-                'deck_name': first_deck_info['deck_name'],
-                'set_name': first_deck_info['set'],
+                'deck_name': selected_deck_info['deck_name'],
+                'set_name': selected_deck_info['set'],
             }
-            print(f"DEBUG: Set first deck: {first_deck_info['deck_name']}")
+            print(f"DEBUG: Set deck from latest set: {selected_deck_info['deck_name']}")
+ 
     else:
         # Use cached options
         deck_display_names = st.session_state.deck_display_names
