@@ -186,7 +186,7 @@ def display_single_deck_expander(deck_data, deck_number, energy_types, is_typica
         expander_title = f"Deck {deck_number} (Score: {wins}-{losses}-{ties})"
     
     # Create the expander
-    with st.expander(expander_title, expanded=False):
+    with st.expander(expander_title, expanded=True):
         # Display energy types if available
         if energy_types:
             from card_renderer import render_energy_icons
@@ -221,7 +221,7 @@ def display_single_deck_expander(deck_data, deck_number, energy_types, is_typica
             deck_html = render_sidebar_deck(
                 pokemon_cards, 
                 trainer_cards,
-                card_width=65
+                card_width=55
             )
             st.markdown(deck_html, unsafe_allow_html=True)
         else:
