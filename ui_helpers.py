@@ -309,9 +309,6 @@ def on_deck_change():
         if (current_deck.get('deck_name') != new_deck_name or 
             current_deck.get('set_name') != new_set_name):
             
-            # FIXED: Set deck_switching flag to prevent sidebar reload
-            st.session_state.deck_switching = True
-            
             # Clear caches for the new deck to force fresh analysis
             import cache_manager
             cache_manager.clear_deck_cache_on_switch(new_deck_name, new_set_name)
@@ -319,7 +316,7 @@ def on_deck_change():
             # Update selection index
             st.session_state.selected_deck_index = st.session_state.deck_display_names.index(selection)
             
-            # FIXED: Directly update analyze instead of using deck_to_analyze
+            # Directly update analyze (NO deck_switching flag needed)
             st.session_state.analyze = {
                 'deck_name': new_deck_name,
                 'set_name': new_set_name,
