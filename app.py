@@ -356,8 +356,10 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     #     st.caption(last_update)
                 
                 with tab2:
-                    from deck_gallery import display_deck_gallery_tab_simple
-                    display_deck_gallery_tab_simple()
+                    # from deck_gallery import display_deck_gallery_tab_simple
+                    # display_deck_gallery_tab_simple()
+                    from deck_gallery import display_deck_gallery_tab
+                    display_deck_gallery_tab()
                 #     # Pass variant_df safely
                 #     if variant_df is not None:
                 #         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
