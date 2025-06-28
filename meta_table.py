@@ -1032,50 +1032,47 @@ def display_extended_meta_table():
         st.warning("No meta data available at this time.")
         return
     
-    # Format for display
-    formatter = MetaDisplayFormatter()
-    meta_df = formatter.prepare_display_dataframe(meta_df)
+    # Get tournament statistics for caption
+    try:
+        import sqlite3
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Query for tournament count, total players, and total matches in last 7 days
+        stats_query = """
+        SELECT 
+            COUNT(DISTINCT t.tournament_id) as tournament_count,
+            SUM(t.total_players) as total_players,
+            (SELECT 
+                SUM(pp.wins + pp.losses + pp.ties) 
+             FROM player_performance pp
+             JOIN tournaments t2 ON pp.tournament_id = t2.tournament_id
+             WHERE t2.date >= date('now', '-7 days')
+            ) as total_matches
+        FROM tournaments t
+        WHERE t.date >= date('now', '-7 days')
+        """
+        
+        stats_result = pd.read_sql_query(stats_query, conn)
+        conn.close()
+        
+        tournament_count = int(stats_result['tournament_count'].iloc[0] or 0)
+        player_count = int(stats_result['total_players'].iloc[0] or 0) 
+        match_count = int(stats_result['total_matches'].iloc[0] or 0)
+        
+        # Display statistics caption
+        st.caption(f"{tournament_count} tournaments, {player_count} players, {match_count} matches")
+        
+    except Exception as e:
+        print(f"Error fetching tournament statistics: {e}")
+        # Fallback caption if query fails
+        st.caption("Tournament performance data (last 7 days)")
     
-    # Calculate Wilson Score (Power Index) for each archetype using analyzer.py formula
-    def calculate_wilson_score(wins, losses, ties):
-        """Calculate Wilson Score confidence interval using analyzer.py formula"""
-        total_games = wins + losses + ties
-        if total_games == 0:
-            return 0.0
-        
-        # Handle ties as half-wins (common in card games)
-        adjusted_wins = wins + (0.5 * ties)
-        
-        # Calculate win proportion
-        win_proportion = adjusted_wins / total_games
-        
-        # Wilson Score Interval parameters
-        z = 1.96  # 95% confidence level
-        z_squared = z * z
-        
-        # Calculate Wilson Score lower bound
-        numerator = (win_proportion + (z_squared / (2 * total_games)) - 
-                     z * math.sqrt((win_proportion * (1 - win_proportion) + 
-                                   (z_squared / (4 * total_games))) / total_games))
-        
-        denominator = 1 + (z_squared / total_games)
-        
-        # Wilson Score lower bound (conservative estimate of true win rate)
-        wilson_score = numerator / denominator
-        
-        # Scale to make more intuitive (analyzer.py formula)
-        power_index = (wilson_score - 0.5) * 10
-        
-        return round(power_index, 2)
-    
-    # Add daily trend data for line charts (copied from working display_meta_overview_table)
+    # Get trend history function (same as before)
     def get_trend_history(deck_name):
-        """Get 7-day percentage history for line chart"""
         try:
-            # Use the existing builder's analyzer to get daily trend data
-            daily_data = builder.archetype_analyzer.get_daily_trend_data(deck_name, days_back=7)
+            analyzer = ArchetypeAnalyzer()
+            daily_data = analyzer.get_daily_trend_data(deck_name, 7)
             
-            # Extract percentage values - keys are day_1, day_2, etc.
             percentages = []
             for i in range(1, 8):  # day_1 through day_7
                 day_key = f'day_{i}'
@@ -1123,57 +1120,36 @@ def display_extended_meta_table():
                     ties = int(perf_result['total_ties'].iloc[0] or 0)
                     performance_records = int(perf_result['performance_records'].iloc[0] or 0)
                     
-                    # Debug: Check for data mismatch
-                    appearance_query = """
-                    SELECT SUM(aa.count) as total_appearances
-                    FROM archetype_appearances aa
-                    JOIN tournaments t ON aa.tournament_id = t.tournament_id
-                    WHERE aa.archetype = ?
-                    AND t.date >= date('now', '-7 days')
-                    """
-                    
-                    appearance_result = pd.read_sql_query(appearance_query, conn, params=[deck_name])
-                    total_appearances = int(appearance_result['total_appearances'].iloc[0] or 0)
-                    
-                    # Log data mismatches for debugging
-                    if total_appearances > 0 and performance_records == 0:
-                        print(f"⚠️ Data mismatch for {deck_name}: {total_appearances} appearances, {performance_records} performance records")
-                    elif performance_records > 0 and total_appearances == 0:
-                        print(f"⚠️ Reverse mismatch for {deck_name}: {performance_records} performance records, {total_appearances} appearances")
-                    
-                    wilson_index = calculate_wilson_score(wins, losses, ties)
-                    
                     # Calculate win rate
                     total_games = wins + losses + ties
                     if total_games > 0:
-                        win_rate = round(((wins + 0.5 * ties) / total_games) * 100, 1)
+                        win_rate = round((wins + 0.5 * ties) / total_games * 100, 1)
                     else:
                         win_rate = 0.0
-                        # Additional debug for zero win rate cases
-                        if total_appearances > 0:
-                            print(f"📊 {deck_name}: 0% win rate despite {total_appearances} appearances - missing performance data")
                     
-                    # Calculate ratio (Share-3d / Share-7d)
-                    if row['share_7d'] > 0:
-                        ratio = round(row['share_3d'] / row['share_7d'], 2)
-                    else:
-                        ratio = 0.0
+                    # Calculate 3d vs 7d ratio
+                    share_7d = row.get('share_7d', 0)
+                    share_3d = row.get('share_3d', 0)
+                    ratio = share_3d / share_7d if share_7d > 0 else 0
                     
-                    # Get trend history for line chart (from meta_df)
+                    # Calculate Wilson Score Index
+                    wilson_index = calculate_wilson_score_interval(wins, losses + ties) if total_games > 0 else 0.0
+                    
+                    # Get trend data from the trend_history
                     trend_data = row.get('trend_history', [0] * 7)
                     
                     extended_data.append({
                         'deck_name': deck_name,
-                        'formatted_deck_name': row['formatted_deck_name'],
-                        'pokemon_url1': row['pokemon_url1'],
-                        'pokemon_url2': row['pokemon_url2'],
+                        'formatted_deck_name': row.get('formatted_deck_name', deck_name),
+                        'pokemon_url1': row.get('pokemon_url1', None),
+                        'pokemon_url2': row.get('pokemon_url2', None),
                         'trend_data': trend_data,
                         'win_rate': win_rate,
                         'wins': wins,
                         'losses': losses,
                         'ties': ties,
-                        'share_7d': row['share_7d'],
-                        'share_3d': row['share_3d'],
+                        'share_7d': share_7d,
+                        'share_3d': share_3d,
                         'ratio': ratio,
                         'wilson_index': wilson_index
                     })
@@ -1214,7 +1190,7 @@ def display_extended_meta_table():
     extended_df['rank'] = range(1, len(extended_df) + 1)
     
     # Display table header
-    st.write("##### Extended Tournament Performance Data")
+    #st.write("##### Extended Tournament Performance Data")
     
     # Custom CSS for styling (enhanced with ratio and win rate colors)
     st.markdown("""
