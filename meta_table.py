@@ -1386,32 +1386,78 @@ def display_extended_meta_table():
         st.error(f"Error displaying extended meta table: {str(e)}")
         print(f"Display error: {e}")
 
-def get_tournament_summary(period_days=7):
-    """Get tournament summary stats for display."""
+def get_tournament_summary_stats(period_days=7):
+    """
+    Get summary statistics for tournaments in the specified period.
+    
+    Args:
+        period_days: Number of days to look back (default: 7)
+        
+    Returns:
+        dict: Contains tournament_count, total_players, total_matches
+    """
     try:
         import sqlite3
-        from datetime import datetime, timedelta
         
         conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        # Calculate cutoff date
+        from datetime import datetime, timedelta
         cutoff_date = (datetime.now() - timedelta(days=period_days)).strftime('%Y-%m-%d')
         
-        # Single query to get all stats
-        query = """
+        # Get tournament count and total players
+        tournament_query = """
         SELECT 
-            COUNT(DISTINCT t.tournament_id) as tournaments,
-            SUM(t.total_players) as players,
-            SUM(pp.wins + pp.losses + pp.ties) as matches
-        FROM tournaments t
-        LEFT JOIN player_performance pp ON t.tournament_id = pp.tournament_id
+            COUNT(DISTINCT tournament_id) as tournament_count,
+            SUM(total_players) as total_players
+        FROM tournaments
+        WHERE date >= ?
+        """
+        
+        result = conn.execute(tournament_query, (cutoff_date,)).fetchone()
+        tournament_count = result[0] if result[0] else 0
+        total_players = result[1] if result[1] else 0
+        
+        # Get total matches (wins + losses + ties)
+        matches_query = """
+        SELECT 
+            SUM(wins + losses + ties) as total_matches
+        FROM player_performance pp
+        JOIN tournaments t ON pp.tournament_id = t.tournament_id
         WHERE t.date >= ?
         """
         
-        result = conn.execute(query, (cutoff_date,)).fetchone()
+        match_result = conn.execute(matches_query, (cutoff_date,)).fetchone()
+        total_matches = match_result[0] if match_result[0] else 0
+        
         conn.close()
         
-        tournaments, players, matches = result if result else (0, 0, 0)
-        return f"{tournaments or 0} tournaments, {players or 0} players, {matches or 0} matches"
+        return {
+            'tournament_count': tournament_count,
+            'total_players': total_players,
+            'total_matches': total_matches,
+            'period_days': period_days
+        }
         
     except Exception as e:
-        print(f"Error getting tournament summary: {e}")
-        return "Tournament data unavailable"
+        print(f"Error getting tournament summary stats: {e}")
+        return {
+            'tournament_count': 0,
+            'total_players': 0,
+            'total_matches': 0,
+            'period_days': period_days
+        }
+
+def format_tournament_summary(period_days=7):
+    """
+    Format tournament summary statistics for display.
+    
+    Args:
+        period_days: Number of days to look back (default: 7)
+        
+    Returns:
+        str: Formatted summary string
+    """
+    stats = get_tournament_summary_stats(period_days)
+    
+    return f"{stats['tournament_count']} tournaments, {stats['total_players']} players, {stats['total_matches']} matches"
