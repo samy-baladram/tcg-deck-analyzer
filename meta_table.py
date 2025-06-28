@@ -982,3 +982,206 @@ def display_meta_overview_table_with_buttons():
         "**Click on any deck name** to analyze it in detail. "
         "Green/red values show 7d to 3d trend changes."
     )
+
+# Add these imports at the top of meta_table.py if not already present
+import math
+import sqlite3
+import pandas as pd
+import streamlit as st
+
+# Add this single function to meta_table.py
+
+def display_extended_meta_table():
+    """Extended meta table with Wins, Losses, Ties, Share-7d, Share-3d, Wilson Index, and ranking"""
+    
+    with st.spinner("Loading extended meta data..."):
+        builder = MetaTableBuilder()
+        meta_df = builder.build_complete_meta_table(20)
+    
+    if meta_df.empty:
+        st.warning("No meta data available at this time.")
+        return
+    
+    # Format for display
+    formatter = MetaDisplayFormatter()
+    meta_df = formatter.prepare_display_dataframe(meta_df)
+    
+    # Calculate Wilson Score (Power Index) for each archetype
+    def calculate_wilson_score(wins, losses, ties):
+        """Calculate Wilson Score confidence interval"""
+        total_games = wins + losses + ties
+        if total_games == 0:
+            return 0.0
+        
+        # Handle ties as half-wins
+        adjusted_wins = wins + (0.5 * ties)
+        win_proportion = adjusted_wins / total_games
+        
+        # Wilson Score parameters (95% confidence)
+        z = 1.96
+        z_squared = z * z
+        
+        # Calculate Wilson Score lower bound
+        numerator = (win_proportion + (z_squared / (2 * total_games)) - 
+                     z * math.sqrt((win_proportion * (1 - win_proportion) + 
+                                   (z_squared / (4 * total_games))) / total_games))
+        
+        denominator = 1 + (z_squared / total_games)
+        wilson_score = numerator / denominator
+        
+        # Convert to percentage
+        return round(wilson_score * 100, 1)
+    
+    # Get performance data for each archetype
+    extended_data = []
+    
+    try:
+        conn = sqlite3.connect("meta_analysis/tournament_meta.db")
+        
+        for _, row in meta_df.iterrows():
+            deck_name = row['deck_name']
+            
+            # Query to get performance data from last 7 days
+            perf_query = """
+            SELECT 
+                SUM(pp.wins) as total_wins,
+                SUM(pp.losses) as total_losses,
+                SUM(pp.ties) as total_ties
+            FROM player_performance pp
+            JOIN tournaments t ON pp.tournament_id = t.tournament_id
+            WHERE pp.archetype = ?
+            AND t.date >= date('now', '-7 days')
+            """
+            
+            perf_result = pd.read_sql_query(perf_query, conn, params=[deck_name])
+            
+            wins = perf_result['total_wins'].iloc[0] or 0
+            losses = perf_result['total_losses'].iloc[0] or 0
+            ties = perf_result['total_ties'].iloc[0] or 0
+            
+            wilson_index = calculate_wilson_score(wins, losses, ties)
+            
+            extended_data.append({
+                'deck_name': deck_name,
+                'formatted_deck_name': row['formatted_deck_name'],
+                'pokemon_url1': row['pokemon_url1'],
+                'pokemon_url2': row['pokemon_url2'],
+                'share_7d': row['share_7d'],
+                'share_3d': row['share_3d'],
+                'wins': wins,
+                'losses': losses,
+                'ties': ties,
+                'wilson_index': wilson_index
+            })
+        
+        conn.close()
+        
+    except Exception as e:
+        st.error(f"Error fetching performance data: {str(e)}")
+        return
+    
+    # Convert to DataFrame and sort by 7-day share (descending)
+    extended_df = pd.DataFrame(extended_data)
+    extended_df = extended_df.sort_values('share_7d', ascending=False).reset_index(drop=True)
+    
+    # Add ranking column (1-based)
+    extended_df['rank'] = range(1, len(extended_df) + 1)
+    
+    # Display table header
+    st.write("##### Extended Tournament Performance Data")
+    
+    # Custom CSS for styling
+    st.markdown("""
+    <style>
+    .extended-meta-table {
+        font-size: 0.9rem;
+    }
+    
+    .rank-column {
+        text-align: center !important;
+        font-weight: bold !important;
+        color: #00A0FF !important;
+    }
+    
+    .performance-column {
+        text-align: center !important;
+        font-family: monospace !important;
+    }
+    
+    .share-column {
+        text-align: right !important;
+    }
+    
+    .wilson-column {
+        text-align: center !important;
+        font-weight: bold !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    try:
+        # Create final display DataFrame
+        final_df = pd.DataFrame({
+            '#': extended_df['rank'],
+            '': extended_df['pokemon_url1'],      # Pokemon icon 1
+            ' ': extended_df['pokemon_url2'],     # Pokemon icon 2
+            'Deck': extended_df['formatted_deck_name'],
+            'Wins': extended_df['wins'],
+            'Losses': extended_df['losses'], 
+            'Ties': extended_df['ties'],
+            'Share-7d': extended_df['share_7d'],
+            'Share-3d': extended_df['share_3d'],
+            'Wilson Index': extended_df['wilson_index']
+        })
+        
+        # Configure column display
+        column_config = {
+            '#': st.column_config.NumberColumn(
+                "#", width=30, help="Ranking by 7-day meta share"
+            ),
+            '': st.column_config.ImageColumn(
+                "", width=25, help="Primary Pokemon"
+            ),
+            ' ': st.column_config.ImageColumn(
+                "", width=25, help="Secondary Pokemon"
+            ),
+            'Deck': st.column_config.TextColumn("Deck", width=140),
+            'Wins': st.column_config.NumberColumn(
+                "Wins", width=50, help="Total wins in last 7 days"
+            ),
+            'Losses': st.column_config.NumberColumn(
+                "Losses", width=50, help="Total losses in last 7 days"
+            ),
+            'Ties': st.column_config.NumberColumn(
+                "Ties", width=50, help="Total ties in last 7 days"
+            ),
+            'Share-7d': st.column_config.NumberColumn(
+                "Share-7d", width=70, help="Meta share in last 7 days", format="%.2f%%"
+            ),
+            'Share-3d': st.column_config.NumberColumn(
+                "Share-3d", width=70, help="Meta share in last 3 days", format="%.2f%%"
+            ),
+            'Wilson Index': st.column_config.NumberColumn(
+                "Wilson Index", width=80, help="Wilson Score confidence interval (%)", format="%.1f%%"
+            )
+        }
+        
+        # Display the dataframe
+        st.dataframe(
+            final_df,
+            column_config=column_config,
+            hide_index=True,
+            height=600,
+            use_container_width=True
+        )
+        
+        # Add explanatory caption
+        st.caption(
+            "Extended performance data showing wins/losses/ties, meta share trends, and Wilson Index. "
+            "Wilson Index represents the lower bound of win rate confidence interval (higher = more reliable performance). "
+            "Ranked by 7-day meta share percentage."
+        )
+        
+    except Exception as e:
+        st.error(f"Error displaying extended meta table: {str(e)}")
+        print(f"Display error: {e}")
