@@ -550,16 +550,30 @@ def create_deck_selector():
             st.session_state.selected_deck_index >= len(deck_display_names) or
             'analyze' not in st.session_state):
             
-            print("DEBUG: No valid selection - defaulting to first deck")
-            st.session_state.selected_deck_index = 0
+            print("DEBUG: No valid selection - applying latest set logic")
+            
+            # APPLY SAME LATEST SET LOGIC AS FIRST RUN
+            latest_set_code = get_latest_set_code()
+            selected_index = 0  # fallback to first deck
+            
+            if latest_set_code and deck_display_names:
+                # Find first deck from latest set
+                for i, display_name in enumerate(deck_display_names):
+                    deck_info = deck_name_mapping[display_name]
+                    if deck_info['set'] == latest_set_code:
+                        selected_index = i
+                        break
+            
+            st.session_state.selected_deck_index = selected_index
             
             if deck_display_names:
-                first_deck_display = deck_display_names[0]
-                first_deck_info = deck_name_mapping[first_deck_display]
+                selected_deck_display = deck_display_names[selected_index]
+                selected_deck_info = deck_name_mapping[selected_deck_display]
                 st.session_state.analyze = {
-                    'deck_name': first_deck_info['deck_name'],
-                    'set_name': first_deck_info['set'],
+                    'deck_name': selected_deck_info['deck_name'],
+                    'set_name': selected_deck_info['set'],
                 }
+                print(f"DEBUG: Set deck from latest set (cached): {selected_deck_info['deck_name']}")
 
     # Process preserved deck ONLY if it's from a tournament update
     if preserved_deck:
