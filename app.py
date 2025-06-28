@@ -364,8 +364,8 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     display_tabs.display_meta_trend_tab(original_deck_info)
                    
                 with tab5:  
-                     #display_tabs.display_metagame_tab()
-                     #st.divider()
+                     from meta_table import get_tournament_summary
+                     st.caption(get_tournament_summary())
                      display_extended_meta_table()
                 
                 # And shift the existing tabs:
