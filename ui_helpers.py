@@ -1090,9 +1090,9 @@ def render_sidebar_from_cache():
         create_deck_section("trending")
         create_deck_section("gems")
         
-        # Render counter picker using unified approach
-        with st.spinner("Loading counter picker..."):
-            display_counter_picker_sidebar()
+        # # Render counter picker using unified approach
+        # with st.spinner("Loading counter picker..."):
+        #     display_counter_picker_sidebar()
         
         # Rest of current content...
         st.markdown("<hr style='margin:25px; border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
