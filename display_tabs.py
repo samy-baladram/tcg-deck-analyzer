@@ -2385,7 +2385,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                     showarrow=False,
                     font=dict(size=10, color="#FFFFFF"),
                     align="left",
-                    xshift=15,
+                    xshift=10,
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
