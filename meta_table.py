@@ -1337,16 +1337,16 @@ def display_extended_meta_table():
                 "Trend", width=80, help="7-day meta share trend (oldest to newest)"
             ),
             'Win Rate': st.column_config.NumberColumn(
-                "Win Rate", width=55, help="Win rate percentage (last 7 days)", format="%.1f%%"
+                "Win %", width=55, help="Win rate percentage (last 7 days)", format="%.1f%%"
             ),
             'Wins': st.column_config.NumberColumn(
-                "W", width=40, help="Total wins in last 7 days"
+                "Win", width=40, help="Total wins in last 7 days"
             ),
             'Losses': st.column_config.NumberColumn(
-                "L", width=40, help="Total losses in last 7 days"
+                "Loss", width=40, help="Total losses in last 7 days"
             ),
             'Ties': st.column_config.NumberColumn(
-                "T", width=35, help="Total ties in last 7 days"
+                "Tie", width=35, help="Total ties in last 7 days"
             ),
             'Share-7d': st.column_config.NumberColumn(
                 "Share-7d", width=55, help="Meta share in last 7 days", format="%.2f%%"
