@@ -1251,13 +1251,13 @@ def display_extended_meta_table():
             ' ': extended_df['pokemon_url2'],     # Pokemon icon 2
             'Deck': extended_df['formatted_deck_name'],
             'Trend': extended_df['trend_data'],   # Use 'Trend' like working version
+            'Share-7d': extended_df['share_7d'],
+            'Share-3d': extended_df['share_3d'],
+            'Ratio': extended_df['ratio'],
             'Win Rate': extended_df['win_rate'],
             'Wins': extended_df['wins'],
             'Losses': extended_df['losses'], 
             'Ties': extended_df['ties'],
-            'Share-7d': extended_df['share_7d'],
-            'Share-3d': extended_df['share_3d'],
-            'Ratio': extended_df['ratio'],
             'Index': extended_df['wilson_index']
         })
         
@@ -1338,7 +1338,7 @@ def display_extended_meta_table():
         st.dataframe(
             styled_df,
             column_config=column_config,
-            hide_index=True,
+            hide_index=False,
             height=3000,
             use_container_width=True
         )
