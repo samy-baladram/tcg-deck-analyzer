@@ -5,6 +5,7 @@ from formatters import format_deck_name, format_deck_option
 from scraper import get_popular_decks_with_performance
 from utils import calculate_time_ago
 import cache_manager
+import json
 from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MIN_COUNTER_MATCHES, MIN_WIN_RATE
 import pandas as pd
 import base64
@@ -287,79 +288,6 @@ def load_initial_data():
         st.session_state.fetch_time = datetime.now()
         print("DEBUG: Loaded initial deck list data")
         
-# ENHANCE: Cache deck options creation
-# In ui_helpers.py, replace the create_deck_options function with this version:
-
-def create_deck_options():
-    """Create deck options for dropdown using Extended Meta Trend Table sorted by Share-7d"""
-    
-    # Check cache first
-    if ('deck_options_cache' in st.session_state and 
-        st.session_state.deck_options_cache):
-        return (st.session_state.deck_options_cache['display_names'], 
-                st.session_state.deck_options_cache['name_mapping'])
-    
-    deck_display_names = []
-    deck_name_mapping = {}
-    
-    # Get latest set code
-    latest_set_code = get_latest_set_code() or 'A3a'  # Fallback to A3a if not found
-    print(f"DEBUG: Using latest set code: {latest_set_code}")
-    
-    try:
-        # Use Extended Meta Trend Table instead of performance_data
-        from meta_table import MetaTableBuilder
-        
-        builder = MetaTableBuilder()
-        extended_df = builder.build_complete_meta_table(100)
-        
-        if not extended_df.empty:
-            # Sort by share_7d (descending) for dropdown ranking
-            extended_df = extended_df.sort_values('share_7d', ascending=False)
-            
-            for idx, (_, row) in enumerate(extended_df.iterrows()):
-                rank = idx + 1
-                display_name = f"{rank}. {format_deck_option(row['deck_name'], row['share_7d'])}"
-                deck_display_names.append(display_name)
-                deck_name_mapping[display_name] = {
-                    'deck_name': row['deck_name'],
-                    'set': latest_set_code  # Always use latest set instead of row.get('set', 'A3a')
-                }
-        else:
-            print("Extended Meta Trend Table is empty, using fallback")
-            display_name = "1. Example Deck (1.0%)"
-            deck_display_names.append(display_name)
-            deck_name_mapping[display_name] = {
-                'deck_name': 'example-deck',
-                'set': latest_set_code  # Use latest set for fallback too
-            }
-            
-    except Exception as e:
-        print(f"Error creating deck options from Extended Meta Trend Table: {e}")
-        display_name = "1. Example Deck (1.0%)"
-        deck_display_names.append(display_name)
-        deck_name_mapping[display_name] = {
-            'deck_name': 'example-deck',
-            'set': latest_set_code  # Use latest set for error fallback too
-        }
-    
-    # Cache the results
-    if extended_df is not None and not extended_df.empty:
-        data_hash = hash(str(extended_df.to_dict()))
-    else:
-        data_hash = hash(str(deck_display_names))
-    
-    st.session_state.deck_options_cache = {
-        'display_names': deck_display_names,
-        'name_mapping': deck_name_mapping,
-        'data_hash': data_hash
-    }
-    
-    # Store mapping in session state
-    st.session_state.deck_name_mapping = deck_name_mapping
-    
-    return deck_display_names, deck_name_mapping
-
 # Fix 2: Update ui_helpers.py - Fix the deck selection callback
 def on_deck_change():
     """Handle deck dropdown selection change with proper cache clearing"""
@@ -397,236 +325,6 @@ def on_deck_change():
             print(f"Switched to deck: {new_deck_name}")
     else:
         st.session_state.selected_deck_index = None
-
-# def ensure_performance_data_updated():
-#     """Ensure performance data uses latest formula"""
-#     import math
-#     if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-#         print("Updating power index formula...")
-        
-#         # Force recalculate power index with new formula
-#         performance_df = st.session_state.performance_data.copy()
-        
-#         # Apply the new formula to each row
-#         def recalculate_power_index(row):
-#             total_wins = row['total_wins']
-#             total_losses = row['total_losses']
-#             total_ties = row['total_ties']
-#             total_games = total_wins + total_losses + total_ties
-            
-#             if total_games > 0:
-#                 # Calculate total games (including ties)
-#                 total_games = total_wins + total_losses + total_ties
-                
-#                 if total_games > 0:
-#                     # Handle ties as half-wins (common in card games)
-#                     adjusted_wins = total_wins + (0.5 * total_ties)
-                    
-#                     # Calculate win proportion
-#                     win_proportion = adjusted_wins / total_games
-                    
-#                     # Wilson Score Interval parameters
-#                     z = 1.96  # 95% confidence level
-#                     z_squared = z * z
-                    
-#                     # Calculate Wilson Score lower bound
-#                     numerator = (win_proportion + (z_squared / (2 * total_games)) - 
-#                                  z * math.sqrt((win_proportion * (1 - win_proportion) + 
-#                                               (z_squared / (4 * total_games))) / total_games))
-                    
-#                     denominator = 1 + (z_squared / total_games)
-                    
-#                     # Wilson Score lower bound (conservative estimate of true win rate)
-#                     wilson_score = numerator / denominator
-                    
-#                     # Scale to make more intuitive (similar range to original power index)
-#                     # Transforming from 0-1 scale to -5 to +5 scale
-#                     #
-#                     power_index = (wilson_score - 0.5) * 10
-#                 return power_index
-#             return 0.0
-        
-#         # Update power index and resort
-#         performance_df['power_index'] = performance_df.apply(recalculate_power_index, axis=1)
-#         performance_df = performance_df.sort_values('power_index', ascending=False).reset_index(drop=True)
-        
-#         # Replace in session state
-#         st.session_state.performance_data = performance_df
-        
-#         # Also clear deck display names to force regeneration
-#         if 'deck_display_names' in st.session_state:
-#             del st.session_state['deck_display_names']
-
-#     return
-def get_latest_set_code():
-    """Get the latest set code from sets_index.json"""
-    try:
-        with open("meta_analysis/sets_index.json", 'r') as f:
-            sets_data = json.load(f)
-        
-        print(f"DEBUG: Loaded {len(sets_data['sets'])} sets from JSON")
-        
-        # Filter sets with release dates and sort by date (newest first)
-        sets_with_dates = [s for s in sets_data['sets'] if s.get('release_date')]
-        print(f"DEBUG: Found {len(sets_with_dates)} sets with release dates")
-        
-        if sets_with_dates:
-            # Show the dates before sorting
-            dates = [s['release_date'] for s in sets_with_dates]
-            print(f"DEBUG: Release dates found: {dates}")
-            
-            latest_set = sorted(sets_with_dates, key=lambda x: x['release_date'], reverse=True)[0]
-            print(f"DEBUG: Latest set determined: {latest_set['set_name']} ({latest_set['set_code']}) - {latest_set['release_date']}")
-            
-            return latest_set['set_code']
-        else:
-            print("DEBUG: No sets with release dates found")
-            
-    except Exception as e:
-        print(f"Error getting latest set code: {e}")
-        import traceback
-        traceback.print_exc()
-    
-    print("DEBUG: Returning None from get_latest_set_code()")
-    return None
-    
-def create_deck_selector():
-    """Create and display the deck selector dropdown with minimal loading"""
-
-    # Initialize session state variables if they don't exist
-    if 'selected_deck_index' not in st.session_state:
-        st.session_state.selected_deck_index = None
-        
-    # Handle deck_to_analyze ONLY if dropdown already existed (not fresh load)
-    preserved_deck = None
-    if ('deck_to_analyze' in st.session_state and 
-        st.session_state.deck_to_analyze and 
-        'deck_display_names' in st.session_state):
-        
-        target_deck = st.session_state.deck_to_analyze
-        print(f"DEBUG: Processing deck_to_analyze: {target_deck}")
-        preserved_deck = target_deck
-        st.session_state.deck_to_analyze = None
-        
-    # Only compute dropdown options if not already cached
-    if 'deck_display_names' not in st.session_state:
-        # Get deck options
-        deck_display_names, deck_name_mapping = create_deck_options()
-        
-        # Store for reuse
-        st.session_state.deck_display_names = deck_display_names
-        st.session_state.deck_name_mapping = deck_name_mapping
-        
-        # MODIFIED: Select deck from latest set instead of first deck
-        latest_set_code = get_latest_set_code()
-        selected_index = 0  # fallback to first deck
-        
-        if latest_set_code and deck_display_names:
-            # Find first deck from latest set
-            for i, display_name in enumerate(deck_display_names):
-                deck_info = deck_name_mapping[display_name]
-                if deck_info['set'] == latest_set_code:
-                    selected_index = i
-                    break
-        
-        st.session_state.selected_deck_index = selected_index
-        
-        if deck_display_names:
-            selected_deck_display = deck_display_names[selected_index]
-            selected_deck_info = deck_name_mapping[selected_deck_display]
-            st.session_state.analyze = {
-                'deck_name': selected_deck_info['deck_name'],
-                'set_name': selected_deck_info['set'],
-            }
-            print(f"DEBUG: Set deck from latest set: {selected_deck_info['deck_name']}")
- 
-    else:
-        # Use cached options
-        deck_display_names = st.session_state.deck_display_names
-        deck_name_mapping = st.session_state.deck_name_mapping
-        
-        # Only set default if no valid selection exists
-        if (st.session_state.selected_deck_index is None or 
-            st.session_state.selected_deck_index >= len(deck_display_names) or
-            'analyze' not in st.session_state):
-            
-            print("DEBUG: No valid selection - applying latest set logic")
-            
-            # APPLY SAME LATEST SET LOGIC AS FIRST RUN
-            latest_set_code = get_latest_set_code()
-            selected_index = 0  # fallback to first deck
-            
-            if latest_set_code and deck_display_names:
-                # Find first deck from latest set
-                for i, display_name in enumerate(deck_display_names):
-                    deck_info = deck_name_mapping[display_name]
-                    if deck_info['set'] == latest_set_code:
-                        selected_index = i
-                        break
-            
-            st.session_state.selected_deck_index = selected_index
-            
-            if deck_display_names:
-                selected_deck_display = deck_display_names[selected_index]
-                selected_deck_info = deck_name_mapping[selected_deck_display]
-                st.session_state.analyze = {
-                    'deck_name': selected_deck_info['deck_name'],
-                    'set_name': selected_deck_info['set'],
-                }
-                print(f"DEBUG: Set deck from latest set (cached): {selected_deck_info['deck_name']}")
-
-    # Process preserved deck ONLY if it's from a tournament update
-    if preserved_deck:
-        print(f"DEBUG: Looking for preserved deck: {preserved_deck}")
-        
-        found_match = False
-        for i, display_name in enumerate(deck_display_names):
-            deck_info = deck_name_mapping[display_name]
-            if deck_info['deck_name'] == preserved_deck:
-                print(f"DEBUG: Found preserved deck at index {i}: {display_name}")
-                
-                st.session_state.selected_deck_index = i
-                st.session_state.analyze = {
-                    'deck_name': deck_info['deck_name'],
-                    'set_name': deck_info['set'],
-                }
-                
-                if st.session_state.get('auto_refresh_in_progress', False):
-                    st.session_state.force_deck_refresh = True
-                    del st.session_state.auto_refresh_in_progress
-                
-                found_match = True
-                break
-        
-        if not found_match:
-            print(f"DEBUG: Preserved deck not found in new rankings: {preserved_deck}")
-
-    # Calculate time ago and current set
-    time_str = calculate_time_ago(st.session_state.fetch_time)
-    
-    # Get current set from selected deck or default
-    current_set = "-"
-    if st.session_state.selected_deck_index is not None and st.session_state.selected_deck_index < len(deck_display_names):
-        selected_deck_display = deck_display_names[st.session_state.selected_deck_index]
-        deck_info = st.session_state.deck_name_mapping[selected_deck_display]
-        current_set = deck_info['set']
-    
-    # Create label and help text
-    label_text = f"Current Set: {current_set}"
-    help_text = f"Ranked by 7-day meta share percentage from all tournaments in the past 7 days.  \nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).  Updated {time_str}."
-
-    # Display the selectbox
-    selected_option = st.selectbox(
-        label_text,
-        deck_display_names,
-        index=st.session_state.selected_deck_index,
-        placeholder="Select a deck to analyze...",
-        help=help_text,
-        key="deck_select",
-        on_change=on_deck_change,
-    )
-    
-    return selected_option
     
 # Replace the existing get_filtered_deck_data function in ui_helpers.py with this:
 
@@ -705,253 +403,229 @@ def get_filtered_deck_data(section_type):
     else:
         return sorted_data
 
-# def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
-#     """Unified function to render any type of deck in sidebar"""
-#     try:
-#         # Get rank symbol
-#         if rank and rank <= len(section_config['rank_symbols']):
-#             rank_symbol = section_config['rank_symbols'][rank-1]
-#         else:
-#             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
+def get_latest_set_code():
+    """Get the latest set code and name from sets_index.json"""
+    try:
+        with open("meta_analysis/sets_index.json", 'r') as f:
+            sets_data = json.load(f)
         
-#         with st.sidebar.expander(f"{rank_symbol} {deck['displayed_name']} ", expanded=expanded):
-#             try:
-#                 # Header image
-#                 header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-#                 if header_image:
-#                     st.markdown(f"""
-#                     <div style="width: 100%; margin-bottom: 10px;">
-#                         <img src="data:image/png;base64,{header_image}" style="width: 120%; height: auto;">
-#                     </div>
-#                     """, unsafe_allow_html=True)
-                
-#                 # Sample deck
-#                 deck_name = deck['deck_name']
-#                 if CARD_CACHE_AVAILABLE:
-#                     sample_deck = get_sample_deck_cached(deck_name, deck['set'])
-#                 else:
-#                     from scraper import get_sample_deck_for_archetype
-#                     pokemon_cards, trainer_cards, energy_types = get_sample_deck_for_archetype(deck_name, deck['set'])
-#                     sample_deck = {
-#                         'pokemon_cards': pokemon_cards,
-#                         'trainer_cards': trainer_cards,
-#                         'energy_types': energy_types
-#                     }
-                
-#                 from card_renderer import render_sidebar_deck
-#                 deck_html = render_sidebar_deck(
-#                     sample_deck['pokemon_cards'], 
-#                     sample_deck['trainer_cards'],
-#                     card_width=60
-#                 )
-#                 st.markdown(deck_html, unsafe_allow_html=True)
-
-#                 # Energy and details section
-#                 col1, col2 = st.columns([2, 1])
-                
-#                 with col1:
-#                     energy_types, is_typical = get_energy_types_for_deck(deck['deck_name'])
-                    
-#                     if energy_types:
-#                         if section_config['type'] == "gems":
-#                             # Compact rendering for gems
-#                             energy_html_compact = ""
-#                             for energy in energy_types:
-#                                 energy_url = f"https://limitless3.nyc3.cdn.digitaloceanspaces.com/lotp/pocket/{energy}.png"
-#                                 energy_html_compact += f'<img src="{energy_url}" alt="{energy}" style="height:16px; margin-right:2px;">'
-                            
-#                             st.markdown(f"""
-#                             <div style="margin-top:5px; margin-bottom:-5px;">
-#                                 <p style="margin-bottom:5px;"><strong>Energy:</strong> {energy_html_compact}</p>
-#                             </div>
-#                             """, unsafe_allow_html=True)
-#                         else:
-#                             # Standard rendering
-#                             energy_html = render_energy_icons_cached(tuple(energy_types), is_typical)
-#                             st.markdown(energy_html, unsafe_allow_html=True)
-#                     else:
-#                         st.markdown("""
-#                         <div style="margin-bottom: 5px;">
-#                             <div style="font-size: 0.8rem; color: #888;">No energy data</div>
-#                         </div>
-#                         """, unsafe_allow_html=True)
-                    
-#                     # Display caption using template
-#                     caption_text = section_config['caption_template'](deck)
-#                     st.caption(caption_text)
-                
-#                 with col2:
-#                     button_key = f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}"
-#                     if st.button("Details", key=button_key, type="tertiary", use_container_width=True):
-#                         st.session_state.deck_to_analyze = deck['deck_name']
-#                         st.rerun()
-                
-#             except Exception as e:
-#                 st.warning(f"Unable to load deck preview for {deck_name}")
-#                 print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
-#                 fallback_caption = section_config['caption_template'](deck)
-#                 st.write(f"**{deck['displayed_name']}**")
-#                 st.caption(fallback_caption)
-                
-#     except Exception as e:
-#         print(f"Critical error in render_unified_deck_in_sidebar: {e}")
-#         st.error("Error loading deck data")
-
-# def create_deck_section(section_type):
-#     """Create a unified deck section using configuration"""
-#     config = SIDEBAR_SECTIONS_CONFIG.get(section_type)
-#     if not config:
-#         st.error(f"Unknown section type: {section_type}")
-#         return
-    
-#     # Display banner
-#     if os.path.exists(config['']):
-#         banner_base64 = get_cached_banner_image(config[''])
-#         if banner_base64:
-#             st.markdown(f"""<div style="width:100%; text-align:center;">
-#                 <hr style='margin-bottom:20px; border: 0.5px solid rgba(137, 148, 166, 0.2); margin-top:-25px;'>
-#                 <img src="data:image/png;base64,{banner_base64}" style="width:100%; max-width:350px;">
-#             </div>
-#             """, unsafe_allow_html=True)
-#     else:
-#         st.markdown(f"### {config['fallback_title']}")
-    
-#     # Get filtered data
-#     deck_data = get_filtered_deck_data(section_type)
-    
-#     if deck_data.empty:
-#         st.markdown("""
-#         <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-#             display: flex; align-items: center; justify-content: center;">
-#             <span style="color: #888; font-size: 0.8rem;">No data found</span>
-#         </div>
-#         """, unsafe_allow_html=True)
-#         st.caption("No decks found matching criteria")
-#         return
-    
-#     # Display first deck
-#     first_deck = deck_data.iloc[0]
-#     header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
-
-#     if header_image:
-#         st.markdown(f"""
-#         <div style="width: 100%; margin-bottom: -1rem;">
-#             <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border: 2px solid #000; border-radius: 8px;z-index:-1;">
-#         </div>
-#         """, unsafe_allow_html=True)
-#     else:
-#         st.markdown("""
-#         <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 6px;
-#             display: flex; align-items: center; justify-content: center;">
-#             <span style="color: #888; font-size: 0.8rem;">No image</span>
-#         </div>
-#         """, unsafe_allow_html=True)
-    
-#     # 2-column layout for deck name and toggle button
-#     col1, col2 = st.columns([3, 1])
-    
-#     with col1:         
-#         if st.button(
-#             first_deck['displayed_name'], 
-#             key=f"first_{section_type}_deck_button",
-#             type="tertiary",
-#             use_container_width=False
-#         ):
-#             st.session_state.deck_to_analyze = first_deck['deck_name']
-#             st.rerun()
-
-#     with col2:
-#         show_key = config['show_key']
-#         if show_key not in st.session_state:
-#             st.session_state[show_key] = False
-
-#         button_text = "Close" if st.session_state[show_key] else "See More"
-#         if st.button(button_text, type="tertiary", use_container_width=False, key=f"{section_type}_toggle_button"):
-#             st.session_state[show_key] = not st.session_state[show_key]
-#             st.rerun()
-
-#     # Show expanded deck list if toggled
-#     if st.session_state[show_key]:
-#         with st.spinner(f"Loading {section_type} deck details..."):
-#             import cache_manager
-#             cache_manager.ensure_energy_cache()
+        # Filter sets with release dates and sort by date (newest first)
+        sets_with_dates = [s for s in sets_data['sets'] if s.get('release_date')]
+        
+        if sets_with_dates:
+            latest_set = sorted(sets_with_dates, key=lambda x: x['release_date'], reverse=True)[0]
+            return {
+                'set_name': latest_set['set_name'],
+                'set_code': latest_set['set_code']
+            }
             
-#             decks_to_show = deck_data.head(config['max_decks'])
-            
-#             for idx, (_, deck) in enumerate(decks_to_show.iterrows()):
-#                 rank = idx + 1
-#                 render_unified_deck_in_sidebar(deck, config, rank=rank)
-        
-#         # Display disclaimer
-#         display_section_disclaimer(config)
-#     else:
-#         st.write("")
+    except Exception as e:
+        print(f"Error getting latest set info: {e}")
+    
+    return None
 
-# def display_section_disclaimer(config):
-#     """Display section-specific disclaimer text"""
-#     performance_time_str = calculate_time_ago(st.session_state.performance_fetch_time)
+def create_deck_options():
+    """Create deck options for dropdown using Extended Meta Trend Table sorted by Share-7d"""
     
-#     st.markdown(f"""
-#     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
-#         <div>{config['description']}</div>
-#         <div>Updated {performance_time_str}</div>
-#     </div>
-#     <div style="font-size: 0.75rem; margin-bottom: 5px; color: #777;">
-#         {config['sorting_note']}
-#     </div>
-#     """, unsafe_allow_html=True)
-#     st.write("")
-#     st.write("")
-#     st.write("")
+    # Check cache first
+    if ('deck_options_cache' in st.session_state and 
+        st.session_state.deck_options_cache):
+        return (st.session_state.deck_options_cache['display_names'], 
+                st.session_state.deck_options_cache['name_mapping'])
     
-# def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
-#     """Unified function to render any type of deck in sidebar - LIGHTWEIGHT VERSION"""
-#     try:
-#         # Get rank symbol
-#         if rank and rank <= len(section_config['rank_symbols']):
-#             rank_symbol = section_config['rank_symbols'][rank-1]
-#         else:
-#             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
+    deck_display_names = []
+    deck_name_mapping = {}
+    
+    # Get latest set code for reference
+    latest_set_info = get_latest_set_code()
+    latest_set_code = latest_set_info['set_code'] if latest_set_info else 'A3a'
+    
+    try:
+        # Use Extended Meta Trend Table instead of performance_data
+        from meta_table import MetaTableBuilder
         
-#         # Calculate stats text
-#         if section_config['type'] == "meta":
-#             stats_text = f"Power {deck['power_index']:.2f}"
-#         elif section_config['type'] == "trending":
-#             stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.2f}% share"
-#         elif section_config['type'] == "gems":
-#             stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.2f}% share"
-#         else:
-#             stats_text = f"{deck['share']:.1f}% share"
+        builder = MetaTableBuilder()
+        extended_df = builder.build_complete_meta_table(100)
         
-#         # Header image with stats overlay
-#         # Deck name as left-aligned button (single column)
-#         if st.button(
-#             f"{rank_symbol} {deck['displayed_name']}", 
-#             key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
-#             type="tertiary",
-#             use_container_width=False
-#         ):
-#             st.session_state.deck_to_analyze = deck['deck_name']
-#             st.rerun()
+        if not extended_df.empty:
+            # Sort by share_7d (descending) for dropdown ranking
+            extended_df = extended_df.sort_values('share_7d', ascending=False)
             
-#         header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-#         if header_image:
-#             st.markdown(f"""
-#             <div style="width: 100%; margin-top: -16px; margin-bottom: 7px; position: relative;">
-#                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
-#                 <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
-#                     {stats_text}
-#                 </div>
-#             </div>
-#             """, unsafe_allow_html=True)       
+            for idx, (_, row) in enumerate(extended_df.iterrows()):
+                rank = idx + 1
+                display_name = f"{rank}. {format_deck_option(row['deck_name'], row['share_7d'])}"
+                deck_display_names.append(display_name)
                 
-#     except Exception as e:
-#         print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
-#         st.error("Error loading deck data")
-# In ui_helpers.py, replace the stats_text calculation in render_unified_deck_in_sidebar with this:
+                # Preserve original set information
+                original_set = row.get('set', 'A3a')
+                deck_name_mapping[display_name] = {
+                    'deck_name': row['deck_name'],
+                    'set': original_set
+                }
+        else:
+            display_name = "1. Example Deck (1.0%)"
+            deck_display_names.append(display_name)
+            deck_name_mapping[display_name] = {
+                'deck_name': 'example-deck',
+                'set': latest_set_code
+            }
+            
+    except Exception as e:
+        print(f"Error creating deck options from Extended Meta Trend Table: {e}")
+        display_name = "1. Example Deck (1.0%)"
+        deck_display_names.append(display_name)
+        deck_name_mapping[display_name] = {
+            'deck_name': 'example-deck',
+            'set': latest_set_code
+        }
+    
+    # Cache the results
+    if extended_df is not None and not extended_df.empty:
+        data_hash = hash(str(extended_df.to_dict()))
+    else:
+        data_hash = hash(str(deck_display_names))
+    
+    st.session_state.deck_options_cache = {
+        'display_names': deck_display_names,
+        'name_mapping': deck_name_mapping,
+        'data_hash': data_hash
+    }
+    
+    # Store mapping in session state
+    st.session_state.deck_name_mapping = deck_name_mapping
+    
+    return deck_display_names, deck_name_mapping
+    """Get the latest set code and name from sets_index.json"""
+    try:
+        with open("meta_analysis/sets_index.json", 'r') as f:
+            sets_data = json.load(f)
+        
+        # Filter sets with release dates and sort by date (newest first)
+        sets_with_dates = [s for s in sets_data['sets'] if s.get('release_date')]
+        
+        if sets_with_dates:
+            latest_set = sorted(sets_with_dates, key=lambda x: x['release_date'], reverse=True)[0]
+            return {
+                'set_name': latest_set['set_name'],
+                'set_code': latest_set['set_code']
+            }
+            
+    except Exception as e:
+        print(f"Error getting latest set info: {e}")
+    
+    return None
 
-# In ui_helpers.py, replace the stats_text calculation in render_unified_deck_in_sidebar with this:
+def create_deck_selector():
+    """Create and display the deck selector dropdown with minimal loading"""
 
+    # Initialize session state variables if they don't exist
+    if 'selected_deck_index' not in st.session_state:
+        st.session_state.selected_deck_index = None
+        
+    # Handle deck_to_analyze ONLY if dropdown already existed (not fresh load)
+    preserved_deck = None
+    if ('deck_to_analyze' in st.session_state and 
+        st.session_state.deck_to_analyze and 
+        'deck_display_names' in st.session_state):
+        
+        target_deck = st.session_state.deck_to_analyze
+        print(f"DEBUG: Processing deck_to_analyze: {target_deck}")
+        preserved_deck = target_deck
+        st.session_state.deck_to_analyze = None
+        
+    # Only compute dropdown options if not already cached
+    if 'deck_display_names' not in st.session_state:
+        # Get deck options
+        deck_display_names, deck_name_mapping = create_deck_options()
+        
+        # Store for reuse
+        st.session_state.deck_display_names = deck_display_names
+        st.session_state.deck_name_mapping = deck_name_mapping
+        
+        # Simple default selection - just use first deck
+        st.session_state.selected_deck_index = 0
+        
+        if deck_display_names:
+            selected_deck_display = deck_display_names[0]
+            selected_deck_info = deck_name_mapping[selected_deck_display]
+            st.session_state.analyze = {
+                'deck_name': selected_deck_info['deck_name'],
+                'set_name': selected_deck_info['set'],
+            }
+            print(f"DEBUG: Set initial deck: {selected_deck_info['deck_name']}")
+ 
+    else:
+        # Use cached options
+        deck_display_names = st.session_state.deck_display_names
+        deck_name_mapping = st.session_state.deck_name_mapping
+        
+        # Only set default if no valid selection exists
+        if (st.session_state.selected_deck_index is None or 
+            st.session_state.selected_deck_index >= len(deck_display_names) or
+            'analyze' not in st.session_state):
+            
+            # Simple fallback to first deck
+            st.session_state.selected_deck_index = 0
+            
+            if deck_display_names:
+                selected_deck_display = deck_display_names[0]
+                selected_deck_info = deck_name_mapping[selected_deck_display]
+                st.session_state.analyze = {
+                    'deck_name': selected_deck_info['deck_name'],
+                    'set_name': selected_deck_info['set'],
+                }
+                print(f"DEBUG: Set fallback deck: {selected_deck_info['deck_name']}")
+
+    # Process preserved deck ONLY if it's from a tournament update
+    if preserved_deck:
+        print(f"DEBUG: Looking for preserved deck: {preserved_deck}")
+        
+        found_match = False
+        for i, display_name in enumerate(deck_display_names):
+            deck_info = deck_name_mapping[display_name]
+            if deck_info['deck_name'] == preserved_deck:
+                print(f"DEBUG: Found preserved deck at index {i}: {display_name}")
+                
+                st.session_state.selected_deck_index = i
+                st.session_state.analyze = {
+                    'deck_name': deck_info['deck_name'],
+                    'set_name': deck_info['set'],
+                }
+                
+                if st.session_state.get('auto_refresh_in_progress', False):
+                    st.session_state.force_deck_refresh = True
+                    del st.session_state.auto_refresh_in_progress
+                
+                found_match = True
+                break
+        
+        if not found_match:
+            print(f"DEBUG: Preserved deck not found in new rankings: {preserved_deck}")
+
+    # Calculate time ago
+    time_str = calculate_time_ago(st.session_state.fetch_time)
+    
+    # ENHANCED: Get latest set name and code from JSON file for label
+    latest_set_info = get_latest_set_code()
+    if latest_set_info:
+        label_text = f"Current Set: {latest_set_info['set_name']} ({latest_set_info['set_code']})"
+    else:
+        label_text = "Current Set: A3a"
+    help_text = f"Ranked by 7-day meta share percentage from all tournaments in the past 7 days.  \nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).  Updated {time_str}."
+
+    # Display the selectbox
+    selected_option = st.selectbox(
+        label_text,
+        deck_display_names,
+        index=st.session_state.selected_deck_index,
+        placeholder="Select a deck to analyze...",
+        help=help_text,
+        key="deck_select",
+        on_change=on_deck_change,
+    )
+    
+    return selected_option
+    
 def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
     """Unified function to render any type of deck in sidebar - LIGHTWEIGHT VERSION"""
     try:
