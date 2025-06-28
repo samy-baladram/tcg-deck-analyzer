@@ -11,9 +11,10 @@ import base64
 import os
 from display_tabs import fetch_matchup_data
 from header_image_cache import get_header_image_cached
-from meta_table import display_meta_overview_table, display_meta_overview_table_with_buttons
+from meta_table import display_meta_overview_table, display_meta_overview_table_with_buttons, MetaTableBuilder
 
-# Add this at the top of ui_helpers.py after imports
+# Replace the existing SIDEBAR_SECTIONS_CONFIG in ui_helpers.py with this:
+
 SIDEBAR_SECTIONS_CONFIG = {
     "meta": {
         "type": "meta",
@@ -23,15 +24,15 @@ SIDEBAR_SECTIONS_CONFIG = {
         "show_key": "show_meta_decks",
         "button_key_prefix": "details",
         "rank_symbols": ["🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"],
-        "caption_template": lambda d: f"Power Index: {round(d['power_index'], 2)}",
+        "caption_template": lambda d: f"Share: {d['share_7d']:.2f}%",
         "sort_config": {
-            "columns": ["power_index"],
+            "columns": ["share_7d"],
             "ascending": [False],
             "method": "head",
             "count": 10
         },
         "description": f"Top performers from the past {TOURNAMENT_COUNT} tournaments",
-        "sorting_note": "Sorted by their Power Index (see the bottom of sidebar)"
+        "sorting_note": "Sorted by their 7-day meta share percentage"
     },
     "trending": {
         "type": "trending", 
@@ -40,16 +41,19 @@ SIDEBAR_SECTIONS_CONFIG = {
         "max_decks": 5,
         "show_key": "show_trending_decks", 
         "button_key_prefix": "trending_details",
-        "rank_symbols": ["🚀"] * 10,  # Same symbol for all ranks
-        "caption_template": lambda d: f"Best Finishes: {d['tournaments_played']} • Meta Share: {d['share']:.2f}%",
+        "rank_symbols": ["🚀"] * 10,
+        "caption_template": lambda d: f"+{(d['share_7d'] - d['share_3d']):.2f}% share, {d['ratio']:.1f}x more play",
+        "filter_config": {
+            "ratio_min": 1.0
+        },
         "sort_config": {
-            "columns": ["tournaments_played", "share"],
-            "ascending": [False, True],
-            "method": "head",
+            "columns": ["trending_score"],
+            "ascending": [False],
+            "method": "head", 
             "count": 5
         },
-        "description": f"Most active from the past {TOURNAMENT_COUNT} tournaments",
-        "sorting_note": "Sorted by tournament activity, then by lowest meta share"
+        "description": f"Most trending from the past {TOURNAMENT_COUNT} tournaments",
+        "sorting_note": "Sorted by 3d-share * ratio (trending momentum)"
     },
     "gems": {
         "type": "gems",
@@ -57,39 +61,21 @@ SIDEBAR_SECTIONS_CONFIG = {
         "fallback_title": "💎 Hidden Gems",
         "max_decks": 5,
         "show_key": "show_gems_decks",
-        "button_key_prefix": "gem_details",
-        "rank_symbols": ["💎"] * 10,  # Same symbol for all ranks
-        "caption_template": lambda d: f"Win Rate: {d['win_rate']:.1f}% ({d.get('total_wins', 0)}-{d.get('total_losses', 0)}-{d.get('total_ties', 0)}) • Share: {d['share']:.2f}%",
+        "button_key_prefix": "gems_details",
+        "rank_symbols": ["💎"] * 10,
+        "caption_template": lambda d: f"{d['win_rate']:.1f}% win, {d['share_3d']:.2f}% share",
         "filter_config": {
-            "share_min": 0.05,
-            "share_max": 0.5,
-            "win_rate_min": 55,
-            "total_games_min": 12
+            "win_rate_min": 50.0,
+            "share_3d_max": 1.0
         },
         "sort_config": {
-            "columns": ["win_rate"],
+            "columns": ["gems_score"],
             "ascending": [False],
-            "method": "head", 
+            "method": "head",
             "count": 5
         },
-        "description": f"Underrepresented from the past {TOURNAMENT_COUNT} tournaments",
-        "sorting_note": "0.05-0.5% meta share, 55%+ win rate, 20+ games"
-    },
-    "counter_picker": {
-        "type": "counter_picker",
-        "banner_path": "img/picker_banner.webp",
-        "fallback_title": "🎯 Meta Counter Picker",
-        "max_source_decks": 20,  # Max meta decks to choose from
-        "max_result_decks": 5,   # Max counter results to show
-        "min_matches": MIN_COUNTER_MATCHES,
-        "multiselect_key": "counter_multiselect",
-        "rank_symbols": ["🥇", "🥈", "🥉", "④", "⑤"],
-        "caption_template": lambda d, matches, confidence, matched, total: f"{confidence} {matches} matches, {confidence.lower()} confidence • Counters {matched}/{total} selected decks",
-        "confidence_config": {
-            "high_threshold": 20,
-            "medium_threshold": 12,
-            "low_threshold": 8
-        }
+        "description": f"Hidden gems from the past {TOURNAMENT_COUNT} tournaments", 
+        "sorting_note": "Sorted by (Win Rate-0.5)*(1-Share-3d) potential"
     }
 }
 
@@ -289,61 +275,60 @@ def load_initial_data():
         print("DEBUG: Loaded initial deck list data")
         
 # ENHANCE: Cache deck options creation
+# In ui_helpers.py, replace the create_deck_options function with this version:
+
 def create_deck_options():
-    """Create deck options for dropdown from performance data or fallback to deck list"""
-    # Check if we already have cached options
-    if ('deck_options_cache' in st.session_state and 
-        'performance_data' in st.session_state and 
-        st.session_state.deck_options_cache.get('data_hash') == hash(str(st.session_state.performance_data.to_dict()))):
-        
-        print("Using cached deck options")
-        cached_options = st.session_state.deck_options_cache
-        return cached_options['display_names'], cached_options['name_mapping']
+    """Create deck options for dropdown using Extended Meta Trend Table sorted by Share-7d"""
     
-    # Initialize deck display names and mapping
+    # Check cache first
+    if ('deck_options_cache' in st.session_state and 
+        st.session_state.deck_options_cache):
+        return (st.session_state.deck_options_cache['display_names'], 
+                st.session_state.deck_options_cache['name_mapping'])
+    
     deck_display_names = []
     deck_name_mapping = {}
     
-    # First try to use performance data
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        top_performing_decks = st.session_state.performance_data
+    try:
+        # Use Extended Meta Trend Table instead of performance_data
+        from meta_table import MetaTableBuilder
         
-        for rank, (_, deck) in enumerate(top_performing_decks.iterrows(), 1):  # ADD rank starting from 1
-            display_name = f"{rank} - {deck['displayed_name']}"  # ADD rank prefix
-            deck_display_names.append(display_name)
-            deck_name_mapping[display_name] = {
-                'deck_name': deck['deck_name'],
-                'set': deck['set']
-            }
-    else:
-        # Use cached deck list
-        if 'deck_list' not in st.session_state:
-            st.session_state.deck_list = get_cached_popular_decks()
-            st.session_state.fetch_time = datetime.now()
-                
-        try:
-            from config import MIN_META_SHARE
-            popular_decks = st.session_state.deck_list[st.session_state.deck_list['share'] >= MIN_META_SHARE]
+        builder = MetaTableBuilder()
+        extended_df = builder.build_complete_meta_table(100)
+        
+        if not extended_df.empty:
+            # Sort by share_7d (descending) for dropdown ranking
+            extended_df = extended_df.sort_values('share_7d', ascending=False)
             
-            for rank, (_, row) in enumerate(popular_decks.iterrows(), 1):  # ADD rank starting from 1
-                display_name = f"{rank}. {format_deck_option(row['deck_name'], row['share'])}"  # ADD rank prefix
+            for idx, (_, row) in enumerate(extended_df.iterrows()):
+                rank = idx + 1
+                display_name = f"{rank}. {format_deck_option(row['deck_name'], row['share_7d'])}"
                 deck_display_names.append(display_name)
                 deck_name_mapping[display_name] = {
                     'deck_name': row['deck_name'],
-                    'set': row['set']
+                    'set': row.get('set', 'A3a')
                 }
-        except Exception as e:
-            print(f"Error creating deck options: {e}")
-            display_name = "1. Example Deck (1.0)"  # ADD rank prefix
+        else:
+            print("Extended Meta Trend Table is empty, using fallback")
+            display_name = "1. Example Deck (1.0%)"
             deck_display_names.append(display_name)
             deck_name_mapping[display_name] = {
                 'deck_name': 'example-deck',
-                'set': 'A3'
+                'set': 'A3a'
             }
+            
+    except Exception as e:
+        print(f"Error creating deck options from Extended Meta Trend Table: {e}")
+        display_name = "1. Example Deck (1.0%)"
+        deck_display_names.append(display_name)
+        deck_name_mapping[display_name] = {
+            'deck_name': 'example-deck',
+            'set': 'A3a'
+        }
     
-    # Cache the results (rest stays the same)
-    if 'performance_data' in st.session_state:
-        data_hash = hash(str(st.session_state.performance_data.to_dict()))
+    # Cache the results
+    if extended_df is not None and not extended_df.empty:
+        data_hash = hash(str(extended_df.to_dict()))
     else:
         data_hash = hash(str(deck_display_names))
     
@@ -571,39 +556,57 @@ def create_deck_selector():
     return selected_option
     
 def get_filtered_deck_data(section_type):
-    """Get filtered deck data based on section configuration"""
-    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
+    """Get filtered deck data based on section configuration using Extended Meta Trend Table"""
+    
+    # Use Extended Meta Trend Table data instead of performance_data
+    from meta_table import MetaTableBuilder
+    
+    try:
+        builder = MetaTableBuilder()
+        extended_df = builder.build_complete_meta_table(100)
+        
+        if extended_df.empty:
+            return pd.DataFrame()
+        
+        # Add formatted display names if not present
+        if 'displayed_name' not in extended_df.columns:
+            extended_df['displayed_name'] = extended_df['deck_name'].apply(format_deck_name)
+        
+        # Add set column if not present
+        if 'set' not in extended_df.columns:
+            extended_df['set'] = 'A3a'
+            
+    except Exception as e:
+        print(f"Error loading Extended Meta Trend Table: {e}")
         return pd.DataFrame()
     
     config = SIDEBAR_SECTIONS_CONFIG.get(section_type)
     if not config:
         return pd.DataFrame()
     
-    perf_data = st.session_state.performance_data.copy()
+    result_data = extended_df.copy()
     
-    # Ensure win_rate column exists
-    if 'win_rate' not in perf_data.columns:
-        perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
-        perf_data['win_rate'] = (
-            (perf_data['total_wins'] + 0.5 * perf_data['total_ties']) / 
-            perf_data['total_games'] * 100
-        ).fillna(0)
-    
-    # Apply filters if specified
-    if 'filter_config' in config:
-        filter_cfg = config['filter_config']
-        if 'total_games' not in perf_data.columns:
-            perf_data['total_games'] = perf_data['total_wins'] + perf_data['total_losses'] + perf_data['total_ties']
+    # Apply section-specific filters and calculations
+    if section_type == "trending":
+        # Filter: ratio > 1.0
+        if 'filter_config' in config:
+            filter_cfg = config['filter_config']
+            result_data = result_data[result_data['ratio'] >= filter_cfg['ratio_min']]
         
-        filtered_data = perf_data[
-            (perf_data['share'] >= filter_cfg['share_min']) & 
-            (perf_data['share'] <= filter_cfg['share_max']) & 
-            (perf_data['win_rate'] >= filter_cfg['win_rate_min']) &
-            (perf_data['total_games'] >= filter_cfg['total_games_min'])
-        ]
-        result_data = filtered_data
-    else:
-        result_data = perf_data
+        # Calculate trending score: Share-3d * Ratio
+        result_data['trending_score'] = result_data['share_3d'] * result_data['ratio']
+        
+    elif section_type == "gems":
+        # Filter: Win Rate > 50% and Share-3d < 1%
+        if 'filter_config' in config:
+            filter_cfg = config['filter_config']
+            result_data = result_data[
+                (result_data['win_rate'] >= filter_cfg['win_rate_min']) & 
+                (result_data['share_3d'] <= filter_cfg['share_3d_max'])
+            ]
+        
+        # Calculate gems score: (Win Rate-0.5)*(1-Share-3d)
+        result_data['gems_score'] = (result_data['win_rate'] - 50.0) * (1 - result_data['share_3d']/100)
     
     # Apply sorting
     sort_cfg = config['sort_config']
@@ -814,6 +817,52 @@ def get_filtered_deck_data(section_type):
 #     st.write("")
 #     st.write("")
     
+# def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
+#     """Unified function to render any type of deck in sidebar - LIGHTWEIGHT VERSION"""
+#     try:
+#         # Get rank symbol
+#         if rank and rank <= len(section_config['rank_symbols']):
+#             rank_symbol = section_config['rank_symbols'][rank-1]
+#         else:
+#             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
+        
+#         # Calculate stats text
+#         if section_config['type'] == "meta":
+#             stats_text = f"Power {deck['power_index']:.2f}"
+#         elif section_config['type'] == "trending":
+#             stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.2f}% share"
+#         elif section_config['type'] == "gems":
+#             stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.2f}% share"
+#         else:
+#             stats_text = f"{deck['share']:.1f}% share"
+        
+#         # Header image with stats overlay
+#         # Deck name as left-aligned button (single column)
+#         if st.button(
+#             f"{rank_symbol} {deck['displayed_name']}", 
+#             key=f"{section_config['button_key_prefix']}_{deck['deck_name']}_{rank}",
+#             type="tertiary",
+#             use_container_width=False
+#         ):
+#             st.session_state.deck_to_analyze = deck['deck_name']
+#             st.rerun()
+            
+#         header_image = get_header_image_cached(deck['deck_name'], deck['set'])
+#         if header_image:
+#             st.markdown(f"""
+#             <div style="width: 100%; margin-top: -16px; margin-bottom: 7px; position: relative;">
+#                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
+#                 <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
+#                     {stats_text}
+#                 </div>
+#             </div>
+#             """, unsafe_allow_html=True)       
+                
+#     except Exception as e:
+#         print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
+#         st.error("Error loading deck data")
+# In ui_helpers.py, replace the stats_text calculation in render_unified_deck_in_sidebar with this:
+
 def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=False):
     """Unified function to render any type of deck in sidebar - LIGHTWEIGHT VERSION"""
     try:
@@ -823,17 +872,17 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         else:
             rank_symbol = section_config['rank_symbols'][0] if section_config['rank_symbols'] else ""
         
-        # Calculate stats text
+        # Calculate stats text based on section type
         if section_config['type'] == "meta":
-            stats_text = f"Power {deck['power_index']:.2f}"
+            stats_text = f"{deck['share_7d']:.2f}%"
         elif section_config['type'] == "trending":
-            stats_text = f"{deck['tournaments_played']} plays, {deck['share']:.2f}% share"
+            share_diff = deck['share_7d'] - deck['share_3d']
+            stats_text = f"+{share_diff:.2f}% share, {deck['ratio']:.1f}x more play"
         elif section_config['type'] == "gems":
-            stats_text = f"{deck['win_rate']:.1f}% win, {deck['share']:.2f}% share"
+            stats_text = f"{deck['win_rate']:.1f}% win, {deck['share_3d']:.2f}% share"
         else:
-            stats_text = f"{deck['share']:.1f}% share"
+            stats_text = f"{deck['share_7d']:.1f}% share"
         
-        # Header image with stats overlay
         # Deck name as left-aligned button (single column)
         if st.button(
             f"{rank_symbol} {deck['displayed_name']}", 
@@ -844,20 +893,12 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
             st.session_state.deck_to_analyze = deck['deck_name']
             st.rerun()
             
-        header_image = get_header_image_cached(deck['deck_name'], deck['set'])
-        if header_image:
-            st.markdown(f"""
-            <div style="width: 100%; margin-top: -16px; margin-bottom: 7px; position: relative;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
-                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
-                    {stats_text}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)       
-                
+        # Display stats text below button
+        st.caption(stats_text)
+        
     except Exception as e:
-        print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
-        st.error("Error loading deck data")
+        print(f"Error rendering deck in sidebar: {e}")
+        st.write(f"Error: {deck.get('displayed_name', 'Unknown deck')}")
 
 def create_deck_section(section_type):
     """Create a unified deck section using configuration - LIGHTWEIGHT VERSION"""
@@ -896,14 +937,18 @@ def create_deck_section(section_type):
     header_image = get_header_image_cached(first_deck['deck_name'], first_deck['set'])
 
     # Calculate stats for featured deck
+    # In ui_helpers.py, find the section where featured deck stats are calculated and replace with:
+    
+    # Update the stats_text calculation in the featured deck display section:
     if config['type'] == "meta":
-        stats_text = f"Power {first_deck['power_index']:.2f}"
+        stats_text = f"{first_deck['share_7d']:.2f}%"
     elif config['type'] == "trending":
-        stats_text = f"{first_deck['tournaments_played']} plays, {first_deck['share']:.2f}% share"
+        share_diff = first_deck['share_7d'] - first_deck['share_3d']
+        stats_text = f"+{share_diff:.2f}% share, {first_deck['ratio']:.1f}x more play"
     elif config['type'] == "gems":
-        stats_text = f"{first_deck['win_rate']:.1f}% win, {first_deck['share']:.2f}% share"
+        stats_text = f"{first_deck['win_rate']:.1f}% win, {first_deck['share_3d']:.2f}% share"
     else:
-        stats_text = f"{first_deck['share']:.1f}% share"
+        stats_text = f"{first_deck['share_7d']:.1f}% share"
 
     # Featured deck name with emoji (single column, shorter spacing)
     if st.button(
