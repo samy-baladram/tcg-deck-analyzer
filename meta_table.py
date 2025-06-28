@@ -261,7 +261,7 @@ class MetaTableBuilder(MetaAnalyzer):
         Returns:
             DataFrame with complete meta analysis including performance data
         """
-        print("Building meta table data...")
+        #print("Building meta table data...")
         
         # Get top archetypes based on 7-day share
         archetypes_df = self.archetype_analyzer.fetch_top_archetypes_by_share(7, limit * 2)
@@ -327,7 +327,7 @@ class MetaTableBuilder(MetaAnalyzer):
         result_df = result_df.sort_values('share_7d', ascending=False).reset_index(drop=True)
         result_df['rank'] = range(1, len(result_df) + 1)
         
-        print(f"Built meta table with {len(result_df)} archetypes including performance data")
+        #print(f"Built meta table with {len(result_df)} archetypes including performance data")
         return result_df.head(limit)
     
     def _format_deck_name(self, deck_name):
