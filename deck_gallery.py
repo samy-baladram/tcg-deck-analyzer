@@ -25,7 +25,7 @@ def get_player_display_name(tournament_id, player_url_name):
         profile_url = f"https://play.limitlesstcg.com/tournament/{tournament_id}/player/{player_url_name}/"
         
         # Add a small delay to be respectful
-        time.sleep(0.2)
+        #time.sleep(0.2)
         
         response = requests.get(profile_url, timeout=10)
         response.raise_for_status()
@@ -183,7 +183,8 @@ def display_single_deck_expander(deck_data, deck_number, energy_types, is_typica
         expander_title = f"Deck {deck_number}"
     else:
         # Record found
-        expander_title = f"Deck {deck_number} (Score: {wins}-{losses}-{ties})"
+        expander_title = f"Deck Score: {wins}-{losses}-{ties}"
+        #expander_title = f"Deck {deck_number} (Score: {wins}-{losses}-{ties})"
     
     # Create the expander
     with st.expander(expander_title, expanded=True):
