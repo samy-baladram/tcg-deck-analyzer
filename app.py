@@ -13,28 +13,6 @@ from card_cache import clear_expired_cache as clear_card_cache
 from meta_table import display_extended_meta_table
 from PIL import Image
 
-#### Clear cache
-# Add this after your existing imports in app.py
-import os
-import shutil
-
-# Clear Flareon banner cache on startup
-def clear_flareon_cache():
-    """Clear banner cache to fix Flareon deck issues"""
-    try:
-        header_cache_dir = "cached_data/header_images"
-        if os.path.exists(header_cache_dir):
-            shutil.rmtree(header_cache_dir)
-            print("Cleared banner cache")
-    except Exception as e:
-        print(f"Cache clear error: {e}")
-
-# Call it once when app starts
-if 'cache_cleared' not in st.session_state:
-    clear_flareon_cache()
-    st.session_state.cache_cleared = True
-#### end
-
 favicon = Image.open("favicon.png").convert('RGBA')
 
 st.set_page_config(
