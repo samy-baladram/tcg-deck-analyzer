@@ -324,7 +324,8 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 display_tabs.display_deck_header(original_deck_info, results)
                 
                 # Create tab container
-                tab1, tab3, tab4, tab5, tab6 = st.tabs(["Deck Template", 
+                tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Info", 
+                                                        "Deck Gallery",
                                                                     "Meta Matchups",
                                                                     "Meta Trend",  # NEW TAB
                                                                     "Metagame Overview",
@@ -353,7 +354,8 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     # if last_update:
                     #     st.caption(last_update)
                 
-                # with tab2:
+                with tab2:
+                    st.write("Coming Soon")
                 #     # Pass variant_df safely
                 #     if variant_df is not None:
                 #         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
