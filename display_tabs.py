@@ -2548,50 +2548,50 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         ORDER BY t.date
         """
         
-        # Execute query with deck name, selected formats, and date cutoff
-        query_params = [deck_name] + selected_formats + [cutoff_date]
-        df = pd.read_sql_query(query, conn, params=query_params)
+        # Execute query with parameters
+        params = [deck_name] + selected_formats + [cutoff_date]
+        df = pd.read_sql_query(query, conn, params=params)
         conn.close()
         
         if df.empty:
-            print(f"No performance data found for archetype: {deck_name}")
             return None
         
-        # Calculate win percentage and total games for each date
+        # Calculate win percentage and total games
         df['total_games'] = df['total_wins'] + df['total_losses'] + df['total_ties']
-        df['win_percentage'] = (df['total_wins'] / df['total_games']) * 100
+        df['win_percentage'] = (df['total_wins'] / df['total_games'] * 100).round(1)
         
-        # Convert date strings to datetime for better plotting
-        df['date'] = pd.to_datetime(df['date'])
-        
-        # Filter out dates with insufficient data (less than 3 games)
+        # Filter out days with too few games for reliability
         df_filtered = df[df['total_games'] >= 3].copy()
         
         if df_filtered.empty:
-            print(f"No sufficient performance data found for archetype: {deck_name}")
             return None
         
-        # Calculate smart y-axis range
-        min_win_rate = df_filtered['win_percentage'].min()
-        max_win_rate = df_filtered['win_percentage'].max()
-        
-        # Add 5% padding to top and bottom
-        padding = 5
-        y_min = max(0, min_win_rate - padding)
-        y_max = min(100, max_win_rate + padding)
-        
-        # Ensure minimum range of 20%
-        if (y_max - y_min) < 20:
-            center = (y_min + y_max) / 2
-            y_min = max(0, center - 10)
-            y_max = min(100, center + 10)
+        # Create conditional marker colors based on win percentage
+        marker_colors = []
+        for win_rate in df_filtered['win_percentage']:
+            if win_rate > 50:
+                marker_colors.append('lightgreen')  # Light green for >50%
+            else:
+                marker_colors.append('lightcoral')  # Light red for <50%
         
         # Create the figure
         fig = go.Figure()
         
-        # Define background color zones based on win percentage ranges
+        # Set up y-axis range
+        y_min = max(0, df_filtered['win_percentage'].min() - 5)
+        y_max = min(100, df_filtered['win_percentage'].max() + 5)
+        
+        # Add 50% reference line
+        fig.add_hline(
+            y=50,
+            line_dash="dot",
+            line_color="rgba(128, 128, 128, 0.7)",
+            line_width=1
+        )
+        
+        # Add performance zone backgrounds
         color_zones = [
-            {"range": [0, 10], "color": "rgba(165, 0, 38, 1)"},      # 0-10%
+            {"range": [0, 10], "color": "rgba(165, 0, 38, 1)"},     # 0-10%
             {"range": [10, 20], "color": "rgba(215, 48, 39, 1)"},    # 10-20%
             {"range": [20, 30], "color": "rgba(244, 109, 67, 1)"},   # 20-30%
             {"range": [30, 40], "color": "rgba(255, 166, 79, 1)"},   # 30-40%
@@ -2615,14 +2615,18 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
                     layer="below"
                 )
         
-        # Add win percentage line with white line and markers
+        # Add win percentage line with conditional marker colors and white outline
         fig.add_trace(go.Scatter(
             x=df_filtered['date'],
             y=df_filtered['win_percentage'],
             mode='lines+markers',
             name='Win %',
             line=dict(color='#FFFFFF', width=1),  # White line, width 1
-            marker=dict(size=8, color='#FFFFFF'),  # White markers
+            marker=dict(
+                size=8, 
+                color=marker_colors,  # Conditional colors (light green/red)
+                line=dict(color='white', width=2)  # White outline, 2px width
+            ),
             hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
             customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
         ))
