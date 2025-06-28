@@ -26,7 +26,7 @@ SIDEBAR_SECTIONS_CONFIG = {
         "show_key": "show_meta_decks",
         "button_key_prefix": "details",
         "rank_symbols": ["🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"],
-        "caption_template": lambda d: f"Share: {d['share_7d']:.2f}%",
+        "caption_template": lambda d: f"{d['share_7d']:.2f}% share",
         "sort_config": {
             "columns": ["share_7d"],
             "ascending": [False],
