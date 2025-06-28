@@ -22,7 +22,8 @@ def ensure_cache_dir():
 
 def get_cache_key(deck_name, set_name="A3"):
     """Generate consistent cache key for deck header image"""
-    return f"{deck_name}_{set_name}"
+    return f"{deck_name}"
+    #return f"{deck_name}_{set_name}"
 
 def load_cache_index():
     """Load cache index from disk"""
