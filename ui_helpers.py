@@ -979,7 +979,7 @@ def create_deck_section(section_type):
     
     # Update the stats_text calculation in the featured deck display section:
     if config['type'] == "meta":
-        stats_text = f"{first_deck['share_7d']:.2f}%"
+        stats_text = f"{first_deck['share_7d']:.2f}% share"
     elif config['type'] == "trending":
         share_diff = first_deck['share_7d'] - first_deck['share_3d']
         stats_text = f"+{share_diff:.2f}% share, {first_deck['ratio']:.1f}x more play"
