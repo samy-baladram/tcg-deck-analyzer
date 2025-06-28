@@ -438,7 +438,7 @@ def create_deck_options():
     
     # Get latest set code for reference
     latest_set_info = get_latest_set_code()
-    latest_set_code = latest_set_info['set_code'] if latest_set_info else 'A3a'
+    latest_set_code = latest_set_info['set_code'] if latest_set_info
     
     try:
         # Use Extended Meta Trend Table instead of performance_data
@@ -457,7 +457,7 @@ def create_deck_options():
                 deck_display_names.append(display_name)
                 
                 # Preserve original set information
-                original_set = row.get('set', 'A3a')
+                original_set = row.get('set', latest_set_code)
                 deck_name_mapping[display_name] = {
                     'deck_name': row['deck_name'],
                     'set': original_set
