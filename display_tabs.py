@@ -2381,10 +2381,11 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
                 fig.add_annotation(
                     x=release_date,
                     y=max_percentage * 1.1,  # Position at top of chart
-                    text=f"        {set_code}",  # Add space at beginning
+                    text=set_code",  # Add space at beginning
                     showarrow=False,
                     font=dict(size=10, color="#FFFFFF"),
                     align="left",
+                    xshift=15,
                     hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
                     hoverlabel=dict(
                         bgcolor="white",
