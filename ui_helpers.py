@@ -657,7 +657,8 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
             st.rerun()
             
         # Display header image with original styling
-        header_image = get_header_image_cached(deck['deck_name'], deck.get('set', 'A3a'))
+        
+        header_image = get_header_image_cached(deck['deck_name'], deck['set'])
         if header_image:
             st.markdown(f"""
             <div style="width: 100%; margin-top: -16px; margin-bottom: 7px; position: relative;">
