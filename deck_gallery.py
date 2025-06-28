@@ -14,32 +14,48 @@ def get_deck_record(tournament_id, player_id):
     Returns tuple (wins, losses, ties) or (0, 0, 0) if not found
     """
     try:
+        # DEBUG: Print what we're looking for
+        print(f"DEBUG: Looking for tournament {tournament_id}, player {player_id}")
+        
         # First, find the correct date path for this tournament
         tournament_file_path = find_tournament_file_path(tournament_id)
+        
+        print(f"DEBUG: Found file path: {tournament_file_path}")
         
         if tournament_file_path and os.path.exists(tournament_file_path):
             with open(tournament_file_path, 'r') as f:
                 tournament_data = json.load(f)
             
+            # DEBUG: Show tournament info
+            tournament_name = tournament_data.get('name', 'Unknown')
+            player_count = len(tournament_data.get('players', []))
+            print(f"DEBUG: Tournament '{tournament_name}' has {player_count} players")
+            
             # Search for the player in the players array
             if 'players' in tournament_data:
+                player_names = [p.get('player_name', '') for p in tournament_data['players']]
+                print(f"DEBUG: Player names in tournament: {player_names[:5]}...")  # Show first 5
+                
                 for player in tournament_data['players']:
                     # The player_id might actually be the player_name
                     if str(player.get('player_name', '')) == str(player_id):
                         record_str = player.get('record', '0 - 0 - 0')
+                        print(f"DEBUG: Found player {player_id} with record: {record_str}")
                         
                         # Parse the record string "7 - 3 - 0" format
                         wins, losses, ties = parse_record_string(record_str)
                         return (wins, losses, ties)
+                
+                print(f"DEBUG: Player {player_id} not found in tournament {tournament_id}")
                         
         else:
-            print(f"Tournament file not found for tournament {tournament_id}")
+            print(f"DEBUG: Tournament file not found for tournament {tournament_id}")
         
         # Fallback: Return default record if not found
         return (0, 0, 0)
         
     except Exception as e:
-        print(f"Error getting deck record for tournament {tournament_id}, player {player_id}: {e}")
+        print(f"ERROR getting deck record for tournament {tournament_id}, player {player_id}: {e}")
         return (0, 0, 0)
 
 def find_tournament_file_path(tournament_id):
@@ -50,9 +66,13 @@ def find_tournament_file_path(tournament_id):
     try:
         index_path = "tournament_cache/index.json"
         
+        print(f"DEBUG: Looking for index at {index_path}")
+        
         if os.path.exists(index_path):
             with open(index_path, 'r') as f:
                 index_data = json.load(f)
+            
+            print(f"DEBUG: Index loaded, total tournaments: {index_data.get('total_tournaments', 0)}")
             
             # Search through tournaments_by_path to find the date path
             tournaments_by_path = index_data.get('tournaments_by_path', {})
@@ -61,20 +81,26 @@ def find_tournament_file_path(tournament_id):
                 if tournament_id in tournament_list:
                     # Found the tournament in this date path
                     file_path = f"tournament_cache/{date_path}/{tournament_id}.json"
+                    print(f"DEBUG: Found tournament {tournament_id} in {date_path}")
                     return file_path
+            
+            print(f"DEBUG: Tournament {tournament_id} not found in tournaments_by_path")
             
             # If not found in tournaments_by_path, try the old direct path
             direct_path = f"tournament_cache/{tournament_id}.json"
             if os.path.exists(direct_path):
+                print(f"DEBUG: Found tournament at direct path: {direct_path}")
                 return direct_path
+            else:
+                print(f"DEBUG: Direct path also doesn't exist: {direct_path}")
                 
         else:
-            print("tournament_cache/index.json not found")
+            print(f"DEBUG: Index file not found at {index_path}")
         
         return None
         
     except Exception as e:
-        print(f"Error finding tournament file path for {tournament_id}: {e}")
+        print(f"ERROR finding tournament file path for {tournament_id}: {e}")
         return None
 
 def parse_record_string(record_str):
@@ -127,6 +153,13 @@ def display_single_deck_expander(deck_data, deck_number, energy_types, is_typica
     
     # Create the expander
     with st.expander(expander_title, expanded=False):
+        # DEBUG: Show tournament and player info
+        st.write("**DEBUG INFO:**")
+        st.write(f"Tournament ID: `{tournament_id}`")
+        st.write(f"Player Name: `{player_id}`")
+        st.write(f"Record: `{record_str}`")
+        st.divider()
+        
         # Display energy types if available
         if energy_types:
             from card_renderer import render_energy_icons
@@ -278,5 +311,5 @@ def display_deck_gallery_tab_simple():
     
     # Display summary info
     st.divider()
-    st.caption(f"Showing 20 sample decks for {deck_name} archetype")
+    #st.caption(f"Showing 20 sample decks for {deck_name} archetype")
     st.caption(f"Showing best-finishes sample decks for {deck_name} archetype")
