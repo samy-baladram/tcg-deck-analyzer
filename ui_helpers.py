@@ -915,29 +915,21 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
             st.session_state.deck_to_analyze = deck['deck_name']
             st.rerun()
             
-        # Display header image if available
-        header_image = get_header_image_cached(deck['deck_name'])
+        # Display header image with original styling
+        header_image = get_header_image_cached(deck['deck_name'], deck.get('set', 'A3a'))
         if header_image:
             st.markdown(f"""
-            <div style="width: 100%; margin-top: -18px; position: relative;">
-                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 6px 6px 0px 0px; margin-bottom: -7px; z-index:-2;">
-                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; margin-bottom: -7px; border-radius: 4px 0px 0px 0px; font-size: 0.7rem; font-weight: 500;">
+            <div style="width: 100%; margin-top: -16px; margin-bottom: 7px; position: relative;">
+                <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
+                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
                     {stats_text}
                 </div>
             </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"""
-            <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 10px;
-                display: flex; align-items: center; justify-content: center; margin-top: -10px;">
-                <span style="color: #888; font-size: 0.8rem;">No image</span>
-            </div>
-            """, unsafe_allow_html=True)
-            st.caption(stats_text)
-        
+            """, unsafe_allow_html=True)       
+                
     except Exception as e:
-        print(f"Error rendering deck in sidebar: {e}")
-        st.write(f"Error: {deck.get('displayed_name', 'Unknown deck')}")
+        print(f"Error rendering {section_config['type']} deck in sidebar: {e}")
+        st.error("Error loading deck data")
 
 def create_deck_section(section_type):
     """Create a unified deck section using configuration - LIGHTWEIGHT VERSION"""
