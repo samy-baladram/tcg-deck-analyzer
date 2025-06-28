@@ -15,6 +15,8 @@ from meta_table import display_meta_overview_table, display_meta_overview_table_
 
 # Replace the existing SIDEBAR_SECTIONS_CONFIG in ui_helpers.py with this:
 
+# Replace the existing SIDEBAR_SECTIONS_CONFIG in ui_helpers.py with this:
+
 SIDEBAR_SECTIONS_CONFIG = {
     "meta": {
         "type": "meta",
@@ -76,6 +78,18 @@ SIDEBAR_SECTIONS_CONFIG = {
         },
         "description": f"Hidden gems from the past {TOURNAMENT_COUNT} tournaments", 
         "sorting_note": "Sorted by (Win Rate-0.5)*(1-Share-3d) potential"
+    },
+    "counter_picker": {
+        "type": "counter_picker",
+        "banner_path": "img/counter_banner.webp",
+        "fallback_title": "🎯 Counter Picker",
+        "max_source_decks": 20,
+        "max_counter_results": 8,
+        "multiselect_key": "counter_target_decks",
+        "button_key_prefix": "counter_details",
+        "caption_template": lambda deck, total_matches, confidence, matched_decks, total_selected: f"vs {matched_decks}/{total_selected} decks ({total_matches} matches)",
+        "description": "Find decks that counter the current meta",
+        "sorting_note": "Sorted by win rate against selected meta decks"
     }
 }
 
