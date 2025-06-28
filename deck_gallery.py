@@ -14,85 +14,100 @@ def get_deck_record(tournament_id, player_id):
     Returns tuple (wins, losses, ties) or (0, 0, 0) if not found
     """
     try:
-        # Method 1: Check if we have cached tournament data
-        if 'tournament_records' in st.session_state:
-            records = st.session_state.tournament_records
+        # First, find the correct date path for this tournament
+        tournament_file_path = find_tournament_file_path(tournament_id)
+        
+        if tournament_file_path and os.path.exists(tournament_file_path):
+            with open(tournament_file_path, 'r') as f:
+                tournament_data = json.load(f)
             
-            # Look for matching tournament_id and player_id
-            for record in records:
-                if (record.get('tournament_id') == tournament_id and 
-                    record.get('player_id') == player_id):
-                    
-                    wins = record.get('wins', 0)
-                    losses = record.get('losses', 0)
-                    ties = record.get('ties', 0)
-                    return (wins, losses, ties)
+            # Search for the player in the players array
+            if 'players' in tournament_data:
+                for player in tournament_data['players']:
+                    # The player_id might actually be the player_name
+                    if str(player.get('player_name', '')) == str(player_id):
+                        record_str = player.get('record', '0 - 0 - 0')
+                        
+                        # Parse the record string "7 - 3 - 0" format
+                        wins, losses, ties = parse_record_string(record_str)
+                        return (wins, losses, ties)
+                        
+        else:
+            print(f"Tournament file not found for tournament {tournament_id}")
         
-        # Method 2: Check player-tournament mapping cache
-        cache_file = "cached_data/player_tournament_mapping.json"
-        if os.path.exists(cache_file):
-            with open(cache_file, 'r') as f:
-                mapping_data = json.load(f)
-            
-            # Create composite key
-            record_key = f"{player_id}_{tournament_id}"
-            
-            if record_key in mapping_data:
-                # This gives us the deck archetype, but we need the record
-                # For now, generate a realistic random record
-                import random
-                random.seed(hash(record_key))  # Consistent for same player/tournament
-                
-                # Generate realistic win-loss records
-                total_rounds = random.randint(6, 9)  # Most tournaments are 6-9 rounds
-                wins = random.randint(3, total_rounds)
-                losses = total_rounds - wins
-                ties = 0  # Ties are rare in Pokemon
-                
-                return (wins, losses, ties)
-        
-        # Method 3: Use performance data if available
-        if 'performance_data' in st.session_state:
-            # Get a realistic record based on current deck performance
-            deck_name = st.session_state.analyze.get('deck_name', '') if 'analyze' in st.session_state else ''
-            
-            if deck_name:
-                performance_df = st.session_state.performance_data
-                deck_row = performance_df[performance_df['deck_name'] == deck_name]
-                
-                if not deck_row.empty:
-                    # Use the deck's overall win rate to generate realistic individual records
-                    overall_wins = deck_row.iloc[0].get('total_wins', 10)
-                    overall_losses = deck_row.iloc[0].get('total_losses', 5)
-                    
-                    # Scale down to individual tournament level
-                    import random
-                    random.seed(hash(f"{player_id}_{tournament_id}"))
-                    
-                    total_rounds = random.randint(6, 9)
-                    win_rate = overall_wins / (overall_wins + overall_losses) if (overall_wins + overall_losses) > 0 else 0.6
-                    
-                    wins = max(0, min(total_rounds, int(total_rounds * win_rate + random.uniform(-1, 1))))
-                    losses = total_rounds - wins
-                    ties = 0
-                    
-                    return (wins, losses, ties)
-        
-        # Default: Generate consistent random record
-        import random
-        random.seed(hash(f"{player_id}_{tournament_id}"))
-        
-        total_rounds = random.randint(6, 9)
-        wins = random.randint(2, total_rounds - 1)
-        losses = total_rounds - wins
-        ties = 0
-        
-        return (wins, losses, ties)
+        # Fallback: Return default record if not found
+        return (0, 0, 0)
         
     except Exception as e:
-        print(f"Error getting deck record: {e}")
-        # Return a default realistic record
-        return (4, 3, 0)
+        print(f"Error getting deck record for tournament {tournament_id}, player {player_id}: {e}")
+        return (0, 0, 0)
+
+def find_tournament_file_path(tournament_id):
+    """
+    Find the file path for a tournament by looking through the index.json
+    Returns the full path to the tournament file or None if not found
+    """
+    try:
+        index_path = "tournament_cache/index.json"
+        
+        if os.path.exists(index_path):
+            with open(index_path, 'r') as f:
+                index_data = json.load(f)
+            
+            # Search through tournaments_by_path to find the date path
+            tournaments_by_path = index_data.get('tournaments_by_path', {})
+            
+            for date_path, tournament_list in tournaments_by_path.items():
+                if tournament_id in tournament_list:
+                    # Found the tournament in this date path
+                    file_path = f"tournament_cache/{date_path}/{tournament_id}.json"
+                    return file_path
+            
+            # If not found in tournaments_by_path, try the old direct path
+            direct_path = f"tournament_cache/{tournament_id}.json"
+            if os.path.exists(direct_path):
+                return direct_path
+                
+        else:
+            print("tournament_cache/index.json not found")
+        
+        return None
+        
+    except Exception as e:
+        print(f"Error finding tournament file path for {tournament_id}: {e}")
+        return None
+
+def parse_record_string(record_str):
+    """
+    Parse record string like "7 - 3 - 0" or "1 - 3 - 0drop"
+    Returns tuple (wins, losses, ties)
+    """
+    try:
+        # Remove any "drop" text and clean up
+        cleaned_record = record_str.replace('drop', '').strip()
+        
+        # Split by " - " and extract numbers
+        parts = cleaned_record.split(' - ')
+        
+        if len(parts) >= 2:
+            wins = int(parts[0].strip()) if parts[0].strip().isdigit() else 0
+            losses = int(parts[1].strip()) if parts[1].strip().isdigit() else 0
+            ties = int(parts[2].strip()) if len(parts) > 2 and parts[2].strip().isdigit() else 0
+            return (wins, losses, ties)
+        else:
+            # Fallback parsing for different formats
+            import re
+            numbers = re.findall(r'\d+', cleaned_record)
+            if len(numbers) >= 2:
+                wins = int(numbers[0])
+                losses = int(numbers[1])
+                ties = int(numbers[2]) if len(numbers) > 2 else 0
+                return (wins, losses, ties)
+                
+    except Exception as e:
+        print(f"Error parsing record string '{record_str}': {e}")
+    
+    return (0, 0, 0)
 
 def display_single_deck_expander(deck_data, deck_number, energy_types, is_typical):
     """
@@ -263,4 +278,5 @@ def display_deck_gallery_tab_simple():
     
     # Display summary info
     st.divider()
+    st.caption(f"Showing 20 sample decks for {deck_name} archetype")
     st.caption(f"Showing best-finishes sample decks for {deck_name} archetype")
