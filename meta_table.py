@@ -532,7 +532,7 @@ def display_meta_overview_table():
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
-        meta_df = builder.build_complete_meta_table(20)
+        meta_df = builder.build_complete_meta_table(40)
     
     if meta_df.empty:
         st.warning("No meta data available at this time.")
@@ -577,7 +577,7 @@ def display_meta_overview_table():
             'Icon2': meta_df['pokemon_url2'], 
             'Deck': meta_df['formatted_deck_name'],
             'Share-7d': meta_df['share_7d'],
-            #'Trend': meta_df['trend_history'],  # Line chart data
+            'Trend': meta_df['trend_history'],  # Line chart data
             'R': meta_df.apply(lambda row: row['share_3d'] / row['share_7d'] if row['share_7d'] > 0 else 0, axis=1),
             'Win %': meta_df['win_rate']
         })
@@ -625,9 +625,8 @@ def display_meta_overview_table():
             styled_df,
             column_config=column_config,
             hide_index=True,
-            #height=1428,
+            height=1428,
             #height=1088,
-            height=600,
             use_container_width=True
         )
         
