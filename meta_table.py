@@ -1292,7 +1292,7 @@ def display_extended_meta_table():
         # Define styling functions for conditional coloring
         def style_ratio_column(val):
             """Apply conditional styling to Ratio column like working table"""
-            if pd.isna(val) or val == 0:
+            if pd.isna(val):
                 return 'color: #888888; font-weight: normal;'
             elif val > 1.2:
                 return 'color: #06B804; font-weight: bold;'  # Strong green for big gains
