@@ -1,4 +1,3 @@
-
 """
 Meta Table Module - Clean archetype performance analysis with corrected counting logic
 """
@@ -1340,7 +1339,7 @@ def display_extended_meta_table():
             styled_df,
             column_config=column_config,
             hide_index=True,
-            #height=600,
+            height=3000,
             use_container_width=True
         )
         
@@ -1350,6 +1349,7 @@ def display_extended_meta_table():
             "Trend shows daily meta share progression (oldest to newest).  \n"
             "Ratio shows Share-3d / Share-7d with color coding: **green** = gaining popularity (>1.0), **red** = losing popularity (<1.0).  \n"
             "Win Rate is color-coded: **green** = above 50%, **red** = below 50%.  \n"
+            "**Note:** ~5 entries may show 0% win rate when individual performance data is unavailable despite meta presence.  \n"
             "Wilson Index is the Power Index from analyzer.py (scaled -5 to +5, positive = above 50% win rate with confidence).  \n"
             "Ranked by 7-day meta share percentage."
         )
