@@ -1330,7 +1330,7 @@ def display_extended_meta_table():
                 "Ratio", width=50, help="Share-3d / Share-7d ratio", format="%.2f"
             ),
             'Index': st.column_config.NumberColumn(
-                "Index", width=80, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
+                "Index", width=40, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
             )
         }
         
