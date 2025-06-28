@@ -1282,10 +1282,10 @@ def display_extended_meta_table():
             'Share-7d': extended_df['share_7d'],
             'Share-3d': extended_df['share_3d'],
             'Ratio': extended_df['ratio'],
-            'Win Rate': extended_df['win_rate'],
             'Wins': extended_df['wins'],
             'Losses': extended_df['losses'], 
             'Ties': extended_df['ties'],
+            'Win Rate': extended_df['win_rate'],
             'Index': extended_df['wilson_index']
         })
         
@@ -1340,13 +1340,13 @@ def display_extended_meta_table():
                 "Win Rate", width=55, help="Win rate percentage (last 7 days)", format="%.1f%%"
             ),
             'Wins': st.column_config.NumberColumn(
-                "Wins", width=45, help="Total wins in last 7 days"
+                "W", width=40, help="Total wins in last 7 days"
             ),
             'Losses': st.column_config.NumberColumn(
-                "Losses", width=45, help="Total losses in last 7 days"
+                "L", width=40, help="Total losses in last 7 days"
             ),
             'Ties': st.column_config.NumberColumn(
-                "Ties", width=40, help="Total ties in last 7 days"
+                "T", width=35, help="Total ties in last 7 days"
             ),
             'Share-7d': st.column_config.NumberColumn(
                 "Share-7d", width=55, help="Meta share in last 7 days", format="%.2f%%"
@@ -1355,10 +1355,10 @@ def display_extended_meta_table():
                 "Share-3d", width=55, help="Meta share in last 3 days", format="%.2f%%"
             ),
             'Ratio': st.column_config.NumberColumn(
-                "Ratio", width=50, help="Share-3d / Share-7d ratio", format="%.2f"
+                "Ratio", width=45, help="Share-3d / Share-7d ratio", format="%.2f"
             ),
             'Index': st.column_config.NumberColumn(
-                "Index", width=40, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
+                "Index", width=45, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
             )
         }
         
