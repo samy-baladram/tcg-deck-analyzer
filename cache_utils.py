@@ -89,9 +89,9 @@ def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, 
         # Ensure directory exists
         ensure_cache_dirs()
         
-        # Create a safe filename base
+        # Create a safe filename base (REMOVED SET NAME SUFFIX)
         safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
-        base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}")
+        base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}")  # <-- CHANGED: No more _{set_name}
         
         # Save each component
         results_df.to_csv(f"{base_path}_results.csv", index=False)
@@ -113,7 +113,7 @@ def save_analyzed_deck_components(deck_name, set_name, results_df, total_decks, 
         # Save a marker file with timestamp
         with open(f"{base_path}_timestamp.txt", 'w') as f:
             f.write(datetime.now().isoformat())
-        
+            
         logger.info(f"Saved deck components for {deck_name} to {base_path}")
         return True
     except Exception as e:
@@ -142,9 +142,9 @@ def save_analyzed_deck(deck_name, set_name, analyzed_data):
 def load_analyzed_deck_components(deck_name, set_name):
     """Load the three main deck analysis components from disk"""
     try:
-        # Create a safe filename base
+        # Create a safe filename base (REMOVED SET NAME SUFFIX)
         safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
-        base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}")
+        base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}")  # <-- CHANGED: No more _{set_name}
         
         # Check if results file exists
         results_path = f"{base_path}_results.csv"
@@ -325,10 +325,10 @@ def load_player_tournament_mapping():
         return {}
 
 def clear_deck_cache(deck_name, set_name):
-    """Clear disk and memory cache for a specific deck"""
-    # Create a safe filename base
+    """Clear cached data for a specific deck"""
+    # Create a safe filename (REMOVED SET NAME SUFFIX)
     safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
-    base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}_{set_name}")
+    base_path = os.path.join(ANALYZED_DECKS_DIR, f"{safe_name}")  # <-- CHANGED: No more _{set_name}
     
     # Try to remove all files
     try:
@@ -359,12 +359,11 @@ def save_collected_decks(deck_name, set_name, all_decks, all_energy_types, total
         # Ensure directory exists
         os.makedirs(COLLECTED_DECKS_PATH, exist_ok=True)
         
-        # Create a safe filename base
+        # Create a safe filename base (REMOVED SET NAME SUFFIX)
         safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
-        file_path = os.path.join(COLLECTED_DECKS_PATH, f"{safe_name}_{set_name}_collected.json")
+        file_path = os.path.join(COLLECTED_DECKS_PATH, f"{safe_name}_collected.json")  # <-- CHANGED: No more _{set_name}
         
         # Create serializable version of all_decks
-        # Keep the card data but remove any non-serializable elements
         serializable_decks = []
         for deck in all_decks:
             # Preserve the cards data
@@ -374,7 +373,7 @@ def save_collected_decks(deck_name, set_name, all_decks, all_energy_types, total
                 'url': deck.get('url', ''),
                 'player_id': deck.get('player_id', ''),
                 'tournament_id': deck.get('tournament_id', ''),
-                'cards': deck.get('cards', [])  # Keep the cards data!
+                'cards': deck.get('cards', [])
             }
             serializable_decks.append(serializable_deck)
         
@@ -399,9 +398,9 @@ def save_collected_decks(deck_name, set_name, all_decks, all_energy_types, total
 def load_collected_decks(deck_name, set_name):
     """Load collected deck metadata from disk"""
     try:
-        # Create a safe filename base
+        # Create a safe filename base (REMOVED SET NAME SUFFIX)
         safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
-        file_path = os.path.join(COLLECTED_DECKS_PATH, f"{safe_name}_{set_name}_collected.json")
+        file_path = os.path.join(COLLECTED_DECKS_PATH, f"{safe_name}_collected.json")  # <-- CHANGED: No more _{set_name}
         
         if not os.path.exists(file_path):
             logger.info(f"No collected deck file found at {file_path}")
@@ -416,6 +415,7 @@ def load_collected_decks(deck_name, set_name):
     except Exception as e:
         logger.error(f"Error loading collected decks: {e}")
         return None
+        
 def save_matchup_data(deck_name, set_name, matchup_df):
     """Save matchup data for a specific deck to cache"""
     try:
@@ -423,15 +423,15 @@ def save_matchup_data(deck_name, set_name, matchup_df):
         ensure_cache_dirs()
         os.makedirs(MATCHUPS_DIR, exist_ok=True)
         
-        # Create a safe filename
+        # Create a safe filename (REMOVED SET NAME SUFFIX)
         safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
-        file_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_matchups.csv")
+        file_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_matchups.csv")  # <-- CHANGED: No more _{set_name}
         
         # Save DataFrame to CSV
         matchup_df.to_csv(file_path, index=False)
         
         # Save timestamp for this specific deck
-        timestamp_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_timestamp.txt")
+        timestamp_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_timestamp.txt")  # <-- CHANGED: No more _{set_name}
         with open(timestamp_path, 'w') as f:
             f.write(datetime.now().isoformat())
             
@@ -442,29 +442,19 @@ def save_matchup_data(deck_name, set_name, matchup_df):
         return False
 
 def load_matchup_data(deck_name, set_name, max_age_hours=24):
-    """
-    Load matchup data for a specific deck from cache if available and not too old
-    
-    Args:
-        deck_name: Name of the deck
-        set_name: Set code (e.g., "A3")
-        max_age_hours: Maximum age in hours before data is considered stale
-        
-    Returns:
-        Tuple of (DataFrame, timestamp) if found, or (None, None) if not found or too old
-    """
+    """Load matchup data for a specific deck from cache if available and not too old"""
     try:
-        # Create a safe filename
+        # Create a safe filename (REMOVED SET NAME SUFFIX)
         safe_name = "".join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
-        file_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_matchups.csv")
-        timestamp_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_{set_name}_timestamp.txt")
+        file_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_matchups.csv")  # <-- CHANGED: No more _{set_name}
+        timestamp_path = os.path.join(MATCHUPS_DIR, f"{safe_name}_timestamp.txt")  # <-- CHANGED: No more _{set_name}
         
         # Check if files exist
         if not os.path.exists(file_path) or not os.path.exists(timestamp_path):
-            logger.info(f"No cached matchup data found for {deck_name}")
+            logger.info(f"No matchup cache found for {deck_name}")
             return None, None
         
-        # Check how old the data is
+        # Check timestamp
         with open(timestamp_path, 'r') as f:
             timestamp_str = f.read().strip()
             timestamp = datetime.fromisoformat(timestamp_str)
@@ -472,15 +462,17 @@ def load_matchup_data(deck_name, set_name, max_age_hours=24):
         # Check if data is too old
         age = datetime.now() - timestamp
         if age.total_seconds() > max_age_hours * 3600:
-            logger.info(f"Cached matchup data for {deck_name} is too old ({age.total_seconds()/3600:.1f} hours)")
+            logger.info(f"Matchup cache for {deck_name} is too old ({age})")
             return None, None
         
-        # Load the data
+        # Load matchup data
         matchup_df = pd.read_csv(file_path)
-        logger.info(f"Loaded cached matchup data for {deck_name} from {file_path}")
+        logger.info(f"Loaded matchup cache for {deck_name} from {file_path}")
+        
         return matchup_df, timestamp
+        
     except Exception as e:
-        logger.error(f"Error loading matchup data for {deck_name}: {e}")
+        logger.error(f"Error loading matchup cache for {deck_name}: {e}")
         return None, None
 
 def update_all_matchups(min_share=0.5):
