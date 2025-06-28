@@ -907,7 +907,7 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         if section_config['type'] == "meta":
             stats_text = f"{deck['share_7d']:.2f}% share"
         elif section_config['type'] == "trending":
-            share_diff = deck['share_7d'] - deck['share_3d']
+            share_diff = deck['share_3d'] - deck['share_7d']
             stats_text = f"+{share_diff:.2f}% share, {deck['ratio']:.1f}x more play"
         elif section_config['type'] == "gems":
             stats_text = f"{deck['win_rate']:.1f}% win, {deck['share_3d']:.2f}% share"
