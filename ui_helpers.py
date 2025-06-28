@@ -572,8 +572,6 @@ def create_deck_selector():
     
 # Replace the existing get_filtered_deck_data function in ui_helpers.py with this:
 
-# Replace the existing get_filtered_deck_data function in ui_helpers.py with this:
-
 def get_filtered_deck_data(section_type):
     """Get filtered deck data based on section configuration using Extended Meta Trend Table"""
     
@@ -620,8 +618,12 @@ def get_filtered_deck_data(section_type):
         result_data['trending_score'] = result_data['share_3d'] * result_data['ratio']
         
     elif section_type == "gems":
-        # Calculate total games
-        result_data['total_games'] = result_data['wins'] + result_data['losses'] + result_data['ties']
+        # Safely calculate total games, checking if columns exist
+        if all(col in result_data.columns for col in ['wins', 'losses', 'ties']):
+            result_data['total_games'] = result_data['wins'] + result_data['losses'] + result_data['ties']
+        else:
+            print("Warning: wins/losses/ties columns missing from Extended Meta Trend Table")
+            result_data['total_games'] = 0  # Default to 0 if columns missing
         
         # Filter: Win Rate > 50%, Share-3d < 1%, and Total Games >= 10
         if 'filter_config' in config:
