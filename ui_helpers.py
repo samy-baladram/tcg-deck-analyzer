@@ -928,7 +928,7 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
             st.markdown(f"""
             <div style="width: 100%; margin-top: -16px; margin-bottom: 7px; position: relative;">
                 <img src="data:image/png;base64,{header_image}" style="width: 100%; height: auto; border-radius: 4px; z-index:-1;">
-                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(0, 0, 0, 0.8); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
+                <div style="position: absolute; bottom: 0px; right: 0px; background-color: rgba(38, 39, 48, 0.7); color: white; padding: 2px 4px; border-radius: 4px 0px 4px 0px; font-size: 0.7rem; font-weight: 500;">
                     {stats_text}
                 </div>
             </div>
@@ -981,7 +981,7 @@ def create_deck_section(section_type):
     if config['type'] == "meta":
         stats_text = f"{first_deck['share_7d']:.2f}% share"
     elif config['type'] == "trending":
-        share_diff = first_deck['share_7d'] - first_deck['share_3d']
+        share_diff = first_deck['share_3d'] - first_deck['share_7d']
         stats_text = f"+{share_diff:.2f}% share, {first_deck['ratio']:.1f}x more play"
     elif config['type'] == "gems":
         stats_text = f"{first_deck['win_rate']:.1f}% win, {first_deck['share_3d']:.2f}% share"
