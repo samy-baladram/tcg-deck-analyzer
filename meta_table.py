@@ -1258,7 +1258,7 @@ def display_extended_meta_table():
             'Share-7d': extended_df['share_7d'],
             'Share-3d': extended_df['share_3d'],
             'Ratio': extended_df['ratio'],
-            'Wilson Index': extended_df['wilson_index']
+            'Index': extended_df['wilson_index']
         })
         
         # Define styling functions for conditional coloring
@@ -1329,8 +1329,8 @@ def display_extended_meta_table():
             'Ratio': st.column_config.NumberColumn(
                 "Ratio", width=50, help="Share-3d / Share-7d ratio", format="%.2f"
             ),
-            'Wilson Index': st.column_config.NumberColumn(
-                "Wilson Index", width=80, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
+            'Index': st.column_config.NumberColumn(
+                "Index", width=80, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
             )
         }
         
