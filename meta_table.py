@@ -1326,7 +1326,7 @@ def display_extended_meta_table():
             """Apply yellow background to the currently selected deck row"""
             selected_deck = st.session_state.get('analyze', {}).get('deck_name', None)
             if selected_deck and row['deck_name'] == selected_deck:
-                return ['background-color: rgba(0, 160, 255, 0.1)'] * len(row)
+                return ['background-color: rgba(5, 255, 255, 0.15)'] * len(row)
             return [''] * len(row)
 
         def style_rank_column(val):
