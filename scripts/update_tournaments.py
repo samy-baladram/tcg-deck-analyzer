@@ -8,7 +8,7 @@ import sqlite3
 from datetime import datetime
 
 def get_recent_tournament_ids(max_fetch=150):
-    """Get recent tournament IDs - limited to 20"""
+    """Get recent tournament IDs - handles both standard and special tournament identifiers"""
     url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&show={max_fetch}"
     
     response = requests.get(url)
@@ -16,24 +16,55 @@ def get_recent_tournament_ids(max_fetch=150):
     soup = BeautifulSoup(response.text, 'html.parser')
     
     tournament_ids = []
+    seen_ids = set()
+    
     for link in soup.find_all('a', href=True):
-        match = re.search(r'/tournament/([0-9a-f]{24})', link['href'])
-        if match and match.group(1) not in tournament_ids:
-            tournament_ids.append(match.group(1))
-            if len(tournament_ids) >= max_fetch:
-                break
+        href = link['href']
+        
+        if '/tournament/' in href:
+            # Updated regex to capture both formats
+            match = re.search(r'/tournament/([a-zA-Z0-9-_]+)', href)
+            
+            if match:
+                tournament_slug = match.group(1)
+                
+                # Accept both standard IDs and special identifiers
+                if (re.match(r'^[0-9a-f]{24}$', tournament_slug) or  # Standard format
+                    (len(tournament_slug) > 3 and re.match(r'^[a-zA-Z0-9-_]+$', tournament_slug))):  # Special format
+                    
+                    if tournament_slug not in seen_ids:
+                        seen_ids.add(tournament_slug)
+                        tournament_ids.append(tournament_slug)
+                        
+                        if len(tournament_ids) >= max_fetch:
+                            break
     
     return tournament_ids
 
 def scrape_tournament_data(tournament_id):
-    """Scrape tournament data"""
+    """Scrape tournament data - handles both standard and special tournament identifiers"""
     print(f"Scraping tournament: {tournament_id}")
     
     # Get tournament metadata
     details_response = requests.get(f"https://play.limitlesstcg.com/tournament/{tournament_id}/details")
+    if details_response.status_code != 200:
+        print(f"Failed to fetch tournament details for {tournament_id}: HTTP {details_response.status_code}")
+        return None
+        
     details_soup = BeautifulSoup(details_response.text, 'html.parser')
     
-    name = details_soup.find('title').get_text(strip=True).replace(' | Limitless', '')
+    # Improved name extraction with fallbacks
+    title_element = details_soup.find('title')
+    if title_element:
+        name = title_element.get_text(strip=True).replace(' | Limitless', '')
+    else:
+        # Fallback options
+        name_element = details_soup.find('h1') or details_soup.find('h2')
+        if name_element:
+            name = name_element.get_text(strip=True)
+        else:
+            name = f"Tournament {tournament_id}"
+            
     time_element = details_soup.find(attrs={'data-time': True})
     timestamp = int(time_element.get('data-time')) if time_element else None
     
