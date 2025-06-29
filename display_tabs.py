@@ -2524,7 +2524,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             if win_rate > 50:
                 marker_colors.append('forestgreen')  # Light green for >50%
             else:
-                marker_colors.append('lightcoral')  # Light red for <50%
+                marker_colors.append('tomato')  # Light red for <50%
         
         # Create the figure
         fig = go.Figure()
