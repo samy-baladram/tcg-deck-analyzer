@@ -26,6 +26,7 @@ def init_caches():
     """
     Initialize all necessary caches in session state without network calls.
     """
+    # Initialize baseline index if needed
     initialize_tournament_baseline()
     
     # Deck analysis cache
@@ -64,6 +65,25 @@ def init_caches():
     if 'first_load' not in st.session_state:
         # Load tournament data directly from disk
         performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
+        
+        # MINIMAL FIX: If no cached performance data but we have tournament index, generate it
+        if performance_df.empty:
+            print("DEBUG: No cached performance data found, generating from tournament index...")
+            try:
+                # Check if we have tournament data in index
+                current_index = cache_utils.load_current_index()
+                if current_index and len(current_index.get('tournaments', [])) > 0:
+                    print(f"DEBUG: Found {len(current_index['tournaments'])} tournaments in index, analyzing performance...")
+                    performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
+                    # Save the generated data
+                    cache_utils.save_tournament_performance_data(performance_df)
+                    performance_timestamp = datetime.now()
+                    print(f"DEBUG: Generated performance data with {len(performance_df)} decks")
+                else:
+                    print("DEBUG: No tournament data in index")
+            except Exception as e:
+                print(f"ERROR: Failed to generate initial performance data: {e}")
+        
         st.session_state.performance_data = performance_df
         st.session_state.performance_fetch_time = performance_timestamp
         
