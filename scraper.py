@@ -112,13 +112,13 @@ def get_all_recent_tournaments():
                     tournament_slug = match.group(1)
                     
                     # Check if it's a standard tournament ID format (24 character hexadecimal)
-                    # is_standard_id = bool(re.match(r'^[0-9a-f]{24}$', tournament_slug))
+                    is_standard_id = bool(re.match(r'^[0-9a-f]{24}$', tournament_slug))
                     
-                    # if is_standard_id:
-                    #     tournament_id = tournament_slug
-                    # else:
-                    #     # If not standard format, scrape the tournament page to find the actual ID
-                    #     tournament_id = get_tournament_id_from_page(tournament_slug)
+                    if is_standard_id:
+                        tournament_id = tournament_slug
+                    else:
+                        # If not standard format, scrape the tournament page to find the actual ID
+                        tournament_id = get_tournament_id_from_page(tournament_slug)
                     
                     tournament_id = tournament_slug
                     
