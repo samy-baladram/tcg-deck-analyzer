@@ -1799,7 +1799,7 @@ def display_matchup_tab(deck_info=None):
         return
     
     # Display the enhanced data table with all rows
-    col1, col2 = st.columns([3,2])
+    col1, col2 = st.columns([4,3])
     with col1:
         display_matchup_summary(deck_name, set_name, working_df)
 
@@ -1828,7 +1828,7 @@ def display_matchup_tab(deck_info=None):
                         width=40,
                     ),
                     "Icon2": st.column_config.ImageColumn(
-                        "Icon 2", 
+                        "", 
                         help="Secondary Pokémon in the deck",
                         width=40,
                     ),
