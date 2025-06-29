@@ -1,0 +1,309 @@
+{
+  "tournament_id": "684f0acb27d8bc24cf254fb6",
+  "name": "India Championship: Qualifier 3",
+  "timestamp": 1751036400000,
+  "format": "Standard",
+  "player_count": 50,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Bilal Kazi",
+      "record": "8 - 2 - 1",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ishan Singh",
+      "record": "12 - 2 - 0",
+      "archetype": "tapu-koko-ex-a3a-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Lord Deb",
+      "record": "6 - 4 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Aman .",
+      "record": "8 - 3 - 0",
+      "archetype": "charizard-ex-a2b-stoutland-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Sahil .",
+      "record": "6 - 3 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Moinak Ghosh",
+      "record": "6 - 3 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Ayush Vanzara",
+      "record": "5 - 3 - 1",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Nikhil Patel",
+      "record": "5 - 4 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Pratik Basak",
+      "record": "4 - 4 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 10,
+      "player_name": "Deep Patel",
+      "record": "4 - 4 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Kishalay Santra",
+      "record": "4 - 4 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Shreyas .",
+      "record": "4 - 4 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 13,
+      "player_name": "Blazeo Blaze",
+      "record": "4 - 3 - 0",
+      "archetype": "arceus-ex-manectric-a2a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Siddharth Varun",
+      "record": "4 - 3 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 15,
+      "player_name": "Vishal Vaz",
+      "record": "4 - 3 - 0",
+      "archetype": "charizard-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 16,
+      "player_name": "Kashif Jawwad",
+      "record": "4 - 3 - 0",
+      "archetype": "charizard-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 17,
+      "player_name": "Kishan Singh",
+      "record": "3 - 2 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 18,
+      "player_name": "Vinay Agrawal",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 19,
+      "player_name": "First Last",
+      "record": "3 - 2 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 20,
+      "player_name": "murali b",
+      "record": "3 - 2 - 0",
+      "archetype": "charizard-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 21,
+      "player_name": "Sameer Khan",
+      "record": "3 - 2 - 0",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    },
+    {
+      "placement": 22,
+      "player_name": "Razz Berry",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 23,
+      "player_name": "Gaurav Meena",
+      "record": "3 - 2 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 24,
+      "player_name": "Tamil Chad",
+      "record": "2 - 3 - 0",
+      "archetype": "charizard-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 25,
+      "player_name": "Yashpratap Shah",
+      "record": "2 - 3 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 26,
+      "player_name": "Pointy Poison",
+      "record": "2 - 3 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 27,
+      "player_name": "Pranav Indhuchoodan",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-banette-a3"
+    },
+    {
+      "placement": 28,
+      "player_name": "Eklavya Sathe",
+      "record": "2 - 3 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 29,
+      "player_name": "Arjun Sinha",
+      "record": "2 - 3 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 30,
+      "player_name": "Raja Bakshi",
+      "record": "2 - 3 - 0",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    },
+    {
+      "placement": 31,
+      "player_name": "Dipika K",
+      "record": "2 - 3 - 0",
+      "archetype": "lucario-ex-a2b-rampardos-a2"
+    },
+    {
+      "placement": 32,
+      "player_name": "HIMANSHU MEDHEKAR",
+      "record": "1 - 3 - 1",
+      "archetype": "solgaleo-ex-a3-dialga-ex-a2"
+    },
+    {
+      "placement": 33,
+      "player_name": "Nungshi Jamir",
+      "record": "1 - 4 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 34,
+      "player_name": "PRANAY KUMAR BHAR",
+      "record": "1 - 4 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 35,
+      "player_name": "VANRAJ PATEL",
+      "record": "0 - 5 - 0",
+      "archetype": "blastoise-ex-greninja-a1"
+    },
+    {
+      "placement": 36,
+      "player_name": "Prashant Adanwale",
+      "record": "0 - 5 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 37,
+      "player_name": "Mia san",
+      "record": "0 - 5 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 38,
+      "player_name": "Abhishek Kerketta",
+      "record": "1 - 2 - 0drop",
+      "archetype": "charizard-ex-a1-incineroar-ex-a3"
+    },
+    {
+      "placement": 39,
+      "player_name": "Sudhanshu Patil",
+      "record": "1 - 1 - 0drop",
+      "archetype": "solgaleo-ex-a3"
+    },
+    {
+      "placement": 40,
+      "player_name": "Govind Chauhan",
+      "record": "1 - 3 - 0drop",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 41,
+      "player_name": "Ravi Chawda",
+      "record": "1 - 2 - 0drop",
+      "archetype": "darkrai-ex-a2-druddigon-a1a"
+    },
+    {
+      "placement": 42,
+      "player_name": "Tanvir R",
+      "record": "1 - 2 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 43,
+      "player_name": "Sayan Paul",
+      "record": "0 - 2 - 1drop",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    },
+    {
+      "placement": 44,
+      "player_name": "Arnav Arora",
+      "record": "0 - 1 - 0drop",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 45,
+      "player_name": "Amruth Varma",
+      "record": "0 - 1 - 0drop",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    },
+    {
+      "placement": 46,
+      "player_name": "Suhas Gopal",
+      "record": "0 - 1 - 0drop",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 47,
+      "player_name": "Farhan Khan",
+      "record": "1 - 2 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 48,
+      "player_name": "SHAIK ASEEM",
+      "record": "1 - 4 - 0drop",
+      "archetype": "naganadel-nihilego-a3a"
+    },
+    {
+      "placement": 49,
+      "player_name": "Rishav Goyal",
+      "record": "2 - 3 - 0drop",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 50,
+      "player_name": "Krish Tagram",
+      "record": "1 - 4 - 0drop",
+      "archetype": "decidueye-ex-a3-greninja-a1"
+    }
+  ]
+}
