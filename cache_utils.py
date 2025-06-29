@@ -22,7 +22,111 @@ CARD_USAGE_TIMESTAMP_PATH = os.path.join(CACHE_DIR, "card_usage_timestamp.txt")
 MATCHUPS_DIR = os.path.join(CACHE_DIR, "matchups")
 MATCHUPS_TIMESTAMP_PATH = os.path.join(CACHE_DIR, "matchups_timestamp.txt")
 
+# Add these constants
+SAVED_INDEX_PATH = os.path.join(CACHE_DIR, "saved_index.json")
+CURRENT_INDEX_PATH = "tournament_cache/index.json"
 
+def save_current_index_as_baseline():
+    """Save current tournament_cache/index.json as baseline for comparison"""
+    try:
+        ensure_cache_dirs()
+        
+        if os.path.exists(CURRENT_INDEX_PATH):
+            with open(CURRENT_INDEX_PATH, 'r') as f:
+                current_index = json.load(f)
+            
+            # Add comparison timestamp
+            current_index['saved_timestamp'] = datetime.now().isoformat()
+            
+            with open(SAVED_INDEX_PATH, 'w') as f:
+                json.dump(current_index, f, indent=2)
+            
+            logger.info(f"Saved baseline index with {len(current_index.get('tournaments', []))} tournaments")
+            return True
+        else:
+            logger.warning(f"Current index not found at {CURRENT_INDEX_PATH}")
+            return False
+            
+    except Exception as e:
+        logger.error(f"Error saving baseline index: {e}")
+        return False
+
+def load_saved_index():
+    """Load the saved baseline index"""
+    try:
+        if os.path.exists(SAVED_INDEX_PATH):
+            with open(SAVED_INDEX_PATH, 'r') as f:
+                saved_index = json.load(f)
+            logger.info(f"Loaded saved index with {len(saved_index.get('tournaments', []))} tournaments")
+            return saved_index
+        else:
+            logger.info("No saved index found")
+            return {}
+    except Exception as e:
+        logger.error(f"Error loading saved index: {e}")
+        return {}
+
+def load_current_index():
+    """Load the current tournament_cache/index.json"""
+    try:
+        if os.path.exists(CURRENT_INDEX_PATH):
+            with open(CURRENT_INDEX_PATH, 'r') as f:
+                current_index = json.load(f)
+            logger.info(f"Loaded current index with {len(current_index.get('tournaments', []))} tournaments")
+            return current_index
+        else:
+            logger.warning(f"Current index not found at {CURRENT_INDEX_PATH}")
+            return {}
+    except Exception as e:
+        logger.error(f"Error loading current index: {e}")
+        return {}
+
+def compare_tournament_indices():
+    """Compare current index with saved index to detect new tournaments"""
+    try:
+        saved_index = load_saved_index()
+        current_index = load_current_index()
+        
+        # Get tournament lists
+        saved_tournaments = set(saved_index.get('tournaments', []))
+        current_tournaments = set(current_index.get('tournaments', []))
+        
+        # Find new tournaments
+        new_tournaments = current_tournaments - saved_tournaments
+        
+        # Check if total tournament count changed
+        saved_total = saved_index.get('total_tournaments', 0)
+        current_total = current_index.get('total_tournaments', 0)
+        
+        # Check if last_updated timestamp changed
+        saved_timestamp = saved_index.get('last_updated', 0)
+        current_timestamp = current_index.get('last_updated', 0)
+        
+        result = {
+            'has_changes': len(new_tournaments) > 0 or current_total != saved_total or current_timestamp != saved_timestamp,
+            'new_tournaments': list(new_tournaments),
+            'new_tournament_count': len(new_tournaments),
+            'total_change': current_total - saved_total,
+            'timestamp_changed': current_timestamp != saved_timestamp,
+            'saved_total': saved_total,
+            'current_total': current_total
+        }
+        
+        logger.info(f"Index comparison: {result['new_tournament_count']} new tournaments, total change: {result['total_change']}")
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error comparing indices: {e}")
+        return {
+            'has_changes': False,
+            'new_tournaments': [],
+            'new_tournament_count': 0,
+            'total_change': 0,
+            'timestamp_changed': False,
+            'saved_total': 0,
+            'current_total': 0
+        }
+        
 def ensure_cache_dirs():
     """Ensure all cache directories exist"""
     os.makedirs(CACHE_DIR, exist_ok=True)
