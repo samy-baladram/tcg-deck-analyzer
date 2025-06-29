@@ -1179,7 +1179,7 @@ def display_related_decks_tab(deck_info, results):
                         """, unsafe_allow_html=True)
                     else:
                         st.markdown(f"""
-                        <div style="width: 100%; height: 80px; background-color: #f0f0f0; border-radius: 6px 6px 0 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 100%; margin-top: -18px; margin-bottom: 12px; background-color: #f0f0f0; border-radius: 6px 6px 0 0; display: flex; align-items: center; justify-content: center;">
                             <span style="color: #888;">No image</span>
                         </div>
                         """, unsafe_allow_html=True)
