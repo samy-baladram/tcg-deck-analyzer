@@ -1,6 +1,7 @@
 # cache_manager.py
 """Caching management for the TCG Deck Analyzer"""
 
+import os
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
