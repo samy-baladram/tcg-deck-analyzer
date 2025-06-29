@@ -216,15 +216,15 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
 }
 
 /* General button alignment and spacing fixes for mobile */
-.stButton > button {
-    text-align: left !important;
-    justify-content: flex-start !important;
-    white-space: normal !important;
-    word-wrap: break-word !important;
-    line-height: 1.1 !important;
-    padding: 4px 8px !important;
-    margin-bottom: 2px !important;
-}
+# .stButton > button {
+#     text-align: left !important;
+#     justify-content: flex-start !important;
+#     white-space: normal !important;
+#     word-wrap: break-word !important;
+#     line-height: 1.1 !important;
+#     padding: 4px 8px !important;
+#     margin-bottom: 2px !important;
+# }
 
 .stButton > button p {
     text-align: left !important;
