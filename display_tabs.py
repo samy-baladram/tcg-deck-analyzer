@@ -1855,7 +1855,7 @@ def display_matchup_tab(deck_info=None):
                     "Matchup",
                     help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
                 ),
-                "Meta Share%": none
+                "Meta Share%": None
                 # "Meta Share %": st.column_config.NumberColumn(
                 #     "Meta Share %",
                 #     help="Percentage representation of this deck in the overall competitive metagame",
