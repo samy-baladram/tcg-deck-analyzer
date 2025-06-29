@@ -178,8 +178,8 @@ def check_and_update_tournament_data():
                     
                     st.session_state.update_running = False
                     
-                    if stats['new_tournaments'] > 0 or new_performance_count != old_performance_count:
-                        st.success(f"Updated with new tournament data: {old_performance_count} → {new_performance_count} decks")
+                    # if stats['new_tournaments'] > 0 or new_performance_count != old_performance_count:
+                    #     st.success(f"Updated with new tournament data: {old_performance_count} → {new_performance_count} decks")
                         
 # ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
