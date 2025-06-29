@@ -258,17 +258,6 @@ def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
     print(f"No cache found for {deck_name}, analyzing")
     return analyze_deck_fresh(deck_name, set_name)
 
-def aggregate_card_usage(force_update=False):
-    """Stub - using meta_table directly now"""
-    print("DEBUG: aggregate_card_usage disabled - using meta_table directly")
-    return pd.DataFrame()
-
-def load_or_update_tournament_data(force_update=False):
-    """Stub - using meta_table directly now"""
-    print("DEBUG: load_or_update_tournament_data disabled - using meta_table directly") 
-    placeholder_df = pd.DataFrame([{'deck_name': 'using_meta_table'}])
-    return placeholder_df, datetime.now()
-
 def create_fallback_performance_data():
     """Create minimal fallback performance data when all else fails"""
     import pandas as pd
