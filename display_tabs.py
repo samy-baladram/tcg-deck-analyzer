@@ -2522,7 +2522,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         marker_colors = []
         for win_rate in df_filtered['win_percentage']:
             if win_rate > 50:
-                marker_colors.append('lightgreen')  # Light green for >50%
+                marker_colors.append('forestgreen')  # Light green for >50%
             else:
                 marker_colors.append('lightcoral')  # Light red for <50%
         
@@ -2582,7 +2582,41 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
             customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
         ))
+
+        # Add set release markers with improved annotations
+        set_releases = get_set_release_dates()
+        min_date = df_filtered['date'].min()
+        max_date = df_filtered['date'].max()
+        max_percentage = df_filtered['meta_percentage'].max()
         
+        for release_date, set_code, set_name in set_releases:
+            release_dt = pd.to_datetime(release_date)
+            if release_dt >= min_date and release_dt <= max_date:
+                # Add vertical line
+                fig.add_vline(
+                    x=release_date, 
+                    line_dash="dot", 
+                    line_color="rgba(255, 255, 255, 0.6)",
+                    line_width=1
+                )
+                
+                # Add set code annotation at the top with hover info
+                fig.add_annotation(
+                    x=release_date,
+                    y=max_percentage * 1.1,  # Position at top of chart
+                    text=set_code,  # Add space at beginning
+                    showarrow=False,
+                    font=dict(size=10, color="#FFFFFF"),
+                    align="left",
+                    xshift=12,
+                    hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
+                    hoverlabel=dict(
+                        bgcolor="white",
+                        bordercolor="gray",
+                        font=dict(color="black")
+                    )
+                )
+                
         # Add peak annotation in white
         peak_idx = df_filtered['win_percentage'].idxmax()
         peak_date = df_filtered.loc[peak_idx, 'date']
