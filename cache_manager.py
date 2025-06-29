@@ -27,6 +27,8 @@ def init_caches():
     Initialize all necessary caches in session state without network calls.
     Simplified version - uses meta_table directly instead of performance_data.
     """
+    import pandas as pd
+    
     # Initialize baseline index if needed
     initialize_tournament_baseline()
     
@@ -40,7 +42,6 @@ def init_caches():
     
     # Track tournament IDs in session state
     if 'known_tournament_ids' not in st.session_state:
-        # Load from disk
         st.session_state.known_tournament_ids = cache_utils.load_tournament_ids()
     
     # Initialize selected deck if not exists
@@ -62,12 +63,15 @@ def init_caches():
     if 'update_running' not in st.session_state:
         st.session_state.update_running = False
         
-    # Simplified first load - no performance_data needed since we use meta_table
+    # Simplified first load - create proper DataFrame placeholder
     if 'first_load' not in st.session_state:
-        print("DEBUG: First load - using meta_table system (no separate performance_data)")
+        print("DEBUG: First load - using meta_table system")
         
-        # Set placeholder performance_data to prevent errors
-        st.session_state.performance_data = "using_meta_table"  # Placeholder
+        # Set proper DataFrame placeholder with expected columns
+        st.session_state.performance_data = pd.DataFrame(columns=[
+            'deck_name', 'displayed_name', 'share', 'total_wins', 
+            'total_losses', 'total_ties', 'power_index', 'tournaments_played', 'set'
+        ])
         st.session_state.performance_fetch_time = datetime.now()
         
         # Load card usage data from disk (keep this if you use it)
@@ -82,6 +86,47 @@ def init_caches():
         # Mark as loaded
         st.session_state.first_load = True
         print("DEBUG: Cache initialization complete - using meta_table system")
+
+
+# FIX 3: Update the stub functions in cache_manager.py
+
+def load_or_update_tournament_data(force_update=False):
+    """
+    SIMPLIFIED - Just return proper DataFrame placeholder since we use meta_table directly
+    """
+    import pandas as pd
+    
+    print("DEBUG: load_or_update_tournament_data - using meta_table system")
+    
+    try:
+        # Try to load from cache first
+        performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
+        
+        # If no cached data or force update, create proper placeholder
+        if performance_df.empty or force_update:
+            print("DEBUG: Creating DataFrame placeholder (using meta_table)")
+            
+            # Create proper empty DataFrame with expected columns
+            performance_df = pd.DataFrame(columns=[
+                'deck_name', 'displayed_name', 'share', 'total_wins', 
+                'total_losses', 'total_ties', 'power_index', 'tournaments_played', 'set'
+            ])
+            
+            performance_timestamp = datetime.now()
+            
+            # Save placeholder to prevent future calls
+            cache_utils.save_tournament_performance_data(performance_df)
+        
+        return performance_df, performance_timestamp
+        
+    except Exception as e:
+        print(f"DEBUG: Error in load_or_update_tournament_data: {e}")
+        # Return proper DataFrame fallback
+        fallback_data = pd.DataFrame(columns=[
+            'deck_name', 'displayed_name', 'share', 'total_wins', 
+            'total_losses', 'total_ties', 'power_index', 'tournaments_played', 'set'
+        ])
+        return fallback_data, datetime.now()
 
 # Update the get_or_load_sample_deck function
 def get_or_load_sample_deck(deck_name, set_name):
