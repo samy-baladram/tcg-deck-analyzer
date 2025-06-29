@@ -42,14 +42,14 @@ def get_player_display_name(tournament_id, player_url_name):
             # Remove any trailing content after the flag image
             # The display name should be everything before the flag
             if display_name:
-                print(f"DEBUG: Found display name '{display_name}' for URL name '{player_url_name}'")
+                #print(f"DEBUG: Found display name '{display_name}' for URL name '{player_url_name}'")
                 return display_name
         
-        print(f"DEBUG: Could not find display name for {player_url_name}, using URL name")
+        #print(f"DEBUG: Could not find display name for {player_url_name}, using URL name")
         return player_url_name
         
     except Exception as e:
-        print(f"DEBUG: Error fetching display name for {player_url_name}: {e}")
+        #print(f"DEBUG: Error fetching display name for {player_url_name}: {e}")
         return player_url_name
 
 def get_deck_record(tournament_id, player_id):
@@ -79,7 +79,7 @@ def get_deck_record(tournament_id, player_id):
                         return (wins, losses, ties)
                 
                 # If not found, try to get the display name and search again
-                print(f"DEBUG: Player {player_id} not found with URL name, trying display name...")
+                #print(f"DEBUG: Player {player_id} not found with URL name, trying display name...")
                 display_name = get_player_display_name(tournament_id, player_id)
                 
                 if display_name != player_id:  # Only if we got a different name
@@ -90,11 +90,11 @@ def get_deck_record(tournament_id, player_id):
                         
                         if tournament_player == search_display:
                             record_str = player.get('record', '0 - 0 - 0')
-                            print(f"DEBUG: Found player with display name '{display_name}' -> record: {record_str}")
+                            #print(f"DEBUG: Found player with display name '{display_name}' -> record: {record_str}")
                             wins, losses, ties = parse_record_string(record_str)
                             return (wins, losses, ties)
                 
-                print(f"DEBUG: Player {player_id} (display: {display_name}) not found in tournament")
+                #print(f"DEBUG: Player {player_id} (display: {display_name}) not found in tournament")
         
         # Fallback: Return default record if not found
         return (0, 0, 0)
