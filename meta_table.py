@@ -1348,7 +1348,7 @@ def display_extended_meta_table():
         
         # Configure column display
         column_config = {
-            '#': st.column_config.NumberColumn(
+            '#': st.column_config.TextColumn(
                 "#", width=30, help="Ranking by 7-day meta share"
             ),
             '': st.column_config.ImageColumn(
