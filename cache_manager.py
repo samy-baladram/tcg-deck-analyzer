@@ -1178,7 +1178,7 @@ def get_or_fetch_matchup_data(deck_name, set_name, force_update=False):
         matchup_df = pd.DataFrame(rows)
         
         if not matchup_df.empty:
-            matchup_df = matchup_df.sort_values('win_pct', ascending=False).reset_index(drop=True)
+            matchup_df = matchup_df.sort_values('win_pct', ascending=True).reset_index(drop=True)
         
         # Save to disk cache
         cache_utils.save_matchup_data(deck_name, set_name, matchup_df)
