@@ -455,29 +455,6 @@ def clear_all_deck_caches(deck_name, set_name):
     
     print(f"Cleared ALL caches (including disk) for {deck_name}")
 
-def update_all_caches():
-    """Comprehensive update of all caching systems."""
-    # First, update tournament data
-    stats = update_tournament_tracking()
-    
-    # Get the updated performance data
-    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-        performance_df, performance_timestamp = load_or_update_tournament_data()
-        
-        # Update session state with performance data
-        st.session_state.performance_data = performance_df
-        st.session_state.performance_fetch_time = performance_timestamp
-    
-    # FIXED: Use current set name for card usage aggregation
-    if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-        card_usage_df = aggregate_card_usage(force_update=False)
-        st.session_state.card_usage_data = card_usage_df
-    
-    # Set timestamp
-    st.session_state.fetch_time = datetime.now()
-    
-    return stats
-
 def get_cache_statistics():
     """Return statistics about cache usage"""
     stats = {
