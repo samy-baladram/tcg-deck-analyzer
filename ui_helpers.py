@@ -119,57 +119,51 @@ def get_cached_popular_decks():
     return get_popular_decks_with_performance()
 
 def check_and_update_tournament_data():
-    """Check for tournament data updates using index comparison"""
+    """Simplified version using local database only"""
     
     # Skip if update already running
     if st.session_state.get('update_running', False):
         return
     
-    # Check cache TTL
-    if 'performance_fetch_time' not in st.session_state:
-        st.session_state.performance_fetch_time = datetime.now() - timedelta(hours=1)
-    
-    time_since_update = datetime.now() - st.session_state.performance_fetch_time
-    
-    if time_since_update.total_seconds() > CACHE_TTL:
-        if not st.session_state.get('update_running', False):
-            st.session_state.update_running = True
+    try:
+        # Simple check - just load from local data every hour
+        if 'performance_fetch_time' not in st.session_state:
+            st.session_state.performance_fetch_time = datetime.now() - timedelta(hours=1)
+        
+        time_since_update = datetime.now() - st.session_state.performance_fetch_time
+        
+        # Refresh every hour
+        if time_since_update.total_seconds() > 3600:  # 1 hour = 3600 seconds
+            print("DEBUG: Refreshing from LOCAL database...")
             
-            with st.spinner("Checking for new tournament data..."):
-                # Store current deck for preservation
-                current_deck_name = None
-                if 'analyze' in st.session_state:
-                    current_deck_name = st.session_state.analyze.get('deck_name')
-                    print(f"DEBUG: Preserving current deck for refresh: {current_deck_name}")
-                
-                # Store old count for comparison
-                old_performance_count = len(st.session_state.performance_data) if 'performance_data' in st.session_state else 0
-                
-                # Check for tournament changes using index comparison
-                stats = cache_manager.update_tournament_tracking()
-                
-                # Update performance data if changes detected
-                if stats['has_changes']:
-                    print("DEBUG: Tournament changes detected, updating performance data")
-                    performance_df, performance_timestamp = load_or_update_tournament_data(force_update=True)
-                    st.session_state.performance_data = performance_df
-                    st.session_state.performance_fetch_time = performance_timestamp
-                    
-                    # Clear deck options cache to force dropdown refresh
-                    print(f"Tournament data changed, clearing deck options cache")
-                    
-                    if 'deck_options_cache' in st.session_state:
-                        del st.session_state['deck_options_cache']
-                    if 'deck_display_names' in st.session_state:
-                        del st.session_state['deck_display_names']
-                    if 'deck_name_mapping' in st.session_state:
-                        del st.session_state['deck_name_mapping']
-                else:
-                    print("DEBUG: No tournament changes detected, using cached data")
-                    # Just update timestamp to prevent frequent checks
-                    st.session_state.performance_fetch_time = datetime.now()
+            # Use your existing local system instead of complex external checks
+            from meta_table import MetaTableBuilder
+            builder = MetaTableBuilder()
+            meta_df = builder.build_complete_meta_table(limit=100)
             
-            st.session_state.update_running = False
+            if not meta_df.empty:
+                # Convert to session state format
+                performance_df = pd.DataFrame({
+                    'deck_name': meta_df.index,
+                    'displayed_name': meta_df['formatted_deck_name'],
+                    'share': meta_df['share_7d'],
+                    'total_wins': meta_df['total_wins'],
+                    'total_losses': meta_df['total_losses'],
+                    'total_ties': meta_df['total_ties'],
+                    'power_index': meta_df['wilson_index'],
+                    'tournaments_played': meta_df['unique_tournaments'],
+                    'set': 'A3a'
+                })
+                
+                st.session_state.performance_data = performance_df
+                st.session_state.performance_fetch_time = datetime.now()
+                
+                print(f"DEBUG: Loaded {len(performance_df)} decks from local database")
+        else:
+            print("DEBUG: Using cached local data (recent)")
+            
+    except Exception as e:
+        print(f"DEBUG: Error with local data: {e}")
                     
 # ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
