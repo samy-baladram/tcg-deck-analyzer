@@ -1467,9 +1467,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col1:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold; ">Unfavorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.8;">{unfavorable_share_norm:.1f}%</div>
-            <div style="font-size: 1rem; ">of meta</div>
+            <div style="font-size: 0.7rem; font-weight: bold; ">Unfavorable</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.8;">{unfavorable_share_norm:.1f}%</div>
+            <div style="font-size: 0.5rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -1477,9 +1477,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col2:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold;">Even</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #E6CA00; line-height: 0.8;">{even_share_norm:.1f}%</div>
-            <div style="font-size: 1rem;">of meta</div>
+            <div style="font-size: 0.7rem; font-weight: bold;">Even</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #E6CA00; line-height: 0.8;">{even_share_norm:.1f}%</div>
+            <div style="font-size: 0.5rem;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1487,9 +1487,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col3:
        st.markdown(f"""
        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold; ">Favorable</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
-            <div style="font-size: 1rem; ">of meta</div>
+            <div style="font-size: 0.7rem; font-weight: bold; ">Favorable</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
+            <div style="font-size: 0.5rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1497,9 +1497,9 @@ def display_matchup_summary(deck_name, set_name, working_df):
     with col4:
         st.markdown(f"""
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
-            <div style="font-size: 1.1rem; font-weight: bold;">Meta Win Rate</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: #00A0FF; line-height: 0.8;">{weighted_win_rate:.1f}%</div>
-            <div style="font-size: 1rem;">weighted avg</div>
+            <div style="font-size: 0.7rem; font-weight: bold;">Meta Win Rate</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #00A0FF; line-height: 0.8;">{weighted_win_rate:.1f}%</div>
+            <div style="font-size: 0.5rem;">weighted avg</div>
         </div>
         """, unsafe_allow_html=True)
         
