@@ -1273,8 +1273,12 @@ def display_extended_meta_table():
     
     try:
         # Create final display DataFrame with correct column order including trend chart
+        selected_deck = st.session_state.get('analyze', {}).get('deck_name', None)
         final_df = pd.DataFrame({
-            '#': extended_df['rank'],
+            '#': extended_df['rank'].apply(
+                lambda row: f"▸ {row['rank']}" if row['deck_name'] == selected_deck else row['rank'], 
+                axis=1
+            ),
             '': extended_df['pokemon_url1'],      # Pokemon icon 1
             ' ': extended_df['pokemon_url2'],     # Pokemon icon 2
             'Deck': extended_df['formatted_deck_name'],
@@ -1321,12 +1325,20 @@ def display_extended_meta_table():
             if selected_deck and row['deck_name'] == selected_deck:
                 return ['background-color: rgba(30, 200, 255, 0.1)'] * len(row)
             return [''] * len(row)
-        
+
+        def style_rank_column(val):
+            """Style rank column - color triangle blue"""
+            if isinstance(val, str) and val.startswith('▸'):
+                return 'color: #00A0FF; font-weight: bold;'
+            return ''
+            
         # Apply conditional styling (add the .apply() chain)
         styled_df = final_df.style.map(
             style_ratio_column, subset=['Ratio']
         ).map(
             style_winrate_column, subset=['Win Rate']
+        ).map(
+            style_rank_column, subset=['#']  # ← Add this line
         ).apply(
             highlight_selected_deck_row, axis=1
         )
