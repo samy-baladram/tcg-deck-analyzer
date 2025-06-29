@@ -152,7 +152,7 @@ def scrape_tournament_data(tournament_id):
             if archetype_link:
                 match = re.search(r'/metagame/([^/?]+)', archetype_link.get('href', ''))
                 if match:
-                    archetype = match.group(1).replace('-', ' ').title()
+                    archetype = match.group(1)  # Keep raw URL slug format
         
         # Extract other player data
         placement = i + 1
