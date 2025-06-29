@@ -2414,18 +2414,18 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         fig.add_annotation(
             x=peak_date,
             y=peak_value + (df_filtered['meta_percentage'].max() * 0.05),
-            text=f"Peak: {peak_value:.1f}%",
+            text=f"Peak: {peak_value:.1f}% share",
             showarrow=False,
             font=dict(size=12, color="#FFFFFF")
         )
         
         # Update layout
         fig.update_layout(
-            title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}{chart_subtitle}",
+            #title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}{chart_subtitle}",
             xaxis_title=None,
             yaxis_title=None,
             height=400,
-            margin=dict(t=30, l=50, r=20, b=10),
+            margin=dict(t=00, l=50, r=20, b=00),
             hovermode='x unified',
             
             # Styling to match your app
