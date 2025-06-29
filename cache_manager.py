@@ -17,7 +17,7 @@ from card_cache import get_sample_deck_cached, save_analyzed_deck_to_cache, get_
 def initialize_tournament_baseline():
     """Initialize baseline index if it doesn't exist"""
     if not os.path.exists(cache_utils.SAVED_INDEX_PATH):
-        print("DEBUG: No baseline index found, creating initial baseline")
+        #print("DEBUG: No baseline index found, creating initial baseline")
         cache_utils.save_current_index_as_baseline()
         return True
     return False
@@ -68,19 +68,19 @@ def init_caches():
         
         # MINIMAL FIX: If no cached performance data but we have tournament index, generate it
         if performance_df.empty:
-            print("DEBUG: No cached performance data found, generating from tournament index...")
+            #print("DEBUG: No cached performance data found, generating from tournament index...")
             try:
                 # Check if we have tournament data in index
                 current_index = cache_utils.load_current_index()
                 if current_index and len(current_index.get('tournaments', [])) > 0:
-                    print(f"DEBUG: Found {len(current_index['tournaments'])} tournaments in index, analyzing performance...")
+                    #print(f"DEBUG: Found {len(current_index['tournaments'])} tournaments in index, analyzing performance...")
                     performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
                     # Save the generated data
                     cache_utils.save_tournament_performance_data(performance_df)
                     performance_timestamp = datetime.now()
-                    print(f"DEBUG: Generated performance data with {len(performance_df)} decks")
+                    #print(f"DEBUG: Generated performance data with {len(performance_df)} decks")
                 else:
-                    print("DEBUG: No tournament data in index")
+                    #print("DEBUG: No tournament data in index")
             except Exception as e:
                 print(f"ERROR: Failed to generate initial performance data: {e}")
         
