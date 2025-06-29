@@ -2162,7 +2162,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             xaxis_title=None,  # Removed "Date" title
             yaxis_title=None,
             height=400,
-            margin=dict(t=0, l=50, r=20, b=10),
+            margin=dict(t=0, l=0, r=0, b=0),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2429,7 +2429,7 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             xaxis_title=None,
             yaxis_title=None,
             height=400,
-            margin=dict(t=00, l=50, r=20, b=00),
+            margin=dict(t=0, l=0, r=0, b=0),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2640,7 +2640,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             xaxis_title=None,
             yaxis_title=None,  # Remove y-axis title
             height=400,
-            margin=dict(t=0, l=50, r=20, b=0),
+            margin=dict(t=0, l=0, r=0, b=0),
             hovermode='x unified',
             
             # Styling to match meta evolution chart
