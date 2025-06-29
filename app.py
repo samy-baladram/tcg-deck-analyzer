@@ -231,6 +231,19 @@ div[data-testid="stTabs"] [data-baseweb="tab-list"] [data-testid="stMarkdownCont
     margin: 0 !important;
     line-height: 1.1 !important;
 }
+
+/* Force left alignment for buttons in columns/containers */
+div[data-testid="column"] button,
+div[data-testid="stVerticalBlock"] button {
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+
+div[data-testid="column"] button p,
+div[data-testid="stVerticalBlock"] button p {
+    text-align: left !important;
+    width: 100% !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
