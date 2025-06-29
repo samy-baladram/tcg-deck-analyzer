@@ -582,51 +582,46 @@ def load_matchup_data(deck_name, set_name, max_age_hours=24):
 def update_all_matchups(min_share=0.5):
     """
     Update matchup data for all decks with at least the specified meta share
-    
-    Args:
-        min_share: Minimum meta share percentage for decks to update
-        
-    Returns:
-        Number of decks updated
+    UPDATED to use meta_table instead of performance_data
     """
-    from scraper import fetch_matchup_data
-    
     try:
-        # Ensure we have performance data
-        if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-            logger.warning("No performance data available for updating matchups")
+        # UPDATED: Get qualifying decks from meta_table instead of performance_data
+        from meta_table import MetaTableBuilder
+        
+        builder = MetaTableBuilder()
+        meta_df = builder.build_complete_meta_table(limit=50)
+        
+        if meta_df.empty:
+            print("DEBUG: No meta data available for updating matchups")
             return 0
         
         # Filter for decks with at least min_share
-        qualifying_decks = st.session_state.performance_data[
-            st.session_state.performance_data['share'] >= min_share
-        ]
+        qualifying_decks = meta_df[meta_df['share_7d'] >= min_share]
         
-        logger.info(f"Updating matchups for {len(qualifying_decks)} decks with ≥{min_share}% meta share")
+        print(f"DEBUG: Updating matchups for {len(qualifying_decks)} decks with ≥{min_share}% meta share")
         updated_count = 0
         
         # Update each deck's matchups
-        for _, deck in qualifying_decks.iterrows():
-            deck_name = deck['deck_name']
-            set_name = deck['set']
+        for deck_name in qualifying_decks.index:
+            set_name = 'A3a'  # Current set
+            
+            # Import here to avoid circular imports
+            import cache_manager
             
             # Fetch fresh matchup data
-            matchup_df = fetch_matchup_data(deck_name, set_name)
+            matchup_df = cache_manager.get_or_fetch_matchup_data(deck_name, set_name, force_update=True)
             
             if not matchup_df.empty:
-                # Save to cache
-                success = save_matchup_data(deck_name, set_name, matchup_df)
-                if success:
-                    updated_count += 1
+                updated_count += 1
+                print(f"DEBUG: Updated matchups for {deck_name}")
         
-        # Save global timestamp
-        with open(MATCHUPS_TIMESTAMP_PATH, 'w') as f:
-            f.write(datetime.now().isoformat())
-            
-        logger.info(f"Updated matchups for {updated_count} decks")
+        print(f"DEBUG: Updated matchups for {updated_count} decks")
         return updated_count
+        
     except Exception as e:
-        logger.error(f"Error updating all matchups: {e}")
+        print(f"DEBUG: Error updating all matchups: {e}")
+        import traceback
+        print(traceback.format_exc())
         return 0
 
 def ensure_cache_dirs():
