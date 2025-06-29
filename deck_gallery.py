@@ -339,5 +339,4 @@ def display_deck_gallery_tab_simple():
                     st.info(f"Sample deck {deck_number} - No data available")
     
     # Display summary info
-    st.divider()
-    st.caption(f"Showing sample decks for {deck_name} archetype")
+    st.caption("Tournament best-finishes from Limitless TCG.  \nScores show wins-losses-ties format.")
