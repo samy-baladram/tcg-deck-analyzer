@@ -1825,12 +1825,12 @@ def display_matchup_tab(deck_info=None):
                     "Icon1": st.column_config.ImageColumn(
                         "",
                         help="Primary Pokémon in the deck",
-                        width=30,
+                        width=40,
                     ),
                     "Icon2": st.column_config.ImageColumn(
                         "Icon 2", 
                         help="Secondary Pokémon in the deck",
-                        width=30,
+                        width=40,
                     ),
                     "Deck": st.column_config.TextColumn(
                         "Deck",
@@ -1859,7 +1859,8 @@ def display_matchup_tab(deck_info=None):
                         format="%.2f%%"
                     ),
                 },
-                hide_index=True
+                hide_index=True,
+                height=800
             )
         except Exception as e:
             # Fallback to simpler version if there's an issue
