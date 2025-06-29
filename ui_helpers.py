@@ -6,7 +6,7 @@ from scraper import get_popular_decks_with_performance
 from utils import calculate_time_ago
 import cache_manager
 import json
-from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MIN_COUNTER_MATCHES, MIN_WIN_RATE
+from config import POWER_INDEX_EXPLANATION, MIN_META_SHARE, TOURNAMENT_COUNT, MIN_COUNTER_MATCHES, MIN_WIN_RATE, CACHE_TTL
 import pandas as pd
 import base64
 import os
