@@ -1613,13 +1613,13 @@ def create_meta_trend_chart(deck_name):
             # Grid and axes styling
             xaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)'
             ),
             yaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
                 range=[0, df_filtered['meta_percentage'].max() * 1.15],
@@ -2169,13 +2169,13 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
             # Grid and axes styling
             xaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)'
             ),
             yaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
                 range=[0, df_filtered['meta_percentage'].max() * 1.1]  # Dynamic range
@@ -2437,13 +2437,13 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
             # Grid and axes styling
             xaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)'
             ),
             yaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
                 range=[0, df_filtered['meta_percentage'].max() * 1.15],
@@ -2636,7 +2636,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             xaxis_title=None,
             yaxis_title=None,  # Remove y-axis title
             height=400,
-            margin=dict(t=0, l=50, r=20, b=10),
+            margin=dict(t=0, l=50, r=20, b=0),
             hovermode='x unified',
             
             # Styling to match meta evolution chart
@@ -2648,13 +2648,13 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             # Grid and axes styling
             xaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)'
             ),
             yaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.1)',
+                gridcolor='rgba(255,255,255,0.15)',
                 showline=True,
                 linecolor='rgba(128,128,128,0.3)',
                 range=[y_min, y_max],
