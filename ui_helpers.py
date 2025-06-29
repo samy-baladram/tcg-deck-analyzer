@@ -119,51 +119,13 @@ def get_cached_popular_decks():
     return get_popular_decks_with_performance()
 
 def check_and_update_tournament_data():
-    """Simplified version using local database only"""
+    """Simple placeholder - we use meta_table directly now"""
+    import streamlit as st
+    from datetime import datetime
     
-    # Skip if update already running
-    if st.session_state.get('update_running', False):
-        return
-    
-    try:
-        # Simple check - just load from local data every hour
-        if 'performance_fetch_time' not in st.session_state:
-            st.session_state.performance_fetch_time = datetime.now() - timedelta(hours=1)
-        
-        time_since_update = datetime.now() - st.session_state.performance_fetch_time
-        
-        # Refresh every hour
-        if time_since_update.total_seconds() > 3600:  # 1 hour = 3600 seconds
-            print("DEBUG: Refreshing from LOCAL database...")
-            
-            # Use your existing local system instead of complex external checks
-            from meta_table import MetaTableBuilder
-            builder = MetaTableBuilder()
-            meta_df = builder.build_complete_meta_table(limit=100)
-            
-            if not meta_df.empty:
-                # Convert to session state format
-                performance_df = pd.DataFrame({
-                    'deck_name': meta_df.index,
-                    'displayed_name': meta_df['formatted_deck_name'],
-                    'share': meta_df['share_7d'],
-                    'total_wins': meta_df['total_wins'],
-                    'total_losses': meta_df['total_losses'],
-                    'total_ties': meta_df['total_ties'],
-                    'power_index': meta_df['wilson_index'],
-                    'tournaments_played': meta_df['unique_tournaments'],
-                    'set': 'A3a'
-                })
-                
-                st.session_state.performance_data = performance_df
-                st.session_state.performance_fetch_time = datetime.now()
-                
-                print(f"DEBUG: Loaded {len(performance_df)} decks from local database")
-        else:
-            print("DEBUG: Using cached local data (recent)")
-            
-    except Exception as e:
-        print(f"DEBUG: Error with local data: {e}")
+    if 'performance_data' not in st.session_state:
+        st.session_state.performance_data = "using_meta_table"  # Just a placeholder
+        st.session_state.performance_fetch_time = datetime.now()
                     
 # ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
@@ -1048,10 +1010,6 @@ def render_about_section():
 def render_sidebar_from_cache():
     """Render sidebar with tabbed interface"""
     check_and_update_tournament_data()
-
-    if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-        st.warning("No performance data available")
-        return
 
     # Add last update caption at the very top
     if 'performance_fetch_time' in st.session_state:
