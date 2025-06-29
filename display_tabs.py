@@ -1801,7 +1801,7 @@ def display_matchup_tab(deck_info=None):
         return
     
     # Display the enhanced data table with all rows
-    col1, col2 = st.columns([4,3])
+    col1, col2 = st.columns([4,3], gap="large")
     with col1:
         display_matchup_summary(deck_name, set_name, working_df)
 
