@@ -120,11 +120,20 @@ def get_cached_popular_decks():
 def check_and_update_tournament_data():
     """Simple placeholder - we use meta_table directly now"""
     import streamlit as st
+    import pandas as pd
     from datetime import datetime
     
+    # Set proper DataFrame placeholder to prevent .empty errors
     if 'performance_data' not in st.session_state:
-        st.session_state.performance_data = "using_meta_table"  # Just a placeholder
+        # Create empty DataFrame with expected columns
+        st.session_state.performance_data = pd.DataFrame(columns=[
+            'deck_name', 'displayed_name', 'share', 'total_wins', 
+            'total_losses', 'total_ties', 'power_index', 'tournaments_played', 'set'
+        ])
         st.session_state.performance_fetch_time = datetime.now()
+    
+    print("DEBUG: Using meta_table data directly (performance_data is empty placeholder)")
+
                     
 # ENHANCE: Add caching to energy types function
 def get_energy_types_for_deck(deck_name, deck_energy_types=None):
