@@ -1286,7 +1286,8 @@ def display_extended_meta_table():
             'Losses': extended_df['losses'], 
             'Ties': extended_df['ties'],
             'Win Rate': extended_df['win_rate'],
-            'Index': extended_df['wilson_index']
+            'Index': extended_df['wilson_index'],
+            'deck_name': extended_df['deck_name']
         })
         
         # Define styling functions for conditional coloring
@@ -1368,7 +1369,8 @@ def display_extended_meta_table():
             ),
             'Index': st.column_config.NumberColumn(
                 "Index", width=45, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
-            )
+            ),
+            'deck_name': None
         }
         
         # Display the styled dataframe
