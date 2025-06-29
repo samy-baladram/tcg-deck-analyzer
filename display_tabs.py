@@ -1793,7 +1793,7 @@ def display_matchup_tab(deck_info=None):
             'Win %': display_df['win_pct'],
             'Record': display_df['Record'],
             'Matches': display_df['matches_played'],
-            'Meta Share %': display_df['meta_share']
+            #'Meta Share %': display_df['meta_share']
         })
     except KeyError as e:
         st.error(f"Missing required column: {str(e)}")
@@ -1855,7 +1855,7 @@ def display_matchup_tab(deck_info=None):
                     "Matchup",
                     help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
                 ),
-                "Meta Share%": None
+                #"Meta Share%": None
                 # "Meta Share %": st.column_config.NumberColumn(
                 #     "Meta Share %",
                 #     help="Percentage representation of this deck in the overall competitive metagame",
