@@ -7,8 +7,37 @@ import os
 import sqlite3
 from datetime import datetime
 
+def get_tournament_id_from_page(tournament_slug):
+    """Extract actual tournament ID from the tournament page JavaScript."""
+    try:
+        # Build the URL for the tournament standings page
+        url = f"https://play.limitlesstcg.com/tournament/{tournament_slug}/standings"
+        
+        # Fetch the page
+        response = requests.get(url)
+        
+        # Extract tournament ID from JavaScript variable
+        # Look for pattern: var tournamentId = 'XXXX'
+        id_match = re.search(r"var\s+tournamentId\s*=\s*['\"]([0-9a-f]{24})['\"]", response.text)
+        
+        if id_match:
+            return id_match.group(1)
+        
+        # Alternative approach: Look for tournament ID in other potential locations
+        # For example, in JSON data or other script tags
+        alt_match = re.search(r'"tournamentId":\s*"([0-9a-f]{24})"', response.text)
+        if alt_match:
+            return alt_match.group(1)
+            
+        # If ID not found, return None
+        return None
+        
+    except Exception as e:
+        print(f"Error fetching tournament page for {tournament_slug}: {e}")
+        return None
+
 def get_recent_tournament_ids(max_fetch=150):
-    """Get recent tournament IDs - handles both standard and special tournament identifiers"""
+    """Get recent tournament IDs - converts friendly URLs to actual hex IDs"""
     url = f"https://play.limitlesstcg.com/tournaments/completed?game=POCKET&format=STANDARD&platform=all&type=all&show={max_fetch}"
     
     response = requests.get(url)
@@ -22,38 +51,53 @@ def get_recent_tournament_ids(max_fetch=150):
         href = link['href']
         
         if '/tournament/' in href:
-            # Updated regex to capture both formats
+            # Extract tournament slug from URL
             match = re.search(r'/tournament/([a-zA-Z0-9-_]+)', href)
             
             if match:
                 tournament_slug = match.group(1)
                 
-                # Accept both standard IDs and special identifiers
-                if (re.match(r'^[0-9a-f]{24}$', tournament_slug) or  # Standard format
-                    (len(tournament_slug) > 3 and re.match(r'^[a-zA-Z0-9-_]+$', tournament_slug))):  # Special format
+                # Check if it's already a standard tournament ID format (24 character hexadecimal)
+                if re.match(r'^[0-9a-f]{24}$', tournament_slug):
+                    actual_tournament_id = tournament_slug
+                else:
+                    # This is a friendly URL, extract the actual hex ID
+                    print(f"Converting friendly URL: {tournament_slug}")
+                    actual_tournament_id = get_tournament_id_from_page(tournament_slug)
                     
-                    if tournament_slug not in seen_ids:
-                        seen_ids.add(tournament_slug)
-                        tournament_ids.append(tournament_slug)
-                        
-                        if len(tournament_ids) >= max_fetch:
-                            break
+                    if not actual_tournament_id:
+                        print(f"❌ Failed to extract actual ID for {tournament_slug}")
+                        continue
+                    
+                    print(f"✅ Converted {tournament_slug} → {actual_tournament_id}")
+                
+                # Only add if we haven't seen this actual ID before
+                if actual_tournament_id not in seen_ids:
+                    seen_ids.add(actual_tournament_id)
+                    tournament_ids.append(actual_tournament_id)
+                    
+                    if len(tournament_ids) >= max_fetch:
+                        break
     
     return tournament_ids
 
 def scrape_tournament_data(tournament_id):
-    """Scrape tournament data - handles both standard and special tournament identifiers"""
+    """Scrape tournament data using actual hex tournament ID"""
     print(f"Scraping tournament: {tournament_id}")
     
-    # Get tournament metadata
+    # Since we now always receive actual hex IDs, use them directly
+    # But we might need to try both the hex ID and check if there's a friendly URL
+    
+    # First, try using the hex ID directly
     details_response = requests.get(f"https://play.limitlesstcg.com/tournament/{tournament_id}/details")
+    
     if details_response.status_code != 200:
         print(f"Failed to fetch tournament details for {tournament_id}: HTTP {details_response.status_code}")
         return None
         
     details_soup = BeautifulSoup(details_response.text, 'html.parser')
     
-    # Improved name extraction with fallbacks
+    # Extract tournament name
     title_element = details_soup.find('title')
     if title_element:
         name = title_element.get_text(strip=True).replace(' | Limitless', '')
@@ -86,7 +130,7 @@ def scrape_tournament_data(tournament_id):
             if re.search(r'\bNOEX\b|\bNo\s*EX\b', page_text, re.IGNORECASE):
                 format_type = "NOEX"
     
-    # Get player data
+    # Get player data using the hex ID
     standings_response = requests.get(f"https://play.limitlesstcg.com/tournament/{tournament_id}/standings")
     standings_soup = BeautifulSoup(standings_response.text, 'html.parser')
     
@@ -108,17 +152,23 @@ def scrape_tournament_data(tournament_id):
             if archetype_link:
                 match = re.search(r'/metagame/([^/?]+)', archetype_link.get('href', ''))
                 if match:
-                    archetype = match.group(1)
+                    archetype = match.group(1).replace('-', ' ').title()
+        
+        # Extract other player data
+        placement = i + 1
+        player_name = cells[1].get_text(strip=True) if len(cells) > 1 else f"Player {placement}"
+        record = cells[4].get_text(strip=True) if len(cells) > 4 else "0-0-0"
         
         players.append({
-            'placement': i + 1,
-            'player_name': cells[1].get_text(strip=True) if len(cells) > 1 else 'Unknown',
-            'record': cells[4].get_text(strip=True) if len(cells) > 4 else 'Unknown',
+            'placement': placement,
+            'player_name': player_name,
+            'record': record,
             'archetype': archetype
         })
     
+    # Return data using the actual hex tournament ID
     return {
-        'tournament_id': tournament_id,
+        'tournament_id': tournament_id,  # Always use the actual hex ID
         'name': name,
         'timestamp': timestamp,
         'format': format_type,
