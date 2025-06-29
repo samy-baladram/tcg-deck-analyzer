@@ -312,13 +312,13 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 force_refresh=force_refresh
             )
         except Exception as e:
-            st.error(f"Error analyzing deck: {str(e)}")
+            #st.error(f"Error analyzing deck: {str(e)}")
             print(f"Analysis error for {original_deck_info['deck_name']}: {str(e)}")
             analyzed_deck = None
     
     # FIXED: Better validation and fallback logic
     if analyzed_deck is None:
-        st.error("Failed to analyze the selected deck. Attempting to reload...")
+        #st.error("Failed to analyze the selected deck. Attempting to reload...")
         
         # Try once more with force refresh
         try:
@@ -329,11 +329,12 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     force_refresh=True  # Force fresh analysis
                 )
         except Exception as e:
-            st.error(f"Failed to reload deck data: {str(e)}")
+            #st.error(f"Failed to reload deck data: {str(e)}")
             analyzed_deck = None
     
     if analyzed_deck is None:
-        st.error("Unable to load deck data. Please try selecting a different deck or refresh the page.")
+        st.error("Deck data for this archetype is currently unavailable. Please try selecting a different deck.")
+        #st.error("Unable to load deck data. Please try selecting a different deck or refresh the page.")
     else:
         # Validate the structure of analyzed_deck and provide defaults
         try:
