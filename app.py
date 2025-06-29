@@ -339,32 +339,17 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
         # Validate the structure of analyzed_deck and provide defaults
         try:
             # Use .get() method with defaults to prevent KeyError
-            # Use .get() method with defaults to prevent KeyError
             results = analyzed_deck.get('results', None)
             total_decks = analyzed_deck.get('total_decks', 0)
             variant_df = analyzed_deck.get('variant_df', None)
-            
-            # ADD THIS DEBUG CODE HERE:
-            st.write("🔍 **Debug Info:**")
-            st.write(f"- results type: {type(results)}")
-            st.write(f"- results content (first 200 chars): {str(results)[:200] if results else 'None'}")
-            st.write(f"- total_decks: {total_decks}")
-            st.write(f"- variant_df type: {type(variant_df)}")
             
             # FIXED: Better validation with specific error messages
             if results is None:
                 st.error("No analysis results available for this deck. The deck data may be corrupted.")
                 # Try to debug the issue
                 st.write("Debug info - analyzed_deck keys:", list(analyzed_deck.keys()) if analyzed_deck else "None")
-            elif isinstance(results, str):
-                # Handle case where results is an error message string
-                st.error(f"Analysis error: {results}")
             elif hasattr(results, 'empty') and results.empty:
                 st.error("Analysis results are empty for this deck.")
-            elif not hasattr(results, 'empty'):
-                # Results is not a DataFrame
-                st.error(f"Invalid results type: {type(results)}. Expected pandas DataFrame.")
-                st.write("Results content:", str(results)[:200])
             else:
                 # Display deck header
                 display_tabs.display_deck_header(original_deck_info, results)
