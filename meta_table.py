@@ -625,7 +625,7 @@ def display_meta_overview_table():
             styled_df,
             column_config=column_config,
             hide_index=True,
-            height=1428,
+            height=1438,
             #height=1088,
             use_container_width=True
         )
@@ -1367,7 +1367,7 @@ def display_extended_meta_table():
             styled_df,
             column_config=column_config,
             hide_index=True,
-            height=3000,
+            height=2500,
             use_container_width=True
         )
         
