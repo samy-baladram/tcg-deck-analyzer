@@ -1274,11 +1274,14 @@ def display_extended_meta_table():
     try:
         # Create final display DataFrame with correct column order including trend chart
         selected_deck = st.session_state.get('analyze', {}).get('deck_name', None)
+        # Create the modified rank column first
+        rank_column = extended_df.apply(
+            lambda row: f"▸ {row['rank']}" if row['deck_name'] == selected_deck else row['rank'], 
+            axis=1
+        )
+
         final_df = pd.DataFrame({
-            '#': extended_df['rank'].apply(
-                lambda row: f"▸ {row['rank']}" if row['deck_name'] == selected_deck else row['rank'], 
-                axis=1
-            ),
+            '#': rank_column,
             '': extended_df['pokemon_url1'],      # Pokemon icon 1
             ' ': extended_df['pokemon_url2'],     # Pokemon icon 2
             'Deck': extended_df['formatted_deck_name'],
