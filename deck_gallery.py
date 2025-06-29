@@ -281,8 +281,7 @@ def display_deck_gallery_tab():
             )
     
     # Display summary info
-    st.divider()
-    st.caption(f"Showing {max_decks} of {len(all_decks)} collected decks for {deck_name}")
+    st.caption(f"Showing {len(all_decks)} collected decks.  \nScores show wins-losses-ties format.")
 
 # Alternative function for testing/development
 def display_deck_gallery_tab_simple():
