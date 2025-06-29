@@ -1,0 +1,933 @@
+{
+  "tournament_id": "683f8337c4596e81223543c7",
+  "name": "Pocket Legends League #30 (Season 3) - 50 USD",
+  "timestamp": 1749204000000,
+  "format": "Standard",
+  "player_count": 154,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Abscissa",
+      "record": "10 - 1 - 2",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 2,
+      "player_name": "synderen",
+      "record": "9 - 3 - 1",
+      "archetype": "Magnezone A2 Oricorio A3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Frizzone",
+      "record": "8 - 3 - 1",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 4,
+      "player_name": "DraStic",
+      "record": "8 - 3 - 1",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 5,
+      "player_name": "su19",
+      "record": "8 - 2 - 1",
+      "archetype": "Decidueye Ex A3 Pheromosa A3A"
+    },
+    {
+      "placement": 6,
+      "player_name": "TTV_jmpm9",
+      "record": "7 - 2 - 2",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 7,
+      "player_name": "Bay",
+      "record": "7 - 2 - 2",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 8,
+      "player_name": "yuu1027",
+      "record": "7 - 3 - 1",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 9,
+      "player_name": "nayaraPOKE",
+      "record": "7 - 1 - 2",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Preluxe",
+      "record": "7 - 2 - 1",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 11,
+      "player_name": "Ryojo",
+      "record": "7 - 2 - 1",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 12,
+      "player_name": "AshApiise",
+      "record": "7 - 3 - 0",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 13,
+      "player_name": "Alana",
+      "record": "6 - 3 - 1",
+      "archetype": "Tapu Koko Ex A3A Pikachu Ex A2B"
+    },
+    {
+      "placement": 14,
+      "player_name": "sZero | Ace",
+      "record": "6 - 3 - 1",
+      "archetype": "Charizard Ex A2B Silvally A3A"
+    },
+    {
+      "placement": 15,
+      "player_name": "ZaGaZaGa",
+      "record": "6 - 3 - 1",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 16,
+      "player_name": "Pedron",
+      "record": "6 - 3 - 1",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 17,
+      "player_name": "cura222222",
+      "record": "5 - 1 - 3",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 18,
+      "player_name": "Hamza007",
+      "record": "5 - 1 - 3",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 19,
+      "player_name": "Vitellus",
+      "record": "6 - 3 - 0",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 20,
+      "player_name": "Tawsik",
+      "record": "5 - 2 - 2",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 21,
+      "player_name": "Laaans",
+      "record": "5 - 2 - 2",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 22,
+      "player_name": "qqoo",
+      "record": "5 - 2 - 2",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 23,
+      "player_name": "frostyicelad",
+      "record": "5 - 2 - 2",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 24,
+      "player_name": "nerodayo",
+      "record": "5 - 2 - 2",
+      "archetype": "Charizard Ex A2B Silvally A3A"
+    },
+    {
+      "placement": 25,
+      "player_name": "CasaNerd",
+      "record": "5 - 3 - 1",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 26,
+      "player_name": "Sirmarx",
+      "record": "5 - 3 - 1",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 27,
+      "player_name": "Tsuka",
+      "record": "5 - 3 - 1",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 28,
+      "player_name": "xKiiii",
+      "record": "5 - 3 - 1",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 29,
+      "player_name": "Deep",
+      "record": "5 - 3 - 0",
+      "archetype": "Silvally Zeraora A3A"
+    },
+    {
+      "placement": 30,
+      "player_name": "Efebos",
+      "record": "5 - 3 - 0",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 31,
+      "player_name": "Maureda",
+      "record": "5 - 3 - 0",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 32,
+      "player_name": "jeyksu",
+      "record": "5 - 3 - 0",
+      "archetype": "Stoutland A3A Giratina Ex A2B"
+    },
+    {
+      "placement": 33,
+      "player_name": "kanary",
+      "record": "5 - 3 - 0",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 34,
+      "player_name": "srafaelitocs",
+      "record": "5 - 3 - 0",
+      "archetype": "Arceus Ex Crobat A2A"
+    },
+    {
+      "placement": 35,
+      "player_name": "So1ar",
+      "record": "5 - 3 - 0",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 36,
+      "player_name": "SushiGabo",
+      "record": "4 - 4 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 37,
+      "player_name": "vivE",
+      "record": "4 - 3 - 0drop",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 38,
+      "player_name": "Hosi",
+      "record": "4 - 3 - 0drop",
+      "archetype": "Buzzwole Ex Kartana A3A"
+    },
+    {
+      "placement": 39,
+      "player_name": "tekrola",
+      "record": "4 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 40,
+      "player_name": "gustavo01gk",
+      "record": "4 - 4 - 0",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 41,
+      "player_name": "GrouchyAxe",
+      "record": "4 - 4 - 0",
+      "archetype": "Silvally A3A Oricorio A3"
+    },
+    {
+      "placement": 42,
+      "player_name": "Bingka",
+      "record": "4 - 3 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 43,
+      "player_name": "D' Rey",
+      "record": "4 - 4 - 0",
+      "archetype": "Magnezone A2 Silvally A3A"
+    },
+    {
+      "placement": 44,
+      "player_name": "Yorusats",
+      "record": "4 - 4 - 0",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 45,
+      "player_name": "tatum",
+      "record": "4 - 4 - 0",
+      "archetype": "Giratina Ex A2B Arceus Ex A2A"
+    },
+    {
+      "placement": 46,
+      "player_name": "Jaymienkgh",
+      "record": "4 - 4 - 0",
+      "archetype": "Darkrai Ex A2 Giratina Ex A2B"
+    },
+    {
+      "placement": 47,
+      "player_name": "Luccaxx",
+      "record": "4 - 4 - 0",
+      "archetype": "Giratina Ex A2B Arceus Ex A2A"
+    },
+    {
+      "placement": 48,
+      "player_name": "Bendarius96",
+      "record": "4 - 4 - 0",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 49,
+      "player_name": "Miquiquio",
+      "record": "4 - 4 - 0",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 50,
+      "player_name": "Gegie",
+      "record": "4 - 4 - 0",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 51,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Ferrera",
+      "record": "4 - 4 - 0",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 52,
+      "player_name": "Rockfeller",
+      "record": "3 - 3 - 1drop",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 53,
+      "player_name": "pgnl",
+      "record": "3 - 2 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 54,
+      "player_name": "gabtwo",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 55,
+      "player_name": "Raigun",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 56,
+      "player_name": "Jolju_Jolju",
+      "record": "3 - 2 - 0drop",
+      "archetype": "Silvally A3A Giratina Ex A2B"
+    },
+    {
+      "placement": 57,
+      "player_name": "Zegger",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 58,
+      "player_name": "N3wA",
+      "record": "3 - 4 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 59,
+      "player_name": "PGX| ElAtomico",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 60,
+      "player_name": "MW9",
+      "record": "3 - 5 - 0",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 61,
+      "player_name": "ziquan",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 62,
+      "player_name": "Lede",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Garchomp Ex A2A Rampardos A2"
+    },
+    {
+      "placement": 63,
+      "player_name": "Cloudy_yun",
+      "record": "3 - 5 - 0",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 64,
+      "player_name": "Nacchiko",
+      "record": "3 - 2 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 65,
+      "player_name": "axel270",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 66,
+      "player_name": "akatsu",
+      "record": "3 - 5 - 0",
+      "archetype": "Charizard Ex A2B Incineroar Ex A3"
+    },
+    {
+      "placement": 67,
+      "player_name": "Super_Peace",
+      "record": "3 - 3 - 0drop",
+      "archetype": "Charizard Ex A2B Silvally A3A"
+    },
+    {
+      "placement": 68,
+      "player_name": "Briscard",
+      "record": "3 - 5 - 0",
+      "archetype": "Dusk Mane Necrozma P A Stakataka A3A"
+    },
+    {
+      "placement": 69,
+      "player_name": "syr",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 70,
+      "player_name": "DREAMZZ POY",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Gallade Ex A2 Stoutland A3A"
+    },
+    {
+      "placement": 71,
+      "player_name": "MERCUR",
+      "record": "2 - 2 - 0drop",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 72,
+      "player_name": "Wynn",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 73,
+      "player_name": "Einstun",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 74,
+      "player_name": "Haryanto",
+      "record": "2 - 2 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 75,
+      "player_name": "Rain_2500",
+      "record": "2 - 1 - 0drop",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 76,
+      "player_name": "EvanD",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Gengar Ex A1 Giratina Ex A2B"
+    },
+    {
+      "placement": 77,
+      "player_name": "Reiray999",
+      "record": "2 - 6 - 0",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 78,
+      "player_name": "Wheelchairkev13",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Silvally A3A"
+    },
+    {
+      "placement": 79,
+      "player_name": "mikun",
+      "record": "2 - 5 - 0drop",
+      "archetype": "Magnezone A2 Oricorio A3"
+    },
+    {
+      "placement": 80,
+      "player_name": "Alonso39",
+      "record": "2 - 2 - 0drop",
+      "archetype": "Guzzlord Ex Naganadel A3A"
+    },
+    {
+      "placement": 81,
+      "player_name": "Sou__zzZZ",
+      "record": "2 - 2 - 0drop",
+      "archetype": "Infernape Ex A2 Silvally A3A"
+    },
+    {
+      "placement": 82,
+      "player_name": "TheViice",
+      "record": "2 - 2 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 83,
+      "player_name": "Recasper22",
+      "record": "2 - 1 - 0drop",
+      "archetype": "Tapu Koko Ex A3A Oricorio A3"
+    },
+    {
+      "placement": 84,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Osoma",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 85,
+      "player_name": "Zorrino",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Luxray A2 Zeraora A3A"
+    },
+    {
+      "placement": 86,
+      "player_name": "ElBossPR787",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Silvally Zeraora A3A"
+    },
+    {
+      "placement": 87,
+      "player_name": "Slashu",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Giratina Ex A2B Arceus Ex A2A"
+    },
+    {
+      "placement": 88,
+      "player_name": "\ud835\udde2\ud835\udde0\ud835\uddd5\ud835\udde5\ud835\uddd4 ~ H",
+      "record": "2 - 4 - 0drop",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 89,
+      "player_name": "tyrendemer825",
+      "record": "2 - 1 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 90,
+      "player_name": "imi",
+      "record": "2 - 3 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 91,
+      "player_name": "Zenigame",
+      "record": "1 - 1 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 92,
+      "player_name": "Nope",
+      "record": "1 - 1 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 93,
+      "player_name": "Brendon68",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 94,
+      "player_name": "Snoopy_KevinS",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 95,
+      "player_name": "RustyCohle",
+      "record": "1 - 4 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 96,
+      "player_name": "Hagakury",
+      "record": "1 - 1 - 0drop",
+      "archetype": "Decidueye Ex A3 Decidueye A3A"
+    },
+    {
+      "placement": 97,
+      "player_name": "Artoria_2",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 98,
+      "player_name": "Kresna19",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Decidueye Ex A3 Decidueye A3A"
+    },
+    {
+      "placement": 99,
+      "player_name": "rubytaro25",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Guzzlord Ex Stoutland A3A"
+    },
+    {
+      "placement": 100,
+      "player_name": "\u2661\u2727\u02d6\u00b0nuggets\u22c6.\u02da\u27e1 \u08ea \u2661",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 101,
+      "player_name": "kytheon",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Charizard Ex A2B Silvally A3A"
+    },
+    {
+      "placement": 102,
+      "player_name": "oYSo",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 103,
+      "player_name": "ChoccyChip",
+      "record": "1 - 1 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 104,
+      "player_name": "Angganata G",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 105,
+      "player_name": "donovanooman",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 106,
+      "player_name": "Warpis",
+      "record": "1 - 4 - 0drop",
+      "archetype": "Charizard Ex A2B Incineroar Ex A3"
+    },
+    {
+      "placement": 107,
+      "player_name": "IINO",
+      "record": "1 - 1 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 108,
+      "player_name": "Altkyle",
+      "record": "1 - 1 - 0drop",
+      "archetype": "Silvally A3A Pikachu Ex A2B"
+    },
+    {
+      "placement": 109,
+      "player_name": "Vardhu",
+      "record": "1 - 4 - 0drop",
+      "archetype": "Garchomp Ex A2A Rampardos A2"
+    },
+    {
+      "placement": 110,
+      "player_name": "Eclipsewyn",
+      "record": "1 - 4 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 111,
+      "player_name": "Yoaro48",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 112,
+      "player_name": "xKarll",
+      "record": "1 - 4 - 0drop",
+      "archetype": "Magnezone A2 Oricorio A3"
+    },
+    {
+      "placement": 113,
+      "player_name": "Quiet",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 114,
+      "player_name": "My",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 115,
+      "player_name": "Dens",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 116,
+      "player_name": "Sinestesia",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 117,
+      "player_name": "Lyzek",
+      "record": "1 - 2 - 0drop",
+      "archetype": "Giratina Ex A2B Stoutland A3A"
+    },
+    {
+      "placement": 118,
+      "player_name": "\ud835\udddc\ud835\udde7\ud835\udde3 || Destyder",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 119,
+      "player_name": "neoneomap",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 120,
+      "player_name": "xxepic_kid2",
+      "record": "1 - 1 - 0drop",
+      "archetype": "Wugtrio Ex A2B Frosmoth A1"
+    },
+    {
+      "placement": 121,
+      "player_name": "Laygus",
+      "record": "1 - 3 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 122,
+      "player_name": "CaptainLevi16",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 123,
+      "player_name": "\ud835\udde2\ud835\udde0\ud835\uddd5\ud835\udde5\ud835\uddd4 ~ FedPed",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 124,
+      "player_name": "Bixie",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 125,
+      "player_name": "mikhavv",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 126,
+      "player_name": "Arrr",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Charizard Ex A2B Silvally A3A"
+    },
+    {
+      "placement": 127,
+      "player_name": "FrogEX | painpeko",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 128,
+      "player_name": "lasomaster",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Silvally A3A Oricorio A3"
+    },
+    {
+      "placement": 129,
+      "player_name": "Gen",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Pawmot A2B Arceus Ex A2A"
+    },
+    {
+      "placement": 130,
+      "player_name": "Unzo",
+      "record": "0 - 3 - 0drop",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 131,
+      "player_name": "Ser0lav_93",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Lycanroc A3 Rampardos A2"
+    },
+    {
+      "placement": 132,
+      "player_name": "Joe_Mama69",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 133,
+      "player_name": "Nuggie_D",
+      "record": "0 - 3 - 0drop",
+      "archetype": "Guzzlord Ex Nihilego A3A"
+    },
+    {
+      "placement": 134,
+      "player_name": "Matcha17",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Charizard Ex A2B Incineroar Ex A3"
+    },
+    {
+      "placement": 135,
+      "player_name": "ThomasXavier21",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Charizard Ex A2B"
+    },
+    {
+      "placement": 136,
+      "player_name": "\u30fb",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 137,
+      "player_name": "??? | Crackportero",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Charizard Ex A2B Silvally A3A"
+    },
+    {
+      "placement": 138,
+      "player_name": "KAGEKING",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 139,
+      "player_name": "Owen Aw",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Giratina Ex A2B Arceus Ex A2A"
+    },
+    {
+      "placement": 140,
+      "player_name": "KareboVIPpass",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 141,
+      "player_name": "TABABAGANI TABABAGANI",
+      "record": "0 - 3 - 0drop",
+      "archetype": "Guzzlord Ex Naganadel A3A"
+    },
+    {
+      "placement": 142,
+      "player_name": "jalocer13",
+      "record": "0 - 4 - 0drop",
+      "archetype": "Rampardos A2 Farfetchd A1"
+    },
+    {
+      "placement": 143,
+      "player_name": "yuriisle",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 144,
+      "player_name": "Villans",
+      "record": "0 - 4 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 145,
+      "player_name": "saripac",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 146,
+      "player_name": "Hao_Poke",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Silvally Blacephalon A3A"
+    },
+    {
+      "placement": 147,
+      "player_name": "Pette9550",
+      "record": "0 - 3 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    },
+    {
+      "placement": 148,
+      "player_name": "AMU",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Magnezone A2 Oricorio A3"
+    },
+    {
+      "placement": 149,
+      "player_name": "Team_humble",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 150,
+      "player_name": "PGX| elluquitas",
+      "record": "0 - 3 - 0drop",
+      "archetype": "Silvally A3A Rampardos A2"
+    },
+    {
+      "placement": 151,
+      "player_name": "Xeancar",
+      "record": "0 - 2 - 0drop",
+      "archetype": "Solgaleo Ex A3 Shiinotic A3A"
+    },
+    {
+      "placement": 152,
+      "player_name": "MinbO",
+      "record": "0 - 5 - 0drop",
+      "archetype": "Giratina Ex A2B Darkrai Ex A2"
+    },
+    {
+      "placement": 153,
+      "player_name": "CornDog_XX",
+      "record": "0 - 4 - 0drop",
+      "archetype": "Buzzwole Ex Celesteela A3A"
+    },
+    {
+      "placement": 154,
+      "player_name": "Reapy",
+      "record": "0 - 1 - 0drop",
+      "archetype": "Buzzwole Ex Pheromosa A3A"
+    }
+  ]
+}
