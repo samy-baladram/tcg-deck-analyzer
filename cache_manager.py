@@ -828,9 +828,18 @@ def get_or_fetch_matchup_data(deck_name, set_name, force_update=False):
         
         # Get meta share data for opponent decks
         meta_share_map = {}
-        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-            performance_data = st.session_state.performance_data
-            meta_share_map = {deck['deck_name']: deck['share'] for _, deck in performance_data.iterrows()}
+        try:
+            from meta_table import MetaTableBuilder
+            builder = MetaTableBuilder()
+            meta_df = builder.build_complete_meta_table(limit=50)
+            
+            if not meta_df.empty:
+                for deck_name_meta in meta_df.index:
+                    share = meta_df.loc[deck_name_meta, 'share_7d']
+                    meta_share_map[deck_name_meta] = share
+        except Exception as e:
+            print(f"DEBUG: Could not load meta share from meta_table: {e}")
+            meta_share_map = {}
         
         # Process each data row
         rows = []
