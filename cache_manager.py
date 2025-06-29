@@ -25,6 +25,7 @@ def initialize_tournament_baseline():
 def init_caches():
     """
     Initialize all necessary caches in session state without network calls.
+    Simplified version - uses meta_table directly instead of performance_data.
     """
     # Initialize baseline index if needed
     initialize_tournament_baseline()
@@ -61,38 +62,26 @@ def init_caches():
     if 'update_running' not in st.session_state:
         st.session_state.update_running = False
         
-    # Load cached data without network calls on first load
+    # Simplified first load - no performance_data needed since we use meta_table
     if 'first_load' not in st.session_state:
-        # Load tournament data directly from disk
-        performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
+        print("DEBUG: First load - using meta_table system (no separate performance_data)")
         
-        # MINIMAL FIX: If no cached performance data but we have tournament index, generate it
-        if performance_df.empty:
-            #print("DEBUG: No cached performance data found, generating from tournament index...")
-            try:
-                # Check if we have tournament data in index
-                current_index = cache_utils.load_current_index()
-                if current_index and len(current_index.get('tournaments', [])) > 0:
-                    #print(f"DEBUG: Found {len(current_index['tournaments'])} tournaments in index, analyzing performance...")
-                    performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-                    # Save the generated data
-                    cache_utils.save_tournament_performance_data(performance_df)
-                    performance_timestamp = datetime.now()
-                    #print(f"DEBUG: Generated performance data with {len(performance_df)} decks")
-                #else:
-                    #print("DEBUG: No tournament data in index")
-            except Exception as e:
-                print(f"ERROR: Failed to generate initial performance data: {e}")
+        # Set placeholder performance_data to prevent errors
+        st.session_state.performance_data = "using_meta_table"  # Placeholder
+        st.session_state.performance_fetch_time = datetime.now()
         
-        st.session_state.performance_data = performance_df
-        st.session_state.performance_fetch_time = performance_timestamp
-        
-        # Load card usage data from disk
-        card_usage_df, _ = cache_utils.load_card_usage_data()
-        st.session_state.card_usage_data = card_usage_df
+        # Load card usage data from disk (keep this if you use it)
+        try:
+            card_usage_df, _ = cache_utils.load_card_usage_data()
+            st.session_state.card_usage_data = card_usage_df
+            print("DEBUG: Loaded card usage data")
+        except Exception as e:
+            print(f"DEBUG: No card usage data available: {e}")
+            st.session_state.card_usage_data = pd.DataFrame()
         
         # Mark as loaded
         st.session_state.first_load = True
+        print("DEBUG: Cache initialization complete - using meta_table system")
 
 # Update the get_or_load_sample_deck function
 def get_or_load_sample_deck(deck_name, set_name):
@@ -270,254 +259,15 @@ def get_or_analyze_full_deck(deck_name, set_name, force_refresh=False):
     return analyze_deck_fresh(deck_name, set_name)
 
 def aggregate_card_usage(force_update=False):
-    """
-    Aggregate card usage across all top decks and cache results.
-    Only updates once per day unless forced.
-    """
-    # Try to load existing data first
-    card_usage_df, timestamp = cache_utils.load_card_usage_data()
-    
-    # Check if update is needed
-    if not force_update and not card_usage_df.empty and (datetime.now() - timestamp) < timedelta(days=1):
-        # Data is fresh (less than a day old)
-        return card_usage_df
-    
-    # Data needs to be updated
-    with st.spinner("Aggregating card usage data..."):
-        # Get top decks from performance data
-        if 'performance_data' not in st.session_state or st.session_state.performance_data.empty:
-            # Load or update performance data if needed
-            performance_df, _ = cache_utils.load_tournament_performance_data()
-            if performance_df.empty:
-                performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-                cache_utils.save_tournament_performance_data(performance_df)
-        else:
-            performance_df = st.session_state.performance_data
-        
-        # Get top 5 decks to analyze
-        top_decks = performance_df.head(1)
-        
-        # Store all card data
-        all_cards = []
-        
-        # For each deck, get its cards
-        for _, deck in top_decks.iterrows():
-            deck_name = deck['deck_name']
-            set_name = deck['set']
-            
-            # Try to load analyzed deck data
-            deck_data = cache_utils.load_analyzed_deck(deck_name, set_name)
-            
-            if deck_data is None:
-                # Analyze the deck if not cached
-                results, _, _, _ = analyze_deck(deck_name, set_name)
-                
-                # Store relevant info for each card
-                for _, card in results.iterrows():
-                    # FIXED: Add safety checks for missing fields
-                    card_name = card.get('card_name', 'Unknown Card')
-                    card_type = card.get('type', 'Unknown')
-                    card_set = card.get('set', '')
-                    card_num = card.get('num', '')
-                    
-                    # Skip cards with missing essential data
-                    if not card_name or card_name == 'Unknown Card':
-                        continue
-                    
-                    all_cards.append({
-                        'deck_name': deck_name,
-                        'deck_share': deck['share'],
-                        'card_name': card_name,
-                        'type': card_type,
-                        'set': card_set,
-                        'num': card_num,
-                        'count_1': card.get('count_1', 0),
-                        'count_2': card.get('count_2', 0),
-                        'pct_1': card.get('pct_1', 0),
-                        'pct_2': card.get('pct_2', 0),
-                        'pct_total': card.get('pct_total', 0),
-                        'category': card.get('category', 'Unknown')
-                    })
-                
-                # Save the analyzed deck for future use
-                deck_list, deck_info, total_cards, options = build_deck_template(results)
-                analyzed_data = {
-                    'results': results,
-                    'total_decks': 0,  # Not needed for this purpose
-                    'variant_df': pd.DataFrame(),  # Not needed
-                    'deck_list': deck_list,
-                    'deck_info': deck_info,
-                    'total_cards': total_cards,
-                    'options': options
-                }
-                cache_utils.save_analyzed_deck(deck_name, set_name, analyzed_data)
-            else:
-                # Use cached data
-                results = deck_data['results']
-                
-                # Store relevant info for each card
-                for _, card in results.iterrows():
-                    # FIXED: Add safety checks for missing fields
-                    card_name = card.get('card_name', 'Unknown Card')
-                    card_type = card.get('type', 'Unknown')
-                    card_set = card.get('set', '')
-                    card_num = card.get('num', '')
-                    
-                    # Skip cards with missing essential data
-                    if not card_name or card_name == 'Unknown Card':
-                        continue
-                    
-                    all_cards.append({
-                        'deck_name': deck_name,
-                        'deck_share': deck['share'],
-                        'card_name': card_name,
-                        'type': card_type,
-                        'set': card_set,
-                        'num': card_num,
-                        'count_1': card.get('count_1', 0),
-                        'count_2': card.get('count_2', 0),
-                        'pct_1': card.get('pct_1', 0),
-                        'pct_2': card.get('pct_2', 0),
-                        'pct_total': card.get('pct_total', 0),
-                        'category': card.get('category', 'Unknown')
-                    })
-        
-        # Create DataFrame from all cards
-        card_usage_df = pd.DataFrame(all_cards)
-        
-        # FIXED: Add check for empty DataFrame
-        if card_usage_df.empty:
-            print("No card usage data found")
-            return pd.DataFrame()
-        
-        # Calculate total usage weighted by deck share
-        card_usage_summary = card_usage_df.groupby(['card_name', 'type', 'set', 'num']).apply(
-            lambda x: pd.Series({
-                'deck_count': len(x),
-                'total_count': sum(x['count_1'] + x['count_2']),
-                'weighted_usage': sum(x['pct_total'] * x['deck_share'] / 100),
-                'decks': ', '.join(x['deck_name']),
-            })
-        ).reset_index()
-        
-        # Sort by weighted usage
-        card_usage_summary = card_usage_summary.sort_values('weighted_usage', ascending=False)
-        
-        # Save to cache
-        cache_utils.save_card_usage_data(card_usage_summary)
-        
-        return card_usage_summary
+    """Stub - using meta_table directly now"""
+    print("DEBUG: aggregate_card_usage disabled - using meta_table directly")
+    return pd.DataFrame()
 
 def load_or_update_tournament_data(force_update=False):
-    """Load tournament data from cache or update if stale"""
-    print(f"DEBUG: load_or_update_tournament_data called with force_update={force_update}")
-    
-    try:
-        # Try to load tournament data from cache first
-        print("DEBUG: Loading tournament data from cache...")
-        performance_df, performance_timestamp = cache_utils.load_tournament_performance_data()
-        print(f"DEBUG: Loaded {len(performance_df)} cached records, timestamp: {performance_timestamp}")
-        
-        # Import CACHE_TTL from config
-        from config import CACHE_TTL
-        print(f"DEBUG: CACHE_TTL = {CACHE_TTL} seconds")
-        
-        # Check if data needs to be updated
-        time_since_update = datetime.now() - performance_timestamp
-        print(f"DEBUG: Time since last update: {time_since_update.total_seconds()} seconds")
-        
-        needs_update = force_update or performance_df.empty or time_since_update > timedelta(seconds=CACHE_TTL)
-        print(f"DEBUG: Needs update: {needs_update}")
-        
-        if needs_update:
-            print("DEBUG: Updating tournament data...")
-            
-            # CRITICAL: Store old deck count for comparison
-            old_deck_count = len(performance_df) if not performance_df.empty else 0
-            print(f"DEBUG: Old deck count: {old_deck_count}")
-            
-            # Update tournament tracking
-            print("DEBUG: Updating tournament tracking...")
-            stats = update_tournament_tracking()
-            print(f"DEBUG: Tournament tracking stats: {stats}")
-            
-            # CRITICAL FIX: Only run expensive analysis if there are new tournaments OR forced
-            has_new_tournaments = stats.get('new_tournaments', 0) > 0
-            should_analyze = force_update or has_new_tournaments or performance_df.empty
-            
-            if should_analyze:
-                print(f"DEBUG: Running analysis - force: {force_update}, new tournaments: {has_new_tournaments}, empty cache: {performance_df.empty}")
-                
-                # Force fresh analysis of performance data
-                try:
-                    print(f"DEBUG: Calling analyze_recent_performance with threshold {MIN_META_SHARE}")
-                    performance_df = analyze_recent_performance(share_threshold=MIN_META_SHARE)
-                    print(f"DEBUG: analyze_recent_performance returned {len(performance_df)} records")
-                    
-                    if performance_df.empty:
-                        print("DEBUG: No performance data returned, trying alternative approach...")
-                        performance_df = analyze_recent_performance(share_threshold=0.0)
-                        print(f"DEBUG: Second attempt returned {len(performance_df)} records")
-                    
-                    if not performance_df.empty:
-                        print("DEBUG: Saving performance data to cache...")
-                        # Save to cache
-                        cache_utils.save_tournament_performance_data(performance_df)
-                        
-                        # Check if deck count changed significantly
-                        new_deck_count = len(performance_df)
-                        print(f"DEBUG: New deck count: {new_deck_count}")
-                        
-                        if new_deck_count != old_deck_count:
-                            print(f"DEBUG: Deck count changed: {old_deck_count} → {new_deck_count}")
-                            
-                            # Force refresh of currently selected deck
-                            if 'analyze' in st.session_state:
-                                current_deck = st.session_state.analyze.get('deck_name')
-                                print(f"DEBUG: Current deck in session: {current_deck}")
-                                if current_deck:
-                                    print(f"DEBUG: Forcing cache clear for current deck: {current_deck}")
-                                    clear_all_deck_caches(current_deck, st.session_state.analyze.get('set_name', 'A3a'))
-                                    st.session_state.force_deck_refresh = True
-                                    print("DEBUG: Set force_deck_refresh = True")
-                        
-                        print(f"DEBUG: Successfully loaded {len(performance_df)} decks")
-                    else:
-                        print("DEBUG: Still no performance data available")
-                        
-                except Exception as e:
-                    print(f"DEBUG: Exception in analyze_recent_performance call: {e}")
-                    # Try to use cached data even if old
-                    if not performance_df.empty:
-                        print("DEBUG: Using old cached data as fallback")
-                    else:
-                        print("DEBUG: Creating minimal fallback data")
-                        performance_df = create_fallback_performance_data()
-            else:
-                print("DEBUG: No new tournaments detected, skipping expensive analysis")
-                print("DEBUG: Using existing cached performance data")
-            
-            # Update timestamp
-            performance_timestamp = datetime.now()
-            print(f"DEBUG: Updated timestamp to: {performance_timestamp}")
-            
-            # Save the updated timestamp to disk
-            print("DEBUG: Saving timestamp to disk...")
-            with open(cache_utils.TOURNAMENT_TIMESTAMP_PATH, 'w') as f:
-                f.write(performance_timestamp.isoformat())
-            print("DEBUG: Timestamp saved successfully")
-        else:
-            print("DEBUG: Using cached data (no update needed)")
-            
-        print(f"DEBUG: Returning {len(performance_df)} records")
-        return performance_df, performance_timestamp
-        
-    except Exception as e:
-        print(f"DEBUG: Critical error in load_or_update_tournament_data: {e}")
-        # Return fallback data
-        print("DEBUG: Returning fallback data due to error")
-        fallback_data = create_fallback_performance_data()
-        return fallback_data, datetime.now()
+    """Stub - using meta_table directly now"""
+    print("DEBUG: load_or_update_tournament_data disabled - using meta_table directly") 
+    placeholder_df = pd.DataFrame([{'deck_name': 'using_meta_table'}])
+    return placeholder_df, datetime.now()
 
 def create_fallback_performance_data():
     """Create minimal fallback performance data when all else fails"""
