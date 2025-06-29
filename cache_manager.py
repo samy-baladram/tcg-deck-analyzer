@@ -13,10 +13,20 @@ from config import MIN_META_SHARE, CURRENT_SET
 # In cache_manager.py - Add this import at the top
 from card_cache import get_sample_deck_cached, save_analyzed_deck_to_cache, get_analyzed_deck_cached
 
+def initialize_tournament_baseline():
+    """Initialize baseline index if it doesn't exist"""
+    if not os.path.exists(cache_utils.SAVED_INDEX_PATH):
+        print("DEBUG: No baseline index found, creating initial baseline")
+        cache_utils.save_current_index_as_baseline()
+        return True
+    return False
+    
 def init_caches():
     """
     Initialize all necessary caches in session state without network calls.
     """
+    initialize_tournament_baseline()
+    
     # Deck analysis cache
     if 'analyzed_deck_cache' not in st.session_state:
         st.session_state.analyzed_deck_cache = {}
@@ -556,91 +566,69 @@ def track_player_tournament_mapping(deck_name, set_name=None):
         return 0
     
 def update_tournament_tracking():
-    """Update tournament tracking and deck caches with automatic invalidation"""
+    """Update tournament tracking using index.json comparison (no web scraping)"""
     
     stats = {
         'current_tournaments': 0,
         'new_tournaments': 0,
         'affected_decks': 0,
-        'updated_decks': 0
+        'updated_decks': 0,
+        'has_changes': False
     }
     
-    # Load previous tournament IDs
-    previous_ids = cache_utils.load_tournament_ids()
-    
-    # Get current tournament IDs
-    current_ids = get_all_recent_tournaments()
-    stats['current_tournaments'] = len(current_ids)
-    
-    # Find new tournament IDs
-    new_ids = get_new_tournament_ids(previous_ids)
-    stats['new_tournaments'] = len(new_ids)
-    
-    # If no new tournaments, nothing to do
-    if not new_ids:
+    try:
+        # Compare current index with saved baseline
+        comparison_result = cache_utils.compare_tournament_indices()
+        
+        stats['current_tournaments'] = comparison_result['current_total']
+        stats['new_tournaments'] = comparison_result['new_tournament_count']
+        stats['has_changes'] = comparison_result['has_changes']
+        
+        print(f"DEBUG: Index comparison result: {comparison_result}")
+        
+        # If no changes detected, return early
+        if not comparison_result['has_changes']:
+            print("DEBUG: No tournament changes detected")
+            return stats
+        
+        print(f"DEBUG: Tournament changes detected: {comparison_result['new_tournament_count']} new tournaments")
+        
+        # Clear ALL analyzed deck caches when new tournaments are found
+        if comparison_result['new_tournament_count'] > 0:
+            print("DEBUG: Clearing all deck caches due to new tournaments")
+            
+            # Clear session state caches
+            if 'analyzed_deck_cache' in st.session_state:
+                cleared_count = len(st.session_state.analyzed_deck_cache)
+                st.session_state.analyzed_deck_cache.clear()
+                stats['updated_decks'] = cleared_count
+                print(f"DEBUG: Cleared {cleared_count} analyzed deck caches")
+            
+            if 'sample_deck_cache' in st.session_state:
+                st.session_state.sample_deck_cache.clear()
+                print("DEBUG: Cleared sample deck cache")
+            
+            # Clear disk-based caches
+            cache_utils.clear_analyzed_deck_cache()
+            
+            # Update baseline with current index
+            cache_utils.save_current_index_as_baseline()
+            print("DEBUG: Updated baseline index")
+        
         return stats
-    
-    # Save updated tournament IDs
-    cache_utils.save_tournament_ids(current_ids)
-    
-    # ENHANCED: If new tournaments found, clear ALL analyzed deck caches
-    if new_ids:
-        print(f"Found {len(new_ids)} new tournaments, clearing ALL analyzed deck caches")
         
-        # Clear ALL analyzed deck caches in session state
-        if 'analyzed_deck_cache' in st.session_state:
-            cleared_count = len(st.session_state.analyzed_deck_cache)
-            st.session_state.analyzed_deck_cache.clear()
-            print(f"Cleared {cleared_count} analyzed deck caches from session state")
-            stats['updated_decks'] += cleared_count
-        
-        # Clear ALL sample deck caches
-        if 'sample_deck_cache' in st.session_state:
-            st.session_state.sample_deck_cache.clear()
-            print("Cleared all sample deck caches")
-        
-        # Clear ALL collected deck caches
-        if 'collected_decks' in st.session_state:
-            st.session_state.collected_decks.clear()
-            print("Cleared all collected deck caches")
-        
-        # Clear ALL energy caches
-        if 'energy_cache' in st.session_state:
-            st.session_state.energy_cache.clear()
-            print("Cleared all energy caches")
-        
-        # Clear individual energy keys from session state
-        energy_keys_to_clear = [key for key in st.session_state.keys() if key.startswith('energy_')]
-        for key in energy_keys_to_clear:
-            del st.session_state[key]
-            print(f"Cleared energy key: {key}")
-        
-        # Clear matchup caches
-        matchup_keys_to_clear = [key for key in st.session_state.keys() if key.startswith('matchup_')]
-        for key in matchup_keys_to_clear:
-            del st.session_state[key]
-            print(f"Cleared matchup key: {key}")
-        
-        # Clear energy utils caches
-        energy_utils_keys = ['archetype_energy_types', 'archetype_energy_combos', 'per_deck_energy']
-        for key in energy_utils_keys:
-            if key in st.session_state:
-                st.session_state[key].clear() if hasattr(st.session_state[key], 'clear') else None
-                print(f"Cleared energy utils cache: {key}")
-        
-        # Also clear disk caches for common decks
-        if 'performance_data' in st.session_state and not st.session_state.performance_data.empty:
-            top_decks = st.session_state.performance_data.head(20)  # Clear top 20 decks
-            for _, deck in top_decks.iterrows():
-                deck_name = deck['deck_name']
-                set_name = deck['set']
-                try:
-                    cache_utils.clear_deck_cache(deck_name, set_name)
-                    print(f"Cleared disk cache for {deck_name}")
-                except Exception as e:
-                    print(f"Error clearing disk cache for {deck_name}: {e}")
-    
-    return stats
+    except Exception as e:
+        print(f"ERROR: Tournament tracking update failed: {e}")
+        return stats
+
+def check_tournament_changes_only():
+    """Quick check if tournament changes exist without updating caches"""
+    try:
+        comparison_result = cache_utils.compare_tournament_indices()
+        return comparison_result['has_changes']
+    except Exception as e:
+        print(f"ERROR: Quick tournament check failed: {e}")
+        return False
 
 def clear_all_deck_caches(deck_name, set_name):
     """Clear ALL caches for a specific deck to force fresh analysis"""
