@@ -616,7 +616,7 @@ def display_meta_overview_table():
                 else:
                     return 'color: #FD6C25; font-weight: bold;'  # Red
             
-            return df.style.applymap(color_r_column, subset=['R'])
+            return df.style.map(color_r_column, subset=['R'])
         
         styled_df = style_dataframe(final_df)
         
@@ -1315,9 +1315,9 @@ def display_extended_meta_table():
                 return 'color: #FD6C25; font-weight: bold;'  # Red for losing
         
         # Apply conditional styling
-        styled_df = final_df.style.applymap(
+        styled_df = final_df.style.map(
             style_ratio_column, subset=['Ratio']
-        ).applymap(
+        ).map(
             style_winrate_column, subset=['Win Rate']
         )
         
