@@ -1314,11 +1314,20 @@ def display_extended_meta_table():
             else:
                 return 'color: #FD6C25; font-weight: bold;'  # Red for losing
         
-        # Apply conditional styling
+        def highlight_selected_deck_row(row):
+            """Apply yellow background to the currently selected deck row"""
+            selected_deck = st.session_state.get('analyze', {}).get('deck_name', None)
+            if selected_deck and row['deck_name'] == selected_deck:
+                return ['background-color: rgba(24, 200, 240, 0.2)'] * len(row)
+            return [''] * len(row)
+        
+        # Apply conditional styling (add the .apply() chain)
         styled_df = final_df.style.map(
             style_ratio_column, subset=['Ratio']
         ).map(
             style_winrate_column, subset=['Win Rate']
+        ).apply(
+            highlight_selected_deck_row, axis=1
         )
         
         # Configure column display
