@@ -1,0 +1,57 @@
+{
+  "tournament_id": "685bd75827d8bc24cf25a9f2",
+  "name": "Torneo Pocket OWN Valencia - Domingo 29",
+  "timestamp": 1751192280000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Sergio L\u00f3pez Rold\u00e1n",
+      "record": "3 - 0 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ismael Garc\u00eda",
+      "record": "2 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Ramon Ferri",
+      "record": "2 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "David Azor\u00edn",
+      "record": "2 - 1 - 0",
+      "archetype": "slurpuff-alcremie-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Diego Yag\u00fce G\u00f3mez",
+      "record": "1 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "manuel alejandro garcia giner",
+      "record": "1 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-solgaleo-ex-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Franco Pugliese",
+      "record": "1 - 2 - 0",
+      "archetype": "charizard-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Naomi Verdejo Herreros",
+      "record": "0 - 3 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    }
+  ]
+}

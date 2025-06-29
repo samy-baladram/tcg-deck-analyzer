@@ -381,10 +381,11 @@
     "pocket-legends-league-32",
     "680777f057322cac4624bcf2",
     "pocket-legends-league-31",
-    "pocket-legends-league-30"
+    "pocket-legends-league-30",
+    "685bd75827d8bc24cf25a9f2"
   ],
-  "last_updated": 1751184225,
-  "total_tournaments": 382,
+  "last_updated": 1751200534,
+  "total_tournaments": 383,
   "tournaments_by_path": {
     "2025/06/12": [
       "68425e2827d8bc24cf24e4cb",
@@ -893,6 +894,9 @@
       "685ca8a827d8bc24cf25b032",
       "683a09ed27d8bc24cf24966b",
       "pocket-legends-league-32"
+    ],
+    "2025/06/29": [
+      "685bd75827d8bc24cf25a9f2"
     ]
   }
 }
