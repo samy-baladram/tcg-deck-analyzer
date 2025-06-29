@@ -734,7 +734,7 @@ def create_deck_section(section_type):
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="width: 100%; height: 60px; background-color: #f0f0f0; border-radius: 10px;
+        <div style="width: 100%; margin-top: -18px; height: 60px; background-color: #f0f0f0; border-radius: 6px;
             display: flex; align-items: center; justify-content: center;">
             <span style="color: #888; font-size: 0.8rem;">No image</span>
         </div>
