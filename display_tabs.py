@@ -1961,14 +1961,14 @@ def display_meta_trend_tab(deck_info=None):
         st.plotly_chart(fig, use_container_width=True, config=config, key="enhanced_meta_trend_chart")
         
         # Add explanation
-        if has_noex and len(deck_formats) > 1:
-            st.caption(
-                "Shows daily meta share percentage. "
-                "'Standard' shows only Standard format tournaments. "
-                "'Standard+NOEX' combines data from all tournament formats. "
-                "Vertical dashed lines indicate set releases."
-            )
-        else:
+        # if has_noex and len(deck_formats) > 1:
+        #     st.caption(
+        #         "Shows daily meta share percentage. "
+        #         "'Standard' shows only Standard format tournaments. "
+        #         "'Standard+NOEX' combines data from all tournament formats. "
+        #         "Vertical dashed lines indicate set releases."
+        #     )
+        # else:
             # st.caption(
             #     "Shows daily meta share percentage based on tournament data. "
             #     "Vertical dashed lines indicate set releases."
