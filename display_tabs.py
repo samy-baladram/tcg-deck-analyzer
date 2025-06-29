@@ -1122,9 +1122,9 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     st.plotly_chart(fig, use_container_width=True, config=custom_config, key="matchup_bar_chart")
     
     # Add explanation
-    st.caption(
-        "Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage."
-    )
+    # st.caption(
+    #     "Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage."
+    # )
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
@@ -1469,7 +1469,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
             <div style="font-size: 0.7rem; font-weight: bold; ">Unfavorable</div>
             <div style="font-size: 1.5rem; font-weight: bold; color: #fd6c6c; line-height: 0.8;">{unfavorable_share_norm:.1f}%</div>
-            <div style="font-size: 0.5rem; ">of meta</div>
+            <div style="font-size: 0.7rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -1479,7 +1479,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 0.7rem; font-weight: bold;">Even</div>
             <div style="font-size: 1.5rem; font-weight: bold; color: #E6CA00; line-height: 0.8;">{even_share_norm:.1f}%</div>
-            <div style="font-size: 0.5rem;">of meta</div>
+            <div style="font-size: 0.7rem;">of meta</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1489,7 +1489,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;  border-radius: 8px; height: 100px;">
             <div style="font-size: 0.7rem; font-weight: bold; ">Favorable</div>
             <div style="font-size: 1.5rem; font-weight: bold; color: #4FCC20; line-height: 0.8;">{favorable_share_norm:.1f}%</div>
-            <div style="font-size: 0.5rem; ">of meta</div>
+            <div style="font-size: 0.7rem; ">of meta</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1499,7 +1499,7 @@ def display_matchup_summary(deck_name, set_name, working_df):
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-radius: 8px; height: 100px;">
             <div style="font-size: 0.7rem; font-weight: bold;">Meta Win Rate</div>
             <div style="font-size: 1.5rem; font-weight: bold; color: #00A0FF; line-height: 0.8;">{weighted_win_rate:.1f}%</div>
-            <div style="font-size: 0.5rem;">weighted avg</div>
+            <div style="font-size: 0.7rem;">weighted avg</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -1799,7 +1799,7 @@ def display_matchup_tab(deck_info=None):
         return
     
     # Display the enhanced data table with all rows
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([3,2])
     with col1:
         display_matchup_summary(deck_name, set_name, working_df)
 
@@ -1823,14 +1823,14 @@ def display_matchup_tab(deck_info=None):
                 use_container_width=True,
                 column_config={
                     "Icon1": st.column_config.ImageColumn(
-                        "Icon 1",
-                        help="First Pokémon in the deck",
-                        width="20px",
+                        "",
+                        help="Primary Pokémon in the deck",
+                        width=30,
                     ),
                     "Icon2": st.column_config.ImageColumn(
                         "Icon 2", 
-                        help="Second Pokémon in the deck",
-                        width="20px",
+                        help="Secondary Pokémon in the deck",
+                        width=30,
                     ),
                     "Deck": st.column_config.TextColumn(
                         "Deck",
