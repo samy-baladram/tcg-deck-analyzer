@@ -1904,7 +1904,7 @@ def display_meta_trend_tab(deck_info=None):
         st.warning("No deck selected for meta trend analysis.")
         return
     
-    #st.write("##### Meta Share Evolution")
+    st.write("##### Meta Share Evolution & Performance Trend")
     
     # Display indicator badges first
     # display_meta_indicators(deck_name)
@@ -1969,10 +1969,10 @@ def display_meta_trend_tab(deck_info=None):
                 "Vertical dashed lines indicate set releases."
             )
         else:
-            st.caption(
-                "Shows daily meta share percentage based on tournament data. "
-                "Vertical dashed lines indicate set releases."
-            )
+            # st.caption(
+            #     "Shows daily meta share percentage based on tournament data. "
+            #     "Vertical dashed lines indicate set releases."
+            # )
     else:
         st.info(f"No meta trend data available for this deck archetype.")
     
@@ -1988,10 +1988,10 @@ def display_meta_trend_tab(deck_info=None):
             'displaylogo': False,
         }
         st.plotly_chart(perf_fig, use_container_width=True, config=config, key="performance_trend_chart")
-        
+
         st.caption(
-            f"Shows win rate trends over time. "
-            f"Green markers = above 50% win rate, Red markers = below 50% win rate. Dotted line shows 50% reference."
+            "Meta Evolution: Shows daily meta share percentage based on tournament data.  \n"
+            "Performance Trend: Shows win rate trends over time. Green markers = above 50% win rate, Red markers = below 50% win rate. Dotted line shows 50% reference."
         )
     else:
         st.info(f"No performance trend data available for this deck archetype.")
@@ -2132,7 +2132,7 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
         fig.add_annotation(
             x=peak_date,
             y=peak_value + (df_filtered['meta_percentage'].max() * 0.05),
-            text=f"Peak: {peak_value:.1f}%",
+            text=f"Peak: {peak_value:.1f}% share",
             showarrow=False,
             font=dict(size=12),
             bgcolor="rgba(0,0,0,0.5)",
@@ -2154,11 +2154,11 @@ def create_enhanced_meta_trend_chart(deck_name, selected_formats=None):
         
         # Update layout
         fig.update_layout(
-            title=f"Meta Evolution: {deck_name.replace('-', ' ').title()}",
+            #title=f"Meta Evolution",
             xaxis_title=None,  # Removed "Date" title
             yaxis_title=None,
             height=400,
-            margin=dict(t=30, l=50, r=20, b=10),
+            margin=dict(t=0, l=50, r=20, b=10),
             hovermode='x unified',
             
             # Styling to match your app
@@ -2591,18 +2591,18 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         fig.add_annotation(
             x=peak_date,
             y=peak_value + (y_max - y_min) * 0.05,
-            text=f"Peak: {peak_value:.1f}%",
+            text=f"Peak: {peak_value:.1f}% Win Rate",
             showarrow=False,
             font=dict(size=12, color="#FFFFFF")  # White annotation
         )
         
         # Update layout
         fig.update_layout(
-            title=f"Performance Trend: {deck_name.replace('-', ' ').title()}",
+            #title=f"Performance Trend",
             xaxis_title=None,
             yaxis_title=None,  # Remove y-axis title
             height=400,
-            margin=dict(t=30, l=50, r=20, b=10),
+            margin=dict(t=0, l=50, r=20, b=10),
             hovermode='x unified',
             
             # Styling to match meta evolution chart
