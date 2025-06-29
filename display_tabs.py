@@ -1801,92 +1801,93 @@ def display_matchup_tab(deck_info=None):
         return
     
     # Display the enhanced data table with all rows
-    col1, col2 = st.columns([4,3], gap="medium")
-    with col1:
-        display_matchup_summary(deck_name, set_name, working_df)
+    # col1, col2 = st.columns([4,3], gap="medium")
+    # with col1:
+    #     display_matchup_summary(deck_name, set_name, working_df)
 
-    with col2:
-        # Apply styling for matchups
-        def highlight_matchups(val):
-            """Apply colors to matchup column values"""
-            if val == "Favorable":
-                return 'background-color: rgba(100, 200, 100, 0.4)'  # Light green
-            elif val == "Unfavorable":
-                return 'background-color: rgba(255, 100, 100, 0.4)'  # Light red
-            else:
-                return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
+    # with col2:
+    # Apply styling for matchups
+    def highlight_matchups(val):
+        """Apply colors to matchup column values"""
+        if val == "Favorable":
+            return 'background-color: rgba(100, 200, 100, 0.4)'  # Light green
+        elif val == "Unfavorable":
+            return 'background-color: rgba(255, 100, 100, 0.4)'  # Light red
+        else:
+            return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
+    
+    try:
+        # First try with styled dataframe and images
+        styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
+        st.write("##### Matchup Data")
+        st.dataframe(
+            styled_df,
+            use_container_width=True,
+            column_config={
+                "Icon1": st.column_config.ImageColumn(
+                    "",
+                    help="Primary Pokémon in the deck",
+                    width=40,
+                ),
+                "Icon2": st.column_config.ImageColumn(
+                    "", 
+                    help="Secondary Pokémon in the deck",
+                    width=40,
+                ),
+                "Deck": st.column_config.TextColumn(
+                    "Deck",
+                    help="Opponent deck archetype"
+                ),
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    help="Percentage of matches won against this deck",
+                    format="%.1f%%",
+                ),
+                "Record": st.column_config.TextColumn(
+                    "Record",
+                    help="Win-Loss-Tie record against this deck"
+                ),
+                "Matches": st.column_config.NumberColumn(
+                    "Matches",
+                    help="Total number of matches played against this deck"
+                ),
+                "Matchup": st.column_config.TextColumn(
+                    "Matchup",
+                    help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
+                ),
+                "Meta Share%": none
+                # "Meta Share %": st.column_config.NumberColumn(
+                #     "Meta Share %",
+                #     help="Percentage representation of this deck in the overall competitive metagame",
+                #     format="%.2f%%"
+                # ),
+            },
+            hide_index=True,
+            height=700
+        )
+    except Exception as e:
+        # Fallback to simpler version if there's an issue
+        st.error(f"Error displaying styled dataframe with images: {str(e)}")
+        st.write("Showing basic version without styling and images:")
         
-        try:
-            # First try with styled dataframe and images
-            styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
-            st.write("##### Matchup Data")
-            st.dataframe(
-                styled_df,
-                use_container_width=True,
-                column_config={
-                    "Icon1": st.column_config.ImageColumn(
-                        "",
-                        help="Primary Pokémon in the deck",
-                        width=40,
-                    ),
-                    "Icon2": st.column_config.ImageColumn(
-                        "", 
-                        help="Secondary Pokémon in the deck",
-                        width=40,
-                    ),
-                    "Deck": st.column_config.TextColumn(
-                        "Deck",
-                        help="Opponent deck archetype"
-                    ),
-                    "Win %": st.column_config.NumberColumn(
-                        "Win %",
-                        help="Percentage of matches won against this deck",
-                        format="%.1f%%",
-                    ),
-                    "Record": st.column_config.TextColumn(
-                        "Record",
-                        help="Win-Loss-Tie record against this deck"
-                    ),
-                    "Matches": st.column_config.NumberColumn(
-                        "Matches",
-                        help="Total number of matches played against this deck"
-                    ),
-                    "Matchup": st.column_config.TextColumn(
-                        "Matchup",
-                        help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
-                    ),
-                    "Meta Share %": st.column_config.NumberColumn(
-                        "Meta Share %",
-                        help="Percentage representation of this deck in the overall competitive metagame",
-                        format="%.2f%%"
-                    ),
-                },
-                hide_index=True,
-                height=700
-            )
-        except Exception as e:
-            # Fallback to simpler version if there's an issue
-            st.error(f"Error displaying styled dataframe with images: {str(e)}")
-            st.write("Showing basic version without styling and images:")
-            
-            # Remove image columns for fallback
-            basic_df = formatted_df.drop(columns=['Icon1', 'Icon2'], errors='ignore')
-            st.dataframe(
-                basic_df,
-                use_container_width=True,
-                column_config={
-                    "Win %": st.column_config.NumberColumn(
-                        "Win %",
-                        format="%.1f%%",
-                    ),
-                },
-                hide_index=True
-            )
-        
-        # Add some space between summary and table
-        if filtered_count > 0:
-            st.caption(f"Showing {len(working_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches.  \n"
-                    f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
+        # Remove image columns for fallback
+        basic_df = formatted_df.drop(columns=['Icon1', 'Icon2'], errors='ignore')
+        st.dataframe(
+            basic_df,
+            use_container_width=True,
+            column_config={
+                "Win %": st.column_config.NumberColumn(
+                    "Win %",
+                    format="%.1f%%",
+                ),
+            },
+            hide_index=True
+        )
+    
+    # Add some space between summary and table
+    if filtered_count > 0:
+        st.caption(f"Showing {len(working_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches.  \n"
+                f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
         #st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
         
     #st.caption(f"Data based on the current compiled tournament data on [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).")
