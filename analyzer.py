@@ -11,7 +11,7 @@ This module contains functions for analyzing deck data, including:
 import pandas as pd
 import time
 import streamlit as st
-from scraper import get_deck_urls, extract_cards, get_deck_performance_data
+from scraper import get_deck_urls, extract_cards
 from config import CATEGORY_BINS, CATEGORY_LABELS, FLEXIBLE_CORE_THRESHOLD, CURRENT_SET
 from utils import is_flexible_core, calculate_display_usage, format_card_display
 #from energy_utils import store_energy_types
