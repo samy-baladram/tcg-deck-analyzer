@@ -2625,7 +2625,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         fig.add_annotation(
             x=peak_date,
             y=peak_value + (y_max - y_min) * 0.05,
-            text=f"Peak: {peak_value:.1f}% Win Rate",
+            text=f"Peak: {peak_value:.1f}% win rate",
             showarrow=False,
             font=dict(size=12, color="#FFFFFF")  # White annotation
         )
