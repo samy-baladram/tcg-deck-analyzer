@@ -1099,13 +1099,15 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
             ticktext=[str(i) for i in range(0, 101, 5)]  # Show numbers without %
         ),
         yaxis=dict(
-            title="Meta Share %",
+            title=None,
+            #title="Meta Share %",
             title_font=dict(size=16),
             tickfont=dict(size=14),
             showgrid=False,
             showline=False,
             zeroline=False,
-            range=[0, 29.9]
+            range=[0, 29.9],
+            ticksuffix='%'
         ),
         
         # Remove legend and other elements
@@ -1122,9 +1124,9 @@ def display_matchup_bar_chart(deck_name, set_name, working_df):
     st.plotly_chart(fig, use_container_width=True, config=custom_config, key="matchup_bar_chart")
     
     # Add explanation
-    # st.caption(
-    #     "Shows how much of the meta falls into each 5% win rate interval (win rates rounded to nearest 5%). Higher bars in green ranges = more favorable meta coverage."
-    # )
+    st.caption(
+        "Shows how much of the meta share falls into each 5% win rate interval."
+    )
     
 # Modify the display_related_decks_tab function in display_tabs.py:
 def display_related_decks_tab(deck_info, results):
