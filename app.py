@@ -407,7 +407,7 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     #st.write("Coming Soon")
                     from meta_table import format_tournament_summary
                     summary_text = format_tournament_summary(period_days=7)  # Last 7 days
-                    st.caption(summary_text)
+                    st.write(f"##### Tournament Statistics - {summary_text}")
                     display_extended_meta_table()
                 
                 # And shift the existing tabs:
