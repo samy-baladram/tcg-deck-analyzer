@@ -1276,7 +1276,7 @@ def display_extended_meta_table():
         selected_deck = st.session_state.get('analyze', {}).get('deck_name', None)
         # Create the modified rank column first
         rank_column = extended_df.apply(
-            lambda row: f"▸ {row['rank']}" if row['deck_name'] == selected_deck else row['rank'], 
+            lambda row: f"▸ {row['rank']}" if row['deck_name'] == selected_deck else str(row['rank']), 
             axis=1
         )
 
