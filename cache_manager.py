@@ -79,7 +79,7 @@ def init_caches():
                     cache_utils.save_tournament_performance_data(performance_df)
                     performance_timestamp = datetime.now()
                     #print(f"DEBUG: Generated performance data with {len(performance_df)} decks")
-                else:
+                #else:
                     #print("DEBUG: No tournament data in index")
             except Exception as e:
                 print(f"ERROR: Failed to generate initial performance data: {e}")
