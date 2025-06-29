@@ -11,64 +11,27 @@ from config import BASE_URL, TOURNAMENT_COUNT, MIN_META_SHARE, MIN_WIN_RATE, CUR
 
 
 def get_popular_decks_with_performance(share_threshold=0.0):
-    """Get all decks with their share percentages and win rates above threshold"""
-    url = f"{BASE_URL}/decks?game=pocket"
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    decks = []
-    
-    for row in soup.find_all('tr'):
-        cells = row.find_all('td')
-        if len(cells) < 6:
-            continue
-            
-        deck_link = cells[2].find('a', href=True)
-        if not deck_link or '/decks/' not in deck_link['href'] or 'matchup' in deck_link['href']:
-            continue
-            
-        href = deck_link['href']
-        deck_name = href.split('/decks/')[1].split('?')[0]
-        displayed_name = deck_link.text.strip()
+    """Simple replacement using local data"""
+    try:
+        from meta_table import MetaTableBuilder
+        builder = MetaTableBuilder()
+        meta_df = builder.build_complete_meta_table(limit=50)
         
-        # Extract set name
-        set_name = CURRENT_SET  # Default
-        if 'set=' in href:
-            set_name = href.split('set=')[1].split('&')[0]
+        # Filter by threshold and convert to expected format
+        filtered_df = meta_df[meta_df['share_7d'] >= share_threshold].copy()
         
-        # Extract share percentage (column 4)
-        share_text = cells[4].text.strip() if len(cells) > 4 else '0%'
-        share = float(share_text.replace('%', '')) if '%' in share_text and share_text.replace('%', '').replace('.', '').isdigit() else 0
-        
-        # Extract win rate from multiple columns
-        win_rate = 0
-        for col_idx in [3, 5, 6, 7]:
-            if col_idx < len(cells):
-                cell_text = cells[col_idx].text.strip()
-                if '%' in cell_text and cell_text != share_text:
-                    potential_win_rate = float(cell_text.replace('%', '')) if cell_text.replace('%', '').replace('.', '').isdigit() else 0
-                    if 0 <= potential_win_rate <= 100:
-                        win_rate = potential_win_rate
-                        break
-        
-        decks.append({
-            'deck_name': deck_name,
-            'displayed_name': displayed_name,
-            'set': set_name,
-            'share': share,
-            'win_rate': win_rate
+        result_df = pd.DataFrame({
+            'deck_name': filtered_df.index,
+            'displayed_name': filtered_df['formatted_deck_name'],
+            'share': filtered_df['share_7d'],
+            'set': 'A3a'
         })
-    
-    # Create DataFrame
-    df = pd.DataFrame(decks)
-    
-    # Apply filtering
-    df = df[(df['share'] >= share_threshold) & (df['win_rate'] >= MIN_WIN_RATE)]
-
-    # Add rank column after sorting (1-based index)
-    df.insert(0, 'rank', range(1, len(df) + 1))
-    
-    return df.sort_values('win_rate', ascending=False)
+        
+        return result_df
+        
+    except Exception as e:
+        print(f"Error getting popular decks from local data: {e}")
+        return pd.DataFrame()
 
 # In scraper.py, update get_all_recent_tournaments function
 def get_all_recent_tournaments():
