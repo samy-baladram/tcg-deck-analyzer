@@ -339,9 +339,17 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
         # Validate the structure of analyzed_deck and provide defaults
         try:
             # Use .get() method with defaults to prevent KeyError
+            # Use .get() method with defaults to prevent KeyError
             results = analyzed_deck.get('results', None)
             total_decks = analyzed_deck.get('total_decks', 0)
             variant_df = analyzed_deck.get('variant_df', None)
+            
+            # ADD THIS DEBUG CODE HERE:
+            st.write("🔍 **Debug Info:**")
+            st.write(f"- results type: {type(results)}")
+            st.write(f"- results content (first 200 chars): {str(results)[:200] if results else 'None'}")
+            st.write(f"- total_decks: {total_decks}")
+            st.write(f"- variant_df type: {type(variant_df)}")
             
             # FIXED: Better validation with specific error messages
             if results is None:
