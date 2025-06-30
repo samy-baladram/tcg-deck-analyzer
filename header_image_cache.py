@@ -88,16 +88,6 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
                 except Exception as e:
                     print(f"Error loading cached header image: {e}")
     
-    # FIX: Get analysis_results if not provided
-    if analysis_results is None:
-        try:
-            import cache_manager
-            print(f"Getting analysis results for header image: {deck_name}")
-            analysis_results = cache_manager.get_or_analyze_full_deck(deck_name, set_name)
-        except Exception as e:
-            print(f"Failed to get analysis for {deck_name}: {e}")
-            return None
-    
     # Generate new image
     print(f"Generating new header image: {deck_name}")
     deck_info = {'deck_name': deck_name, 'set': set_name}
