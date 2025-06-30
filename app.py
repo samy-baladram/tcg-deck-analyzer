@@ -389,8 +389,9 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 with tab2:
                     # from deck_gallery import display_deck_gallery_tab_simple
                     # display_deck_gallery_tab_simple()
+                    st.write("Coming Soon")
                     from deck_gallery import display_deck_gallery_tab
-                    display_deck_gallery_tab()
+                    #display_deck_gallery_tab()
                 #     # Pass variant_df safely
                 #     if variant_df is not None:
                 #         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
@@ -406,11 +407,11 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     display_tabs.display_meta_trend_tab(original_deck_info)
                    
                 with tab5:
-                    st.write("Coming Soon")
-                    #from meta_table import format_tournament_summary
-                    #summary_text = format_tournament_summary(period_days=7)  # Last 7 days
-                    #st.write(f"##### Tournament Statistics - {summary_text}")
-                    #display_extended_meta_table()
+                    #st.write("Coming Soon")
+                    from meta_table import format_tournament_summary
+                    summary_text = format_tournament_summary(period_days=7)  # Last 7 days
+                    st.write(f"##### Tournament Statistics - {summary_text}")
+                    display_extended_meta_table()
                 
                 # And shift the existing tabs:
                 with tab6:  # Related Decks (was tab5)
