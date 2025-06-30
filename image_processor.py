@@ -394,6 +394,16 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     Find the card info for a Pokemon from analysis results
     Returns dict with set and number, or None if not found
     """
+    # Check if analysis_results is a DataFrame or dict
+    if isinstance(analysis_results, dict):
+        # If it's a dict, we can't search it like a DataFrame
+        # Return None for now - the function will fall back to other approaches
+        return None
+    
+    # If it's not a DataFrame, return None
+    if not hasattr(analysis_results, 'empty'):
+        return None
+        
     # Create both versions of the Pokemon name
     name_with_spaces = pokemon_name.replace('-', ' ').title()
     name_with_hyphens = pokemon_name.replace(' ', '-').title()
