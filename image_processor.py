@@ -463,7 +463,7 @@ def find_pokemon_images(deck_info, analysis_results=None):
                         pil_images.append(img)
     
     # Approach 2: Extract from current analysis results
-    if not pil_images and analysis_results is not None and not analysis_results.empty:
+    if not pil_images and analysis_results is not None and analysis_results:
         if pokemon_names:
             # Get images for each Pokémon
             for pokemon_name in pokemon_names[:2]:
