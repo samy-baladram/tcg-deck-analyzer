@@ -394,16 +394,6 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     Find the card info for a Pokemon from analysis results
     Returns dict with set and number, or None if not found
     """
-    # Check if analysis_results is a DataFrame or dict
-    if isinstance(analysis_results, dict):
-        # If it's a dict, we can't search it like a DataFrame
-        # Return None for now - the function will fall back to other approaches
-        return None
-    
-    # If it's not a DataFrame, return None
-    if not hasattr(analysis_results, 'empty'):
-        return None
-        
     # Create both versions of the Pokemon name
     name_with_spaces = pokemon_name.replace('-', ' ').title()
     name_with_hyphens = pokemon_name.replace(' ', '-').title()
@@ -473,7 +463,7 @@ def find_pokemon_images(deck_info, analysis_results=None):
                         pil_images.append(img)
     
     # Approach 2: Extract from current analysis results
-    if not pil_images and analysis_results is not None and analysis_results:
+    if not pil_images and analysis_results is not None and not analysis_results.empty:
         if pokemon_names:
             # Get images for each Pokémon
             for pokemon_name in pokemon_names[:2]:
