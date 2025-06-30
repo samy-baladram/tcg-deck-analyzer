@@ -389,16 +389,9 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 with tab2:
                     # from deck_gallery import display_deck_gallery_tab_simple
                     # display_deck_gallery_tab_simple()
-                    st.write("Coming Soon")
+                    #st.write("Coming Soon")
                     from deck_gallery import display_deck_gallery_tab
-                    #display_deck_gallery_tab()
-                #     # Pass variant_df safely
-                #     if variant_df is not None:
-                #         display_tabs.display_card_usage_tab(results, total_decks, variant_df)
-                #     else:
-                #         import pandas as pd
-                #         empty_variant_df = pd.DataFrame()
-                #         display_tabs.display_card_usage_tab(results, total_decks, empty_variant_df)
+                    display_deck_gallery_tab()
                     
                 with tab3:
                     display_tabs.display_matchup_tab()
