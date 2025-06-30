@@ -406,16 +406,16 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     display_tabs.display_meta_trend_tab(original_deck_info)
                    
                 with tab5:
-                    #st.write("Coming Soon")
-                    from meta_table import format_tournament_summary
-                    summary_text = format_tournament_summary(period_days=7)  # Last 7 days
-                    st.write(f"##### Tournament Statistics - {summary_text}")
-                    display_extended_meta_table()
+                    st.write("Coming Soon")
+                    #from meta_table import format_tournament_summary
+                    #summary_text = format_tournament_summary(period_days=7)  # Last 7 days
+                    #st.write(f"##### Tournament Statistics - {summary_text}")
+                    #display_extended_meta_table()
                 
                 # And shift the existing tabs:
                 with tab6:  # Related Decks (was tab5)
-                    st.write("Under construction")
-                    #display_tabs.display_related_decks_tab(original_deck_info, results)
+                    #st.write("Under construction")
+                    display_tabs.display_related_decks_tab(original_deck_info, results)
                     
                 # with tab7:  # Raw Data (was tab6)
                 #     if variant_df is not None:
