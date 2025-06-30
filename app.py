@@ -71,6 +71,7 @@ if 'cache_initialized' not in st.session_state:
 # Early initialization - Only do heavy loading once
 if not st.session_state.app_state['initial_data_loaded']:
     ui_helpers.load_initial_data()  # This loads essential data like deck_list
+    ui_helpers.preload_sidebar_deck_images()
     st.session_state.app_state['initial_data_loaded'] = True
 
 # SIMPLIFIED: Only handle deck switching, no manual cache clearing
