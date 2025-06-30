@@ -24,15 +24,15 @@ SIDEBAR_SECTIONS_CONFIG = {
         "show_key": "show_meta_decks",
         "button_key_prefix": "details",
         "rank_symbols": ["🥇", "🥈", "🥉", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩"],
-        "caption_template": lambda d: f"{d['share_7d']:.2f}% share",
+        "caption_template": lambda d: f"{d['share_3d']:.2f}% share",
         "sort_config": {
-            "columns": ["share_7d"],
+            "columns": ["share_3d"],
             "ascending": [False],
             "method": "head",
             "count": 10
         },
-        "description": "Most popular decks from the past 7 days",
-        "sorting_note": "Sorted by 7-day meta share percentage"
+        "description": "Most popular decks from the past 3 days",
+        "sorting_note": "Sorted by 3-day meta share percentage"
     },
     "trending": {
         "type": "trending", 
@@ -402,12 +402,12 @@ def create_deck_options():
         extended_df = builder.build_complete_meta_table(100)
         
         if not extended_df.empty:
-            # Sort by share_7d (descending) for dropdown ranking
-            extended_df = extended_df.sort_values('share_7d', ascending=False)
+            # Sort by share_3d (descending) for dropdown ranking
+            extended_df = extended_df.sort_values('share_3d', ascending=False)
             
             for idx, (_, row) in enumerate(extended_df.iterrows()):
                 rank = idx + 1
-                display_name = f"{rank}. {format_deck_option(row['deck_name'], row['share_7d'])}"
+                display_name = f"{rank}. {format_deck_option(row['deck_name'], row['share_3d'])}"
                 deck_display_names.append(display_name)
                 
                 # Preserve original set information
@@ -591,14 +591,14 @@ def render_unified_deck_in_sidebar(deck, section_config, rank=None, expanded=Fal
         
         # Calculate stats text based on section type
         if section_config['type'] == "meta":
-            stats_text = f"{deck['share_7d']:.2f}% share"
+            stats_text = f"{deck['share_3d']:.2f}% share"
         elif section_config['type'] == "trending":
             share_diff = deck['share_3d'] - deck['share_7d']
             stats_text = f"+{share_diff:.2f}% share, {deck['ratio']:.1f}x more play"
         elif section_config['type'] == "gems":
             stats_text = f"{deck['win_rate']:.1f}% win, {deck['share_3d']:.2f}% share"
         else:
-            stats_text = f"{deck['share_7d']:.1f}% share"
+            stats_text = f"{deck['share_3d']:.1f}% share"
         
         # Deck name as left-aligned button (single column)
         if st.button(
@@ -668,14 +668,14 @@ def create_deck_section(section_type):
     
     # Update the stats_text calculation in the featured deck display section:
     if config['type'] == "meta":
-        stats_text = f"{first_deck['share_7d']:.2f}% share"
+        stats_text = f"{first_deck['share_3d']:.2f}% share"
     elif config['type'] == "trending":
         share_diff = first_deck['share_3d'] - first_deck['share_7d']
         stats_text = f"+{share_diff:.2f}% share, {first_deck['ratio']:.1f}x more play"
     elif config['type'] == "gems":
         stats_text = f"{first_deck['win_rate']:.1f}% win, {first_deck['share_3d']:.2f}% share"
     else:
-        stats_text = f"{first_deck['share_7d']:.1f}% share"
+        stats_text = f"{first_deck['share_3d']:.1f}% share"
 
     # Featured deck name with emoji (single column, shorter spacing)
     if st.button(
