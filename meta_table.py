@@ -1208,7 +1208,7 @@ def display_extended_meta_table():
     
     # Convert to DataFrame and sort by 7-day share (descending)
     extended_df = pd.DataFrame(extended_data)
-    extended_df = extended_df.sort_values('share_7d', ascending=False).reset_index(drop=True)
+    extended_df = extended_df.sort_values('share_3d', ascending=False).reset_index(drop=True)
     
     # Add ranking column (1-based)
     extended_df['rank'] = range(1, len(extended_df) + 1)
