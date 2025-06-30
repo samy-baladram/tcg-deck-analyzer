@@ -88,10 +88,16 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
                 except Exception as e:
                     print(f"Error loading cached header image: {e}")
     
-    # Generate new image
+    # Generate new image - TRY MULTIPLE APPROACHES
     print(f"Generating new header image: {deck_name}")
     deck_info = {'deck_name': deck_name, 'set': set_name}
-    img_base64 = create_deck_header_images(deck_info, analysis_results)
+    
+    try:
+        img_base64 = create_deck_header_images(deck_info, analysis_results)
+    except Exception as e:
+        print(f"Failed to generate image for {deck_name}: {e}")
+        # FALLBACK: Return None instead of crashing
+        return None
     
     if img_base64:
         # Save to memory cache
