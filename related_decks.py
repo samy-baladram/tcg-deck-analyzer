@@ -5,7 +5,7 @@ from image_processor import extract_pokemon_from_deck_name
 import streamlit as st
 # Updated find_related_decks function in related_decks.py
 
-def find_related_decks(current_deck_name, deck_list_mapping, max_related=20):
+def find_related_decks(current_deck_name, deck_list_mapping, max_related=30):
     """
     Find decks related to the current deck based on shared Pokémon in deck names.
     Only includes decks that are in the current deck selection dropdown.
