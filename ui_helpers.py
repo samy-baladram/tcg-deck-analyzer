@@ -111,6 +111,39 @@ def get_cached_banner_image(img_path):
             return base64.b64encode(f.read()).decode()
     return None
 
+def preload_sidebar_deck_images():
+    """Pre-generate and cache images for all sidebar decks on startup"""
+    try:
+        # Get all deck data that will be shown in sidebar
+        meta_data = get_filtered_deck_data("meta")
+        trending_data = get_filtered_deck_data("trending") 
+        gems_data = get_filtered_deck_data("gems")
+        
+        all_sidebar_decks = []
+        if not meta_data.empty:
+            all_sidebar_decks.extend(meta_data.to_dict('records'))
+        if not trending_data.empty:
+            all_sidebar_decks.extend(trending_data.to_dict('records'))
+        if not gems_data.empty:
+            all_sidebar_decks.extend(gems_data.to_dict('records'))
+        
+        # Pre-generate images for each deck
+        for deck in all_sidebar_decks:
+            deck_name = deck.get('deck_name', '')
+            set_name = deck.get('set', 'A3')
+            
+            # Check if image already cached
+            cache_key = f"{deck_name}"
+            if cache_key in _header_image_cache:
+                continue
+                
+            # Generate image without analysis_results
+            print(f"Pre-generating image for: {deck_name}")
+            get_header_image_cached(deck_name, set_name, analysis_results=None)
+            
+    except Exception as e:
+        print(f"Error pre-loading sidebar images: {e}")
+        
 # ADD: Cache for popular decks data
 @st.cache_data(ttl=3600)  # Cache for 1 hour
 def get_cached_popular_decks():
