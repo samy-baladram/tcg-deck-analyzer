@@ -1,0 +1,27 @@
+{
+  "tournament_id": "68595fbd27d8bc24cf259b16",
+  "name": "Pokect Monsters Pocket #2",
+  "timestamp": 1751245200000,
+  "format": "Standard",
+  "player_count": 3,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Lautaro Ruffini",
+      "record": "3 - 0 - 0",
+      "archetype": "articuno-ex-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Marcos Guidol\u00edn",
+      "record": "2 - 1 - 0",
+      "archetype": "leafeon-ex-a2a-celebi-ex-a1a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Lorenzo Araujo",
+      "record": "1 - 2 - 0",
+      "archetype": "lilligant-ivysaur-a1"
+    }
+  ]
+}
