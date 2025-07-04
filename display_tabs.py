@@ -1789,10 +1789,10 @@ def display_matchup_tab(deck_info=None):
             'Icon1': display_df['pokemon_url1'],
             'Icon2': display_df['pokemon_url2'],
             'Deck': display_df['opponent_name'],
-            'Matchup': display_df['Matchup'],
+            #'Matchup': display_df['Matchup'],
             'Win %': display_df['win_pct'],
             'Record': display_df['Record'],
-            'Matches': display_df['matches_played'],
+            #'Matches': display_df['matches_played'],
             #'Meta Share %': display_df['meta_share']
         })
     except KeyError as e:
@@ -1816,9 +1816,20 @@ def display_matchup_tab(deck_info=None):
         else:
             return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
     
+    # Apply styling for Win % column (replaces highlight_matchups function)
+    def highlight_win_percentage(val):
+        """Apply colors to Win % column values based on thresholds"""
+        if val >= 55:
+            return 'background-color: rgba(100, 200, 100, 0.4)'  # Light green (Favorable)
+        elif val < 45:
+            return 'background-color: rgba(255, 100, 100, 0.4)'  # Light red (Unfavorable)
+        else:
+            return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow (Even)
+    
     try:
         # First try with styled dataframe and images
-        styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
+        styled_df = formatted_df.style.map(highlight_win_percentage, subset=['Win %'])
+        #styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
         st.write("##### Matchup Data")
         st.dataframe(
             styled_df,
@@ -1847,14 +1858,14 @@ def display_matchup_tab(deck_info=None):
                     "Record",
                     help="Win-Loss-Tie record against this deck"
                 ),
-                "Matches": st.column_config.NumberColumn(
-                    "Matches",
-                    help="Total number of matches played against this deck"
-                ),
-                "Matchup": st.column_config.TextColumn(
-                    "Matchup",
-                    help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
-                ),
+                # "Matches": st.column_config.NumberColumn(
+                #     "Matches",
+                #     help="Total number of matches played against this deck"
+                # ),
+                # "Matchup": st.column_config.TextColumn(
+                #     "Matchup",
+                #     help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
+                # ),
                 #"Meta Share%": None
                 # "Meta Share %": st.column_config.NumberColumn(
                 #     "Meta Share %",
