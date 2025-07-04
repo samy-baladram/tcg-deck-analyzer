@@ -1816,19 +1816,21 @@ def display_matchup_tab(deck_info=None):
         else:
             return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow
     
-    # Apply styling for Win % column (replaces highlight_matchups function)
-    def highlight_win_percentage(val):
-        """Apply colors to Win % column values based on thresholds"""
-        if val >= 55:
-            return 'background-color: rgba(100, 200, 100, 0.4)'  # Light green (Favorable)
-        elif val < 45:
-            return 'background-color: rgba(255, 100, 100, 0.4)'  # Light red (Unfavorable)
+    def highlight_row_by_win_percentage(row):
+        """Apply colors to entire row based on Win % values"""
+        win_pct = row['Win %']
+        if win_pct >= 55:
+            color = 'background-color: rgba(100, 200, 100, 0.3)'  # Light green (Favorable)
+        elif win_pct < 45:
+            color = 'background-color: rgba(255, 100, 100, 0.3)'  # Light red (Unfavorable)  
         else:
-            return 'background-color: rgba(255, 235, 100, 0.4)'  # Light yellow (Even)
+            color = 'background-color: rgba(255, 235, 100, 0.3)'  # Light yellow (Even)
+        
+        return [color] * len(row)
     
     try:
-        # First try with styled dataframe and images
-        styled_df = formatted_df.style.map(highlight_win_percentage, subset=['Win %'])
+        # Apply row-level styling based on Win %
+        styled_df = formatted_df.style.apply(highlight_row_by_win_percentage, axis=1)
         #styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
         st.write("##### Matchup Data")
         st.dataframe(
