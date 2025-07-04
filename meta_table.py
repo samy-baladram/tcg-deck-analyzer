@@ -39,7 +39,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
         WITH total_players_in_period AS (
             SELECT SUM(t.total_players) as total_count
             FROM tournaments t
-            WHERE t.date >= date('now', '-{} days') AND t.date <= date('now')
+            WHERE t.date >= date('now', '-{} days') AND t.date < date('now')
         ),
         archetype_share AS (
             SELECT 
@@ -53,7 +53,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             JOIN tournaments t ON aa.tournament_id = t.tournament_id
             LEFT JOIN player_performance pp ON aa.tournament_id = pp.tournament_id 
                 AND aa.archetype = pp.archetype
-            WHERE t.date >= date('now', '-{} days') AND t.date <= date('now')
+            WHERE t.date >= date('now', '-{} days') AND t.date < date('now')
             GROUP BY aa.archetype
             HAVING archetype_count >= 5
         )
