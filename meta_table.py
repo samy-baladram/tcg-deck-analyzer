@@ -402,11 +402,19 @@ class MetaTableBuilder(MetaAnalyzer):
                 # Calculate Wilson score for reliability
                 wilson_index = self._calculate_wilson_score(wins, total_games) if total_games > 0 else 0.5
                 
+                # Get Pokemon URLs using existing function
+                try:
+                    from formatters import extract_pokemon_urls
+                    pokemon_url1, pokemon_url2 = extract_pokemon_urls(deck_name)
+                except ImportError:
+                    # Fallback if formatters not available
+                    pokemon_url1, pokemon_url2 = None, None
+                
                 extended_data.append({
                     'deck_name': deck_name,
                     'formatted_deck_name': self._format_deck_name(deck_name),
-                    # 'pokemon_url1': None,  # These can be populated later if needed
-                    # 'pokemon_url2': None,
+                    'pokemon_url1': pokemon_url1,  # Now properly fetched
+                    'pokemon_url2': pokemon_url2,  # Now properly fetched
                     'trend_data': trend_history,
                     'trend_history': trend_history,  # Add this for compatibility
                     'win_rate': round(win_rate, 1),
@@ -422,7 +430,7 @@ class MetaTableBuilder(MetaAnalyzer):
                 })
             
             result_df = pd.DataFrame(extended_data)
-            #result_df.set_index('deck_name', inplace=True)
+            # Don't set index - keep deck_name as a regular column for compatibility
             
             return result_df
             
