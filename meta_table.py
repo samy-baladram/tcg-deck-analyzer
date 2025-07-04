@@ -131,7 +131,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
                 t.date,
                 SUM(t.total_players) as total_players
             FROM tournaments t
-            WHERE t.date >= date('now', '-{} days') AND t.date <= date('now')
+            WHERE t.date >= date('now', '-{} days') AND t.date < date('now')
             GROUP BY t.date
         ),
         archetype_daily AS (
@@ -294,7 +294,7 @@ class MetaTableBuilder(MetaAnalyzer):
                     FROM player_performance pp
                     JOIN tournaments t ON pp.tournament_id = t.tournament_id
                     WHERE pp.archetype = ?
-                    AND t.date >= date('now', '-7 days') AND t.date <= date('now')
+                    AND t.date >= date('now', '-7 days') AND t.date < date('now')
                     """
                     
                     perf_result = pd.read_sql_query(perf_query, conn, params=[deck_name])
