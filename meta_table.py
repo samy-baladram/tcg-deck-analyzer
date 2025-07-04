@@ -1228,7 +1228,8 @@ def display_extended_meta_table():
         """Get 7-day percentage history for line chart"""
         try:
             # Use the existing builder's analyzer to get daily trend data
-            daily_data = builder.archetype_analyzer.get_daily_trend_data(deck_name, days_back=7)
+            analyzer = ArchetypeAnalyzer()
+            daily_data = analyzer.get_daily_trend_data(deck_name, days_back=7)
             
             # Extract percentage values - keys are day_1, day_2, etc.
             percentages = []
