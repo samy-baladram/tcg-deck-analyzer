@@ -2477,7 +2477,7 @@ def get_set_release_dates():
 def create_performance_trend_chart(deck_name, selected_formats=None):
     """
     Create performance trend chart showing win percentage over time with background color zones
-    Fixed to properly aggregate multiple formats per date
+    Extended to show today's data with 50% alpha
     """
     import sqlite3
     import pandas as pd
@@ -2494,8 +2494,9 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         # Create format filter for SQL query
         format_placeholders = ','.join(['?' for _ in selected_formats])
         
-        # Calculate cutoff date for last 30 days (if you want 30-day filter)
+        # Calculate cutoff date for last 30 days (but include today)
         cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        today = datetime.now().strftime('%Y-%m-%d')
         
         # Query to get daily performance data - GROUP BY date only, not format
         query = f"""
@@ -2526,19 +2527,19 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         df['total_games'] = df['total_wins'] + df['total_losses'] + df['total_ties']
         df['win_percentage'] = (df['total_wins'] / df['total_games'] * 100).round(1)
         
+        # Convert date strings to datetime for better plotting
+        df['date'] = pd.to_datetime(df['date'])
+        
         # Filter out days with too few games for reliability
         df_filtered = df[df['total_games'] >= 3].copy()
         
         if df_filtered.empty:
             return None
         
-        # Create conditional marker colors based on win percentage
-        marker_colors = []
-        for win_rate in df_filtered['win_percentage']:
-            if win_rate > 50:
-                marker_colors.append('forestgreen')  # Light green for >50%
-            else:
-                marker_colors.append('tomato')  # Light red for <50%
+        # Split data into historical and today
+        today_dt = pd.to_datetime(today)
+        historical_data = df_filtered[df_filtered['date'] < today_dt].copy()
+        today_data = df_filtered[df_filtered['date'] == today_dt].copy()
         
         # Create the figure
         fig = go.Figure()
@@ -2555,83 +2556,102 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             line_width=1.5
         )
         
-        # Add performance zone backgrounds
+        # Helper function to get marker colors based on win percentage
+        def get_marker_colors(data, alpha=1.0):
+            colors = []
+            for win_rate in data['win_percentage']:
+                if win_rate > 50:
+                    if alpha == 1.0:
+                        colors.append('forestgreen')
+                    else:
+                        colors.append('rgba(34, 139, 34, 0.5)')  # forestgreen with 50% alpha
+                else:
+                    if alpha == 1.0:
+                        colors.append('tomato')
+                    else:
+                        colors.append('rgba(255, 99, 71, 0.5)')  # tomato with 50% alpha
+            return colors
+        
+        # Add historical data trace (full opacity)
+        if not historical_data.empty:
+            historical_colors = get_marker_colors(historical_data, alpha=1.0)
+            
+            fig.add_trace(go.Scatter(
+                x=historical_data['date'],
+                y=historical_data['win_percentage'],
+                mode='lines+markers',
+                name='Win Rate %',
+                line=dict(color='#00A0FF', width=2),
+                marker=dict(
+                    size=8, 
+                    color=historical_colors,
+                    line=dict(color='#00A0FF', width=1)
+                ),
+                hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Record: %{customdata[0]}W-%{customdata[1]}L-%{customdata[2]}T<br>Games: %{customdata[3]}<extra></extra>',
+                customdata=list(zip(
+                    historical_data['total_wins'], 
+                    historical_data['total_losses'], 
+                    historical_data['total_ties'],
+                    historical_data['total_games']
+                )),
+                showlegend=True
+            ))
+        
+        # Add today's data trace (50% opacity) if it exists
+        if not today_data.empty:
+            # For visual continuity, include last historical point if it exists
+            if not historical_data.empty:
+                # Create continuity data: last historical point + today's data
+                last_historical = historical_data.iloc[-1:].copy()
+                continuity_data = pd.concat([last_historical, today_data], ignore_index=True)
+            else:
+                # Only today's data exists
+                continuity_data = today_data.copy()
+            
+            today_colors = get_marker_colors(continuity_data, alpha=0.5)
+            
+            fig.add_trace(go.Scatter(
+                x=continuity_data['date'],
+                y=continuity_data['win_percentage'],
+                mode='lines+markers',
+                name='Today (Preliminary)',
+                line=dict(color='rgba(0, 160, 255, 0.5)', width=2),
+                marker=dict(
+                    size=8, 
+                    color=today_colors,
+                    line=dict(color='rgba(0, 160, 255, 0.5)', width=1)
+                ),
+                hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}% (Preliminary)<br>Record: %{customdata[0]}W-%{customdata[1]}L-%{customdata[2]}T<br>Games: %{customdata[3]}<extra></extra>',
+                customdata=list(zip(
+                    continuity_data['total_wins'], 
+                    continuity_data['total_losses'], 
+                    continuity_data['total_ties'],
+                    continuity_data['total_games']
+                )),
+                showlegend=False  # Hide from legend to avoid clutter
+            ))
+        
+        # Add performance zone backgrounds (optional - you can remove if too busy)
         color_zones = [
-            {"range": [0, 10], "color": "rgba(165, 0, 38, 1)"},     # 0-10%
-            {"range": [10, 20], "color": "rgba(215, 48, 39, 1)"},    # 10-20%
-            {"range": [20, 30], "color": "rgba(244, 109, 67, 1)"},   # 20-30%
-            {"range": [30, 40], "color": "rgba(255, 166, 79, 1)"},   # 30-40%
-            {"range": [40, 50], "color": "rgba(255, 209, 79, 1)"},   # 40-50%
-            {"range": [50, 60], "color": "rgba(184, 219, 59, 1)"},   # 50-60%
-            {"range": [60, 70], "color": "rgba(135, 209, 47, 1)"},   # 60-70%
-            {"range": [70, 80], "color": "rgba(83, 186, 79, 1)"},    # 70-80%
-            {"range": [80, 90], "color": "rgba(26, 152, 80, 1)"},    # 80-90%
-            {"range": [90, 100], "color": "rgba(0, 104, 55, 1)"},    # 90-100%
+            {"range": [0, 25], "color": "rgba(165, 0, 38, 0.1)"},     # Very poor
+            {"range": [25, 40], "color": "rgba(215, 48, 39, 0.1)"},   # Poor  
+            {"range": [40, 50], "color": "rgba(244, 109, 67, 0.1)"},  # Below average
+            {"range": [50, 60], "color": "rgba(253, 174, 97, 0.1)"},  # Above average
+            {"range": [60, 75], "color": "rgba(171, 221, 164, 0.1)"},  # Good
+            {"range": [75, 100], "color": "rgba(69, 117, 180, 0.1)"}   # Excellent
         ]
         
-        # Add background color zones
         for zone in color_zones:
-            # Only add zones that intersect with our y-axis range
-            if zone["range"][1] > y_min and zone["range"][0] < y_max:
+            if zone["range"][1] >= y_min and zone["range"][0] <= y_max:
                 fig.add_hrect(
                     y0=max(zone["range"][0], y_min),
                     y1=min(zone["range"][1], y_max),
                     fillcolor=zone["color"],
-                    line_width=0,
-                    layer="below"
+                    layer="below",
+                    line_width=0
                 )
         
-        # Add win percentage line with conditional marker colors and white outline
-        fig.add_trace(go.Scatter(
-            x=df_filtered['date'],
-            y=df_filtered['win_percentage'],
-            mode='lines+markers',
-            name='Win %',
-            line=dict(color='#FFFFFF', width=1),  # White line, width 1
-            marker=dict(
-                size=8, 
-                color=marker_colors,  # Conditional colors (light green/red)
-                line=dict(color='white', width=2)  # White outline, 2px width
-            ),
-            hovertemplate='<b>%{x}</b><br>Win Rate: %{y:.1f}%<br>Wins: %{customdata[0]}<br>Losses: %{customdata[1]}<br>Total Games: %{customdata[2]}<extra></extra>',
-            customdata=list(zip(df_filtered['total_wins'], df_filtered['total_losses'], df_filtered['total_games']))
-        ))
-
-        # # Add set release markers with improved annotations
-        # set_releases = get_set_release_dates()
-        # min_date = df_filtered['date'].min()
-        # max_date = df_filtered['date'].max()
-        # max_percentage = df_filtered['meta_percentage'].max()
-        
-        # for release_date, set_code, set_name in set_releases:
-        #     release_dt = pd.to_datetime(release_date)
-        #     if release_dt >= min_date and release_dt <= max_date:
-        #         # Add vertical line
-        #         fig.add_vline(
-        #             x=release_date, 
-        #             line_dash="dot", 
-        #             line_color="rgba(255, 255, 255, 0.6)",
-        #             line_width=1
-        #         )
-                
-        #         # Add set code annotation at the top with hover info
-        #         fig.add_annotation(
-        #             x=release_date,
-        #             y=max_percentage * 1.1,  # Position at top of chart
-        #             text=set_code,  # Add space at beginning
-        #             showarrow=False,
-        #             font=dict(size=10, color="#FFFFFF"),
-        #             align="left",
-        #             xshift=12,
-        #             hovertext=f"Set Release: {set_name}<br>Date: {release_date}",
-        #             hoverlabel=dict(
-        #                 bgcolor="white",
-        #                 bordercolor="gray",
-        #                 font=dict(color="black")
-        #             )
-        #         )
-                
-        # Add peak annotation in white
+        # Add peak annotation (use all data for peak detection)
         peak_idx = df_filtered['win_percentage'].idxmax()
         peak_date = df_filtered.loc[peak_idx, 'date']
         peak_value = df_filtered.loc[peak_idx, 'win_percentage']
@@ -2641,14 +2661,16 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             y=peak_value + (y_max - y_min) * 0.05,
             text=f"Peak: {peak_value:.1f}% win rate",
             showarrow=False,
-            font=dict(size=12, color="#FFFFFF")  # White annotation
+            font=dict(size=12, color="#FFFFFF"),
+            bgcolor="rgba(0,0,0,0.5)",
+            bordercolor="rgba(0,0,0,0)"
         )
         
         # Update layout
         fig.update_layout(
-            #title=f"Performance Trend",
+            title="Performance Trend",
             xaxis_title=None,
-            yaxis_title=None,  # Remove y-axis title
+            yaxis_title=None,
             height=400,
             margin=dict(t=0, l=0, r=0, b=0),
             hovermode='x unified',
@@ -2657,7 +2679,7 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
             font=dict(size=12),
-            showlegend=False,
+            showlegend=False,  # Keep legend hidden for cleaner look
             
             # Grid and axes styling
             xaxis=dict(
