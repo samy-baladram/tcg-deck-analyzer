@@ -135,7 +135,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
         }
 
     @st.cache_data(ttl=300)
-    def get_daily_trend_data(self, deck_name, days_back=7):
+    def get_daily_trend_data(_self, deck_name, days_back=7):
         """
         Get daily meta share data for trend analysis - CORRECTED VERSION
         
