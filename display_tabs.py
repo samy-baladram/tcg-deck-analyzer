@@ -1820,11 +1820,11 @@ def display_matchup_tab(deck_info=None):
         """Apply colors to entire row based on Win % values"""
         win_pct = row['Win %']
         if win_pct >= 55:
-            color = 'background-color: rgba(100, 200, 100, 0.3)'  # Light green (Favorable)
+            color = 'background-color: rgba(100, 200, 100, 0.2)'  # Light green (Favorable)
         elif win_pct < 45:
-            color = 'background-color: rgba(255, 100, 100, 0.3)'  # Light red (Unfavorable)  
+            color = 'background-color: rgba(255, 100, 100, 0.2)'  # Light red (Unfavorable)  
         else:
-            color = 'background-color: rgba(255, 235, 100, 0.3)'  # Light yellow (Even)
+            color = 'background-color: rgba(255, 235, 100, 0.2)'  # Light yellow (Even)
         
         return [color] * len(row)
     
