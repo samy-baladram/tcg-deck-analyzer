@@ -806,10 +806,10 @@ def display_losers_table():
         # Configure column display
         column_config = {
             'Icon1': st.column_config.ImageColumn(
-                "1", width=30, help="Primary Pokemon"
+                "", width=30, help="Primary Pokemon"
             ),
             'Icon2': st.column_config.ImageColumn(
-                "2", width=30, help="Secondary Pokemon"
+                "", width=30, help="Secondary Pokemon"
             ),
             'Deck': st.column_config.TextColumn("Deck", width=150),
             'Share-7d': st.column_config.NumberColumn(
@@ -1349,7 +1349,7 @@ def display_extended_meta_table():
         # Configure column display
         column_config = {
             '#': st.column_config.TextColumn(
-                "#", width=30, help="Ranking by 7-day meta share"
+                "#", width=35, help="Ranking by 7-day meta share"
             ),
             '': st.column_config.ImageColumn(
                 "", width=25, help="Primary Pokemon"
