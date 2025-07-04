@@ -2291,6 +2291,9 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         today = datetime.now().strftime('%Y-%m-%d')
         
+        # Ensure selected_formats contains only strings
+        selected_formats = [str(fmt) for fmt in selected_formats]
+        
         # Query to get daily data including today
         query = f"""
         SELECT 
@@ -2308,7 +2311,8 @@ def create_enhanced_meta_trend_chart_combined(deck_name, selected_formats=None, 
         ORDER BY t.date
         """
         
-        query_params = [deck_name] + selected_formats + [cutoff_date]
+        # Build query parameters carefully with proper types
+        query_params = [str(deck_name)] + selected_formats + [str(cutoff_date)]
         df = pd.read_sql_query(query, conn, params=query_params)
         conn.close()
         
@@ -2474,6 +2478,28 @@ def get_set_release_dates():
         print(f"Error loading set release dates: {e}")
         return []
 
+
+# Helper function - you may already have this
+def get_set_release_dates():
+    """
+    Get set release dates for vertical markers
+    Returns list of (date, name) tuples
+    """
+    try:
+        import json
+        with open("meta_analysis/sets_index.json", 'r') as f:
+            sets_data = json.load(f)
+        
+        releases = []
+        for set_info in sets_data.get('sets', []):
+            if set_info.get('release_date'):
+                releases.append((set_info['release_date'], set_info.get('name', 'Unknown')))
+        
+        return releases
+    except Exception as e:
+        print(f"Error loading set release dates: {e}")
+        return []
+
 def create_performance_trend_chart(deck_name, selected_formats=None):
     """
     Create performance trend chart showing win percentage over time with background color zones
@@ -2498,6 +2524,9 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         cutoff_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
         today = datetime.now().strftime('%Y-%m-%d')
         
+        # Ensure selected_formats contains only strings
+        selected_formats = [str(fmt) for fmt in selected_formats]
+        
         # Query to get daily performance data - GROUP BY date only, not format
         query = f"""
         SELECT 
@@ -2515,8 +2544,8 @@ def create_performance_trend_chart(deck_name, selected_formats=None):
         ORDER BY t.date
         """
         
-        # Execute query with parameters
-        params = [deck_name] + selected_formats + [cutoff_date]
+        # Execute query with parameters (ensure all are strings)
+        params = [str(deck_name)] + selected_formats + [str(cutoff_date)]
         df = pd.read_sql_query(query, conn, params=params)
         conn.close()
         
