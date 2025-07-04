@@ -130,8 +130,8 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             'total_count_3d': data_3d['total_count'],
             'share_7d': round(share_7d, 2),
             'share_3d': round(share_3d, 2),
-            'trend_change': round(trend_change, 2),
-            'trend_direction': self._get_trend_direction(trend_change)
+            #'trend_change': round(trend_change, 2),
+            #'trend_direction': self._get_trend_direction(trend_change)
         }
 
     @st.cache_data(ttl=300)
