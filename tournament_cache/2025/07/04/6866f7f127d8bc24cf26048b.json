@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6866f7f127d8bc24cf26048b",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile liga fecha 2",
+  "timestamp": 1751587200000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "D3nmer",
+      "record": "4 - 0 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "FranzueRT",
+      "record": "3 - 1 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Aletoz27",
+      "record": "2 - 2 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Jworld",
+      "record": "2 - 2 - 0",
+      "archetype": "charizard-ex-arcanine-ex-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Adri1209",
+      "record": "1 - 3 - 0",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Jonathan Eduardo Almaraz",
+      "record": "1 - 3 - 0",
+      "archetype": "exeggutor-ex-venusaur-ex-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "lwzinho",
+      "record": "0 - 1 - 0drop",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Hbarriga",
+      "record": "0 - 1 - 0drop",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    }
+  ]
+}
