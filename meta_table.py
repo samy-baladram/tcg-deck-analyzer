@@ -384,6 +384,14 @@ class MetaTableBuilder(MetaAnalyzer):
                 trend_change = share_3d - share_7d
                 ratio = share_3d / share_7d if share_7d > 0 else 1.0
                 
+                # Calculate trend direction
+                if abs(trend_change) < 0.1:
+                    trend_direction = 'neutral'
+                elif trend_change > 0:
+                    trend_direction = 'up'
+                else:
+                    trend_direction = 'down'
+                
                 # Process trend history (simplified version)
                 trend_raw = row.get('trend_data_raw', '')
                 if trend_raw:
@@ -400,12 +408,15 @@ class MetaTableBuilder(MetaAnalyzer):
                     'pokemon_url1': None,  # These can be populated later if needed
                     'pokemon_url2': None,
                     'trend_data': trend_history,
+                    'trend_history': trend_history,  # Add this for compatibility
                     'win_rate': round(win_rate, 1),
                     'wins': wins,
                     'losses': losses, 
                     'ties': ties,
                     'share_7d': round(share_7d, 2),
                     'share_3d': round(share_3d, 2),
+                    'trend_change': round(trend_change, 2),  # Add missing column
+                    'trend_direction': trend_direction,      # Add missing column
                     'ratio': round(ratio, 2),
                     'wilson_index': round(wilson_index, 3)
                 })
