@@ -422,7 +422,7 @@ class MetaTableBuilder(MetaAnalyzer):
                 })
             
             result_df = pd.DataFrame(extended_data)
-            result_df.set_index('deck_name', inplace=True)
+            #result_df.set_index('deck_name', inplace=True)
             
             return result_df
             
