@@ -358,9 +358,9 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 # Create tab container
                 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Info", 
                                                         "Deck Gallery",
-                                                                    "Meta Matchups",
                                                                     "Meta Trend",  # NEW TAB
                                                                     "Metagame Overview",
+                                                                     "Meta Matchups",
                                                                     "Related Decks"
                                                                     ])
                 
@@ -392,23 +392,22 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                     #st.write("Coming Soon")
                     from deck_gallery import display_deck_gallery_tab
                     display_deck_gallery_tab()
+                
                     
                 with tab3:
-                    display_tabs.display_matchup_tab()
-                    
-                with tab4:
                     display_tabs.display_meta_trend_tab(original_deck_info)
                    
-                with tab5:
+                with tab4:
                     #st.write("Coming Soon")
                     from meta_table import format_tournament_summary
                     summary_text = format_tournament_summary(period_days=7)  # Last 7 days
                     st.write(f"##### Tournament Statistics - {summary_text}")
                     display_extended_meta_table()
                 
-                # And shift the existing tabs:
-                with tab6:  # Related Decks (was tab5)
-                    #st.write("Under construction")
+                with tab5:
+                    display_tabs.display_matchup_tab()
+                    
+                with tab6:
                     display_tabs.display_related_decks_tab(original_deck_info, results)
                     
                 # with tab7:  # Raw Data (was tab6)
