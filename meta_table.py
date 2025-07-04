@@ -11,39 +11,19 @@ from datetime import datetime, timedelta
 
 
 class MetaAnalyzer:
-    """Base class for meta analysis operations with connection reuse"""
+    """Base class for meta analysis operations"""
     
     def __init__(self, db_path="meta_analysis/tournament_meta.db"):
         self.db_path = db_path
-        self._connection = None
     
     def get_connection(self):
-        """Get database connection - reuses existing connection"""
-        if self._connection is None:
-            self._connection = sqlite3.connect(self.db_path)
-            # Enable foreign keys and optimize for read performance
-            self._connection.execute("PRAGMA foreign_keys = ON")
-            self._connection.execute("PRAGMA journal_mode = WAL")
-            self._connection.execute("PRAGMA synchronous = NORMAL")
-            self._connection.execute("PRAGMA cache_size = 10000")
-            self._connection.execute("PRAGMA temp_store = MEMORY")
-        return self._connection
-    
-    def close_connection(self):
-        """Close connection when done"""
-        if self._connection:
-            self._connection.close()
-            self._connection = None
-    
-    def __del__(self):
-        """Cleanup connection on object destruction"""
-        self.close_connection()
+        """Get database connection"""
+        return sqlite3.connect(self.db_path)
 
 
 class ArchetypeAnalyzer(MetaAnalyzer):
     """Handle archetype-specific analysis with corrected counting logic"""
     
-    @st.cache_data(ttl=300)
     def fetch_top_archetypes_by_share(self, period_days=7, limit=20):
         """
         Fetch top archetypes based on recent share data - CORRECTED VERSION
@@ -103,7 +83,6 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             print(f"Error fetching top archetypes: {e}")
             return pd.DataFrame()
     
-    @st.cache_data(ttl=600)
     def calculate_period_comparison(self, deck_name):
         """
         Compare archetype performance between different time periods - CORRECTED VERSION
@@ -130,11 +109,10 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             'total_count_3d': data_3d['total_count'],
             'share_7d': round(share_7d, 2),
             'share_3d': round(share_3d, 2),
-            #'trend_change': round(trend_change, 2),
-            #'trend_direction': self._get_trend_direction(trend_change)
+            'trend_change': round(trend_change, 2),
+            'trend_direction': self._get_trend_direction(trend_change)
         }
-
-    @st.cache_data(ttl=300)
+    
     def get_daily_trend_data(self, deck_name, days_back=7):
         """
         Get daily meta share data for trend analysis - CORRECTED VERSION
@@ -256,14 +234,14 @@ class ArchetypeAnalyzer(MetaAnalyzer):
         
         return df
     
-    # def _get_trend_direction(self, trend_change):
-    #     """Determine trend direction from change value"""
-    #     if abs(trend_change) < 0.1:
-    #         return 'neutral'
-    #     elif trend_change > 0:
-    #         return 'up'
-    #     else:
-    #         return 'down'
+    def _get_trend_direction(self, trend_change):
+        """Determine trend direction from change value"""
+        if abs(trend_change) < 0.1:
+            return 'neutral'
+        elif trend_change > 0:
+            return 'up'
+        else:
+            return 'down'
 
 
 class MetaTableBuilder(MetaAnalyzer):
@@ -273,126 +251,84 @@ class MetaTableBuilder(MetaAnalyzer):
         super().__init__(db_path)
         self.archetype_analyzer = ArchetypeAnalyzer(db_path)
 
-    @st.cache_data(ttl=300)  # Cache for 5 minutes
-    def build_complete_meta_table(_self, limit=20):
+    def build_complete_meta_table(self, limit=20):
         """
-        Build complete meta table with all analysis data - OPTIMIZED VERSION
-        Single query instead of N+1 queries for massive performance improvement
+        Build complete meta table with all analysis data - CORRECTED VERSION
+        
+        Args:
+            limit: Number of archetypes to include
+            
+        Returns:
+            DataFrame with complete meta analysis including performance data
         """
-        try:
-            conn = _self.get_connection()
-            
-            # OPTIMIZED: Single comprehensive query instead of loop
-            main_query = """
-            WITH period_totals AS (
-                SELECT 
-                    SUM(t.total_players) as total_7d,
-                    (SELECT SUM(total_players) FROM tournaments 
-                     WHERE date >= date('now', '-3 days') AND date < date('now')) as total_3d
-                FROM tournaments t
-                WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
-            ),
-            archetype_shares AS (
-                SELECT 
-                    aa.archetype as deck_name,
-                    -- 7-day data
-                    SUM(CASE WHEN t.date >= date('now', '-7 days') THEN aa.count ELSE 0 END) as count_7d,
-                    -- 3-day data  
-                    SUM(CASE WHEN t.date >= date('now', '-3 days') THEN aa.count ELSE 0 END) as count_3d,
-                    COUNT(DISTINCT aa.tournament_id) as tournament_count
-                FROM archetype_appearances aa
-                JOIN tournaments t ON aa.tournament_id = t.tournament_id
-                WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
-                GROUP BY aa.archetype
-                HAVING count_7d >= 5
-            ),
-            performance_totals AS (
-                SELECT 
-                    pp.archetype,
-                    SUM(pp.wins) as total_wins,
-                    SUM(pp.losses) as total_losses,
-                    SUM(pp.ties) as total_ties
-                FROM player_performance pp
-                JOIN tournaments t ON pp.tournament_id = t.tournament_id
-                WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
-                GROUP BY pp.archetype
-            )
-            SELECT 
-                ash.deck_name,
-                ash.count_7d,
-                ash.count_3d,
-                ash.tournament_count,
-                pt.total_7d,
-                pt.total_3d,
-                (CAST(ash.count_7d AS FLOAT) / pt.total_7d * 100) as share_7d,
-                (CAST(ash.count_3d AS FLOAT) / NULLIF(pt.total_3d, 0) * 100) as share_3d,
-                COALESCE(perf.total_wins, 0) as total_wins,
-                COALESCE(perf.total_losses, 0) as total_losses,
-                COALESCE(perf.total_ties, 0) as total_ties
-            FROM archetype_shares ash
-            CROSS JOIN period_totals pt
-            LEFT JOIN performance_totals perf ON ash.deck_name = perf.archetype
-            ORDER BY share_7d DESC
-            LIMIT ?
-            """
-            
-            # Execute single query to get all data
-            meta_df = pd.read_sql_query(main_query, conn, params=[limit])
-            
-            if meta_df.empty:
-                return pd.DataFrame()
-            
-            # Calculate derived fields
-            meta_df['share_7d'] = meta_df['share_7d'].fillna(0).round(2)
-            meta_df['share_3d'] = meta_df['share_3d'].fillna(0).round(2)
-            meta_df['trend_change'] = (meta_df['share_3d'] - meta_df['share_7d']).round(2)
-            
-            # Calculate win rates
-            total_games = meta_df['total_wins'] + meta_df['total_losses'] + meta_df['total_ties']
-            meta_df['win_rate'] = ((meta_df['total_wins'] + 0.5 * meta_df['total_ties']) / total_games * 100).fillna(50.0).round(1)
-            
-            # Add trend history with single query instead of loop
-            trend_query = """
-            WITH daily_shares AS (
-                SELECT 
-                    aa.archetype,
-                    t.date,
-                    SUM(aa.count) as daily_count,
-                    (SELECT SUM(total_players) FROM tournaments WHERE date = t.date) as daily_total
-                FROM archetype_appearances aa
-                JOIN tournaments t ON aa.tournament_id = t.tournament_id
-                WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
-                    AND aa.archetype IN ({})
-                GROUP BY aa.archetype, t.date
-            )
-            SELECT 
-                archetype,
-                date,
-                (CAST(daily_count AS FLOAT) / daily_total * 100) as daily_share
-            FROM daily_shares
-            ORDER BY archetype, date
-            """.format(','.join(['?' for _ in meta_df['deck_name']]))
-            
-            trend_df = pd.read_sql_query(trend_query, conn, params=list(meta_df['deck_name']))
-            
-            # Process trend data efficiently
-            def get_trend_history(deck_name):
-                deck_trends = trend_df[trend_df['archetype'] == deck_name]['daily_share'].tolist()
-                # Pad with zeros if not enough data
-                while len(deck_trends) < 7:
-                    deck_trends.insert(0, 0)
-                return deck_trends[-7:]  # Last 7 days
-            
-            meta_df['trend_history'] = meta_df['deck_name'].apply(get_trend_history)
-            
-            # Add formatting and other fields (keep your existing formatting code)
-            meta_df['formatted_deck_name'] = meta_df['deck_name'].apply(lambda x: x.replace('-', ' ').title())
-            
-            return meta_df
-            
-        except Exception as e:
-            print(f"Error in optimized build_complete_meta_table: {e}")
+        #print("Building meta table data...")
+        
+        # Get top archetypes based on 7-day share
+        archetypes_df = self.archetype_analyzer.fetch_top_archetypes_by_share(7, limit * 2)
+        
+        if archetypes_df.empty:
+            print("No archetype data found")
             return pd.DataFrame()
+        
+        table_data = []
+        
+        for _, row in archetypes_df.iterrows():
+            deck_name = row['deck_name']
+            #print(f"Processing {deck_name}...")
+            
+            # Get period comparison data
+            period_data = self.archetype_analyzer.calculate_period_comparison(deck_name)
+            
+            # Get daily trend data
+            daily_data = self.archetype_analyzer.get_daily_trend_data(deck_name)
+            
+            # Get performance data (wins, losses, ties)
+            try:
+                import sqlite3
+                with sqlite3.connect(self.db_path) as conn:
+                    perf_query = """
+                    SELECT 
+                        COALESCE(SUM(pp.wins), 0) as total_wins,
+                        COALESCE(SUM(pp.losses), 0) as total_losses,
+                        COALESCE(SUM(pp.ties), 0) as total_ties
+                    FROM player_performance pp
+                    JOIN tournaments t ON pp.tournament_id = t.tournament_id
+                    WHERE pp.archetype = ?
+                    AND t.date >= date('now', '-7 days') AND t.date < date('now')
+                    """
+                    
+                    perf_result = pd.read_sql_query(perf_query, conn, params=[deck_name])
+                    
+                    wins = int(perf_result['total_wins'].iloc[0] or 0)
+                    losses = int(perf_result['total_losses'].iloc[0] or 0)
+                    ties = int(perf_result['total_ties'].iloc[0] or 0)
+                    
+            except Exception as e:
+                print(f"Error fetching performance data for {deck_name}: {e}")
+                wins = losses = ties = 0
+            
+            # Build complete row data
+            row_data = {
+                'deck_name': deck_name,
+                'formatted_deck_name': self._format_deck_name(deck_name),
+                'current_share': round(row['share'], 2),
+                'win_rate': round(row['win_rate'], 1),
+                'wins': wins,           # Add performance data
+                'losses': losses,       # Add performance data  
+                'ties': ties,           # Add performance data
+                **period_data,          # Add all period comparison data
+                **daily_data            # Add all daily trend data
+            }
+            
+            table_data.append(row_data)
+        
+        # Convert to DataFrame and sort by 7-day share
+        result_df = pd.DataFrame(table_data)
+        result_df = result_df.sort_values('share_7d', ascending=False).reset_index(drop=True)
+        result_df['rank'] = range(1, len(result_df) + 1)
+        
+        #print(f"Built meta table with {len(result_df)} archetypes including performance data")
+        return result_df.head(limit)
     
     def _format_deck_name(self, deck_name):
         """Format deck name for display"""
@@ -402,15 +338,15 @@ class MetaTableBuilder(MetaAnalyzer):
 class MetaDisplayFormatter:
     """Format meta data for Streamlit display"""
     
-    # @staticmethod
-    # def format_trend_indicator(trend_change, trend_direction):
-    #     """Format trend change as colored indicator"""
-    #     if trend_direction == 'up':
-    #         return f"+{abs(trend_change):.2f}%"
-    #     elif trend_direction == 'down':
-    #         return f"-{abs(trend_change):.2f}%"
-    #     else:
-    #         return f"{trend_change:.2f}%"
+    @staticmethod
+    def format_trend_indicator(trend_change, trend_direction):
+        """Format trend change as colored indicator"""
+        if trend_direction == 'up':
+            return f"+{abs(trend_change):.2f}%"
+        elif trend_direction == 'down':
+            return f"-{abs(trend_change):.2f}%"
+        else:
+            return f"{trend_change:.2f}%"
     
     @staticmethod
     def prepare_display_dataframe(meta_df):
@@ -418,13 +354,13 @@ class MetaDisplayFormatter:
         if meta_df.empty:
             return pd.DataFrame()
         
-        # # Add trend indicators
-        # meta_df['trend_indicator'] = meta_df.apply(
-        #     lambda row: MetaDisplayFormatter.format_trend_indicator(
-        #         row['trend_change'], row['trend_direction']
-        #     ), 
-        #     axis=1
-        # )
+        # Add trend indicators
+        meta_df['trend_indicator'] = meta_df.apply(
+            lambda row: MetaDisplayFormatter.format_trend_indicator(
+                row['trend_change'], row['trend_direction']
+            ), 
+            axis=1
+        )
         
         # Format deck names
         try:
@@ -718,9 +654,9 @@ def fetch_top_archetypes_by_7d_share(limit=20):
     return analyzer.fetch_top_archetypes_by_share(7, limit)
 
 
-# def format_trend_indicator(trend_change, trend_direction):
-#     """Legacy function - use MetaDisplayFormatter.format_trend_indicator() instead"""
-#     return MetaDisplayFormatter.format_trend_indicator(trend_change, trend_direction)
+def format_trend_indicator(trend_change, trend_direction):
+    """Legacy function - use MetaDisplayFormatter.format_trend_indicator() instead"""
+    return MetaDisplayFormatter.format_trend_indicator(trend_change, trend_direction)
 
 def fetch_archetype_trend_data_detailed(deck_name, days_back=7):
     """Legacy function - use ArchetypeAnalyzer.get_daily_trend_data() instead"""
