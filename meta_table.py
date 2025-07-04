@@ -641,11 +641,11 @@ class MetaDisplayFormatter:
 import random
 
 def display_meta_overview_table():
-    """Main function to display the meta overview table with trend line charts"""
+    """Display meta overview table with styled change column"""
     
     with st.spinner("Loading meta overview data..."):
         builder = MetaTableBuilder()
-        meta_df = builder.build_complete_meta_table(40)
+        meta_df = builder.build_complete_meta_table(20)
     
     if meta_df.empty:
         st.warning("No meta data available at this time.")
@@ -655,12 +655,13 @@ def display_meta_overview_table():
     formatter = MetaDisplayFormatter()
     meta_df = formatter.prepare_display_dataframe(meta_df)
     
-    # Add daily trend data for line charts
+    # FIXED: Move builder inside the function or pass it as parameter
     def get_trend_history(deck_name):
         """Get 7-day percentage history for line chart"""
         try:
-            # Use the existing builder's analyzer to get daily trend data
-            daily_data = builder.archetype_analyzer.get_daily_trend_data(deck_name, days_back=7)
+            # Create a new analyzer instance instead of using builder
+            analyzer = ArchetypeAnalyzer()
+            daily_data = analyzer.get_daily_trend_data(deck_name, days_back=7)
             
             # Extract percentage values - keys are day_1, day_2, etc.
             percentages = []
