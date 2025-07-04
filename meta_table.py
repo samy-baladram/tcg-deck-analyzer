@@ -1293,7 +1293,7 @@ def display_extended_meta_table():
             'Losses': extended_df['losses'], 
             'Ties': extended_df['ties'],
             'Win Rate': extended_df['win_rate'],
-            'Index': extended_df['wilson_index'],
+            #'Index': extended_df['wilson_index'],
             'deck_name': extended_df['deck_name']
         })
         
@@ -1382,9 +1382,9 @@ def display_extended_meta_table():
             'Ratio': st.column_config.NumberColumn(
                 "Ratio", width=45, help="Share-3d / Share-7d ratio", format="%.2f"
             ),
-            'Index': st.column_config.NumberColumn(
-                "Index", width=45, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
-            ),
+            # 'Index': st.column_config.NumberColumn(
+            #     "Index", width=45, help="Wilson Score Power Index (scaled -5 to +5, higher = better)", format="%.2f"
+            # ),
             'deck_name': None
         }
         
