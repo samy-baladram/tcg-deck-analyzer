@@ -1840,12 +1840,12 @@ def display_matchup_tab(deck_info=None):
                 "Icon1": st.column_config.ImageColumn(
                     "",
                     help="Primary Pokémon in the deck",
-                    width=40,
+                    width=35,
                 ),
                 "Icon2": st.column_config.ImageColumn(
                     "", 
                     help="Secondary Pokémon in the deck",
-                    width=40,
+                    width=35,
                 ),
                 "Deck": st.column_config.TextColumn(
                     "Deck",
@@ -1858,7 +1858,8 @@ def display_matchup_tab(deck_info=None):
                 ),
                 "Record": st.column_config.TextColumn(
                     "Record",
-                    help="Win-Loss-Tie record against this deck"
+                    help="Win-Loss-Tie record against this deck",
+                    width=60
                 ),
                 # "Matches": st.column_config.NumberColumn(
                 #     "Matches",
