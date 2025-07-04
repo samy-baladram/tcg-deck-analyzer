@@ -256,14 +256,14 @@ class ArchetypeAnalyzer(MetaAnalyzer):
         
         return df
     
-    def _get_trend_direction(self, trend_change):
-        """Determine trend direction from change value"""
-        if abs(trend_change) < 0.1:
-            return 'neutral'
-        elif trend_change > 0:
-            return 'up'
-        else:
-            return 'down'
+    # def _get_trend_direction(self, trend_change):
+    #     """Determine trend direction from change value"""
+    #     if abs(trend_change) < 0.1:
+    #         return 'neutral'
+    #     elif trend_change > 0:
+    #         return 'up'
+    #     else:
+    #         return 'down'
 
 
 class MetaTableBuilder(MetaAnalyzer):
@@ -402,15 +402,15 @@ class MetaTableBuilder(MetaAnalyzer):
 class MetaDisplayFormatter:
     """Format meta data for Streamlit display"""
     
-    @staticmethod
-    def format_trend_indicator(trend_change, trend_direction):
-        """Format trend change as colored indicator"""
-        if trend_direction == 'up':
-            return f"+{abs(trend_change):.2f}%"
-        elif trend_direction == 'down':
-            return f"-{abs(trend_change):.2f}%"
-        else:
-            return f"{trend_change:.2f}%"
+    # @staticmethod
+    # def format_trend_indicator(trend_change, trend_direction):
+    #     """Format trend change as colored indicator"""
+    #     if trend_direction == 'up':
+    #         return f"+{abs(trend_change):.2f}%"
+    #     elif trend_direction == 'down':
+    #         return f"-{abs(trend_change):.2f}%"
+    #     else:
+    #         return f"{trend_change:.2f}%"
     
     @staticmethod
     def prepare_display_dataframe(meta_df):
@@ -418,13 +418,13 @@ class MetaDisplayFormatter:
         if meta_df.empty:
             return pd.DataFrame()
         
-        # Add trend indicators
-        meta_df['trend_indicator'] = meta_df.apply(
-            lambda row: MetaDisplayFormatter.format_trend_indicator(
-                row['trend_change'], row['trend_direction']
-            ), 
-            axis=1
-        )
+        # # Add trend indicators
+        # meta_df['trend_indicator'] = meta_df.apply(
+        #     lambda row: MetaDisplayFormatter.format_trend_indicator(
+        #         row['trend_change'], row['trend_direction']
+        #     ), 
+        #     axis=1
+        # )
         
         # Format deck names
         try:
@@ -718,9 +718,9 @@ def fetch_top_archetypes_by_7d_share(limit=20):
     return analyzer.fetch_top_archetypes_by_share(7, limit)
 
 
-def format_trend_indicator(trend_change, trend_direction):
-    """Legacy function - use MetaDisplayFormatter.format_trend_indicator() instead"""
-    return MetaDisplayFormatter.format_trend_indicator(trend_change, trend_direction)
+# def format_trend_indicator(trend_change, trend_direction):
+#     """Legacy function - use MetaDisplayFormatter.format_trend_indicator() instead"""
+#     return MetaDisplayFormatter.format_trend_indicator(trend_change, trend_direction)
 
 def fetch_archetype_trend_data_detailed(deck_name, days_back=7):
     """Legacy function - use ArchetypeAnalyzer.get_daily_trend_data() instead"""
