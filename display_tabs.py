@@ -1899,7 +1899,7 @@ def display_matchup_tab(deck_info=None):
     
     # Add some space between summary and table
     if filtered_count > 0:
-        st.caption(f"Showing {len(working_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches.  \n"
+        st.caption(f"Showing {len(working_df)} matchups with at least {MIN_MATCHUP_MATCHES} matches.  Green = Favorable (> 55% Win Rate), Yellow = Even (45-55% Win Rate), Red = Unfavorable (< 45% Win Rate)\n"
                 f"Filtered out {filtered_count} matchups with insufficient data for reliability.")
         #st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
         
