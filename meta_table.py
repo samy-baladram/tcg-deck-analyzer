@@ -405,8 +405,8 @@ class MetaTableBuilder(MetaAnalyzer):
                 extended_data.append({
                     'deck_name': deck_name,
                     'formatted_deck_name': self._format_deck_name(deck_name),
-                    'pokemon_url1': None,  # These can be populated later if needed
-                    'pokemon_url2': None,
+                    # 'pokemon_url1': None,  # These can be populated later if needed
+                    # 'pokemon_url2': None,
                     'trend_data': trend_history,
                     'trend_history': trend_history,  # Add this for compatibility
                     'win_rate': round(win_rate, 1),
