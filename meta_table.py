@@ -253,7 +253,8 @@ class MetaTableBuilder(MetaAnalyzer):
 
     def build_complete_meta_table(self, limit=20):
         """
-        Build complete meta table with all analysis data - CORRECTED VERSION
+        Build complete meta table with all analysis data - OPTIMIZED VERSION
+        Single query instead of N+1 queries for much better performance
         
         Args:
             limit: Number of archetypes to include
@@ -261,77 +262,178 @@ class MetaTableBuilder(MetaAnalyzer):
         Returns:
             DataFrame with complete meta analysis including performance data
         """
-        #print("Building meta table data...")
         
-        # Get top archetypes based on 7-day share
-        archetypes_df = self.archetype_analyzer.fetch_top_archetypes_by_share(7, limit * 2)
+        # SINGLE OPTIMIZED QUERY - replaces the entire loop
+        query = """
+        WITH total_players_7d AS (
+            SELECT SUM(t.total_players) as total_count
+            FROM tournaments t
+            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+        ),
+        total_players_3d AS (
+            SELECT SUM(t.total_players) as total_count
+            FROM tournaments t
+            WHERE t.date >= date('now', '-3 days') AND t.date < date('now')
+        ),
+        meta_data_7d AS (
+            SELECT 
+                aa.archetype as deck_name,
+                SUM(aa.count) as archetype_count_7d,
+                COUNT(DISTINCT aa.tournament_id) as tournament_count_7d
+            FROM archetype_appearances aa
+            JOIN tournaments t ON aa.tournament_id = t.tournament_id
+            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+            GROUP BY aa.archetype
+            HAVING archetype_count_7d >= 5
+        ),
+        meta_data_3d AS (
+            SELECT 
+                aa.archetype as deck_name,
+                SUM(aa.count) as archetype_count_3d,
+                COUNT(DISTINCT aa.tournament_id) as tournament_count_3d
+            FROM archetype_appearances aa
+            JOIN tournaments t ON aa.tournament_id = t.tournament_id
+            WHERE t.date >= date('now', '-3 days') AND t.date < date('now')
+            GROUP BY aa.archetype
+        ),
+        performance_data AS (
+            SELECT 
+                pp.archetype as deck_name,
+                SUM(pp.wins) as total_wins,
+                SUM(pp.losses) as total_losses,
+                SUM(pp.ties) as total_ties
+            FROM player_performance pp
+            JOIN tournaments t ON pp.tournament_id = t.tournament_id
+            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+            GROUP BY pp.archetype
+        ),
+        daily_shares AS (
+            SELECT 
+                aa.archetype as deck_name,
+                t.date,
+                SUM(aa.count) as daily_count,
+                (SELECT SUM(total_players) FROM tournaments WHERE date = t.date) as daily_total
+            FROM archetype_appearances aa
+            JOIN tournaments t ON aa.tournament_id = t.tournament_id
+            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+            GROUP BY aa.archetype, t.date
+        )
+        SELECT 
+            m7.deck_name,
+            m7.archetype_count_7d,
+            m7.tournament_count_7d,
+            COALESCE(m3.archetype_count_3d, 0) as archetype_count_3d,
+            COALESCE(m3.tournament_count_3d, 0) as tournament_count_3d,
+            
+            -- Calculate shares
+            (CAST(m7.archetype_count_7d AS FLOAT) / tp7.total_count * 100) as share_7d,
+            (CAST(COALESCE(m3.archetype_count_3d, 0) AS FLOAT) / tp3.total_count * 100) as share_3d,
+            
+            -- Performance data
+            COALESCE(pd.total_wins, 0) as total_wins,
+            COALESCE(pd.total_losses, 0) as total_losses,
+            COALESCE(pd.total_ties, 0) as total_ties,
+            
+            -- Daily trend data (aggregated as JSON for trend_history)
+            GROUP_CONCAT(
+                CASE 
+                    WHEN ds.daily_total > 0 
+                    THEN CAST(ds.daily_count AS FLOAT) / ds.daily_total * 100 
+                    ELSE 0 
+                END, ','
+            ) as trend_data_raw
+            
+        FROM meta_data_7d m7
+        CROSS JOIN total_players_7d tp7
+        CROSS JOIN total_players_3d tp3
+        LEFT JOIN meta_data_3d m3 ON m7.deck_name = m3.deck_name
+        LEFT JOIN performance_data pd ON m7.deck_name = pd.deck_name
+        LEFT JOIN daily_shares ds ON m7.deck_name = ds.deck_name
+        GROUP BY m7.deck_name, m7.archetype_count_7d, m7.tournament_count_7d, 
+                 m3.archetype_count_3d, m3.tournament_count_3d, tp7.total_count, tp3.total_count,
+                 pd.total_wins, pd.total_losses, pd.total_ties
+        ORDER BY share_7d DESC
+        LIMIT ?
+        """
         
-        if archetypes_df.empty:
-            print("No archetype data found")
+        try:
+            with self.get_connection() as conn:
+                df = pd.read_sql_query(query, conn, params=[limit])
+            
+            if df.empty:
+                return pd.DataFrame()
+            
+            # Process the results
+            extended_data = []
+            
+            for _, row in df.iterrows():
+                deck_name = row['deck_name']
+                
+                # Calculate win rate and ratios
+                wins = int(row['total_wins'] or 0)
+                losses = int(row['total_losses'] or 0) 
+                ties = int(row['total_ties'] or 0)
+                
+                total_games = wins + losses + ties
+                win_rate = ((wins + 0.5 * ties) / total_games * 100) if total_games > 0 else 50.0
+                
+                share_7d = float(row['share_7d'] or 0)
+                share_3d = float(row['share_3d'] or 0)
+                
+                # Calculate trend metrics
+                trend_change = share_3d - share_7d
+                ratio = share_3d / share_7d if share_7d > 0 else 1.0
+                
+                # Process trend history (simplified version)
+                trend_raw = row.get('trend_data_raw', '')
+                if trend_raw:
+                    trend_history = [float(x) for x in trend_raw.split(',') if x]
+                else:
+                    trend_history = [0] * 7
+                
+                # Calculate Wilson score for reliability
+                wilson_index = self._calculate_wilson_score(wins, total_games) if total_games > 0 else 0.5
+                
+                extended_data.append({
+                    'deck_name': deck_name,
+                    'formatted_deck_name': self._format_deck_name(deck_name),
+                    'pokemon_url1': None,  # These can be populated later if needed
+                    'pokemon_url2': None,
+                    'trend_data': trend_history,
+                    'win_rate': round(win_rate, 1),
+                    'wins': wins,
+                    'losses': losses, 
+                    'ties': ties,
+                    'share_7d': round(share_7d, 2),
+                    'share_3d': round(share_3d, 2),
+                    'ratio': round(ratio, 2),
+                    'wilson_index': round(wilson_index, 3)
+                })
+            
+            result_df = pd.DataFrame(extended_data)
+            result_df.set_index('deck_name', inplace=True)
+            
+            return result_df
+            
+        except Exception as e:
+            print(f"Error building optimized meta table: {e}")
             return pd.DataFrame()
+    
+    def _calculate_wilson_score(self, wins, total_games, confidence=0.95):
+        """Calculate Wilson score confidence interval"""
+        if total_games == 0:
+            return 0.5
         
-        table_data = []
+        import math
         
-        for _, row in archetypes_df.iterrows():
-            deck_name = row['deck_name']
-            #print(f"Processing {deck_name}...")
-            
-            # Get period comparison data
-            period_data = self.archetype_analyzer.calculate_period_comparison(deck_name)
-            
-            # Get daily trend data
-            daily_data = self.archetype_analyzer.get_daily_trend_data(deck_name)
-            
-            # Get performance data (wins, losses, ties)
-            try:
-                import sqlite3
-                with sqlite3.connect(self.db_path) as conn:
-                    perf_query = """
-                    SELECT 
-                        COALESCE(SUM(pp.wins), 0) as total_wins,
-                        COALESCE(SUM(pp.losses), 0) as total_losses,
-                        COALESCE(SUM(pp.ties), 0) as total_ties
-                    FROM player_performance pp
-                    JOIN tournaments t ON pp.tournament_id = t.tournament_id
-                    WHERE pp.archetype = ?
-                    AND t.date >= date('now', '-7 days') AND t.date < date('now')
-                    """
-                    
-                    perf_result = pd.read_sql_query(perf_query, conn, params=[deck_name])
-                    
-                    wins = int(perf_result['total_wins'].iloc[0] or 0)
-                    losses = int(perf_result['total_losses'].iloc[0] or 0)
-                    ties = int(perf_result['total_ties'].iloc[0] or 0)
-                    
-            except Exception as e:
-                print(f"Error fetching performance data for {deck_name}: {e}")
-                wins = losses = ties = 0
-            
-            # Build complete row data
-            row_data = {
-                'deck_name': deck_name,
-                'formatted_deck_name': self._format_deck_name(deck_name),
-                'current_share': round(row['share'], 2),
-                'win_rate': round(row['win_rate'], 1),
-                'wins': wins,           # Add performance data
-                'losses': losses,       # Add performance data  
-                'ties': ties,           # Add performance data
-                **period_data,          # Add all period comparison data
-                **daily_data            # Add all daily trend data
-            }
-            
-            table_data.append(row_data)
+        z = 1.96  # 95% confidence
+        p = wins / total_games
         
-        # Convert to DataFrame and sort by 7-day share
-        result_df = pd.DataFrame(table_data)
-        result_df = result_df.sort_values('share_7d', ascending=False).reset_index(drop=True)
-        result_df['rank'] = range(1, len(result_df) + 1)
-        
-        #print(f"Built meta table with {len(result_df)} archetypes including performance data")
-        return result_df.head(limit)
+        wilson_score = (p + z*z/(2*total_games) - z * math.sqrt((p*(1-p) + z*z/(4*total_games))/total_games)) / (1 + z*z/total_games)
+        return max(0, min(1, wilson_score))
     
     def _format_deck_name(self, deck_name):
-        """Format deck name for display"""
+        """Simple deck name formatting"""
         return deck_name.replace('-', ' ').title()
 
 
@@ -1021,17 +1123,58 @@ import streamlit as st
 
 # Add this single function to meta_table.py
 
-def display_extended_meta_table():
-    """Extended meta table with Wins, Losses, Ties, Share-7d, Share-3d, Wilson Index (Power Index), and ranking"""
-    
-    with st.spinner("Loading extended meta data..."):
+# Add this import at the top of meta_table.py if not already present
+import streamlit as st
+
+# Find this function and add the cache decorator:
+@st.cache_data(ttl=300)  # Cache for 5 minutes
+def get_meta_table_data(limit=20):
+    """Cached wrapper for meta table data"""
+    builder = MetaTableBuilder()
+    return builder.build_complete_meta_table(limit)
+
+# Find this function and add the cache decorator:
+@st.cache_data(ttl=600)  # Cache for 10 minutes  
+def fetch_top_archetypes_by_7d_share(limit=20):
+    """Legacy function - use ArchetypeAnalyzer.fetch_top_archetypes_by_share() instead"""
+    analyzer = ArchetypeAnalyzer()
+    return analyzer.fetch_top_archetypes_by_share(7, limit)
+
+# Find this function and add the cache decorator:
+@st.cache_data(ttl=300)  # Cache for 5 minutes
+def calculate_period_shares(deck_name):
+    """Legacy function - use ArchetypeAnalyzer.calculate_period_comparison() instead"""
+    analyzer = ArchetypeAnalyzer()
+    return analyzer.calculate_period_comparison(deck_name)
+
+# REPLACE your display_extended_meta_table function with this cached version:
+@st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
+def get_cached_extended_meta_data():
+    """Get extended meta data with caching to improve performance"""
+    try:
         builder = MetaTableBuilder()
-        meta_df = builder.build_complete_meta_table(100)
+        meta_df = builder.build_complete_meta_table(50)  # Get more data for analysis
+        
+        if meta_df.empty:
+            return pd.DataFrame()
+            
+        return meta_df
+        
+    except Exception as e:
+        st.error(f"Error fetching extended meta data: {str(e)}")
+        return pd.DataFrame()
+
+def display_extended_meta_table():
+    """Display extended meta table using cached data"""
+    
+    # Use cached data instead of fetching fresh each time
+    with st.spinner("Loading extended meta data..."):
+        meta_df = get_cached_extended_meta_data()
     
     if meta_df.empty:
-        st.warning("No meta data available at this time.")
+        st.warning("No extended meta data available at this time.")
         return
-    
+        
     # Format for display
     formatter = MetaDisplayFormatter()
     meta_df = formatter.prepare_display_dataframe(meta_df)
