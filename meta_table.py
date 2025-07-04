@@ -1165,7 +1165,7 @@ def get_cached_extended_meta_data():
     """Get extended meta data with caching to improve performance"""
     try:
         builder = MetaTableBuilder()
-        meta_df = builder.build_complete_meta_table(50)  # Get more data for analysis
+        meta_df = builder.build_complete_meta_table(100)  # Get more data for analysis
         
         if meta_df.empty:
             return pd.DataFrame()
