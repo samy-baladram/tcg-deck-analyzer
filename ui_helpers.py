@@ -253,7 +253,7 @@ def display_banner(img_path, max_width=500):
     
     if img_base64:
         st.markdown(f"""
-        <div style="display: flex; justify-content: center; width: 100%; min-height: 50px; margin-top:0px; margin-bottom:0px;">
+        <div style="display: flex; justify-content: center; width: 100%; min-height: 100px; margin-top:0px; margin-bottom:0px;">
         <div>
             <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px;  height: auto; margin-top:-70px;">
         </div>
