@@ -277,6 +277,18 @@ div[data-testid="stVerticalBlock"] button p {
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
+if ('analyze' in st.session_state and 
+    st.session_state.get('deck_display_names') and 
+    'analyzed_deck' in st.session_state):
+    
+    original_deck_info = st.session_state.analyze
+    
+    # Get results from previous analysis if available
+    if 'analyzed_deck' in st.session_state and st.session_state.analyzed_deck:
+        results = st.session_state.analyzed_deck.get('results', None)
+        if results is not None:
+            display_tabs.display_deck_header(original_deck_info, results)
+            
 # Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
 
@@ -312,8 +324,10 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 original_deck_info['set_name'],
                 force_refresh=force_refresh
             )
+            # Store in session state for header display
+            if analyzed_deck is not None:
+                st.session_state.analyzed_deck = analyzed_deck
         except Exception as e:
-            #st.error(f"Error analyzing deck: {str(e)}")
             print(f"Analysis error for {original_deck_info['deck_name']}: {str(e)}")
             analyzed_deck = None
     
@@ -353,7 +367,7 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 st.error("Analysis results are empty for this deck.")
             else:
                 # Display deck header
-                display_tabs.display_deck_header(original_deck_info, results)
+                #display_tabs.display_deck_header(original_deck_info, results)
                 
                 # Create tab container
                 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Info", 
