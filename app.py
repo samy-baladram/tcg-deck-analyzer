@@ -278,7 +278,13 @@ div[data-testid="stVerticalBlock"] button p {
 ui_helpers.display_banner("title_banner.png")
 
 # Create deck selector AFTER initialization
-st.markdown('<div style="height: 5rem;"></div>', unsafe_allow_html=True)
+st.markdown('''
+<div style="
+    height: 100px;
+    width: 400px;
+    max-width: 80%;
+"></div>
+''', unsafe_allow_html=True)
 selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
