@@ -27,9 +27,7 @@ def display_deck_header(deck_info, results):
         # Simple centered deck image
         header_content = f"""
         <div style="display: flex; justify-content: center; align-items: flex-end; margin: 1rem 0rem -5rem 0rem; text-align: center;">
-            <div style="width:100%; max-width: 600px;">
                 <img src="data:image/png;base64,{header_image}" style="max-width: 23rem; margin-top: -17.5rem; margin-bottom: -1rem; width: 85%; height: auto; border: 0px solid #57585F; border-radius: 20px 20px 0px 0px; object-position: bottom;">
-            </div>
         </div>"""
         # header_content = f"""
         #     <div style="display: flex; justify-content: center; align-items: flex-end; text-align:center; margin: 0rem 0rem -1rem 0rem;">
