@@ -595,7 +595,8 @@ def create_deck_selector():
     # ENHANCED: Get latest set name and code from JSON file for label
     latest_set_info = get_latest_set_code()
     if latest_set_info:
-        label_text = f"Current Set: {latest_set_info['set_name']} ({latest_set_info['set_code']})"
+        #label_text = f"Current Set: {latest_set_info['set_name']} ({latest_set_info['set_code']})"
+        label_text = ""
     else:
         label_text = "Current Set: A3a"
     help_text = f"Ranked by 3-day meta share percentage from all tournaments in the past 3 days.  \nSource: [Limitless TCG](https://play.limitlesstcg.com/decks?game=POCKET).  Updated {time_str}."
