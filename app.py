@@ -281,7 +281,7 @@ ui_helpers.display_banner("title_banner.png")
 st.markdown('''
 <div style="
     height: 100px;
-    width: 500px;
+    width: 700px;
     max-width: 80%;
     background-color: transparent;
     border: 1px solid transparent;
