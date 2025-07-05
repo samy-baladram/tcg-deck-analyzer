@@ -56,7 +56,7 @@ st.set_page_config(
     layout="wide"
 )
 
-add_simple_background_rectangle(height_px=250, bg_color="#E8F4FF", opacity=0.6)
+add_cached_background_rectangle(height_px=250, bg_color="#E8F4FF", opacity=0.6)
 
 # Add background from repository
 background.add_app_background()
