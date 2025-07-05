@@ -277,28 +277,7 @@ div[data-testid="stVerticalBlock"] button p {
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
-# Display deck header BEFORE dropdown (with proper validation)
-if ('analyze' in st.session_state and 
-    st.session_state.get('deck_display_names') and 
-    'analyzed_deck' in st.session_state):
-    
-    original_deck_info = st.session_state.analyze
-    analyzed_deck = st.session_state.analyzed_deck
-    
-    # IMPORTANT: Validate that the cached analysis matches current deck
-    current_deck_name = original_deck_info.get('deck_name')
-    current_set_name = original_deck_info.get('set_name')
-    
-    # Only show header if we have valid results for the CURRENT deck
-    if (analyzed_deck and 
-        analyzed_deck.get('deck_name') == current_deck_name and
-        analyzed_deck.get('set_name') == current_set_name):
-        
-        results = analyzed_deck.get('results', None)
-        if results is not None:
-            display_tabs.display_deck_header(original_deck_info, results)
-
-# Create deck selector AFTER header display
+# Create deck selector AFTER initialization
 selected_option = ui_helpers.create_deck_selector()
 
 # Simple, direct sidebar rendering - ALWAYS runs but uses cached data
@@ -333,12 +312,8 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 original_deck_info['set_name'],
                 force_refresh=force_refresh
             )
-            # Store in session state with deck identification
-            if analyzed_deck is not None:
-                analyzed_deck['deck_name'] = original_deck_info['deck_name']
-                analyzed_deck['set_name'] = original_deck_info['set_name']
-                st.session_state.analyzed_deck = analyzed_deck
         except Exception as e:
+            #st.error(f"Error analyzing deck: {str(e)}")
             print(f"Analysis error for {original_deck_info['deck_name']}: {str(e)}")
             analyzed_deck = None
     
@@ -378,7 +353,7 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 st.error("Analysis results are empty for this deck.")
             else:
                 # Display deck header
-                #display_tabs.display_deck_header(original_deck_info, results)
+                display_tabs.display_deck_header(original_deck_info, results)
                 
                 # Create tab container
                 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Info", 
