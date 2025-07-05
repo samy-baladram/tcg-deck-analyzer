@@ -30,7 +30,7 @@ st.markdown(f"""<div style="
             width: 100%;
             height: 250px;
             background-color: "#E8F4FF;            
-        "></div>""",
+        "> Text</div>""",
         unsafe_allow_html=True
     )
 
