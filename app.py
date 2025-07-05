@@ -291,7 +291,7 @@ else:
     # Fill sidebar with minimal content to prevent collapse
     with st.sidebar:
         st.write("")
-        #st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
+        #st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
 
 # Clear deck_switching flag after analysis is complete
 if 'deck_switching' in st.session_state:
