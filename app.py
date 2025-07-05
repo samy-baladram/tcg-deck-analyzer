@@ -22,18 +22,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Call this IMMEDIATELY after st.set_page_config()
-st.markdown(f"""<div style="
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 250px;
-            background-color: "#E8F4FF;            
-        "> Text</div>""",
-        unsafe_allow_html=True
-    )
-
 # Add background from repository
 background.add_app_background()
     
