@@ -280,7 +280,7 @@ ui_helpers.display_banner("title_banner.png")
 # Create deck selector AFTER initialization
 st.markdown('''
 <div style="
-    height: 100px;
+    height: 60px;
     width: 400px;
     max-width: 80%;
     background-color: transparent;
