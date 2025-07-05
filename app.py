@@ -24,71 +24,6 @@ st.set_page_config(
 
 # Add background from repository
 background.add_app_background()
-
-def add_energy_background(deck_info=None, height_ratio=0.35):
-    """
-    Add colored background rectangle based on deck's most common energy type
-    
-    Args:
-        deck_info: Dictionary with deck information (optional, will get from session state if None)
-        height_ratio: Height of background as ratio of viewport height (0.35 = 35%)
-    """
-    import streamlit as st
-    from ui_helpers import get_energy_types_for_deck
-    from visualizations import ENERGY_COLORS
-    
-    # Get deck info from session state if not provided
-    if deck_info is None and 'analyze' in st.session_state:
-        deck_info = st.session_state.analyze
-    
-    # Default background color (light gray)
-    background_color = "#f0f0f0"
-    
-    # Get energy types and primary color if deck info available
-    if deck_info and deck_info.get('deck_name'):
-        try:
-            energy_types, is_typical = get_energy_types_for_deck(deck_info['deck_name'])
-            
-            # Use first energy type as primary
-            if energy_types and len(energy_types) > 0:
-                primary_energy = energy_types[0].lower()
-                
-                # Get primary color from ENERGY_COLORS
-                if primary_energy in ENERGY_COLORS:
-                    background_color = ENERGY_COLORS[primary_energy]['primary']
-                    
-        except Exception as e:
-            print(f"Error getting energy background color: {e}")
-    
-    # Convert height ratio to percentage
-    height_percent = int(height_ratio * 100)
-    
-    # Inject CSS for background rectangle - fixed position but avoid sidebar
-    st.markdown(f"""
-    <style>
-    .energy-background {{
-        position: fixed !important;
-        top: 0 !important;
-        left: 21rem !important;
-        right: 0 !important;
-        height: {height_percent}vh !important;
-        background-color: {background_color} !important;
-        border-bottom-left-radius: 30px !important;
-        border-bottom-right-radius: 30px !important;
-        z-index: -1 !important;
-        opacity: 0.8 !important;
-        pointer-events: none !important;
-    }}
-    
-    /* For mobile/narrow screens, cover full width */
-    @media (max-width: 768px) {{
-        .energy-background {{
-            left: 0 !important;
-        }}
-    }}
-    </style>
-    <div class="energy-background"></div>
-    """, unsafe_allow_html=True)
     
 # In app.py - before using any session state variables
 # Initialize app state tracking and load initial data
@@ -338,8 +273,6 @@ div[data-testid="stVerticalBlock"] button p {
 #     border-color: #00A0FF;
 #     color: #00A0FF;
 # }
-
-add_energy_background(height_ratio=0.35) 
 
 # Display banner
 ui_helpers.display_banner("title_banner.png")
