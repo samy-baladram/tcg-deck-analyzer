@@ -14,40 +14,6 @@ from meta_table import display_extended_meta_table
 
 from PIL import Image
 
-def add_cached_background_rectangle(height_px=200, bg_color="#F0F0F0", opacity=0.8):
-    """
-    Add background rectangle with caching to prevent blinking.
-    """
-    # Create cache key
-    cache_key = f"bg_rect_{height_px}_{bg_color}_{opacity}"
-    
-    # Initialize cache if needed
-    if 'background_cache' not in st.session_state:
-        st.session_state.background_cache = {}
-    
-    # Generate background HTML if not cached
-    if cache_key not in st.session_state.background_cache:
-        background_html = f"""
-        <style>
-        .persistent-bg-rect {{
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: {height_px}px;
-            background-color: {bg_color};
-            opacity: {opacity};
-            z-index: -1;
-            pointer-events: none;
-        }}
-        </style>
-        <div class="persistent-bg-rect"></div>
-        """
-        st.session_state.background_cache[cache_key] = background_html
-    
-    # Apply cached background
-    st.markdown(st.session_state.background_cache[cache_key], unsafe_allow_html=True)
-    
 favicon = Image.open("favicon.png").convert('RGBA')
 
 st.set_page_config(
@@ -55,8 +21,6 @@ st.set_page_config(
     page_icon=favicon,
     layout="wide"
 )
-
-add_cached_background_rectangle(height_px=250, bg_color="#E8F4FF", opacity=0.6)
 
 # Add background from repository
 background.add_app_background()
@@ -165,6 +129,18 @@ st.markdown("""
 <style>
 div[data-testid="stExpander"] details summary p{
     font-size: 1rem;
+}
+
+.persistent-bg-rect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    background-color: #E8F4FF;
+    opacity: 0.6;
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* Expander header styling */
