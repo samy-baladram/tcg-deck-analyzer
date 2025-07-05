@@ -279,7 +279,7 @@ ui_helpers.display_banner("title_banner.png")
 
 # Create deck selector AFTER initialization
 st.markdown('''
-<div style="height: 80px;"></div>
+<div style="height: 75px;"></div>
 ''', unsafe_allow_html=True)
 selected_option = ui_helpers.create_deck_selector()
 
