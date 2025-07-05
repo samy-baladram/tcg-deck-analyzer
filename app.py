@@ -23,6 +23,7 @@ st.set_page_config(
 )
 
 # Add background from repository
+st.write(st.session_state)
 background.add_app_background()
 
 # In app.py - before using any session state variables
