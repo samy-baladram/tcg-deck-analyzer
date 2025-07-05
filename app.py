@@ -156,6 +156,10 @@ div[data-baseweb="tag"] * {
     border-color: #00A0FF !important;
 }
 
+div[data-testid="stTabs"] {
+    margin-top: -30px !important;
+}
+
 /* Hover effect */
 div[role="option"]:hover {
     background-color: #00A0FF !important;
