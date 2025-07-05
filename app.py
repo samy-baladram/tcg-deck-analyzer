@@ -21,7 +21,7 @@ def add_persistent_background_rectangle(height_px=250, bg_color="#E8F4FF", opaci
     # Create container at the very top, before any other content
     if 'bg_container' not in st.session_state:
         # This must be called before any other Streamlit elements
-        st.session_state.bg_container = st.write("")
+        st.session_state.bg_container = st.empty()
     
     # Always update the container
     st.session_state.bg_container.markdown(
@@ -32,10 +32,7 @@ def add_persistent_background_rectangle(height_px=250, bg_color="#E8F4FF", opaci
             left: 0;
             width: 100%;
             height: {height_px}px;
-            background-color: {bg_color};
-            opacity: {opacity};
-            z-index: -1;
-            pointer-events: none;
+            background-color: {bg_color};            
         "></div>
         """,
         unsafe_allow_html=True
