@@ -17,13 +17,27 @@ ENERGY_COLORS = {
 }
 
 def get_current_energy_color():
-    """Get current deck's primary energy color"""
+    """Get current deck's primary energy color with better fallback handling"""
     default_color = "#3dafff"  # Blue default
     
-    if 'analyze' not in st.session_state:
-        return default_color
+    # Always try to get the deck info, even if analyze isn't set yet
+    deck_name = ""
     
-    deck_name = st.session_state.analyze.get('deck_name', '')
+    if 'analyze' in st.session_state:
+        deck_name = st.session_state.analyze.get('deck_name', '')
+    elif 'selected_deck_index' in st.session_state and 'deck_display_names' in st.session_state:
+        # Fallback: try to get from selected dropdown option
+        try:
+            selected_index = st.session_state.selected_deck_index
+            if (selected_index is not None and 
+                selected_index < len(st.session_state.deck_display_names)):
+                selected_display = st.session_state.deck_display_names[selected_index]
+                if 'deck_name_mapping' in st.session_state:
+                    deck_info = st.session_state.deck_name_mapping[selected_display]
+                    deck_name = deck_info.get('deck_name', '')
+        except:
+            pass
+    
     if not deck_name:
         return default_color
     
@@ -175,4 +189,105 @@ def apply_cached_background(height_px=300, opacity=0.12):
     if 'analyze' in st.session_state:
         deck_name = st.session_state.analyze.get('deck_name', 'default')
         background_html = create_cached_background(deck_name, height_px, opacity)
+        st.markdown(background_html, unsafe_allow_html=True)
+
+def apply_persistent_background(height_px=300, opacity=0.12):
+    """Apply background only when deck changes to prevent blinking"""
+    
+    # Initialize tracking variables
+    if 'current_background_deck' not in st.session_state:
+        st.session_state.current_background_deck = None
+        st.session_state.background_applied = False
+    
+    # Determine current deck
+    current_deck = None
+    if 'analyze' in st.session_state:
+        current_deck = st.session_state.analyze.get('deck_name', '')
+    elif 'selected_deck_index' in st.session_state and 'deck_display_names' in st.session_state:
+        try:
+            selected_index = st.session_state.selected_deck_index
+            if (selected_index is not None and 
+                selected_index < len(st.session_state.deck_display_names)):
+                selected_display = st.session_state.deck_display_names[selected_index]
+                if 'deck_name_mapping' in st.session_state:
+                    deck_info = st.session_state.deck_name_mapping[selected_display]
+                    current_deck = deck_info.get('deck_name', '')
+        except:
+            pass
+    
+    # Only apply background if deck changed or not applied yet
+    if (current_deck != st.session_state.current_background_deck or 
+        not st.session_state.background_applied):
+        
+        # Get color for current deck
+        color = get_current_energy_color()
+        hex_color = color.lstrip('#')
+        r = int(hex_color[0:2], 16) if len(hex_color) >= 2 else 61
+        g = int(hex_color[2:4], 16) if len(hex_color) >= 4 else 175  
+        b = int(hex_color[4:6], 16) if len(hex_color) >= 6 else 255
+        
+        # Create background with unique ID to avoid conflicts
+        background_id = f"energy-bg-{abs(hash(current_deck or 'default'))}"
+        
+        background_html = f"""
+        <style>
+        #{background_id} {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: {height_px}px;
+            background: rgba({r}, {g}, {b}, {opacity});
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            z-index: -999;
+            pointer-events: none;
+            transition: background-color 0.3s ease;
+        }}
+        </style>
+        <div id="{background_id}"></div>
+        """
+        
+        st.markdown(background_html, unsafe_allow_html=True)
+        
+        # Update tracking
+        st.session_state.current_background_deck = current_deck
+        st.session_state.background_applied = True
+        
+        print(f"Applied background for deck: {current_deck} with color: {color}")
+
+def apply_single_background(height_px=300, opacity=0.12):
+    """Apply background only once per session to eliminate blinking"""
+    
+    # Only apply once per session
+    if 'background_applied_once' not in st.session_state:
+        st.session_state.background_applied_once = True
+        
+        # Use default blue color that works for most cases
+        default_color = "#3dafff"
+        hex_color = default_color.lstrip('#')
+        r = int(hex_color[0:2], 16)
+        g = int(hex_color[2:4], 16) 
+        b = int(hex_color[4:6], 16)
+        
+        background_html = f"""
+        <style>
+        .single-energy-bg {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: {height_px}px;
+            background: rgba({r}, {g}, {b}, {opacity});
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            z-index: -999;
+            pointer-events: none;
+        }}
+        </style>
+        <div class="single-energy-bg"></div>
+        """
+        
         st.markdown(background_html, unsafe_allow_html=True)
