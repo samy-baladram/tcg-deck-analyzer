@@ -63,11 +63,11 @@ def add_energy_background(deck_info=None, height_ratio=0.35):
     # Convert height ratio to percentage
     height_percent = int(height_ratio * 100)
     
-    # Inject CSS for background rectangle with higher specificity and !important
+    # Inject CSS for background rectangle that scrolls with content
     st.markdown(f"""
     <style>
-    .stApp .energy-background {{
-        position: fixed !important;
+    .energy-background {{
+        position: absolute !important;
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
@@ -76,15 +76,14 @@ def add_energy_background(deck_info=None, height_ratio=0.35):
         background-color: {background_color} !important;
         border-bottom-left-radius: 30px !important;
         border-bottom-right-radius: 30px !important;
-        z-index: 0 !important;
+        z-index: -1 !important;
         opacity: 0.8 !important;
         pointer-events: none !important;
     }}
     
-    /* Ensure main content appears above background */
-    .stApp > div:not(.energy-background) {{
+    /* Only target main content area, not sidebar */
+    .stApp > div[data-testid="stAppViewContainer"] {{
         position: relative !important;
-        z-index: 1 !important;
     }}
     </style>
     <div class="energy-background"></div>
