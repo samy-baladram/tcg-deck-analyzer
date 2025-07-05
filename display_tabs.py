@@ -33,7 +33,7 @@ def display_deck_header(deck_info, results):
         # </div>"""
         header_content = f"""
             <div style="display: flex; justify-content: center; align-items: flex-end; text-align:center; margin: 0rem 0rem -1rem 0rem;">
-                <img src="data:image/png;base64,{header_image}" style="max-width: 400px; margin-top: -17rem; margin-bottom: 0rem; width: 80%; height: auto; border: 0px solid #57585F; border-radius: 6px; object-position: bottom;">
+                <img src="data:image/png;base64,{header_image}" style="max-width: 400px; margin-top: -20rem; margin-bottom: 0rem; width: 80%; height: auto; border: 0px solid #57585F; border-radius: 6px; object-position: bottom;">
             </div>"""
         st.markdown(header_content, unsafe_allow_html=True)
             
