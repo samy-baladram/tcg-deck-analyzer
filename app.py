@@ -11,7 +11,6 @@ from local_metagame import display_local_metagame_comparison
 from header_image_cache import clear_expired_cache, get_cache_stats
 from card_cache import clear_expired_cache as clear_card_cache
 from meta_table import display_extended_meta_table
-from energy_background import apply_energy_background, apply_energy_background_stable
 
 from PIL import Image
 
@@ -300,7 +299,7 @@ if 'deck_switching' in st.session_state:
 # Main content area
 if 'analyze' in st.session_state and selected_option and st.session_state.get('deck_display_names'):
     original_deck_info = st.session_state.analyze
-    apply_energy_background_stable()
+
     # Check if we need to force refresh
     force_refresh = st.session_state.get('force_deck_refresh', False)
     if force_refresh:
