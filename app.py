@@ -275,6 +275,8 @@ div[data-testid="stVerticalBlock"] button p {
 #     color: #00A0FF;
 # }
 
+apply_static_background(height_px=300, opacity=0.12)
+
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
@@ -300,7 +302,6 @@ if 'deck_switching' in st.session_state:
 # Main content area
 if 'analyze' in st.session_state and selected_option and st.session_state.get('deck_display_names'):
     original_deck_info = st.session_state.analyze
-    apply_static_background(height_px=300, opacity=0.12)
 
     # Check if we need to force refresh
     force_refresh = st.session_state.get('force_deck_refresh', False)
