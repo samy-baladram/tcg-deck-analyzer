@@ -11,7 +11,6 @@ from local_metagame import display_local_metagame_comparison
 from header_image_cache import clear_expired_cache, get_cache_stats
 from card_cache import clear_expired_cache as clear_card_cache
 from meta_table import display_extended_meta_table
-from background_rectangle import apply_persistent_background
 
 from PIL import Image
 
@@ -274,8 +273,6 @@ div[data-testid="stVerticalBlock"] button p {
 #     border-color: #00A0FF;
 #     color: #00A0FF;
 # }
-
-apply_persistent_background(height_px=300, opacity=0.12)
 
 # Display banner
 ui_helpers.display_banner("title_banner.png")
