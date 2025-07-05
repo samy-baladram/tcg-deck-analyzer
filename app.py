@@ -63,28 +63,28 @@ def add_energy_background(deck_info=None, height_ratio=0.35):
     # Convert height ratio to percentage
     height_percent = int(height_ratio * 100)
     
-    # Inject CSS for background rectangle - fixed position but avoid sidebar
+    # Inject CSS for background rectangle with higher specificity and !important
     st.markdown(f"""
     <style>
-    .energy-background {{
+    .stApp .energy-background {{
         position: fixed !important;
         top: 0 !important;
-        left: 21rem !important;
+        left: 0 !important;
         right: 0 !important;
+        width: 100% !important;
         height: {height_percent}vh !important;
         background-color: {background_color} !important;
         border-bottom-left-radius: 30px !important;
         border-bottom-right-radius: 30px !important;
-        z-index: -1 !important;
+        z-index: 0 !important;
         opacity: 0.8 !important;
         pointer-events: none !important;
     }}
     
-    /* For mobile/narrow screens, cover full width */
-    @media (max-width: 768px) {{
-        .energy-background {{
-            left: 0 !important;
-        }}
+    /* Ensure main content appears above background */
+    .stApp > div:not(.energy-background) {{
+        position: relative !important;
+        z-index: 1 !important;
     }}
     </style>
     <div class="energy-background"></div>
