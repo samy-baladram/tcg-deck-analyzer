@@ -285,7 +285,7 @@ st.markdown('''
     max-width: 80%;
     background-color: transparent;
     border: 1px solid transparent;
-"></div>
+"><p></p></div>
 ''', unsafe_allow_html=True)
 selected_option = ui_helpers.create_deck_selector()
 
