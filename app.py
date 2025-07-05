@@ -262,6 +262,7 @@ div[data-testid="stVerticalBlock"] button p {
     width: 100% !important;
 }
 </style>
+<div class="persistent-bg-rect"></div>
 """, unsafe_allow_html=True)
 
 # /* Change primary color to blue */
