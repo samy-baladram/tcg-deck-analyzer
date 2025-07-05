@@ -157,7 +157,7 @@ div[data-baseweb="tag"] * {
 }
 
 div[data-testid="stTabs"] {
-    margin-top: -30px !important;
+    margin-top: -25px !important;
 }
 
 /* Hover effect */
