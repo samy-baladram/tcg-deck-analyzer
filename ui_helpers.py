@@ -246,7 +246,7 @@ def render_energy_icons(energy_types, is_typical=False):
     energy_tuple = tuple(energy_types) if energy_types else ()
     return render_energy_icons_cached(energy_tuple, is_typical)
             
-def display_banner(img_path, max_width=500):
+def display_banner(img_path, max_width=400):
     """Display the app banner image with caching"""
     # USE CACHED VERSION
     img_base64 = get_cached_banner_image(img_path)
