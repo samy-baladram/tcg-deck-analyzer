@@ -1080,14 +1080,14 @@ def render_sidebar_from_cache():
         
         # Rest of current content...
         st.markdown("<hr style='margin:25px; border: 0.5px solid rgba(137, 148, 166, 0.2);'>", unsafe_allow_html=True)
-        with st.expander("🔍 About the Power Index"):
-            from datetime import datetime
-            current_month_year = datetime.now().strftime("%B %Y")
-            formatted_explanation = POWER_INDEX_EXPLANATION.format(
-                tournament_count=TOURNAMENT_COUNT,
-                current_month_year=current_month_year
-            )
-            st.markdown(formatted_explanation)
+        # with st.expander("🔍 About the Power Index"):
+        #     from datetime import datetime
+        #     current_month_year = datetime.now().strftime("%B %Y")
+        #     formatted_explanation = POWER_INDEX_EXPLANATION.format(
+        #         tournament_count=TOURNAMENT_COUNT,
+        #         current_month_year=current_month_year
+        #     )
+        #     st.markdown(formatted_explanation)
         
         render_about_section()
     
