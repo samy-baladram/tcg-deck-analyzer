@@ -45,45 +45,57 @@ def apply_energy_background():
     # Get current deck's primary energy type
     primary_energy = get_current_deck_energy()
     
-    # Get the background color
-    bg_color = get_background_color(primary_energy)
+    # Check if energy type has changed to prevent unnecessary updates
+    if 'current_bg_energy' not in st.session_state:
+        st.session_state.current_bg_energy = None
     
-    # Apply CSS for the background rectangle
-    background_css = f"""
-    <style>
-    /* Energy-based background rectangle */
-    .energy-background {{
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 35vh; /* Adjust this value to fit under your dropdown */
-        background-color: {bg_color};
-        opacity: 0.15; /* Make it subtle */
-        border-bottom-left-radius: 30px;
-        border-bottom-right-radius: 30px;
-        z-index: -1; /* Behind all content */
-        pointer-events: none; /* Don't block interactions */
-    }}
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {{
+    # Only update if energy type changed
+    if st.session_state.current_bg_energy != primary_energy:
+        st.session_state.current_bg_energy = primary_energy
+        
+        # Get the background color
+        bg_color = get_background_color(primary_energy)
+        
+        # Apply CSS for the background rectangle with smooth transitions
+        background_css = f"""
+        <style>
+        /* Energy-based background rectangle */
         .energy-background {{
-            height: 40vh; /* Slightly taller on mobile */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 35vh; /* Adjust this value to fit under your dropdown */
+            background-color: {bg_color};
+            opacity: 0.15; /* Make it subtle */
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            z-index: -1; /* Behind all content */
+            pointer-events: none; /* Don't block interactions */
+            transition: background-color 0.3s ease-in-out; /* Smooth color transitions */
         }}
-    }}
-    
-    @media (min-width: 1200px) {{
-        .energy-background {{
-            height: 30vh; /* Shorter on wide screens */
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {{
+            .energy-background {{
+                height: 40vh; /* Slightly taller on mobile */
+            }}
         }}
-    }}
-    </style>
-    
-    <div class="energy-background"></div>
-    """
-    
-    st.markdown(background_css, unsafe_allow_html=True)
+        
+        @media (min-width: 1200px) {{
+            .energy-background {{
+                height: 30vh; /* Shorter on wide screens */
+            }}
+        }}
+        </style>
+        
+        <div class="energy-background"></div>
+        """
+        
+        st.markdown(background_css, unsafe_allow_html=True)
+    else:
+        # Still need to render the div even if CSS hasn't changed
+        st.markdown('<div class="energy-background"></div>', unsafe_allow_html=True)
 
 def apply_energy_background_custom_height(height_vh=35, opacity=0.15):
     """
@@ -97,28 +109,91 @@ def apply_energy_background_custom_height(height_vh=35, opacity=0.15):
     # Get current deck's primary energy type
     primary_energy = get_current_deck_energy()
     
-    # Get the background color
+    # Check if energy type has changed to prevent unnecessary updates
+    cache_key = f"current_bg_energy_{height_vh}_{opacity}"
+    if cache_key not in st.session_state:
+        st.session_state[cache_key] = None
+    
+    # Only update if energy type changed
+    if st.session_state[cache_key] != primary_energy:
+        st.session_state[cache_key] = primary_energy
+        
+        # Get the background color
+        bg_color = get_background_color(primary_energy)
+        
+        # Apply CSS with custom parameters and smooth transitions
+        background_css = f"""
+        <style>
+        .energy-background-custom {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: {height_vh}vh;
+            background-color: {bg_color};
+            opacity: {opacity};
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            z-index: -1;
+            pointer-events: none;
+            transition: background-color 0.3s ease-in-out;
+        }}
+        </style>
+        
+        <div class="energy-background-custom"></div>
+        """
+        
+        st.markdown(background_css, unsafe_allow_html=True)
+    else:
+        # Still render the div even if CSS hasn't changed
+        st.markdown('<div class="energy-background-custom"></div>', unsafe_allow_html=True)
+
+def apply_energy_background_stable():
+    """
+    Alternative stable approach using CSS custom properties
+    This version uses CSS variables to reduce re-rendering
+    """
+    
+    # Get current deck's primary energy type
+    primary_energy = get_current_deck_energy()
     bg_color = get_background_color(primary_energy)
     
-    # Apply CSS with custom parameters
+    # Use CSS custom properties for smoother updates
     background_css = f"""
     <style>
-    .energy-background-custom {{
+    :root {{
+        --energy-bg-color: {bg_color};
+    }}
+    
+    .energy-background-stable {{
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        height: {height_vh}vh;
-        background-color: {bg_color};
-        opacity: {opacity};
+        height: 35vh;
+        background-color: var(--energy-bg-color);
+        opacity: 0.15;
         border-bottom-left-radius: 30px;
         border-bottom-right-radius: 30px;
         z-index: -1;
         pointer-events: none;
+        transition: background-color 0.5s ease-in-out;
+    }}
+    
+    @media (max-width: 768px) {{
+        .energy-background-stable {{
+            height: 40vh;
+        }}
+    }}
+    
+    @media (min-width: 1200px) {{
+        .energy-background-stable {{
+            height: 30vh;
+        }}
     }}
     </style>
     
-    <div class="energy-background-custom"></div>
+    <div class="energy-background-stable"></div>
     """
     
     st.markdown(background_css, unsafe_allow_html=True)
