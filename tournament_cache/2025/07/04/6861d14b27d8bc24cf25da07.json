@@ -1,0 +1,117 @@
+{
+  "tournament_id": "6861d14b27d8bc24cf25da07",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Open #6",
+  "timestamp": 1751670000000,
+  "format": "Standard",
+  "player_count": 18,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Humberto Cortez",
+      "record": "7 - 0 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Miqu\u00e9ias Fernandez",
+      "record": "5 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Damien Demarco-Sutton",
+      "record": "4 - 2 - 0",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Diego Carcamo",
+      "record": "4 - 2 - 0",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "\u30a2\u30fc\u30eb \u30a2\u30fc\u30eb",
+      "record": "3 - 2 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "Seba IE",
+      "record": "3 - 2 - 0",
+      "archetype": "garchomp-ex-a2a-sylveon-ex-a3b"
+    },
+    {
+      "placement": 7,
+      "player_name": "MSP | EllieDark",
+      "record": "3 - 2 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Daniel Rodr\u00edguez",
+      "record": "3 - 2 - 0",
+      "archetype": "primarina-ex-a3b-pyukumuku-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "Christopher King Moreno Saucedo",
+      "record": "3 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Ronald Guevara",
+      "record": "2 - 3 - 0",
+      "archetype": "primarina-ex-a3b-primarina-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "Mario Garc\u00eda",
+      "record": "2 - 3 - 0",
+      "archetype": "decidueye-ex-a3-leafeon-a3b"
+    },
+    {
+      "placement": 12,
+      "player_name": "Oscar Parra",
+      "record": "2 - 3 - 0",
+      "archetype": "snorlax-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Antonio Manuel Medina Vinuesa",
+      "record": "1 - 4 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Juan Diaz",
+      "record": "0 - 5 - 0",
+      "archetype": "charizard-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 15,
+      "player_name": "Diego Castillo",
+      "record": "0 - 2 - 0drop",
+      "archetype": "slurpuff-alcremie-a3b"
+    },
+    {
+      "placement": 16,
+      "player_name": "Helga viviana Barriga Cur\u00edn",
+      "record": "0 - 3 - 0drop",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 17,
+      "player_name": "Yariel Lopez Almestro",
+      "record": "1 - 2 - 0drop",
+      "archetype": "naganadel-nihilego-a3a"
+    },
+    {
+      "placement": 18,
+      "player_name": "Keung To",
+      "record": "1 - 2 - 0drop",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    }
+  ]
+}
