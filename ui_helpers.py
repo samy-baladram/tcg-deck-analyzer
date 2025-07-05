@@ -296,6 +296,10 @@ def on_deck_change():
         if (current_deck.get('deck_name') != new_deck_name or 
             current_deck.get('set_name') != new_set_name):
             
+            # ADD THIS: Clear stale analysis data
+            if 'analyzed_deck' in st.session_state:
+                del st.session_state.analyzed_deck
+            
             # Clear caches for the new deck to force fresh analysis
             import cache_manager
             cache_manager.clear_deck_cache_on_switch(new_deck_name, new_set_name)
