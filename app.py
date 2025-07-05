@@ -300,7 +300,7 @@ if 'deck_switching' in st.session_state:
 # Main content area
 if 'analyze' in st.session_state and selected_option and st.session_state.get('deck_display_names'):
     original_deck_info = st.session_state.analyze
-    apply_background_rectangle(height_percentage=30, opacity=0.15)
+    apply_cached_background(height_px=300, opacity=0.12)
 
     # Check if we need to force refresh
     force_refresh = st.session_state.get('force_deck_refresh', False)
