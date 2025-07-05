@@ -28,7 +28,7 @@ def display_deck_header(deck_info, results):
         header_content = f"""
         <div style="display: flex; justify-content: center; align-items: flex-end; margin: 0rem 0rem -5rem 0rem; text-align: center;">
             <div style="min-width: 200px;">
-                <img src="data:image/png;base64,{header_image}" style="max-width: 30rem; margin-top: -17rem; margin-bottom: -1rem; width: 80%; height: auto; border: 0px solid #57585F; border-radius: 6px; object-position: bottom;">
+                <img src="data:image/png;base64,{header_image}" style="max-width: 30rem; margin-top: -17rem; margin-bottom: -1rem; width: 80%; height: auto; border: 0px solid #57585F; border-radius: 6px 6px 0px 0px; object-position: bottom;">
             </div>
         </div>"""
         # header_content = f"""
