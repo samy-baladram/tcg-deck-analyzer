@@ -14,19 +14,22 @@ from meta_table import display_extended_meta_table
 
 from PIL import Image
 
-def add_simple_background_rectangle(height_px=200, bg_color="#F0F0F0", opacity=0.8):
+def add_cached_background_rectangle(height_px=200, bg_color="#F0F0F0", opacity=0.8):
     """
-    Add simple rectangular background that spans full width.
+    Add background rectangle with caching to prevent blinking.
+    """
+    # Create cache key
+    cache_key = f"bg_rect_{height_px}_{bg_color}_{opacity}"
     
-    Args:
-        height_px (int): Height in pixels until tabs start
-        bg_color (str): Background color in hex format
-        opacity (float): Background opacity value (0.0 to 1.0)
-    """
-    st.markdown(
-        f"""
+    # Initialize cache if needed
+    if 'background_cache' not in st.session_state:
+        st.session_state.background_cache = {}
+    
+    # Generate background HTML if not cached
+    if cache_key not in st.session_state.background_cache:
+        background_html = f"""
         <style>
-        .background-rectangle {{
+        .persistent-bg-rect {{
             position: fixed;
             top: 0;
             left: 0;
@@ -38,10 +41,12 @@ def add_simple_background_rectangle(height_px=200, bg_color="#F0F0F0", opacity=0
             pointer-events: none;
         }}
         </style>
-        <div class="background-rectangle"></div>
-        """,
-        unsafe_allow_html=True
-    )
+        <div class="persistent-bg-rect"></div>
+        """
+        st.session_state.background_cache[cache_key] = background_html
+    
+    # Apply cached background
+    st.markdown(st.session_state.background_cache[cache_key], unsafe_allow_html=True)
     
 favicon = Image.open("favicon.png").convert('RGBA')
 
