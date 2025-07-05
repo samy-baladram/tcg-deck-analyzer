@@ -63,20 +63,28 @@ def add_energy_background(deck_info=None, height_ratio=0.35):
     # Convert height ratio to percentage
     height_percent = int(height_ratio * 100)
     
-    # Inject CSS for background rectangle
+    # Inject CSS for background rectangle with higher specificity and !important
     st.markdown(f"""
     <style>
-    .energy-background {{
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: {height_percent}vh;
-        background-color: {background_color};
-        border-bottom-left-radius: 30px;
-        border-bottom-right-radius: 30px;
-        z-index: -1;
-        opacity: 0.8;
+    .stApp .energy-background {{
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: {height_percent}vh !important;
+        background-color: {background_color} !important;
+        border-bottom-left-radius: 30px !important;
+        border-bottom-right-radius: 30px !important;
+        z-index: 0 !important;
+        opacity: 0.8 !important;
+        pointer-events: none !important;
+    }}
+    
+    /* Ensure main content appears above background */
+    .stApp > div:not(.energy-background) {{
+        position: relative !important;
+        z-index: 1 !important;
     }}
     </style>
     <div class="energy-background"></div>
@@ -331,6 +339,8 @@ div[data-testid="stVerticalBlock"] button p {
 #     color: #00A0FF;
 # }
 
+add_energy_background(height_ratio=0.35) 
+
 # Display banner
 ui_helpers.display_banner("title_banner.png")
 
@@ -395,7 +405,6 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
         st.error("Deck data for this archetype is currently unavailable. Please try selecting a different deck.")
         #st.error("Unable to load deck data. Please try selecting a different deck or refresh the page.")
     else:
-        add_energy_background(original_deck_info, height_ratio=0.35)  # Adjust ratio as needed
         # Validate the structure of analyzed_deck and provide defaults
         try:
             # Use .get() method with defaults to prevent KeyError
