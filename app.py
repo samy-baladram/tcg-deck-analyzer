@@ -14,6 +14,35 @@ from meta_table import display_extended_meta_table
 
 from PIL import Image
 
+def add_simple_background_rectangle(height_px=200, bg_color="#F0F0F0", opacity=0.8):
+    """
+    Add simple rectangular background that spans full width.
+    
+    Args:
+        height_px (int): Height in pixels until tabs start
+        bg_color (str): Background color in hex format
+        opacity (float): Background opacity value (0.0 to 1.0)
+    """
+    st.markdown(
+        f"""
+        <style>
+        .background-rectangle {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: {height_px}px;
+            background-color: {bg_color};
+            opacity: {opacity};
+            z-index: -1;
+            pointer-events: none;
+        }}
+        </style>
+        <div class="background-rectangle"></div>
+        """,
+        unsafe_allow_html=True
+    )
+    
 favicon = Image.open("favicon.png").convert('RGBA')
 
 st.set_page_config(
@@ -21,6 +50,8 @@ st.set_page_config(
     page_icon=favicon,
     layout="wide"
 )
+
+add_simple_background_rectangle(height_px=250, bg_color="#E8F4FF", opacity=0.6)
 
 # Add background from repository
 background.add_app_background()
