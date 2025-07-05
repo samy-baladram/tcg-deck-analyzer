@@ -31,11 +31,10 @@ def display_deck_header(deck_info, results):
         #         <img src="data:image/png;base64,{header_image}" style="max-width: 500px; margin-top: -17rem; margin-bottom: 0rem; width: 80%; height: auto; border: 0px solid #57585F; border-radius: 6px; object-position: bottom;">
         #     </div>
         # </div>"""
-       header_content = f"""
+        header_content = f"""
             <div style="text-align:center; margin: 0rem 0rem -3rem 0rem;">
                 <img src="data:image/png;base64,{header_image}" style="max-width: 500px; margin-top: -17rem; margin-bottom: 0rem; width: 80%; height: auto; border: 0px solid #57585F; border-radius: 6px; object-position: bottom;">
             </div>"""
-        
         st.markdown(header_content, unsafe_allow_html=True)
             
 # In display_card_usage_tab function in display_tabs.py
