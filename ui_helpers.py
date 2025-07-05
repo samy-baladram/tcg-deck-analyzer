@@ -132,12 +132,12 @@ def preload_sidebar_deck_images():
             deck_name = deck.get('deck_name', '')
             set_name = deck.get('set', 'A3')
             
-            # Check if image already cached
-            cache_key = f"{deck_name}"
-            if cache_key in _header_image_cache:
-                continue
+            # REMOVE: Direct cache access - this was causing the error
+            # cache_key = f"{deck_name}"
+            # if cache_key in _header_image_cache:
+            #     continue
                 
-            # Generate image without analysis_results
+            # FIX: Use proper cache function instead
             print(f"Pre-generating image for: {deck_name}")
             get_header_image_cached(deck_name, set_name, analysis_results=None)
             
