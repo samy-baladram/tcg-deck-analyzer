@@ -14,6 +14,33 @@ from meta_table import display_extended_meta_table
 
 from PIL import Image
 
+def add_persistent_background_rectangle(height_px=250, bg_color="#E8F4FF", opacity=0.6):
+    """
+    Add persistent background using st.empty() container.
+    """
+    # Create container at the very top, before any other content
+    if 'bg_container' not in st.session_state:
+        # This must be called before any other Streamlit elements
+        st.session_state.bg_container = st.empty()
+    
+    # Always update the container
+    st.session_state.bg_container.markdown(
+        f"""
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: {height_px}px;
+            background-color: {bg_color};
+            opacity: {opacity};
+            z-index: -1;
+            pointer-events: none;
+        "></div>
+        """,
+        unsafe_allow_html=True
+    )
+
 favicon = Image.open("favicon.png").convert('RGBA')
 
 st.set_page_config(
@@ -21,6 +48,9 @@ st.set_page_config(
     page_icon=favicon,
     layout="wide"
 )
+
+# Call this IMMEDIATELY after st.set_page_config()
+add_persistent_background_rectangle()
 
 # Add background from repository
 background.add_app_background()
@@ -129,18 +159,6 @@ st.markdown("""
 <style>
 div[data-testid="stExpander"] details summary p{
     font-size: 1rem;
-}
-
-.persistent-bg-rect {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 250px;
-    background-color: #E8F4FF;
-    opacity: 0.6;
-    z-index: -1;
-    pointer-events: none;
 }
 
 /* Expander header styling */
@@ -262,7 +280,6 @@ div[data-testid="stVerticalBlock"] button p {
     width: 100% !important;
 }
 </style>
-<div class="persistent-bg-rect"></div>
 """, unsafe_allow_html=True)
 
 # /* Change primary color to blue */
