@@ -21,7 +21,7 @@ def add_persistent_background_rectangle(height_px=250, bg_color="#E8F4FF", opaci
     # Create container at the very top, before any other content
     if 'bg_container' not in st.session_state:
         # This must be called before any other Streamlit elements
-        st.session_state.bg_container = st.empty()
+        st.session_state.bg_container = st.write("")
     
     # Always update the container
     st.session_state.bg_container.markdown(
