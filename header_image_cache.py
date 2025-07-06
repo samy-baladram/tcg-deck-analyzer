@@ -95,45 +95,45 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
     try:
         img_base64 = create_deck_header_images(deck_info, analysis_results)
         
-        # DEBUG: Check what we got back
-            if img_base64:
-                print(f"DEBUG: Image generated successfully for {deck_name}, length: {len(img_base64)} chars")
-            else:
-                print(f"DEBUG: Image generation returned None for {deck_name}")
-                
-        except Exception as e:
-            print(f"Failed to generate image for {deck_name}: {e}")
-            return None
-        
+    # DEBUG: Check what we got back
         if img_base64:
-            # Save to memory cache
-            _header_image_cache[cache_key] = img_base64
-            print(f"DEBUG: Saved to memory cache with key: {cache_key}")
-            
-            # Save to disk cache
-            try:
-                ensure_cache_dir()
-                
-                # Save image file
-                image_file = os.path.join(HEADER_CACHE_DIR, f"{cache_key}.png")
-                image_data = base64.b64decode(img_base64)
-                with open(image_file, 'wb') as f:
-                    f.write(image_data)
-                
-                print(f"DEBUG: Saved to disk cache: {image_file}")
-                
-                # Update cache index
-                cache_index[cache_key] = {
-                    'created': datetime.now().isoformat(),
-                    'deck_name': deck_name,
-                    'set_name': set_name
-                }
-                save_cache_index(cache_index)
-                
-            except Exception as e:
-                print(f"DEBUG: Error saving to cache: {e}")
+            print(f"DEBUG: Image generated successfully for {deck_name}, length: {len(img_base64)} chars")
         else:
-            print(f"DEBUG: No image to cache for {deck_name}")
+            print(f"DEBUG: Image generation returned None for {deck_name}")
+            
+    except Exception as e:
+        print(f"Failed to generate image for {deck_name}: {e}")
+        return None
+    
+    if img_base64:
+        # Save to memory cache
+        _header_image_cache[cache_key] = img_base64
+        print(f"DEBUG: Saved to memory cache with key: {cache_key}")
+        
+        # Save to disk cache
+        try:
+            ensure_cache_dir()
+            
+            # Save image file
+            image_file = os.path.join(HEADER_CACHE_DIR, f"{cache_key}.png")
+            image_data = base64.b64decode(img_base64)
+            with open(image_file, 'wb') as f:
+                f.write(image_data)
+            
+            print(f"DEBUG: Saved to disk cache: {image_file}")
+            
+            # Update cache index
+            cache_index[cache_key] = {
+                'created': datetime.now().isoformat(),
+                'deck_name': deck_name,
+                'set_name': set_name
+            }
+            save_cache_index(cache_index)
+            
+        except Exception as e:
+            print(f"DEBUG: Error saving to cache: {e}")
+    else:
+        print(f"DEBUG: No image to cache for {deck_name}")
     
     return img_base64
 
