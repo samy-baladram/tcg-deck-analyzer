@@ -21,8 +21,10 @@ def ensure_cache_dir():
     os.makedirs(HEADER_CACHE_DIR, exist_ok=True)
 
 def get_cache_key(deck_name, set_name="A3"):
-    """Generate consistent cache key for deck header image"""
-    return f"{deck_name}"
+    """Generate consistent cache key for deck header image - FIXED for A3b naming"""
+    # Clean the deck name for consistent caching
+    clean_name = ''.join(c if c.isalnum() or c in ['-', '_'] else '_' for c in deck_name)
+    return clean_name
     #return f"{deck_name}_{set_name}"
 
 def load_cache_index():
@@ -126,6 +128,7 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
         except Exception as e:
             print(f"Error saving header image to cache: {e}")
     
+    st.experimental_memo.clear()
     return img_base64
 
 def clear_expired_cache():
