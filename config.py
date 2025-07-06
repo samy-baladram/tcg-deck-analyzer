@@ -99,8 +99,7 @@ PLOTLY_CONFIG = {
 # Image processing settings
 IMAGE_CROP_BOX = {
     'left': 0.05,
-    'top': 0.08,
-    #'top': 0.115,
+    'top': 0.115,
     'right': 0.95,
     'bottom': 0.47
 }
