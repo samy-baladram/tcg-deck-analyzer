@@ -584,7 +584,16 @@ def create_deck_header_images(deck_info, analysis_results=None, enable_ai_enhanc
         A single base64 encoded merged image, or None if no images found
     """
     # Find Pokémon images
+    deck_name = deck_info['deck_name']
+    set_name = deck_info.get('set', 'A3')
+    
+    print(f"DEBUG: create_deck_header_images called for deck='{deck_name}', set='{set_name}'")
+    
+    # Find Pokémon images
     pil_images = find_pokemon_images(deck_info, analysis_results)
+    
+    print(f"DEBUG: find_pokemon_images returned {len(pil_images)} images for {deck_name}")
+   
     
     # Handle case with no images
     if not pil_images:
