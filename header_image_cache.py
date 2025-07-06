@@ -93,15 +93,22 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
     deck_info = {'deck_name': deck_name, 'set': set_name}
     
     try:
-        img_base64 = create_deck_header_images(deck_info, analysis_results)
+    img_base64 = create_deck_header_images(deck_info, analysis_results)
+    
+    # DEBUG: Check what we got back
+        if img_base64:
+            print(f"DEBUG: Image generated successfully for {deck_name}, length: {len(img_base64)} chars")
+        else:
+            print(f"DEBUG: Image generation returned None for {deck_name}")
+            
     except Exception as e:
         print(f"Failed to generate image for {deck_name}: {e}")
-        # FALLBACK: Return None instead of crashing
         return None
     
     if img_base64:
         # Save to memory cache
         _header_image_cache[cache_key] = img_base64
+        print(f"DEBUG: Saved to memory cache with key: {cache_key}")
         
         # Save to disk cache
         try:
@@ -113,6 +120,8 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
             with open(image_file, 'wb') as f:
                 f.write(image_data)
             
+            print(f"DEBUG: Saved to disk cache: {image_file}")
+            
             # Update cache index
             cache_index[cache_key] = {
                 'created': datetime.now().isoformat(),
@@ -121,10 +130,10 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
             }
             save_cache_index(cache_index)
             
-            print(f"Saved header image to disk cache: {deck_name}")
-            
         except Exception as e:
-            print(f"Error saving header image to cache: {e}")
+            print(f"DEBUG: Error saving to cache: {e}")
+    else:
+        print(f"DEBUG: No image to cache for {deck_name}")
     
     return img_base64
 
