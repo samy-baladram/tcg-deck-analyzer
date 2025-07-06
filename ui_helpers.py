@@ -253,9 +253,9 @@ def display_banner(img_path, max_width=400):
     
     if img_base64:
         st.markdown(f"""
-        <div style="display: flex; justify-content: center; width: 100%; min-height: 80px; margin-top:0px; margin-bottom:5px;">
+        <div style="display: flex; justify-content: center; width: 100%; min-height: 85px; margin-top:0px; margin-bottom:5px;">
         <div>
-            <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px;  height: auto; margin-top:-85px;">
+            <img src="data:image/png;base64,{img_base64}" style="width: 100%; max-width: {max_width}px;  height: auto; margin-top:-90px;">
         </div>
         </div>
         """, unsafe_allow_html=True)
