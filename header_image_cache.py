@@ -1,11 +1,10 @@
 # header_image_cache.py
-"""Header image caching system for deck images"""
+"""Header image caching system for deck images - COMPLETELY SET AGNOSTIC"""
 
 import functools
 import base64
 import os
 import json
-import streamlit as st
 from datetime import datetime, timedelta
 from image_processor import create_deck_header_images
 
@@ -22,8 +21,8 @@ def ensure_cache_dir():
     os.makedirs(HEADER_CACHE_DIR, exist_ok=True)
 
 def get_cache_key(deck_name, set_name="A3"):
-    """Generate consistent cache key for deck header image - FIXED for A3b naming"""
-    return f"{deck_name}_{set_name}"
+    """Generate cache key based ONLY on deck name - completely ignore set"""
+    return f"{deck_name}"
 
 def load_cache_index():
     """Load cache index from disk"""
@@ -53,10 +52,13 @@ def is_cache_valid(cache_entry):
     except:
         return False
 
-# In header_image_cache.py - Update this function
 def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
-    """Get header image with aggressive caching"""
-    cache_key = get_cache_key(deck_name, set_name)
+    """
+    Get header image - COMPLETELY SET AGNOSTIC VERSION
+    Ignores set_name and analysis_results entirely, focuses purely on deck name
+    """
+    # Cache key is ONLY based on deck name
+    cache_key = get_cache_key(deck_name)
     
     # Check in-memory cache first
     if cache_key in _header_image_cache:
@@ -88,19 +90,15 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
                 except Exception as e:
                     print(f"Error loading cached header image: {e}")
     
-    # Generate new image - TRY MULTIPLE APPROACHES
-    print(f"Generating new header image: {deck_name}")
-    deck_info = {'deck_name': deck_name, 'set': set_name}
+    # Generate new image - IGNORE SET AND ANALYSIS RESULTS
+    print(f"Generating new header image (set-agnostic): {deck_name}")
+    
+    # Create minimal deck_info with just the deck name - ignore set entirely
+    deck_info = {'deck_name': deck_name}
     
     try:
-        img_base64 = create_deck_header_images(deck_info, analysis_results)
-        
-    # DEBUG: Check what we got back
-        if img_base64:
-            print(f"DEBUG: Image generated successfully for {deck_name}, length: {len(img_base64)} chars")
-        else:
-            print(f"DEBUG: Image generation returned None for {deck_name}")
-            
+        # Generate image without any set-specific context
+        img_base64 = create_deck_header_images(deck_info, analysis_results=None)
     except Exception as e:
         print(f"Failed to generate image for {deck_name}: {e}")
         return None
@@ -108,7 +106,6 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
     if img_base64:
         # Save to memory cache
         _header_image_cache[cache_key] = img_base64
-        print(f"DEBUG: Saved to memory cache with key: {cache_key}")
         
         # Save to disk cache
         try:
@@ -120,20 +117,18 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
             with open(image_file, 'wb') as f:
                 f.write(image_data)
             
-            print(f"DEBUG: Saved to disk cache: {image_file}")
-            
-            # Update cache index
+            # Update cache index - store deck name only
             cache_index[cache_key] = {
                 'created': datetime.now().isoformat(),
                 'deck_name': deck_name,
-                'set_name': set_name
+                'set_agnostic': True  # Flag to indicate this is set-agnostic
             }
             save_cache_index(cache_index)
             
+            print(f"Saved set-agnostic header image to cache: {deck_name}")
+            
         except Exception as e:
-            print(f"DEBUG: Error saving to cache: {e}")
-    else:
-        print(f"DEBUG: No image to cache for {deck_name}")
+            print(f"Error saving header image to cache: {e}")
     
     return img_base64
 
@@ -169,3 +164,64 @@ def get_cache_stats():
         'disk_cached': disk_count,
         'cache_dir': HEADER_CACHE_DIR
     }
+
+def force_regenerate_all_images():
+    """
+    Force regenerate ALL cached images with set-agnostic approach
+    Useful for migrating from old set-specific cache to new set-agnostic cache
+    """
+    print("Starting set-agnostic image regeneration for all cached decks...")
+    
+    # Clear all existing caches
+    global _header_image_cache
+    _header_image_cache = {}
+    
+    cache_index = load_cache_index()
+    total_decks = len(cache_index)
+    
+    for i, (cache_key, cache_entry) in enumerate(cache_index.items()):
+        deck_name = cache_entry.get('deck_name', cache_key)
+        print(f"Regenerating ({i+1}/{total_decks}): {deck_name}")
+        
+        # Remove old cache file
+        image_file = os.path.join(HEADER_CACHE_DIR, f"{cache_key}.png")
+        if os.path.exists(image_file):
+            os.remove(image_file)
+        
+        # Generate new set-agnostic image
+        get_header_image_cached(deck_name)
+    
+    print(f"Completed set-agnostic regeneration for {total_decks} decks")
+
+def migrate_to_set_agnostic():
+    """
+    One-time migration function to convert existing cache to set-agnostic
+    Call this once to upgrade your cache system
+    """
+    print("Migrating to set-agnostic cache system...")
+    
+    cache_index = load_cache_index()
+    updated_index = {}
+    
+    for cache_key, cache_entry in cache_index.items():
+        deck_name = cache_entry.get('deck_name', cache_key)
+        
+        # Create new set-agnostic cache key (just deck name)
+        new_cache_key = get_cache_key(deck_name)
+        
+        # Update cache entry to be set-agnostic
+        updated_index[new_cache_key] = {
+            'created': cache_entry.get('created', datetime.now().isoformat()),
+            'deck_name': deck_name,
+            'set_agnostic': True
+        }
+        
+        # Move image file if needed
+        old_image_file = os.path.join(HEADER_CACHE_DIR, f"{cache_key}.png")
+        new_image_file = os.path.join(HEADER_CACHE_DIR, f"{new_cache_key}.png")
+        
+        if os.path.exists(old_image_file) and old_image_file != new_image_file:
+            os.rename(old_image_file, new_image_file)
+    
+    save_cache_index(updated_index)
+    print("Migration to set-agnostic cache completed")
