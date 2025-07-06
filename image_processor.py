@@ -574,77 +574,62 @@ def lightweight_ai_sharpen_pil(pil_image, sharpen_strength=1.5, contrast_boost=1
 def create_deck_header_images(deck_info, analysis_results=None, enable_ai_enhancement=True):
     """
     Create header images for a deck based on Pokémon in the deck name.
+    
+    Args:
+        deck_info: Dictionary containing deck information
+        analysis_results: Optional DataFrame of analysis results
+        enable_ai_enhancement: Whether to apply AI sharpening to final result (default: True)
+        
+    Returns:
+        A single base64 encoded merged image, or None if no images found
     """
-    deck_name = deck_info['deck_name']
-    set_name = deck_info.get('set', 'A3')
-    
-    print(f"DEBUG: create_deck_header_images called for deck='{deck_name}', set='{set_name}'")
-    
     # Find Pokémon images
     pil_images = find_pokemon_images(deck_info, analysis_results)
     
-    print(f"DEBUG: find_pokemon_images returned {len(pil_images)} images for {deck_name}")
-    
     # Handle case with no images
     if not pil_images:
-        print(f"DEBUG: No images found for {deck_name} - returning None")
         return None
-    
-    print(f"DEBUG: Processing {len(pil_images)} images for {deck_name}")
     
     # Handle case with single image - duplicate it
     if len(pil_images) == 1:
-        print(f"DEBUG: Only 1 image found, duplicating for {deck_name}")
+        # Duplicate the image for the second position
         pil_images.append(pil_images[0])
     
     # Ensure we only use up to 2 images
     pil_images = pil_images[:2]
-    print(f"DEBUG: Using {len(pil_images)} images for final composition")
     
-    try:
-        # Apply diagonal cuts to images
-        for i in range(len(pil_images)):
-            cut_type = "left" if i == 0 else "right"
-            pil_images[i] = apply_diagonal_cut(pil_images[i], cut_type)
-        
-        print(f"DEBUG: Applied diagonal cuts successfully")
-        
-        # Merge the two images
-        cutoff_percentage = 0.7
-        merged_image = merge_header_images(
-            pil_images[0], 
-            pil_images[1],
-            cutoff_percentage=cutoff_percentage
-        )
-        
-        print(f"DEBUG: Merged images successfully, size: {merged_image.size}")
-        
-        # Apply AI enhancement
-        if enable_ai_enhancement:
-            try:
-                enhanced_merged = lightweight_ai_sharpen_pil(
-                    merged_image,
-                    sharpen_strength=1.3,
-                    contrast_boost=1.1
-                )
-                merged_image = enhanced_merged
-                print(f"DEBUG: AI enhancement applied successfully")
-            except Exception as e:
-                print(f"DEBUG: AI enhancement failed: {e}")
-        
-        # Convert to base64
-        buffered = BytesIO()
-        merged_image.save(buffered, format="WEBP", quality=60)
-        img_base64 = base64.b64encode(buffered.getvalue()).decode()
-        
-        print(f"DEBUG: Successfully converted to base64, length: {len(img_base64)} chars")
-        return img_base64
-        
-    except Exception as e:
-        print(f"DEBUG: Error in image processing pipeline for {deck_name}: {e}")
-        import traceback
-        traceback.print_exc()
-        return None
+    # Apply diagonal cuts to images
+    for i in range(len(pil_images)):
+        cut_type = "left" if i == 0 else "right"
+        pil_images[i] = apply_diagonal_cut(pil_images[i], cut_type)
+    
+    # Merge the two images
+    cutoff_percentage = 0.7
+    merged_image = merge_header_images(
+        pil_images[0], 
+        pil_images[1],
+        cutoff_percentage=cutoff_percentage
+    )
+    
+    # Apply AI enhancement to the final merged result (ONLY ONCE HERE)
+    if enable_ai_enhancement:
+        try:
+            enhanced_merged = lightweight_ai_sharpen_pil(
+                merged_image,
+                sharpen_strength=1.3,  # Good balance for final image
+                contrast_boost=1.1     # Subtle contrast boost
+            )
+            merged_image = enhanced_merged
+        except Exception as e:
+            print(f"AI enhancement failed: {e}")
+            # Continue with original merged image
+    
+    # Convert to base64
+    buffered = BytesIO()
+    merged_image.save(buffered, format="WEBP", quality=60)
+    img_base64 = base64.b64encode(buffered.getvalue()).decode()
+    
+    return img_base64
 
 #####################
 # Add a simple in-memory cache for thumbnails
