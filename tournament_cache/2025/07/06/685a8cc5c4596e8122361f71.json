@@ -1,0 +1,87 @@
+{
+  "tournament_id": "685a8cc5c4596e8122361f71",
+  "name": "\ud83c\uddf5\ud83c\uddf1 Polish Pocket League \u2013 Sezon 4 | Kolejka #2",
+  "timestamp": 1751814000000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PokeWheels",
+      "record": "3 - 0 - 2",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "maxio9",
+      "record": "2 - 0 - 3",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "CloudyPanda",
+      "record": "2 - 0 - 3",
+      "archetype": "tapu-koko-ex-a3a-arceus-ex-a2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Rashpultu",
+      "record": "2 - 0 - 3",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "DTMaro",
+      "record": "2 - 1 - 2",
+      "archetype": "luxray-a2-galvantula-a3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "OG1ucky",
+      "record": "2 - 1 - 2",
+      "archetype": "gallade-ex-a2-stoutland-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "isuexe",
+      "record": "2 - 2 - 1",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 8,
+      "player_name": "PokeFunky",
+      "record": "1 - 1 - 3",
+      "archetype": "luxray-a2-oricorio-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "bystry3000",
+      "record": "1 - 1 - 3",
+      "archetype": "leafeon-ex-a2a-eevee-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "DariusPopek",
+      "record": "1 - 2 - 2",
+      "archetype": "garchomp-ex-a2a-sylveon-ex-a3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Najasho",
+      "record": "1 - 2 - 2",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 12,
+      "player_name": "Tetrycy",
+      "record": "1 - 2 - 2",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Pokelek_TCG",
+      "record": "1 - 4 - 0",
+      "archetype": "solgaleo-ex-lunala-ex-a3"
+    }
+  ]
+}
