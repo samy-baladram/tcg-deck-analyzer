@@ -1,0 +1,39 @@
+{
+  "tournament_id": "6864a549c4596e8122366e8d",
+  "name": "The 0-2 Drop: Friday Night Pocket",
+  "timestamp": 1752235200000,
+  "format": "Standard",
+  "player_count": 5,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Joel W",
+      "record": "4 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Aimeme626",
+      "record": "4 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Jordan L",
+      "record": "2 - 2 - 0",
+      "archetype": "sylveon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Squ1dge",
+      "record": "1 - 2 - 0",
+      "archetype": "lunala-ex-a3-giratina-ex-a2b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Wacko765",
+      "record": "1 - 2 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    }
+  ]
+}
