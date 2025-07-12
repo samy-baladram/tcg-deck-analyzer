@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6861d154c4596e8122365756",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Open #7",
+  "timestamp": 1752274800000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Fernando David",
+      "record": "3 - 0 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Nicolas Villagra",
+      "record": "2 - 1 - 0",
+      "archetype": "charizard-ex-a1-sylveon-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "Robson Roseno",
+      "record": "2 - 1 - 0",
+      "archetype": "flareon-ex-a3b-turtonator-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "\u30a2\u30fc\u30eb \u30a2\u30fc\u30eb",
+      "record": "2 - 1 - 0",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Diego Carcamo",
+      "record": "1 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Jos\u00e9 Galo",
+      "record": "0 - 3 - 0",
+      "archetype": "weavile-ex-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "Ricardo Andrade",
+      "record": "1 - 1 - 0drop",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    }
+  ]
+}
