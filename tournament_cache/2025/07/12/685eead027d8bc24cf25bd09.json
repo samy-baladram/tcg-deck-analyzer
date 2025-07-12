@@ -1,0 +1,51 @@
+{
+  "tournament_id": "685eead027d8bc24cf25bd09",
+  "name": "\ud83c\udf0eWORLD CUP\ud83c\udf0e $200 USD | Terremoto x Trainers TCG",
+  "timestamp": 1752336000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "4545_jp",
+      "record": "5 - 1 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "Turbone101",
+      "record": "4 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Z_ARC",
+      "record": "4 - 2 - 0",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "PGX| ElAtomico",
+      "record": "3 - 3 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "ElNari",
+      "record": "3 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "khabibie",
+      "record": "1 - 5 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "PGX| elluquitas",
+      "record": "0 - 6 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "tournament_id": "685eebd027d8bc24cf25bd4c",
+  "name": "\ud83c\udf0eWORLD CUP\ud83c\udf0e $200 USD | Terremoto x Trainers TCG",
+  "timestamp": 1752336000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "GodDynamight",
+      "record": "5 - 1 - 0",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "AZ7eam",
+      "record": "5 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "BoyHowdy",
+      "record": "3 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "[\ud835\ude4e\ud835\ude6b\ud835\ude46] | Tazzi90",
+      "record": "3 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Nuriz Z",
+      "record": "3 - 3 - 0",
+      "archetype": "garchomp-ex-a2a-sylveon-ex-a3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | OMarkzTV",
+      "record": "2 - 4 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Yorunoyuhi",
+      "record": "0 - 6 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    }
+  ]
+}
