@@ -1,8 +1,8 @@
 {
-  "last_updated": 1752284548,
-  "total_tournaments": 338,
+  "last_updated": 1752290675,
+  "total_tournaments": 339,
   "format_distribution": {
-    "Standard": 271,
+    "Standard": 272,
     "STANDARD": 46,
     "NOEX": 21
   },
@@ -20,7 +20,7 @@
     "charizard-ex-a2b-incineroar-ex-a3",
     "arceus-ex-crobat-a2a",
     "guzzlord-ex-nihilego-a3a",
-    "meowscarada-a2b-decidueye-ex-a3"
+    "sylveon-ex-a3b-greninja-a1"
   ],
   "top_archetypes_by_format": {
     "Standard": [
