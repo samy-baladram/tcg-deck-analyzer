@@ -1,0 +1,45 @@
+{
+  "tournament_id": "685eecb127d8bc24cf25bd50",
+  "name": "\ud83c\udf0eWORLD CUP\ud83c\udf0e $200 USD | Terremoto x Trainers TCG",
+  "timestamp": 1752422400000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Lanssnal",
+      "record": "4 - 1 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "Amber2k6",
+      "record": "3 - 2 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "rehnanf",
+      "record": "3 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-solgaleo-ex-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Shadow",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "MistShuriken",
+      "record": "2 - 3 - 0",
+      "archetype": "garchomp-ex-a2a-sylveon-ex-a3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | MUMAFUBA",
+      "record": "1 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}

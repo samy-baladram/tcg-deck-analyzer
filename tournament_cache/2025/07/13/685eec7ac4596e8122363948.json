@@ -1,0 +1,45 @@
+{
+  "tournament_id": "685eec7ac4596e8122363948",
+  "name": "\ud83c\udf0eWORLD CUP\ud83c\udf0e $200 USD | Terremoto x Trainers TCG",
+  "timestamp": 1752422400000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "SamAC",
+      "record": "5 - 0 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Zegger",
+      "record": "4 - 1 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "GuajoloteX25",
+      "record": "2 - 3 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Abo",
+      "record": "2 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-solgaleo-ex-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Preluxe",
+      "record": "1 - 4 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "SouDoSeuTime",
+      "record": "1 - 4 - 0",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    }
+  ]
+}
