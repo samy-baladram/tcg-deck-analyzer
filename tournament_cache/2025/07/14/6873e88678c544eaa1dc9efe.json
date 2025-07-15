@@ -1,0 +1,69 @@
+{
+  "tournament_id": "6873e88678c544eaa1dc9efe",
+  "name": "\ud83d\udfe9Eraze Syndicates \u2734\ufe0f Monday Weekly #14",
+  "timestamp": 1752512400000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Pokemon_Pocket",
+      "record": "7 - 2 - 0",
+      "archetype": "sylveon-ex-jolteon-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "Nazasg13",
+      "record": "5 - 4 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "joek0",
+      "record": "6 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-solgaleo-ex-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "El_Doritos",
+      "record": "3 - 5 - 0",
+      "archetype": "garchomp-ex-a2a-lucario-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "CatchDeezNotz",
+      "record": "5 - 2 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "Mistymigraine",
+      "record": "3 - 4 - 0",
+      "archetype": "solgaleo-ex-alolan-dugtrio-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Arthur1248421",
+      "record": "2 - 5 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "MSP | EllieDark",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "Wesslen",
+      "record": "0 - 3 - 0drop",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "bambam24",
+      "record": "0 - 2 - 0drop",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    }
+  ]
+}
