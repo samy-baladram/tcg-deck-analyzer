@@ -1,0 +1,69 @@
+{
+  "tournament_id": "68714bf8f43abb4c700a8e7a",
+  "name": "Hanafuda Pocket Clash #5",
+  "timestamp": 1752685200000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "JustMurdock",
+      "record": "4 - 0 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Pokemon_Pocket",
+      "record": "2 - 2 - 0",
+      "archetype": "sylveon-ex-jolteon-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "Mistymigraine",
+      "record": "2 - 2 - 0drop",
+      "archetype": "incineroar-a3b-moltres-ex-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "KrodO",
+      "record": "1 - 1 - 0drop",
+      "archetype": "sylveon-ex-a3b-solgaleo-ex-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "ZUKY187",
+      "record": "1 - 0 - 0drop",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Matthewbuadu",
+      "record": "1 - 1 - 0drop",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Hosi",
+      "record": "1 - 0 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Leonardo Mauricio",
+      "record": "0 - 1 - 0drop",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "ABDZ",
+      "record": "0 - 1 - 0drop",
+      "archetype": "sylveon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "MrLucky64",
+      "record": "0 - 2 - 0drop",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    }
+  ]
+}
