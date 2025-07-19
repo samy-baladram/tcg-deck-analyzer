@@ -1,0 +1,27 @@
+{
+  "tournament_id": "6869b4b378c544eaa1dc54d8",
+  "name": "EX-treme Tournament #21 (USA)",
+  "timestamp": 1752962400000,
+  "format": "Standard",
+  "player_count": 3,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "tcgcthulhu",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "MSP | frappesdrinker",
+      "record": "",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "TheSkullyDrops",
+      "record": "",
+      "archetype": null
+    }
+  ]
+}
