@@ -1,0 +1,75 @@
+{
+  "tournament_id": "685a8e12c4596e8122361f72",
+  "name": "\ud83c\uddf5\ud83c\uddf1 Polish Pocket League \u2013 Sezon 4 | Kolejka #4",
+  "timestamp": 1753023600000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "kesi",
+      "record": "4 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Najasho",
+      "record": "3 - 0 - 2",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "OG1ucky",
+      "record": "3 - 1 - 1",
+      "archetype": "primarina-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "ZuziaPokeFunky",
+      "record": "3 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Rashpultu",
+      "record": "2 - 1 - 2",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "DariusPopek",
+      "record": "2 - 2 - 1",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Tetrycy",
+      "record": "2 - 2 - 1",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "isuexe",
+      "record": "2 - 2 - 1",
+      "archetype": "sylveon-ex-a3b-solgaleo-ex-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "PokeFunky",
+      "record": "2 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "DTMaro",
+      "record": "1 - 3 - 1",
+      "archetype": "gengar-ex-a1-gengar-a2a"
+    },
+    {
+      "placement": 11,
+      "player_name": "CloudyPanda",
+      "record": "1 - 3 - 1",
+      "archetype": "tapu-koko-ex-a3a-arceus-ex-a2a"
+    }
+  ]
+}
