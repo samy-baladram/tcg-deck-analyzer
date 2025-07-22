@@ -24,7 +24,7 @@ def display_deck_header(deck_info, results):
     #     results
     # )
 
-   header_image = create_deck_header_images2(deck_info['deck_name'])
+    header_image = create_deck_header_images2(deck_info['deck_name'])
 
     if header_image:
         # Simple centered deck image
