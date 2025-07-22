@@ -18,12 +18,16 @@ import os
 
 def display_deck_header(deck_info, results):
     """Display the deck header with image - simplified version"""
-    header_image = get_header_image_cached2(
-        deck_info['deck_name'], 
-        deck_info.get('set', 'A3'),
-        results
+    # header_image = get_header_image_cached2(
+    #     deck_info['deck_name'], 
+    #     deck_info.get('set', 'A3'),
+    #     results
+    # )
+
+   header_image = create_deck_header_images2(
+        deck_info['deck_name']
     )
-    
+
     if header_image:
         # Simple centered deck image
         header_content = f"""
