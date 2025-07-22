@@ -746,6 +746,40 @@ def create_deck_header_images2(deck_info, analysis_results=None, enable_ai_enhan
         A single base64 encoded merged image, or None if no images found
     """
     
+    def get_uncut_pokemon_images(deck_info, analysis_results):
+        """Get uncut Pokemon images by directly calling fetch_and_crop_image"""
+        # Get deck name
+        deck_name = deck_info['deck_name']
+        
+        # Extract Pokémon from deck name
+        pokemon_names = extract_pokemon_from_deck_name(deck_name)
+        
+        # Initialize list for images
+        pil_images = []
+        
+        # Try to get Pokemon info and fetch clean images
+        if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
+            pokemon_info = st.session_state.deck_pokemon_info[deck_name]
+            
+            if pokemon_info:
+                # Get clean images for each Pokémon (up to 2)
+                for i, pokemon in enumerate(pokemon_info[:2]):
+                    if pokemon.get('set') and pokemon.get('num'):
+                        formatted_num = format_card_number(pokemon['num'])
+                        
+                        # Fetch clean, uncut image
+                        img = fetch_and_crop_image(pokemon['set'], formatted_num)
+                        if img:
+                            pil_images.append(img)
+        
+        # Fallback: use find_pokemon_images but ensure we get clean images
+        if not pil_images:
+            temp_images = find_pokemon_images(deck_info, analysis_results)
+            # These should already be clean from fetch_and_crop_image
+            pil_images = temp_images
+        
+        return pil_images
+    
     def scale_card(img, scale_factor):
         """Scale card by specified factor"""
         if scale_factor == 1.0:
@@ -757,18 +791,20 @@ def create_deck_header_images2(deck_info, analysis_results=None, enable_ai_enhan
         return img.resize((new_width, new_height), Image.Resampling.LANCZOS)
     
     def smooth_rotate_image(img, degrees, upscale_factor=2):
-        """Rotate image with anti-aliasing by upscaling then downscaling"""
-        original_size = img.size
+        """Rotate image with anti-aliasing and proper transparency"""
+        # Ensure RGBA mode for transparency
+        if img.mode != 'RGBA':
+            img = img.convert('RGBA')
         
         # Upscale for higher quality rotation
         upscaled_size = (img.width * upscale_factor, img.height * upscale_factor)
         upscaled = img.resize(upscaled_size, Image.Resampling.LANCZOS)
         
-        # Rotate the upscaled image
+        # Rotate with transparent background (not black)
         rotated_upscaled = upscaled.rotate(
             degrees, 
             expand=True, 
-            fillcolor=(0, 0, 0, 0),
+            fillcolor=(255, 255, 255, 0),  # Transparent white instead of black
             resample=Image.Resampling.BICUBIC
         )
         
@@ -798,8 +834,8 @@ def create_deck_header_images2(deck_info, analysis_results=None, enable_ai_enhan
         # Calculate total width needed
         total_width = width1 + width2 - overlap_pixels
         
-        # Create canvas
-        canvas = Image.new('RGBA', (total_width, height), (0, 0, 0, 0))
+        # Create transparent canvas (not black)
+        canvas = Image.new('RGBA', (total_width, height), (255, 255, 255, 0))
         
         # Position left card at start
         left_x = 0
@@ -816,8 +852,8 @@ def create_deck_header_images2(deck_info, analysis_results=None, enable_ai_enhan
         crop_height = int(img.height * crop_percent / 100)
         return img.crop((0, 0, img.width, crop_height))
     
-    # Find Pokémon images using existing function
-    pil_images = find_pokemon_images(deck_info, analysis_results)
+    # Get uncut Pokémon images
+    pil_images = get_uncut_pokemon_images(deck_info, analysis_results)
     
     # Handle case with no images
     if not pil_images:
@@ -826,10 +862,15 @@ def create_deck_header_images2(deck_info, analysis_results=None, enable_ai_enhan
     # Handle case with single image - duplicate it
     if len(pil_images) == 1:
         # Duplicate the image for the second position
-        pil_images.append(pil_images[0])
+        pil_images.append(pil_images[0].copy())
     
     # Ensure we only use up to 2 images
     pil_images = pil_images[:2]
+    
+    # Ensure both images are RGBA for proper transparency
+    for i in range(len(pil_images)):
+        if pil_images[i].mode != 'RGBA':
+            pil_images[i] = pil_images[i].convert('RGBA')
     
     # Scale right card if needed
     if len(pil_images) >= 2:
@@ -870,9 +911,10 @@ def create_deck_header_images2(deck_info, analysis_results=None, enable_ai_enhan
             print(f"AI enhancement failed: {e}")
             # Continue with original merged image
     
-    # Convert to base64 (same format as existing function)
+    # Convert to base64 with proper transparency
     buffered = BytesIO()
-    merged_image.save(buffered, format="PNG")
+    # Save as PNG to preserve transparency (not WEBP)
+    merged_image.save(buffered, format="PNG", optimize=False)
     img_base64 = base64.b64encode(buffered.getvalue()).decode()
     
     return img_base64
