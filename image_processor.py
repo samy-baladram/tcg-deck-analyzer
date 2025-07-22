@@ -727,3 +727,152 @@ def preload_all_deck_pokemon_info():
         
         # Clear progress bar when done
         progress_bar.empty()
+
+def create_deck_header_images2(deck_info, analysis_results=None, enable_ai_enhancement=True, 
+                              overlap_percent=40, rotation_degrees=-10, crop_percent=45, right_card_scale=0.9):
+    """
+    Create header images for a deck using rotated overlapping cards approach.
+    
+    Args:
+        deck_info: Dictionary containing deck information
+        analysis_results: Optional DataFrame of analysis results
+        enable_ai_enhancement: Whether to apply AI sharpening to final result (default: True)
+        overlap_percent: Percentage of overlap between cards (default 10%)
+        rotation_degrees: Degrees to rotate cards (default 10°)
+        crop_percent: Percentage of top area to keep (default 35%)
+        right_card_scale: Scale factor for right card (1.0 = same size, 0.9 = 10% smaller)
+        
+    Returns:
+        A single base64 encoded merged image, or None if no images found
+    """
+    
+    def scale_card(img, scale_factor):
+        """Scale card by specified factor"""
+        if scale_factor == 1.0:
+            return img
+        
+        new_width = int(img.width * scale_factor)
+        new_height = int(img.height * scale_factor)
+        
+        return img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    
+    def smooth_rotate_image(img, degrees, upscale_factor=2):
+        """Rotate image with anti-aliasing by upscaling then downscaling"""
+        original_size = img.size
+        
+        # Upscale for higher quality rotation
+        upscaled_size = (img.width * upscale_factor, img.height * upscale_factor)
+        upscaled = img.resize(upscaled_size, Image.Resampling.LANCZOS)
+        
+        # Rotate the upscaled image
+        rotated_upscaled = upscaled.rotate(
+            degrees, 
+            expand=True, 
+            fillcolor=(0, 0, 0, 0),
+            resample=Image.Resampling.BICUBIC
+        )
+        
+        # Apply slight blur to smooth edges
+        rotated_upscaled = rotated_upscaled.filter(ImageFilter.GaussianBlur(radius=0.5))
+        
+        # Scale back down to reduce aliasing
+        final_width = rotated_upscaled.width // upscale_factor
+        final_height = rotated_upscaled.height // upscale_factor
+        
+        rotated_smooth = rotated_upscaled.resize(
+            (final_width, final_height), 
+            Image.Resampling.LANCZOS
+        )
+        
+        return rotated_smooth
+    
+    def position_cards_with_overlap(img1, img2, overlap_percent):
+        """Position two cards with specified overlap percentage"""
+        width1 = img1.width
+        width2 = img2.width
+        height = max(img1.height, img2.height)
+        
+        # Calculate overlap amount
+        overlap_pixels = int(min(width1, width2) * overlap_percent / 100)
+        
+        # Calculate total width needed
+        total_width = width1 + width2 - overlap_pixels
+        
+        # Create canvas
+        canvas = Image.new('RGBA', (total_width, height), (0, 0, 0, 0))
+        
+        # Position left card at start
+        left_x = 0
+        left_y = (height - img1.height) // 2
+        
+        # Position right card with overlap
+        right_x = width1 - overlap_pixels
+        right_y = (height - img2.height) // 2
+        
+        return canvas, (left_x, left_y), (right_x, right_y)
+    
+    def crop_top_portion(img, crop_percent):
+        """Keep only top percentage of image"""
+        crop_height = int(img.height * crop_percent / 100)
+        return img.crop((0, 0, img.width, crop_height))
+    
+    # Find Pokémon images using existing function
+    pil_images = find_pokemon_images(deck_info, analysis_results)
+    
+    # Handle case with no images
+    if not pil_images:
+        return None
+    
+    # Handle case with single image - duplicate it
+    if len(pil_images) == 1:
+        # Duplicate the image for the second position
+        pil_images.append(pil_images[0])
+    
+    # Ensure we only use up to 2 images
+    pil_images = pil_images[:2]
+    
+    # Scale right card if needed
+    if len(pil_images) >= 2:
+        pil_images[1] = scale_card(pil_images[1], right_card_scale)
+    
+    # Rotate cards with smooth edges
+    # Left card: counter-clockwise (negative angle)
+    rotated_left = smooth_rotate_image(pil_images[0], -rotation_degrees)
+    
+    # Right card: clockwise (positive angle)  
+    if len(pil_images) >= 2:
+        rotated_right = smooth_rotate_image(pil_images[1], rotation_degrees)
+    else:
+        rotated_right = smooth_rotate_image(pil_images[0], rotation_degrees)
+    
+    # Position cards with overlap
+    canvas, left_pos, right_pos = position_cards_with_overlap(
+        rotated_left, rotated_right, overlap_percent
+    )
+    
+    # Combine cards on canvas (right card first so left appears on top)
+    canvas.paste(rotated_right, right_pos, rotated_right)
+    canvas.paste(rotated_left, left_pos, rotated_left)
+    
+    # Crop to top portion
+    merged_image = crop_top_portion(canvas, crop_percent)
+    
+    # Apply AI enhancement if requested (using existing function)
+    if enable_ai_enhancement:
+        try:
+            enhanced_merged = lightweight_ai_sharpen_pil(
+                merged_image,
+                sharpen_strength=1.3,  # Good balance for final image
+                contrast_boost=1.1     # Subtle contrast boost
+            )
+            merged_image = enhanced_merged
+        except Exception as e:
+            print(f"AI enhancement failed: {e}")
+            # Continue with original merged image
+    
+    # Convert to base64 (same format as existing function)
+    buffered = BytesIO()
+    merged_image.save(buffered, format="WEBP", quality=60)
+    img_base64 = base64.b64encode(buffered.getvalue()).decode()
+    
+    return img_base64
