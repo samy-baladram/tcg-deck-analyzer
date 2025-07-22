@@ -1177,12 +1177,12 @@ def display_related_decks_tab(deck_info, results):
                     if header_image:
                         st.markdown(f"""
                         <div style="width: 100%; margin-top: -18px; margin-bottom: 12px; position: relative;">
-                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 300px; height: auto; border-radius: 4px; z-index:-2;">
+                            <img src="data:image/png;base64,{header_image}" style="width: 100%; max-width: 200px; height: auto; border-radius: 4px; z-index:-2;">
                         </div>
                         """, unsafe_allow_html=True)
                     else:
                         st.markdown(f"""
-                        <div style="width: 100%; margin-top: -18px; margin-bottom: 12px; background-color: #f0f0f0; border-radius: 6px 6px 0 0; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 100%; margin-top: -18px; margin-bottom: 12px; max-width:200px; background-color: #f0f0f0; border-radius: 6px 6px 0 0; display: flex; align-items: center; justify-content: center;">
                             <span style="color: #888;">No image</span>
                         </div>
                         """, unsafe_allow_html=True)
