@@ -6,7 +6,7 @@ import base64
 import os
 import json
 from datetime import datetime, timedelta
-from image_processor import create_deck_header_images
+from image_processor import create_deck_header_images, create_deck_header_images2
 
 # In-memory cache
 _header_image_cache = {}
