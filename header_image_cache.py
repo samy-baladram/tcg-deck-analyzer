@@ -98,7 +98,7 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
     
     try:
         # Generate image without any set-specific context
-        img_base64 = create_deck_header_images2(deck_info, analysis_results=None)
+        img_base64 = create_deck_header_images(deck_info, analysis_results=None)
     except Exception as e:
         print(f"Failed to generate image for {deck_name}: {e}")
         return None
@@ -178,7 +178,7 @@ def get_header_image_cached2(deck_name, set_name="A3", analysis_results=None):
     
     try:
         # Generate image without any set-specific context
-        img_base64 = create_deck_header_images2(deck_info, analysis_results=None)
+        img_base64 = create_deck_header_images(deck_info, analysis_results=None)
     except Exception as e:
         print(f"Failed to generate image for {deck_name}: {e}")
         return None
