@@ -1795,9 +1795,9 @@ def display_matchup_tab(deck_info=None):
             'Icon1': display_df['pokemon_url1'],
             'Icon2': display_df['pokemon_url2'],
             'Deck': display_df['opponent_name'],
-            #'Matchup': display_df['Matchup'],
             'Win %': display_df['win_pct'],
             'Record': display_df['Record'],
+            'Matchup': display_df['Matchup'],
             #'Matches': display_df['matches_played'],
             #'Meta Share %': display_df['meta_share']
         })
@@ -1837,7 +1837,7 @@ def display_matchup_tab(deck_info=None):
     try:
         # Apply row-level styling based on Win %
         styled_df = formatted_df.style.apply(highlight_row_by_win_percentage, axis=1)
-        #styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
+        styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
         st.write("##### Matchup Data")
         st.dataframe(
             styled_df,
@@ -1871,10 +1871,10 @@ def display_matchup_tab(deck_info=None):
                 #     "Matches",
                 #     help="Total number of matches played against this deck"
                 # ),
-                # "Matchup": st.column_config.TextColumn(
-                #     "Matchup",
-                #     help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
-                # ),
+                "Matchup": st.column_config.TextColumn(
+                    "Matchup",
+                    help="Favorable: ≥55%, Unfavorable: <45%, Even: 45-55%"
+                ),
                 #"Meta Share%": None
                 # "Meta Share %": st.column_config.NumberColumn(
                 #     "Meta Share %",
