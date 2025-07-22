@@ -1836,8 +1836,7 @@ def display_matchup_tab(deck_info=None):
     
     try:
         # Apply row-level styling based on Win %
-        styled_df = formatted_df.style.apply(highlight_row_by_win_percentage, axis=1)
-        styled_df = formatted_df.style.map(highlight_matchups, subset=['Matchup'])
+        styled_df = formatted_df.style.apply(highlight_row_by_win_percentage, axis=1).map(highlight_matchups, subset=['Matchup'])
         st.write("##### Matchup Data")
         st.dataframe(
             styled_df,
