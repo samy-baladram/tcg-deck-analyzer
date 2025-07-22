@@ -9,7 +9,7 @@ from analyzer import build_deck_template
 from datetime import datetime, timedelta
 from card_renderer import render_energy_icons
 from config import TOURNAMENT_COUNT, POWER_INDEX_EXPLANATION, MIN_MATCHUP_MATCHES
-from header_image_cache import get_header_image_cached
+from header_image_cache import get_header_image_cached, get_header_image_cached2
 import json
 import pandas as pd
 import base64
