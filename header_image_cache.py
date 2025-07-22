@@ -132,6 +132,86 @@ def get_header_image_cached(deck_name, set_name="A3", analysis_results=None):
     
     return img_base64
 
+def get_header_image_cached2(deck_name, set_name="A3", analysis_results=None):
+    """
+    Get header image - COMPLETELY SET AGNOSTIC VERSION
+    Ignores set_name and analysis_results entirely, focuses purely on deck name
+    """
+    # Cache key is ONLY based on deck name
+    cache_key = get_cache_key(deck_name)
+    
+    # Check in-memory cache first
+    if cache_key in _header_image_cache:
+        return _header_image_cache[cache_key]
+    
+    # Check disk cache
+    cache_index = load_cache_index()
+    if cache_key in cache_index:
+        cache_entry = cache_index[cache_key]
+        
+        # Check if cache is still valid
+        if is_cache_valid(cache_entry):
+            image_file = os.path.join(HEADER_CACHE_DIR, f"{cache_key}.png")
+            
+            if os.path.exists(image_file):
+                try:
+                    # Load from disk
+                    with open(image_file, 'rb') as f:
+                        image_data = f.read()
+                    
+                    # Convert to base64
+                    img_base64 = base64.b64encode(image_data).decode()
+                    
+                    # Store in memory cache
+                    _header_image_cache[cache_key] = img_base64
+                    
+                    print(f"Loaded header image from disk cache: {deck_name}")
+                    return img_base64
+                except Exception as e:
+                    print(f"Error loading cached header image: {e}")
+    
+    # Generate new image - IGNORE SET AND ANALYSIS RESULTS
+    print(f"Generating new header image (set-agnostic): {deck_name}")
+    
+    # Create minimal deck_info with just the deck name - ignore set entirely
+    deck_info = {'deck_name': deck_name}
+    
+    try:
+        # Generate image without any set-specific context
+        img_base64 = create_deck_header_images2(deck_info, analysis_results=None)
+    except Exception as e:
+        print(f"Failed to generate image for {deck_name}: {e}")
+        return None
+    
+    if img_base64:
+        # Save to memory cache
+        _header_image_cache[cache_key] = img_base64
+        
+        # Save to disk cache
+        try:
+            ensure_cache_dir()
+            
+            # Save image file
+            image_file = os.path.join(HEADER_CACHE_DIR, f"{cache_key}.png")
+            image_data = base64.b64decode(img_base64)
+            with open(image_file, 'wb') as f:
+                f.write(image_data)
+            
+            # Update cache index - store deck name only
+            cache_index[cache_key] = {
+                'created': datetime.now().isoformat(),
+                'deck_name': deck_name,
+                'set_agnostic': True  # Flag to indicate this is set-agnostic
+            }
+            save_cache_index(cache_index)
+            
+            print(f"Saved set-agnostic header image to cache: {deck_name}")
+            
+        except Exception as e:
+            print(f"Error saving header image to cache: {e}")
+    
+    return img_base64
+    
 def clear_expired_cache():
     """Remove expired cache entries"""
     try:
