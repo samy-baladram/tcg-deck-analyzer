@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6881133d3e7086bfd3b9d2ce",
+  "name": "\ud83d\udc38FrogEX Major Series Summer 2025 Group D\ud83d\udc38",
+  "timestamp": 1753552800000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udde2\ud835\udde0\ud835\uddd5\ud835\udde5\ud835\uddd4 ~ Ger",
+      "record": "6 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Hagakury",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "FrogEX | Higumi",
+      "record": "4 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Bixie",
+      "record": "4 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Gregormaster",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "PGX| ElAtomico",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "SG | GATO",
+      "record": "2 - 5 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "FrogEX | Numatinale",
+      "record": "1 - 6 - 0",
+      "archetype": null
+    }
+  ]
+}
