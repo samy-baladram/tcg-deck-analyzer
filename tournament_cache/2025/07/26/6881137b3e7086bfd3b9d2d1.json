@@ -1,0 +1,63 @@
+{
+  "tournament_id": "6881137b3e7086bfd3b9d2d1",
+  "name": "\ud83d\udc38FrogEX Major Series Summer 2025 Group E\ud83d\udc38",
+  "timestamp": 1753552800000,
+  "format": "Standard",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PGX| elluquitas",
+      "record": "7 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Kazu",
+      "record": "6 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "xKiiii",
+      "record": "6 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | lzrenato",
+      "record": "6 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "DereckWho",
+      "record": "4 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | OMarkzTV",
+      "record": "2 - 6 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "FrogEx | Narumi",
+      "record": "2 - 6 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Preluxe",
+      "record": "2 - 6 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "CasaNerd",
+      "record": "1 - 7 - 0",
+      "archetype": null
+    }
+  ]
+}

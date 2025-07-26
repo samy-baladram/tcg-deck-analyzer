@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6881142a164bc0b13840a67f",
+  "name": "\ud83d\udc38FrogEX Major Series Summer 2025 Group H\ud83d\udc38",
+  "timestamp": 1753552800000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TB | ClemClym",
+      "record": "6 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "FrogEX | Arca",
+      "record": "6 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "TZ | Skyflare",
+      "record": "6 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "FrogEX | Guiggs",
+      "record": "4 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee TheViice",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Shadow",
+      "record": "2 - 5 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Lbn924",
+      "record": "1 - 6 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Soadmon",
+      "record": "0 - 7 - 0",
+      "archetype": null
+    }
+  ]
+}

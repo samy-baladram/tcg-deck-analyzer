@@ -1,0 +1,51 @@
+{
+  "tournament_id": "68666d7627d8bc24cf25fdb0",
+  "name": "\ud83d\udc38FrogEX Major Series Summer 2025 Group A\ud83d\udc38",
+  "timestamp": 1753552800000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Osoma",
+      "record": "6 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\u30fb",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Harian",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Castela",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "SG | DarKus",
+      "record": "2 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "SG | TTV_jmpm9",
+      "record": "2 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "ken458962",
+      "record": "1 - 5 - 0",
+      "archetype": null
+    }
+  ]
+}
