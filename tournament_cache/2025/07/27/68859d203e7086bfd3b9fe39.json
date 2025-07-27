@@ -1,0 +1,111 @@
+{
+  "tournament_id": "68859d203e7086bfd3b9fe39",
+  "name": "underground late late pocket special",
+  "timestamp": 1753596000000,
+  "format": "Standard",
+  "player_count": 17,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Team_humble",
+      "record": "6 - 2 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Reiray999",
+      "record": "5 - 3 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "Kaloupi",
+      "record": "6 - 1 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "yoshitake",
+      "record": "4 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "RedTCG",
+      "record": "4 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Eteer",
+      "record": "3 - 3 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "wittawin",
+      "record": "3 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "alpyapiw",
+      "record": "3 - 3 - 0",
+      "archetype": "pikachu-ex-a2b-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Raigun",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "MSP | EllieDark",
+      "record": "2 - 2 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "My",
+      "record": "2 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-magnezone-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "iyla sutherland / darksiderstcg",
+      "record": "1 - 2 - 1drop",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 13,
+      "player_name": "Enrique96",
+      "record": "1 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "Lv80Mewtwo",
+      "record": "1 - 4 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Sample Sample",
+      "record": "1 - 3 - 0drop",
+      "archetype": "articuno-ex-a1-wigglytuff-a2b"
+    },
+    {
+      "placement": 16,
+      "player_name": "Bonn",
+      "record": "0 - 1 - 0drop",
+      "archetype": "sylveon-ex-a3b-magnezone-a2"
+    },
+    {
+      "placement": 17,
+      "player_name": "DarKingBR",
+      "record": "0 - 2 - 0drop",
+      "archetype": "sylveon-ex-a3b-togekiss-a2"
+    }
+  ]
+}
