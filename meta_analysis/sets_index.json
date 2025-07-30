@@ -1,6 +1,12 @@
 {
-  "last_updated": "2025-07-30T15:22:07.677438",
+  "last_updated": "2025-07-30T16:25:36.759434",
   "sets": [
+    {
+      "set_name": "Wisdom of Sea and Sky",
+      "set_code": "A4",
+      "release_date": "2025-07-30",
+      "card_count": 241
+    },
     {
       "set_name": "Eevee Grove",
       "set_code": "A3b",
