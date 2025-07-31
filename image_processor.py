@@ -394,9 +394,9 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     Find the card info for a Pokemon from analysis results
     Returns dict with set and number, or None if not found
     """
-    # Create multiple versions of the Pokemon name to try
-    name_with_spaces = pokemon_name.replace('-', ' ').title()      # "Ho Oh"
-    name_with_hyphens = pokemon_name.replace(' ', '-').title()     # "Ho-Oh"
+    # Create both versions of the Pokemon name
+    name_with_spaces = pokemon_name.replace('-', ' ').title()
+    name_with_hyphens = pokemon_name.replace(' ', '-').title()
     
     # Handle 'ex' case for both versions
     if 'Ex' in name_with_spaces:
@@ -404,27 +404,11 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     if 'Ex' in name_with_hyphens:
         name_with_hyphens = name_with_hyphens.replace('Ex', 'ex')
     
-    # FIXED: Add more variations for special cases like Ho-Oh
-    names_to_try = [
-        name_with_spaces,           # "Ho Oh"
-        name_with_hyphens,          # "Ho-Oh"
-        pokemon_name.title(),       # Original format capitalized
-        pokemon_name.lower(),       # All lowercase
-        pokemon_name.upper()        # All uppercase
-    ]
-    
-    # Remove duplicates while preserving order
-    seen = set()
-    unique_names = []
-    for name in names_to_try:
-        if name not in seen:
-            seen.add(name)
-            unique_names.append(name)
-    
-    names_to_try = unique_names
+    # Try both versions when searching
+    names_to_try = [name_with_spaces, name_with_hyphens]
     
     for search_name in names_to_try:
-        # FIXED: Use case-insensitive search
+        # Search for the Pokemon in the results
         pokemon_cards = analysis_results[
             (analysis_results['type'] == 'Pokemon') & 
             (analysis_results['card_name'].str.lower() == search_name.lower())
@@ -439,158 +423,115 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
                 'num': best_card['num']
             }
     
-    # ADDITIONAL FIX: Try partial matching for special cases
-    if '-' in pokemon_name:
-        # For hyphenated names, try searching for cards that contain the parts
-        parts = pokemon_name.split('-')
-        for part in parts:
-            if len(part) > 2:  # Only try significant parts
-                pokemon_cards = analysis_results[
-                    (analysis_results['type'] == 'Pokemon') & 
-                    (analysis_results['card_name'].str.lower().str.contains(part.lower()))
-                ]
-                
-                if not pokemon_cards.empty:
-                    # Filter to find cards that contain all parts
-                    for _, card in pokemon_cards.iterrows():
-                        card_name_lower = card['card_name'].lower()
-                        if all(part.lower() in card_name_lower for part in parts):
-                            return {
-                                'name': card['card_name'],
-                                'set': card['set'],
-                                'num': card['num']
-                            }
-    
     return None
 
 # Update in image_processor.py
+
 def find_pokemon_images(deck_info, analysis_results=None):
     """
     Find Pokémon card images for a deck header based on deck name.
-    Uses URL-based approach (same as icons) as primary method.
+    
+    Args:
+        deck_info: Dictionary containing deck information
+        analysis_results: Optional DataFrame of analysis results
+        
+    Returns:
+        List of PIL Image objects for the Pokémon in the deck (up to 2)
     """
     # Get deck name
     deck_name = deck_info['deck_name']
     
-    # Extract Pokémon from deck name
+    # Extract Pokémon from deck name (we'll need this regardless of approach)
     pokemon_names = extract_pokemon_from_deck_name(deck_name)
     
     # Initialize list for images
     pil_images = []
     
-    print(f"Finding images for deck: {deck_name}, Pokemon: {pokemon_names}")
-    
-    # PRIMARY METHOD: Use same URL approach as icons (most reliable)
-    if pokemon_names:
-        # Use exact same logic as extract_pokemon_urls
-        from formatters import extract_pokemon_urls
-        url1, url2 = extract_pokemon_urls(deck_name)
-        
-        urls = [url1, url2]
-        for i, url in enumerate(urls):
-            if url:
-                try:
-                    import requests
-                    from PIL import Image
-                    from io import BytesIO
-                    
-                    print(f"Fetching image {i+1} from URL: {url}")
-                    response = requests.get(url, timeout=5)
-                    
-                    if response.status_code == 200:
-                        img = Image.open(BytesIO(response.content))
-                        
-                        # Convert to RGB if needed
-                        if img.mode != 'RGB':
-                            img = img.convert('RGB')
-                        
-                        # Apply standard card cropping
-                        from config import IMAGE_CROP_BOX
-                        width, height = img.size
-                        left = int(width * IMAGE_CROP_BOX['left'])
-                        top = int(height * IMAGE_CROP_BOX['top'])
-                        right = int(width * IMAGE_CROP_BOX['right'])
-                        bottom = int(height * IMAGE_CROP_BOX['bottom'])
-                        
-                        cropped = img.crop((left, top, right, bottom))
-                        pil_images.append(cropped)
-                        print(f"Successfully loaded image {i+1} from URL")
-                    else:
-                        print(f"HTTP {response.status_code} for URL: {url}")
-                        
-                except Exception as e:
-                    print(f"Error fetching image from URL {url}: {e}")
-                    continue
-    
-    # SUCCESS: If we got images from URLs, return them
-    if pil_images:
-        print(f"Banner generation successful using URL method: {len(pil_images)} images")
-        return pil_images
-    
-    # FALLBACK 1: Try session state (pre-loaded info)
+    # Approach 1: Use pre-loaded info from session state
     if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
         pokemon_info = st.session_state.deck_pokemon_info[deck_name]
         
         if pokemon_info:
-            print(f"Trying session state method with {len(pokemon_info)} Pokemon")
+            # Get images for each Pokémon (up to 2)
             for i, pokemon in enumerate(pokemon_info[:2]):
-                try:
-                    if pokemon.get('set') and pokemon.get('num'):
-                        formatted_num = format_card_number(pokemon['num'])
-                        img = fetch_and_crop_image(pokemon['set'], formatted_num)
-                        if img:
-                            pil_images.append(img)
-                            print(f"Loaded image {i+1} from session state")
-                except Exception as e:
-                    print(f"Error loading from session state: {e}")
-                    continue
+                if pokemon.get('set') and pokemon.get('num'):
+                    formatted_num = format_card_number(pokemon['num'])
+                    
+                    # Fetch and crop the image
+                    img = fetch_and_crop_image(pokemon['set'], formatted_num)
+                    if img:
+                        pil_images.append(img)
     
-    # FALLBACK 2: Try analysis results database
-    if not pil_images and analysis_results is not None and not analysis_results.empty and pokemon_names:
-        print("Trying analysis results database method")
-        for pokemon_name in pokemon_names[:2]:
-            try:
+    # Approach 2: Extract from current analysis results
+    if not pil_images and analysis_results is not None and not analysis_results.empty:
+        if pokemon_names:
+            # Get images for each Pokémon
+            for pokemon_name in pokemon_names[:2]:
                 card_info = get_pokemon_card_info(pokemon_name, analysis_results)
+                
                 if card_info:
                     formatted_num = format_card_number(card_info['num'])
+                    
+                    # Fetch and crop the image
                     img = fetch_and_crop_image(card_info['set'], formatted_num)
                     if img:
                         pil_images.append(img)
-                        print(f"Loaded image from analysis results: {pokemon_name}")
-            except Exception as e:
-                print(f"Error loading from analysis results for {pokemon_name}: {e}")
-                continue
+                        
+                        # Store this info for future use
+                        if 'deck_pokemon_info' not in st.session_state:
+                            st.session_state.deck_pokemon_info = {}
+                        if deck_name not in st.session_state.deck_pokemon_info:
+                            st.session_state.deck_pokemon_info[deck_name] = []
+                        
+                        st.session_state.deck_pokemon_info[deck_name].append({
+                            'name': pokemon_name,
+                            'card_name': card_info['name'],
+                            'set': card_info['set'],
+                            'num': card_info['num']
+                        })
     
-    # FALLBACK 3: Try sample deck (existing logic - simplified)
-    if not pil_images:
-        print("Trying sample deck fallback method")
-        try:
-            # Get sample deck for this archetype
-            sample_deck = cache_manager.get_cached_sample_deck(deck_name, deck_info.get('set', 'A3'))
-            
-            if sample_deck and pokemon_names and 'pokemon_cards' in sample_deck:
-                for pokemon_name in pokemon_names[:2]:
-                    # Clean up the name for matching
-                    clean_name = pokemon_name.replace('-', ' ').title()
-                    if 'Ex' in clean_name:
-                        clean_name = clean_name.replace('Ex', 'ex')
-                    
-                    # Find matching card in sample deck
-                    for card in sample_deck['pokemon_cards']:
-                        if (card['card_name'].lower() == clean_name.lower() and 
-                            card.get('set') and card.get('num')):
+    # Approach 3: Use sample deck data 
+    if not pil_images and 'analyze' in st.session_state:
+        import cache_manager
+        
+        # Try to get set name from deck_info or session state
+        set_name = deck_info.get('set', st.session_state.analyze.get('set_name', 'A3'))
+        
+        # Get sample deck
+        sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+        
+        if pokemon_names and 'pokemon_cards' in sample_deck:
+            # Look for matching Pokémon in sample deck
+            for pokemon_name in pokemon_names[:2]:
+                # Clean up the name for matching
+                clean_name = pokemon_name.replace('-', ' ').title()
+                if 'Ex' in clean_name:
+                    clean_name = clean_name.replace('Ex', 'ex')
+                
+                # Find matching card
+                for card in sample_deck['pokemon_cards']:
+                    if card['card_name'].lower() == clean_name.lower() and card.get('set') and card.get('num'):
+                        formatted_num = format_card_number(card['num'])
+                        
+                        # Fetch and crop the image
+                        img = fetch_and_crop_image(card['set'], formatted_num)
+                        if img:
+                            pil_images.append(img)
                             
-                            formatted_num = format_card_number(card['num'])
-                            img = fetch_and_crop_image(card['set'], formatted_num)
-                            if img:
-                                pil_images.append(img)
-                                print(f"Loaded image from sample deck: {pokemon_name}")
-                                break
-        except Exception as e:
-            print(f"Error in sample deck fallback: {e}")
+                            # Store this info for future use
+                            if 'deck_pokemon_info' not in st.session_state:
+                                st.session_state.deck_pokemon_info = {}
+                            if deck_name not in st.session_state.deck_pokemon_info:
+                                st.session_state.deck_pokemon_info[deck_name] = []
+                            
+                            st.session_state.deck_pokemon_info[deck_name].append({
+                                'name': pokemon_name,
+                                'card_name': card['card_name'],
+                                'set': card['set'],
+                                'num': card['num']
+                            })
+                            break
     
-    # Return whatever images we found (could be empty)
-    print(f"Final result: {len(pil_images)} images found for {deck_name}")
     return pil_images
 
 
