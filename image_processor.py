@@ -389,33 +389,57 @@ def extract_pokemon_from_deck_name(deck_name):
     
     return pokemon_names[:2]
 
+# REPLACE this function in image_processor.py:
+
 def get_pokemon_card_info(pokemon_name, analysis_results):
     """
     Find the card info for a Pokemon from analysis results
     Returns dict with set and number, or None if not found
     """
-    # Create both versions of the Pokemon name
+    if analysis_results is None or analysis_results.empty:
+        return None
+    
+    # Create name variations to try
+    names_to_try = []
+    
+    # Standard variations
     name_with_spaces = pokemon_name.replace('-', ' ').title()
     name_with_hyphens = pokemon_name.replace(' ', '-').title()
     
-    # Handle 'ex' case for both versions
+    # Fix 'Ex' to 'ex'
     if 'Ex' in name_with_spaces:
         name_with_spaces = name_with_spaces.replace('Ex', 'ex')
     if 'Ex' in name_with_hyphens:
         name_with_hyphens = name_with_hyphens.replace('Ex', 'ex')
     
-    # Try both versions when searching
     names_to_try = [name_with_spaces, name_with_hyphens]
     
+    # CRITICAL FIX: Special handling for Ho-Oh
+    if 'ho' in pokemon_name.lower() and 'oh' in pokemon_name.lower():
+        # Add specific Ho-Oh variations that are likely in the data
+        if 'ex' in pokemon_name.lower():
+            names_to_try.extend([
+                "Ho-Oh ex",
+                "Ho Oh ex", 
+                "ho-oh ex",
+                "ho oh ex"
+            ])
+        else:
+            names_to_try.extend([
+                "Ho-Oh",
+                "Ho Oh", 
+                "ho-oh",
+                "ho oh"
+            ])
+    
+    # Try each name variation
     for search_name in names_to_try:
-        # Search for the Pokemon in the results
         pokemon_cards = analysis_results[
             (analysis_results['type'] == 'Pokemon') & 
             (analysis_results['card_name'].str.lower() == search_name.lower())
         ]
         
         if not pokemon_cards.empty:
-            # Get the most used variant (highest total percentage)
             best_card = pokemon_cards.loc[pokemon_cards['pct_total'].idxmax()]
             return {
                 'name': best_card['card_name'],
