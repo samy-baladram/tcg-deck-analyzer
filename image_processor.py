@@ -394,9 +394,9 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     Find the card info for a Pokemon from analysis results
     Returns dict with set and number, or None if not found
     """
-    # Create both versions of the Pokemon name
-    name_with_spaces = pokemon_name.replace('-', ' ').title()
-    name_with_hyphens = pokemon_name.replace(' ', '-').title()
+    # Create multiple versions of the Pokemon name to try
+    name_with_spaces = pokemon_name.replace('-', ' ').title()      # "Ho Oh"
+    name_with_hyphens = pokemon_name.replace(' ', '-').title()     # "Ho-Oh"
     
     # Handle 'ex' case for both versions
     if 'Ex' in name_with_spaces:
@@ -404,11 +404,27 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     if 'Ex' in name_with_hyphens:
         name_with_hyphens = name_with_hyphens.replace('Ex', 'ex')
     
-    # Try both versions when searching
-    names_to_try = [name_with_spaces, name_with_hyphens]
+    # FIXED: Add more variations for special cases like Ho-Oh
+    names_to_try = [
+        name_with_spaces,           # "Ho Oh"
+        name_with_hyphens,          # "Ho-Oh"
+        pokemon_name.title(),       # Original format capitalized
+        pokemon_name.lower(),       # All lowercase
+        pokemon_name.upper()        # All uppercase
+    ]
+    
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_names = []
+    for name in names_to_try:
+        if name not in seen:
+            seen.add(name)
+            unique_names.append(name)
+    
+    names_to_try = unique_names
     
     for search_name in names_to_try:
-        # Search for the Pokemon in the results
+        # FIXED: Use case-insensitive search
         pokemon_cards = analysis_results[
             (analysis_results['type'] == 'Pokemon') & 
             (analysis_results['card_name'].str.lower() == search_name.lower())
@@ -422,6 +438,28 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
                 'set': best_card['set'],
                 'num': best_card['num']
             }
+    
+    # ADDITIONAL FIX: Try partial matching for special cases
+    if '-' in pokemon_name:
+        # For hyphenated names, try searching for cards that contain the parts
+        parts = pokemon_name.split('-')
+        for part in parts:
+            if len(part) > 2:  # Only try significant parts
+                pokemon_cards = analysis_results[
+                    (analysis_results['type'] == 'Pokemon') & 
+                    (analysis_results['card_name'].str.lower().str.contains(part.lower()))
+                ]
+                
+                if not pokemon_cards.empty:
+                    # Filter to find cards that contain all parts
+                    for _, card in pokemon_cards.iterrows():
+                        card_name_lower = card['card_name'].lower()
+                        if all(part.lower() in card_name_lower for part in parts):
+                            return {
+                                'name': card['card_name'],
+                                'set': card['set'],
+                                'num': card['num']
+                            }
     
     return None
 
