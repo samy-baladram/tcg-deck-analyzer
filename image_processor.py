@@ -391,9 +391,11 @@ def extract_pokemon_from_deck_name(deck_name):
 
 def get_pokemon_card_info(pokemon_name, analysis_results):
     """
-    Find the card info for a Pokemon from analysis results
+    Find the card info for a Pokemon from analysis results with debug info
     Returns dict with set and number, or None if not found
     """
+    print(f"🔍 DEBUG: Looking for Pokemon: '{pokemon_name}'")
+    
     # Create multiple versions of the Pokemon name to try
     name_with_spaces = pokemon_name.replace('-', ' ').title()
     name_with_hyphens = pokemon_name.replace(' ', '-').title()
@@ -404,15 +406,14 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     if 'Ex' in name_with_hyphens:
         name_with_hyphens = name_with_hyphens.replace('Ex', 'ex')
     
-    # ADDITION: Create additional variations for special cases
-    # Handle cases where the base name might have hyphens but 'ex' is separate
+    # Create additional variations for special cases
     base_name_hyphen = pokemon_name.split('-ex')[0] if '-ex' in pokemon_name else pokemon_name
     base_name_space = base_name_hyphen.replace('-', ' ')
     
     additional_variations = [
         f"{base_name_hyphen.title()} ex",  # "Ho-Oh ex"
         f"{base_name_space.title()} ex",   # "Ho Oh ex"
-        f"{base_name_hyphen.upper()} ex",  # "HO-OH ex" (unlikely but just in case)
+        f"{base_name_hyphen.upper()} ex",  # "HO-OH ex"
     ]
     
     # Try all versions when searching
@@ -421,23 +422,94 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     # Remove duplicates while preserving order
     names_to_try = list(dict.fromkeys(names_to_try))
     
-    for search_name in names_to_try:
+    print(f"🔍 DEBUG: Will try these name variations: {names_to_try}")
+    
+    # DEBUG: Show what Pokemon cards are actually available in analysis_results
+    if analysis_results is not None:
+        pokemon_cards_available = analysis_results[analysis_results['type'] == 'Pokemon']['card_name'].unique()
+        print(f"🔍 DEBUG: Available Pokemon cards in analysis_results:")
+        for card in sorted(pokemon_cards_available):
+            print(f"  - '{card}'")
+        
+        # Check if any contain 'ho' or 'oh'
+        ho_cards = [card for card in pokemon_cards_available if 'ho' in card.lower() or 'oh' in card.lower()]
+        if ho_cards:
+            print(f"🔍 DEBUG: Cards containing 'ho' or 'oh': {ho_cards}")
+    
+    for i, search_name in enumerate(names_to_try):
+        print(f"🔍 DEBUG: Trying variation {i+1}: '{search_name}'")
+        
         # Search for the Pokemon in the results
         pokemon_cards = analysis_results[
             (analysis_results['type'] == 'Pokemon') & 
             (analysis_results['card_name'].str.lower() == search_name.lower())
         ]
         
+        print(f"🔍 DEBUG: Found {len(pokemon_cards)} matches for '{search_name}'")
+        
         if not pokemon_cards.empty:
+            print(f"🔍 DEBUG: ✅ MATCH FOUND! Cards found:")
+            for idx, row in pokemon_cards.iterrows():
+                print(f"  - {row['card_name']} (set: {row['set']}, num: {row['num']}, pct: {row['pct_total']})")
+            
             # Get the most used variant (highest total percentage)
             best_card = pokemon_cards.loc[pokemon_cards['pct_total'].idxmax()]
-            return {
+            result = {
                 'name': best_card['card_name'],
                 'set': best_card['set'],
                 'num': best_card['num']
             }
+            print(f"🔍 DEBUG: Selected best card: {result}")
+            return result
     
+    print(f"🔍 DEBUG: ❌ NO MATCHES FOUND for '{pokemon_name}'")
     return None
+
+
+def find_pokemon_images_debug(deck_info, analysis_results=None):
+    """
+    Debug version of find_pokemon_images to see what's happening
+    """
+    print(f"🔍 DEBUG: Starting find_pokemon_images for deck: {deck_info.get('deck_name', 'Unknown')}")
+    
+    # Extract Pokemon names from deck name
+    deck_name = deck_info.get('deck_name', '')
+    pokemon_names = extract_pokemon_from_deck_name(deck_name)
+    
+    print(f"🔍 DEBUG: Extracted Pokemon names: {pokemon_names}")
+    
+    pil_images = []
+    
+    if analysis_results is not None:
+        print(f"🔍 DEBUG: Analysis results provided, shape: {analysis_results.shape}")
+        
+        for i, pokemon_name in enumerate(pokemon_names[:2]):
+            print(f"\n🔍 DEBUG: Processing Pokemon {i+1}: '{pokemon_name}'")
+            
+            # Get card info
+            card_info = get_pokemon_card_info(pokemon_name, analysis_results)
+            
+            if card_info:
+                print(f"🔍 DEBUG: Got card info: {card_info}")
+                
+                # Try to fetch the image
+                try:
+                    formatted_num = format_card_number(card_info['num'])
+                    print(f"🔍 DEBUG: Formatted card number: {formatted_num}")
+                    
+                    img = fetch_and_crop_image(card_info['set'], formatted_num)
+                    if img:
+                        print(f"🔍 DEBUG: ✅ Successfully fetched image for {pokemon_name}")
+                        pil_images.append(img)
+                    else:
+                        print(f"🔍 DEBUG: ❌ Failed to fetch image for {pokemon_name}")
+                except Exception as e:
+                    print(f"🔍 DEBUG: ❌ Error fetching image for {pokemon_name}: {e}")
+            else:
+                print(f"🔍 DEBUG: ❌ No card info found for {pokemon_name}")
+    
+    print(f"🔍 DEBUG: Final result: Found {len(pil_images)} images")
+    return pil_images
 
 # Update in image_processor.py
 
