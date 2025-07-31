@@ -466,7 +466,7 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     return None
 
 
-def find_pokemon_images_debug(deck_info, analysis_results=None):
+def find_pokemon_images(deck_info, analysis_results=None):
     """
     Debug version of find_pokemon_images to see what's happening
     """
@@ -513,112 +513,112 @@ def find_pokemon_images_debug(deck_info, analysis_results=None):
 
 # Update in image_processor.py
 
-def find_pokemon_images(deck_info, analysis_results=None):
-    """
-    Find Pokémon card images for a deck header based on deck name.
+# def find_pokemon_images(deck_info, analysis_results=None):
+#     """
+#     Find Pokémon card images for a deck header based on deck name.
     
-    Args:
-        deck_info: Dictionary containing deck information
-        analysis_results: Optional DataFrame of analysis results
+#     Args:
+#         deck_info: Dictionary containing deck information
+#         analysis_results: Optional DataFrame of analysis results
         
-    Returns:
-        List of PIL Image objects for the Pokémon in the deck (up to 2)
-    """
-    # Get deck name
-    deck_name = deck_info['deck_name']
+#     Returns:
+#         List of PIL Image objects for the Pokémon in the deck (up to 2)
+#     """
+#     # Get deck name
+#     deck_name = deck_info['deck_name']
     
-    # Extract Pokémon from deck name (we'll need this regardless of approach)
-    pokemon_names = extract_pokemon_from_deck_name(deck_name)
+#     # Extract Pokémon from deck name (we'll need this regardless of approach)
+#     pokemon_names = extract_pokemon_from_deck_name(deck_name)
     
-    # Initialize list for images
-    pil_images = []
+#     # Initialize list for images
+#     pil_images = []
     
-    # Approach 1: Use pre-loaded info from session state
-    if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
-        pokemon_info = st.session_state.deck_pokemon_info[deck_name]
+#     # Approach 1: Use pre-loaded info from session state
+#     if 'deck_pokemon_info' in st.session_state and deck_name in st.session_state.deck_pokemon_info:
+#         pokemon_info = st.session_state.deck_pokemon_info[deck_name]
         
-        if pokemon_info:
-            # Get images for each Pokémon (up to 2)
-            for i, pokemon in enumerate(pokemon_info[:2]):
-                if pokemon.get('set') and pokemon.get('num'):
-                    formatted_num = format_card_number(pokemon['num'])
+#         if pokemon_info:
+#             # Get images for each Pokémon (up to 2)
+#             for i, pokemon in enumerate(pokemon_info[:2]):
+#                 if pokemon.get('set') and pokemon.get('num'):
+#                     formatted_num = format_card_number(pokemon['num'])
                     
-                    # Fetch and crop the image
-                    img = fetch_and_crop_image(pokemon['set'], formatted_num)
-                    if img:
-                        pil_images.append(img)
+#                     # Fetch and crop the image
+#                     img = fetch_and_crop_image(pokemon['set'], formatted_num)
+#                     if img:
+#                         pil_images.append(img)
     
-    # Approach 2: Extract from current analysis results
-    if not pil_images and analysis_results is not None and not analysis_results.empty:
-        if pokemon_names:
-            # Get images for each Pokémon
-            for pokemon_name in pokemon_names[:2]:
-                card_info = get_pokemon_card_info(pokemon_name, analysis_results)
+#     # Approach 2: Extract from current analysis results
+#     if not pil_images and analysis_results is not None and not analysis_results.empty:
+#         if pokemon_names:
+#             # Get images for each Pokémon
+#             for pokemon_name in pokemon_names[:2]:
+#                 card_info = get_pokemon_card_info(pokemon_name, analysis_results)
                 
-                if card_info:
-                    formatted_num = format_card_number(card_info['num'])
+#                 if card_info:
+#                     formatted_num = format_card_number(card_info['num'])
                     
-                    # Fetch and crop the image
-                    img = fetch_and_crop_image(card_info['set'], formatted_num)
-                    if img:
-                        pil_images.append(img)
+#                     # Fetch and crop the image
+#                     img = fetch_and_crop_image(card_info['set'], formatted_num)
+#                     if img:
+#                         pil_images.append(img)
                         
-                        # Store this info for future use
-                        if 'deck_pokemon_info' not in st.session_state:
-                            st.session_state.deck_pokemon_info = {}
-                        if deck_name not in st.session_state.deck_pokemon_info:
-                            st.session_state.deck_pokemon_info[deck_name] = []
+#                         # Store this info for future use
+#                         if 'deck_pokemon_info' not in st.session_state:
+#                             st.session_state.deck_pokemon_info = {}
+#                         if deck_name not in st.session_state.deck_pokemon_info:
+#                             st.session_state.deck_pokemon_info[deck_name] = []
                         
-                        st.session_state.deck_pokemon_info[deck_name].append({
-                            'name': pokemon_name,
-                            'card_name': card_info['name'],
-                            'set': card_info['set'],
-                            'num': card_info['num']
-                        })
+#                         st.session_state.deck_pokemon_info[deck_name].append({
+#                             'name': pokemon_name,
+#                             'card_name': card_info['name'],
+#                             'set': card_info['set'],
+#                             'num': card_info['num']
+#                         })
     
-    # Approach 3: Use sample deck data 
-    if not pil_images and 'analyze' in st.session_state:
-        import cache_manager
+#     # Approach 3: Use sample deck data 
+#     if not pil_images and 'analyze' in st.session_state:
+#         import cache_manager
         
-        # Try to get set name from deck_info or session state
-        set_name = deck_info.get('set', st.session_state.analyze.get('set_name', 'A3'))
+#         # Try to get set name from deck_info or session state
+#         set_name = deck_info.get('set', st.session_state.analyze.get('set_name', 'A3'))
         
-        # Get sample deck
-        sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
+#         # Get sample deck
+#         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
         
-        if pokemon_names and 'pokemon_cards' in sample_deck:
-            # Look for matching Pokémon in sample deck
-            for pokemon_name in pokemon_names[:2]:
-                # Clean up the name for matching
-                clean_name = pokemon_name.replace('-', ' ').title()
-                if 'Ex' in clean_name:
-                    clean_name = clean_name.replace('Ex', 'ex')
+#         if pokemon_names and 'pokemon_cards' in sample_deck:
+#             # Look for matching Pokémon in sample deck
+#             for pokemon_name in pokemon_names[:2]:
+#                 # Clean up the name for matching
+#                 clean_name = pokemon_name.replace('-', ' ').title()
+#                 if 'Ex' in clean_name:
+#                     clean_name = clean_name.replace('Ex', 'ex')
                 
-                # Find matching card
-                for card in sample_deck['pokemon_cards']:
-                    if card['card_name'].lower() == clean_name.lower() and card.get('set') and card.get('num'):
-                        formatted_num = format_card_number(card['num'])
+#                 # Find matching card
+#                 for card in sample_deck['pokemon_cards']:
+#                     if card['card_name'].lower() == clean_name.lower() and card.get('set') and card.get('num'):
+#                         formatted_num = format_card_number(card['num'])
                         
-                        # Fetch and crop the image
-                        img = fetch_and_crop_image(card['set'], formatted_num)
-                        if img:
-                            pil_images.append(img)
+#                         # Fetch and crop the image
+#                         img = fetch_and_crop_image(card['set'], formatted_num)
+#                         if img:
+#                             pil_images.append(img)
                             
-                            # Store this info for future use
-                            if 'deck_pokemon_info' not in st.session_state:
-                                st.session_state.deck_pokemon_info = {}
-                            if deck_name not in st.session_state.deck_pokemon_info:
-                                st.session_state.deck_pokemon_info[deck_name] = []
+#                             # Store this info for future use
+#                             if 'deck_pokemon_info' not in st.session_state:
+#                                 st.session_state.deck_pokemon_info = {}
+#                             if deck_name not in st.session_state.deck_pokemon_info:
+#                                 st.session_state.deck_pokemon_info[deck_name] = []
                             
-                            st.session_state.deck_pokemon_info[deck_name].append({
-                                'name': pokemon_name,
-                                'card_name': card['card_name'],
-                                'set': card['set'],
-                                'num': card['num']
-                            })
-                            break
+#                             st.session_state.deck_pokemon_info[deck_name].append({
+#                                 'name': pokemon_name,
+#                                 'card_name': card['card_name'],
+#                                 'set': card['set'],
+#                                 'num': card['num']
+#                             })
+#                             break
     
-    return pil_images
+#     return pil_images
 
 
 ##################
