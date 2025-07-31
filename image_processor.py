@@ -464,22 +464,15 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     return None
 
 # Update in image_processor.py
-
 def find_pokemon_images(deck_info, analysis_results=None):
     """
     Find Pokémon card images for a deck header based on deck name.
-    
-    Args:
-        deck_info: Dictionary containing deck information
-        analysis_results: Optional DataFrame of analysis results
-        
-    Returns:
-        List of PIL Image objects for the Pokémon in the deck (up to 2)
+    UPDATED: Add fallback to URL-based image fetching when card lookup fails.
     """
     # Get deck name
     deck_name = deck_info['deck_name']
     
-    # Extract Pokémon from deck name (we'll need this regardless of approach)
+    # Extract Pokémon from deck name
     pokemon_names = extract_pokemon_from_deck_name(deck_name)
     
     # Initialize list for images
@@ -506,27 +499,50 @@ def find_pokemon_images(deck_info, analysis_results=None):
             # Get images for each Pokémon
             for pokemon_name in pokemon_names[:2]:
                 card_info = get_pokemon_card_info(pokemon_name, analysis_results)
-                
                 if card_info:
                     formatted_num = format_card_number(card_info['num'])
-                    
-                    # Fetch and crop the image
                     img = fetch_and_crop_image(card_info['set'], formatted_num)
                     if img:
                         pil_images.append(img)
-                        
-                        # Store this info for future use
-                        if 'deck_pokemon_info' not in st.session_state:
-                            st.session_state.deck_pokemon_info = {}
-                        if deck_name not in st.session_state.deck_pokemon_info:
-                            st.session_state.deck_pokemon_info[deck_name] = []
-                        
-                        st.session_state.deck_pokemon_info[deck_name].append({
-                            'name': pokemon_name,
-                            'card_name': card_info['name'],
-                            'set': card_info['set'],
-                            'num': card_info['num']
-                        })
+    
+    # NEW APPROACH 3: Fallback to URL-based fetching (like icons)
+    if not pil_images and pokemon_names:
+        print(f"Using fallback URL-based image fetching for: {pokemon_names}")
+        
+        for pokemon_name in pokemon_names[:2]:
+            try:
+                # Use the same logic as extract_pokemon_urls but fetch the actual image
+                clean_name = pokemon_name.lower().replace(' ', '-')
+                
+                # Apply URL exceptions if needed (same as icon generation)
+                from config import POKEMON_URL_EXCEPTIONS
+                if clean_name in POKEMON_URL_EXCEPTIONS:
+                    exceptions = POKEMON_URL_EXCEPTIONS[clean_name]
+                    if 'default' in exceptions:
+                        clean_name = exceptions['default']
+                
+                # Construct URL and try to fetch image
+                pokemon_url = f"https://r2.limitlesstcg.net/pokemon/gen9/{clean_name}.png"
+                
+                # Fetch image from URL
+                import requests
+                from PIL import Image
+                from io import BytesIO
+                
+                response = requests.get(pokemon_url, timeout=10)
+                if response.status_code == 200:
+                    img = Image.open(BytesIO(response.content))
+                    if img:
+                        # Apply same cropping as card images
+                        cropped_img = apply_card_crop(img)
+                        pil_images.append(cropped_img)
+                        print(f"Successfully fetched image for {pokemon_name} from URL")
+                else:
+                    print(f"Failed to fetch image for {pokemon_name}: HTTP {response.status_code}")
+                    
+            except Exception as e:
+                print(f"Error fetching image for {pokemon_name}: {e}")
+                continue
     
     # Approach 3: Use sample deck data 
     if not pil_images and 'analyze' in st.session_state:
