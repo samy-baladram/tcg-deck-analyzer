@@ -394,7 +394,7 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     Find the card info for a Pokemon from analysis results
     Returns dict with set and number, or None if not found
     """
-    # Create both versions of the Pokemon name
+    # Create multiple versions of the Pokemon name to try
     name_with_spaces = pokemon_name.replace('-', ' ').title()
     name_with_hyphens = pokemon_name.replace(' ', '-').title()
     
@@ -404,8 +404,22 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     if 'Ex' in name_with_hyphens:
         name_with_hyphens = name_with_hyphens.replace('Ex', 'ex')
     
-    # Try both versions when searching
-    names_to_try = [name_with_spaces, name_with_hyphens]
+    # ADDITION: Create additional variations for special cases
+    # Handle cases where the base name might have hyphens but 'ex' is separate
+    base_name_hyphen = pokemon_name.split('-ex')[0] if '-ex' in pokemon_name else pokemon_name
+    base_name_space = base_name_hyphen.replace('-', ' ')
+    
+    additional_variations = [
+        f"{base_name_hyphen.title()} ex",  # "Ho-Oh ex"
+        f"{base_name_space.title()} ex",   # "Ho Oh ex"
+        f"{base_name_hyphen.upper()} ex",  # "HO-OH ex" (unlikely but just in case)
+    ]
+    
+    # Try all versions when searching
+    names_to_try = [name_with_spaces, name_with_hyphens] + additional_variations
+    
+    # Remove duplicates while preserving order
+    names_to_try = list(dict.fromkeys(names_to_try))
     
     for search_name in names_to_try:
         # Search for the Pokemon in the results
