@@ -361,12 +361,13 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 display_tabs.display_deck_header(original_deck_info, results)
                 
                 # Create tab container
-                tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Deck Info", 
+                tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Deck Info", 
                                                         "Deck Gallery",
                                                                     "Meta Trend",  # NEW TAB
                                                                     "Metagame Overview",
                                                                      "Meta Matchups",
-                                                                    "Related Decks"
+                                                                    "Related Decks",
+                                                                    "Raw Data"
                                                                     ])
                 
                 with tab1:
@@ -415,13 +416,13 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 with tab6:
                     display_tabs.display_related_decks_tab(original_deck_info, results)
                     
-                # with tab7:  # Raw Data (was tab6)
-                #     if variant_df is not None:
-                #         display_tabs.display_raw_data_tab(results, variant_df)
-                #     else:
-                #         import pandas as pd
-                #         empty_variant_df = pd.DataFrame()
-                #         display_tabs.display_raw_data_tab(results, empty_variant_df)
+                with tab7:  # Raw Data (was tab6)
+                    if variant_df is not None:
+                        display_tabs.display_raw_data_tab(results, variant_df)
+                    else:
+                        import pandas as pd
+                        empty_variant_df = pd.DataFrame()
+                        display_tabs.display_raw_data_tab(results, empty_variant_df)
         
         except Exception as e:
             st.error(f"Error displaying deck analysis: {str(e)}")
