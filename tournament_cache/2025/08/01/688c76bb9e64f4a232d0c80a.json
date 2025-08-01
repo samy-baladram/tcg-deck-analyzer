@@ -1,0 +1,51 @@
+{
+  "tournament_id": "688c76bb9e64f4a232d0c80a",
+  "name": "Standard Tournament #2",
+  "timestamp": 1754042400000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "iyla sutherland / darksiderstcg",
+      "record": "3 - 0 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Wirt",
+      "record": "2 - 1 - 0",
+      "archetype": "arceus-ex-a2a-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "RESIDENTE",
+      "record": "2 - 1 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "MSP | EllieDark",
+      "record": "1 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "jeyksu",
+      "record": "1 - 2 - 0",
+      "archetype": "skarmory-ex-a4-wigglytuff-a2b"
+    },
+    {
+      "placement": 6,
+      "player_name": "Raigun",
+      "record": "1 - 2 - 0",
+      "archetype": "donphan-ex-a4-lucario-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "LEKIAM",
+      "record": "1 - 2 - 0",
+      "archetype": "donphan-ex-a4-lucario-a2"
+    }
+  ]
+}
