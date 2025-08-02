@@ -318,10 +318,10 @@ def display_deck_gallery_tab_simple():
         with columns[column_index]:
             with st.expander(expander_title, expanded=True):
                 # Display energy types if available
-                if energy_types:
-                    from card_renderer import render_energy_icons
-                    energy_html = render_energy_icons(energy_types, is_typical)
-                    st.markdown(energy_html, unsafe_allow_html=True)
+                # if energy_types:
+                #     from card_renderer import render_energy_icons
+                #     energy_html = render_energy_icons(energy_types, is_typical)
+                #     st.markdown(energy_html, unsafe_allow_html=True)
                 
                 # Get sample deck data (using the same logic as the original)
                 sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
