@@ -1,0 +1,171 @@
+{
+  "tournament_id": "6889307b8c0cf80c508d142f",
+  "name": "The Wide League Friday Night Shuffle #6",
+  "timestamp": 1754100000000,
+  "format": "Standard",
+  "player_count": 27,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Raigun",
+      "record": "9 - 0 - 0",
+      "archetype": "magcargo-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "My",
+      "record": "7 - 2 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "jeyksu",
+      "record": "6 - 2 - 0",
+      "archetype": "skarmory-ex-a4-wigglytuff-a2b"
+    },
+    {
+      "placement": 4,
+      "player_name": "BoyHowdy",
+      "record": "5 - 3 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "JoaoRamboss",
+      "record": "5 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Mikodex",
+      "record": "4 - 3 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 7,
+      "player_name": "Aas010690",
+      "record": "4 - 3 - 0",
+      "archetype": "donphan-ex-a4-lucario-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Toner",
+      "record": "4 - 3 - 0",
+      "archetype": "skarmory-ex-a4-skarmory-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "Sirfy07",
+      "record": "3 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "Awbscene",
+      "record": "3 - 3 - 0",
+      "archetype": "donphan-ex-a4-rampardos-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Kaiser08",
+      "record": "3 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-tyranitar-a4"
+    },
+    {
+      "placement": 12,
+      "player_name": "KentFloko",
+      "record": "3 - 3 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "PGX | Malditto",
+      "record": "2 - 4 - 0",
+      "archetype": "donphan-ex-a4-lucario-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "Hi5zeldaman",
+      "record": "2 - 4 - 0",
+      "archetype": "magcargo-a4"
+    },
+    {
+      "placement": 15,
+      "player_name": "RESIDENTE",
+      "record": "2 - 4 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 16,
+      "player_name": "WDMichael",
+      "record": "2 - 3 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 17,
+      "player_name": "PGX| WiloXOmega",
+      "record": "2 - 2 - 0drop",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 18,
+      "player_name": "iyla sutherland / darksiderstcg",
+      "record": "1 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 19,
+      "player_name": "MSP | frappesdrinker",
+      "record": "1 - 2 - 0drop",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 20,
+      "player_name": "miguelvmk",
+      "record": "1 - 4 - 0",
+      "archetype": "snorlax-ex-a3b-ho-oh-ex-a4"
+    },
+    {
+      "placement": 21,
+      "player_name": "6jun",
+      "record": "1 - 1 - 0drop",
+      "archetype": "umbreon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 22,
+      "player_name": "squirtlesden",
+      "record": "0 - 2 - 0drop",
+      "archetype": "umbreon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 23,
+      "player_name": "T1T0",
+      "record": "0 - 2 - 0drop",
+      "archetype": "darkrai-ex-a2-tyrogue-a4"
+    },
+    {
+      "placement": 24,
+      "player_name": "BabyEatingBaby",
+      "record": "0 - 3 - 0drop",
+      "archetype": "sylveon-ex-a3b-incineroar-ex-a3"
+    },
+    {
+      "placement": 25,
+      "player_name": "Lex0628",
+      "record": "0 - 3 - 0drop",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 26,
+      "player_name": "Mirai16",
+      "record": "0 - 1 - 0drop",
+      "archetype": "silvally-a3a-pichu-a4"
+    },
+    {
+      "placement": 27,
+      "player_name": "BIGB267",
+      "record": "2 - 3 - 0drop",
+      "archetype": "meowscarada-a2b-decidueye-ex-a3"
+    }
+  ]
+}
