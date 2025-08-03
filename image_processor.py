@@ -514,51 +514,50 @@ def find_pokemon_images(deck_info, analysis_results=None):
         sample_deck = cache_manager.get_or_load_sample_deck(deck_name, set_name)
         
         # MINIMAL FIX for ho-oh-ex detection in find_pokemon_images function
-    
-    if pokemon_names and 'pokemon_cards' in sample_deck:
-        # Look for matching Pokémon in sample deck
-        for pokemon_name in pokemon_names[:2]:
-            # Clean up the name for matching
-            clean_name = pokemon_name.replace('-', ' ').title()
-            if 'Ex' in clean_name:
-                clean_name = clean_name.replace('Ex', 'ex')
-            
-            # MINIMAL FIX: Create list of names to search
-            names_to_try = [clean_name]
-            if "ho-oh-ex" in pokemon_name.lower():
-                if pokemon_name.lower().startswith("ho-oh-ex"):
-                    names_to_try.insert(0, "Ho-Oh ex")  # Try first if at start
-                else:
-                    names_to_try.append("Ho-Oh ex")     # Try last if elsewhere
-            
-            # Find matching card (try each name in order)
-            card_found = False
-            for search_name in names_to_try:
-                if card_found:
-                    break
-                for card in sample_deck['pokemon_cards']:
-                    if card['card_name'].lower() == search_name.lower() and card.get('set') and card.get('num'):
-                        formatted_num = format_card_number(card['num'])
-                        
-                        # Fetch and crop the image
-                        img = fetch_and_crop_image(card['set'], formatted_num)
-                        if img:
-                            pil_images.append(img)
+        if pokemon_names and 'pokemon_cards' in sample_deck:
+            # Look for matching Pokémon in sample deck
+            for pokemon_name in pokemon_names[:2]:
+                # Clean up the name for matching
+                clean_name = pokemon_name.replace('-', ' ').title()
+                if 'Ex' in clean_name:
+                    clean_name = clean_name.replace('Ex', 'ex')
+                
+                # MINIMAL FIX: Create list of names to search
+                names_to_try = [clean_name]
+                if "ho-oh-ex" in pokemon_name.lower():
+                    if pokemon_name.lower().startswith("ho-oh-ex"):
+                        names_to_try.insert(0, "Ho-Oh ex")  # Try first if at start
+                    else:
+                        names_to_try.append("Ho-Oh ex")     # Try last if elsewhere
+                
+                # Find matching card (try each name in order)
+                card_found = False
+                for search_name in names_to_try:
+                    if card_found:
+                        break
+                    for card in sample_deck['pokemon_cards']:
+                        if card['card_name'].lower() == search_name.lower() and card.get('set') and card.get('num'):
+                            formatted_num = format_card_number(card['num'])
                             
-                            # Store this info for future use
-                            if 'deck_pokemon_info' not in st.session_state:
-                                st.session_state.deck_pokemon_info = {}
-                            if deck_name not in st.session_state.deck_pokemon_info:
-                                st.session_state.deck_pokemon_info[deck_name] = []
-                            
-                            st.session_state.deck_pokemon_info[deck_name].append({
-                                'name': pokemon_name,
-                                'card_name': card['card_name'],
-                                'set': card['set'],
-                                'num': card['num']
-                            })
-                            card_found = True
-                            break
+                            # Fetch and crop the image
+                            img = fetch_and_crop_image(card['set'], formatted_num)
+                            if img:
+                                pil_images.append(img)
+                                
+                                # Store this info for future use
+                                if 'deck_pokemon_info' not in st.session_state:
+                                    st.session_state.deck_pokemon_info = {}
+                                if deck_name not in st.session_state.deck_pokemon_info:
+                                    st.session_state.deck_pokemon_info[deck_name] = []
+                                
+                                st.session_state.deck_pokemon_info[deck_name].append({
+                                    'name': pokemon_name,
+                                    'card_name': card['card_name'],
+                                    'set': card['set'],
+                                    'num': card['num']
+                                })
+                                card_found = True
+                                break
     
     return pil_images
 
