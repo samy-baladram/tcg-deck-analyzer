@@ -105,9 +105,9 @@ PLOTLY_CONFIG = {
 # }
 IMAGE_CROP_BOX = {
     'left': 0.05,
-    'top': 0.083,
+    'top': 0.084,
     'right': 0.95,
-    'bottom': 0.515
+    'bottom': 0.51
 }
 
 IMAGE_GRADIENT = {
