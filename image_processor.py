@@ -417,6 +417,7 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
         else:
             # Add to last entry if ho-oh-ex is elsewhere
             names_to_try.append("Ho-Oh ex")
+    print(f"Pokemon name:{pokemon_name}")
     
     for search_name in names_to_try:
         # Search for the Pokemon in the results
@@ -424,6 +425,7 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
             (analysis_results['type'] == 'Pokemon') & 
             (analysis_results['card_name'].str.lower() == search_name.lower())
         ]
+    print(pokemon_cards)        
         
         if not pokemon_cards.empty:
             # Get the most used variant (highest total percentage)
