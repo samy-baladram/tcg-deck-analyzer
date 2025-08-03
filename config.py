@@ -97,11 +97,17 @@ PLOTLY_CONFIG = {
 }
 
 # Image processing settings
+# IMAGE_CROP_BOX = {
+#     'left': 0.08,
+#     'top': 0.115,
+#     'right': 0.92,
+#     'bottom': 0.47
+# }
 IMAGE_CROP_BOX = {
-    'left': 0.08,
-    'top': 0.115,
-    'right': 0.92,
-    'bottom': 0.47
+    'left': 0.05,
+    'top': 0.08,
+    'right': 0.95,
+    'bottom': 0.55
 }
 
 IMAGE_GRADIENT = {
