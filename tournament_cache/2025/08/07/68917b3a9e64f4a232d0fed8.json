@@ -1,0 +1,93 @@
+{
+  "tournament_id": "68917b3a9e64f4a232d0fed8",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Liga S3 Fecha 1",
+  "timestamp": 1754607600000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Joselfie",
+      "record": "4 - 0 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "kazthor382",
+      "record": "3 - 1 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "FranzueRT",
+      "record": "3 - 1 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Xalo",
+      "record": "3 - 1 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Mazzi",
+      "record": "2 - 2 - 0",
+      "archetype": "snorlax-ex-a3b-ho-oh-ex-a4"
+    },
+    {
+      "placement": 6,
+      "player_name": "THEBLACK8",
+      "record": "2 - 2 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Harko [ES/JP]",
+      "record": "2 - 2 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 8,
+      "player_name": "Jonathan Eduardo Almaraz",
+      "record": "2 - 2 - 0",
+      "archetype": "crobat-ex-a4-giratina-ex-a2b"
+    },
+    {
+      "placement": 9,
+      "player_name": "johnhaven10",
+      "record": "2 - 2 - 0",
+      "archetype": "donphan-ex-a4-rampardos-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "marktcgx",
+      "record": "2 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "belceboss",
+      "record": "1 - 3 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "PGX | Malditto",
+      "record": "1 - 3 - 0",
+      "archetype": "slurpuff-alcremie-a3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "Jworld",
+      "record": "1 - 3 - 0",
+      "archetype": "skarmory-ex-a4"
+    },
+    {
+      "placement": 14,
+      "player_name": "Damp_4",
+      "record": "0 - 4 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    }
+  ]
+}
