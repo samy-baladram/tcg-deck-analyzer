@@ -1,0 +1,69 @@
+{
+  "tournament_id": "689782b412254c15df8267b4",
+  "name": "\ud83d\udc38FrogEX \u2022 TM32 Pocket Double Deck $10k \ud83d\udc38",
+  "timestamp": 1754760600000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "FrogEX | Fab",
+      "record": "8 - 1 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "FrogEX | Numatinale",
+      "record": "6 - 3 - 0",
+      "archetype": "porygon-z-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "FrogEX | Frozen",
+      "record": "5 - 3 - 1",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "FrogEX | Djangoleblanc",
+      "record": "5 - 4 - 0",
+      "archetype": "paldean-clodsire-ex-a2b-naganadel-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "FrogEX | Arca",
+      "record": "5 - 4 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "FrogEX | Zorrino",
+      "record": "4 - 5 - 0",
+      "archetype": "blastoise-ex-a1-manaphy-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "FrogEX | Guiggs",
+      "record": "3 - 5 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "FrogEX | painpeko",
+      "record": "3 - 6 - 0",
+      "archetype": "blastoise-ex-a1-manaphy-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "FrogEx | Lezion",
+      "record": "3 - 6 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "FrogEx | Wawan S",
+      "record": "2 - 7 - 0",
+      "archetype": "giratina-ex-a2b-pidgeot-a1"
+    }
+  ]
+}
