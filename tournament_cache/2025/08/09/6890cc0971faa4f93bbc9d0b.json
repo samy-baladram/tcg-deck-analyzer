@@ -1,0 +1,261 @@
+{
+  "tournament_id": "6890cc0971faa4f93bbc9d0b",
+  "name": "Chaos League Pocket Saturdays #32",
+  "timestamp": 1754775000000,
+  "format": "Standard",
+  "player_count": 42,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PikaIcetea",
+      "record": "8 - 2 - 0",
+      "archetype": "arceus-ex-a2a-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "tcgcthulhu",
+      "record": "7 - 3 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "T1T0",
+      "record": "6 - 3 - 0",
+      "archetype": "snorlax-ex-a3b-ho-oh-ex-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Rockfeller",
+      "record": "5 - 3 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "septianhp",
+      "record": "6 - 2 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "MrLucky64",
+      "record": "5 - 2 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "MSP | frappesdrinker",
+      "record": "5 - 2 - 1",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Popmonth",
+      "record": "5 - 2 - 1",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 9,
+      "player_name": "Urban1",
+      "record": "4 - 2 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "imJJKUN",
+      "record": "4 - 3 - 0",
+      "archetype": "darkrai-ex-a2-giratina-ex-a2b"
+    },
+    {
+      "placement": 11,
+      "player_name": "marktcgx",
+      "record": "4 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "rod072",
+      "record": "4 - 3 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "FTPwifey",
+      "record": "3 - 3 - 1",
+      "archetype": "guzzlord-ex-nihilego-a3a"
+    },
+    {
+      "placement": 14,
+      "player_name": "7earless",
+      "record": "3 - 4 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 15,
+      "player_name": "ChIvO",
+      "record": "3 - 4 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 16,
+      "player_name": "johnhaven10",
+      "record": "2 - 4 - 1",
+      "archetype": "rayquaza-ex-p-a-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 17,
+      "player_name": "NOMAD_JORDAN",
+      "record": "2 - 5 - 0",
+      "archetype": "crobat-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 18,
+      "player_name": "FTWSilva",
+      "record": "2 - 5 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 19,
+      "player_name": "Queen13",
+      "record": "1 - 6 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 20,
+      "player_name": "Kuraito",
+      "record": "1 - 6 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 21,
+      "player_name": "FTWribeiro",
+      "record": "1 - 6 - 0",
+      "archetype": "gyarados-ex-a1a-articuno-ex-a1"
+    },
+    {
+      "placement": 22,
+      "player_name": "JaxTCGP",
+      "record": "1 - 6 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 23,
+      "player_name": "ManuelBanano",
+      "record": "1 - 6 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 24,
+      "player_name": "SeanIV",
+      "record": "1 - 6 - 0",
+      "archetype": "infernape-ex-a2-turtonator-a3"
+    },
+    {
+      "placement": 25,
+      "player_name": "Maxploit",
+      "record": "0 - 7 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 26,
+      "player_name": "Penguinevere",
+      "record": "1 - 2 - 0drop",
+      "archetype": "medicham-a2a-lucario-a2"
+    },
+    {
+      "placement": 27,
+      "player_name": "Heavycell13",
+      "record": "1 - 1 - 0drop",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 28,
+      "player_name": "Rapties",
+      "record": "2 - 3 - 1drop",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 29,
+      "player_name": "AlmostGoodGamer",
+      "record": "1 - 1 - 0drop",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 30,
+      "player_name": "Awbscene",
+      "record": "1 - 4 - 0drop",
+      "archetype": "luxray-a2-oricorio-a3"
+    },
+    {
+      "placement": 31,
+      "player_name": "iyla sutherland / darksiderstcg",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 32,
+      "player_name": "Gegie",
+      "record": "0 - 2 - 0drop",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 33,
+      "player_name": "Luisk1093",
+      "record": "0 - 2 - 0drop",
+      "archetype": "magcargo-a4"
+    },
+    {
+      "placement": 34,
+      "player_name": "Goddark98",
+      "record": "0 - 1 - 0drop",
+      "archetype": "sylveon-ex-a3b-solgaleo-ex-a3"
+    },
+    {
+      "placement": 35,
+      "player_name": "alexicon",
+      "record": "4 - 3 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 36,
+      "player_name": "Fredward",
+      "record": "3 - 3 - 0drop",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 37,
+      "player_name": "057",
+      "record": "0 - 3 - 0drop",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    },
+    {
+      "placement": 38,
+      "player_name": "supagoldfang",
+      "record": "1 - 2 - 0drop",
+      "archetype": "crobat-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 39,
+      "player_name": "Koukangas",
+      "record": "1 - 1 - 0drop",
+      "archetype": "darkrai-ex-a2-silvally-a3a"
+    },
+    {
+      "placement": 40,
+      "player_name": "yoshitake",
+      "record": "1 - 6 - 0drop",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 41,
+      "player_name": "DemirGearSolid",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 42,
+      "player_name": "Maxiel",
+      "record": "3 - 2 - 0drop",
+      "archetype": "crobat-ex-a4-sylveon-ex-a3b"
+    }
+  ]
+}
