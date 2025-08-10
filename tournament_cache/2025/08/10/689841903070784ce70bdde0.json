@@ -1,0 +1,81 @@
+{
+  "tournament_id": "689841903070784ce70bdde0",
+  "name": "underground pop up",
+  "timestamp": 1754816400000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "iyla sutherland / darksiderstcg",
+      "record": "5 - 0 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "YaBoiPride",
+      "record": "4 - 1 - 1",
+      "archetype": "pikachu-ex-a2b-pichu-a4"
+    },
+    {
+      "placement": 3,
+      "player_name": "RedTCG",
+      "record": "3 - 2 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Harko [ES/JP]",
+      "record": "2 - 3 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "MSP | EllieDark",
+      "record": "2 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Super_mier",
+      "record": "2 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Bzbblegum",
+      "record": "2 - 2 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "WhereisAbdul",
+      "record": "2 - 2 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "WxChAn",
+      "record": "2 - 2 - 0",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Brug4L",
+      "record": "1 - 3 - 0drop",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "Matthew1234",
+      "record": "1 - 3 - 0",
+      "archetype": "charizard-ex-a2b-blastoise-ex-a1"
+    },
+    {
+      "placement": 12,
+      "player_name": "Shubham",
+      "record": "0 - 1 - 0drop",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    }
+  ]
+}
