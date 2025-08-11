@@ -1,0 +1,69 @@
+{
+  "tournament_id": "6895052371faa4f93bbccad0",
+  "name": "Mach Punch",
+  "timestamp": 1754866800000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "johnhaven10",
+      "record": "4 - 2 - 0",
+      "archetype": "tinkaton-ex-a2b-skarmory-ex-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "Drosek2",
+      "record": "4 - 2 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "4rkham",
+      "record": "4 - 1 - 0",
+      "archetype": "snorlax-ex-a3b-ho-oh-ex-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "GaroVS",
+      "record": "2 - 3 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Bobafett",
+      "record": "2 - 2 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Ewokpadawan",
+      "record": "1 - 3 - 0",
+      "archetype": "silvally-a3a-pichu-a4"
+    },
+    {
+      "placement": 7,
+      "player_name": "fifoh",
+      "record": "1 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "bruxaoBR18023",
+      "record": "1 - 1 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "DracoZ",
+      "record": "1 - 2 - 1",
+      "archetype": "pikachu-ex-a2b-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 10,
+      "player_name": "charmandor70",
+      "record": "1 - 2 - 1",
+      "archetype": "snorlax-ex-a3b-ho-oh-ex-a4"
+    }
+  ]
+}
