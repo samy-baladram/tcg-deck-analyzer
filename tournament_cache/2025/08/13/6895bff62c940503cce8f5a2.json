@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6895bff62c940503cce8f5a2",
+  "name": "Hanafuda Pocket Clash #6",
+  "timestamp": 1755104400000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Oliver2553",
+      "record": "5 - 0 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Shlok",
+      "record": "3 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-incineroar-ex-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Gegie",
+      "record": "2 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-shiinotic-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Matthew1234",
+      "record": "2 - 2 - 0",
+      "archetype": "incineroar-ex-hariyama-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "kimusan",
+      "record": "1 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "DracoZ",
+      "record": "1 - 3 - 0",
+      "archetype": "incineroar-ex-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Peuelemesmo",
+      "record": "0 - 4 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    }
+  ]
+}
