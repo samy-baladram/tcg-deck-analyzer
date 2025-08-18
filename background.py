@@ -103,7 +103,7 @@ def add_app_background():
     Add the default background image (background.png) from the repository root.
     """
     # Path to the background image in the repository
-    image_path = "background2.png"
+    image_path = "assets/background2.png"
     
     # Check if the file exists
     if os.path.exists(image_path):

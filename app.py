@@ -14,7 +14,7 @@ from meta_table import display_extended_meta_table
 
 from PIL import Image
 
-favicon = Image.open("favicon.png").convert('RGBA')
+favicon = Image.open("assets/favicon.png").convert('RGBA')
 
 st.set_page_config(
     page_title="PTCGP Deck Analyzer",
@@ -279,7 +279,7 @@ div[data-testid="stVerticalBlock"] button p {
 # }
 
 # Display banner
-ui_helpers.display_banner("title_banner.png")
+ui_helpers.display_banner("assets/title_banner.png")
 
 # Create deck selector AFTER initialization
 
