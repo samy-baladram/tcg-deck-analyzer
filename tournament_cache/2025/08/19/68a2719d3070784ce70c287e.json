@@ -1,0 +1,81 @@
+{
+  "tournament_id": "68a2719d3070784ce70c287e",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Liga S3 Fecha 4",
+  "timestamp": 1755644400000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "kazthor382",
+      "record": "4 - 0 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "Jworld",
+      "record": "3 - 1 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Joselfie",
+      "record": "3 - 1 - 0",
+      "archetype": "donphan-ex-a4-lucario-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "llulean",
+      "record": "3 - 1 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "syr",
+      "record": "2 - 2 - 0",
+      "archetype": "darkrai-ex-a2-silvally-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Koukangas",
+      "record": "2 - 2 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 7,
+      "player_name": "Kaiser08",
+      "record": "2 - 2 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Aletoz27",
+      "record": "2 - 2 - 0",
+      "archetype": "arceus-ex-a2a-ho-oh-ex-a4"
+    },
+    {
+      "placement": 9,
+      "player_name": "Jesus L",
+      "record": "1 - 3 - 0",
+      "archetype": "charizard-ex-a1-pichu-a4"
+    },
+    {
+      "placement": 10,
+      "player_name": "Jonathan Eduardo Almaraz",
+      "record": "1 - 3 - 0",
+      "archetype": "naganadel-guzzlord-ex-a3a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Sirfy07",
+      "record": "0 - 4 - 0",
+      "archetype": "garchomp-ex-a2a-conkeldurr-a3"
+    },
+    {
+      "placement": 12,
+      "player_name": "THEBLACK8",
+      "record": "0 - 4 - 0",
+      "archetype": "crobat-ex-a4-darkrai-ex-a2"
+    }
+  ]
+}
