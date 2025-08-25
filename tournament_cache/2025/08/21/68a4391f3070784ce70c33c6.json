@@ -1,0 +1,75 @@
+{
+  "tournament_id": "68a4391f3070784ce70c33c6",
+  "name": "\ud83c\udfc6P.P.i.T\ud83c\udfc6 Summer Cup \ud83e\udd75",
+  "timestamp": 1755799200000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "llulean",
+      "record": "3 - 0 - 1",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "MatteTCG",
+      "record": "3 - 1 - 0",
+      "archetype": "umbreon-ex-a4-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Luca_T",
+      "record": "3 - 1 - 0",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Caniuz",
+      "record": "3 - 1 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Lahiente",
+      "record": "2 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Stealth_Spirit",
+      "record": "2 - 2 - 0",
+      "archetype": "buzzwole-ex-guzzlord-ex-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "ienicus",
+      "record": "1 - 2 - 1",
+      "archetype": "alolan-marowak-a3-magby-a4"
+    },
+    {
+      "placement": 8,
+      "player_name": "SirMoro",
+      "record": "1 - 3 - 0",
+      "archetype": "arceus-ex-a2a-silvally-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "lorighi",
+      "record": "0 - 2 - 0drop",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Crash12",
+      "record": "1 - 2 - 0drop",
+      "archetype": "arceus-ex-a2a-typhlosion-a4"
+    },
+    {
+      "placement": 11,
+      "player_name": "Carlos_Cam",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
