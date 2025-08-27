@@ -1,0 +1,39 @@
+{
+  "tournament_id": "68a763e4196e12cfd56ab1c8",
+  "name": "Hanafuda Pocket Clash #7",
+  "timestamp": 1756314000000,
+  "format": "Standard",
+  "player_count": 5,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\u8c93 \u5c0f",
+      "record": "4 - 0 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Pokemon Pocket",
+      "record": "3 - 1 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Crash12",
+      "record": "2 - 2 - 0",
+      "archetype": "arceus-ex-a2a-typhlosion-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "Azhi1022",
+      "record": "1 - 3 - 0",
+      "archetype": "magcargo-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "Lyo12",
+      "record": "1 - 1 - 0drop",
+      "archetype": "lugia-ex-ho-oh-ex-a4"
+    }
+  ]
+}
