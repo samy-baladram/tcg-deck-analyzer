@@ -154,10 +154,26 @@ def scrape_tournament_data(tournament_id):
                 if match:
                     archetype = match.group(1)  # Keep raw URL slug format
         
+        # Fallback: Check cell 4 if archetype is still None
+        if archetype is None and len(cells) > 4:
+            archetype_link = cells[4].find('a')
+            if archetype_link:
+                match = re.search(r'/metagame/([^/?]+)', archetype_link.get('href', ''))
+                if match:
+                    archetype = match.group(1)
+        
         # Extract other player data
         placement = i + 1
         player_name = cells[1].get_text(strip=True) if len(cells) > 1 else f"Player {placement}"
+        
+        # Extract record from cell 4 (original position)
         record = cells[4].get_text(strip=True) if len(cells) > 4 else "0-0-0"
+        
+        # Fallback: Check cell 3 if record looks invalid
+        if (record == "0-0-0" or not re.match(r'\d+\s*-\s*\d+', record)) and len(cells) > 3:
+            fallback_record = cells[3].get_text(strip=True)
+            if re.match(r'\d+\s*-\s*\d+', fallback_record):
+                record = fallback_record
         
         players.append({
             'placement': placement,
