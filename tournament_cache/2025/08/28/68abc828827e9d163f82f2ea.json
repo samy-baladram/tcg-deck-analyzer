@@ -1,0 +1,69 @@
+{
+  "tournament_id": "68abc828827e9d163f82f2ea",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Liga S3 Fecha 7",
+  "timestamp": 1756422000000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Hector G",
+      "record": "4 - 0 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "PGX | Malditto",
+      "record": "3 - 1 - 0",
+      "archetype": "raikou-ex-a4a-magnezone-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "dyatom",
+      "record": "3 - 1 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "llulean",
+      "record": "2 - 2 - 0",
+      "archetype": "crobat-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Fredward",
+      "record": "2 - 2 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 6,
+      "player_name": "Jesus L",
+      "record": "2 - 2 - 0",
+      "archetype": "sylveon-ex-a3b-giratina-ex-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "Chris_Alvarez",
+      "record": "1 - 3 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 8,
+      "player_name": "THEBLACK8",
+      "record": "1 - 2 - 1",
+      "archetype": "crobat-ex-a4-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "Jonathan Eduardo Almaraz",
+      "record": "1 - 2 - 1",
+      "archetype": "charizard-ex-a2b-moltres-ex-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Christopher B",
+      "record": "0 - 3 - 0drop",
+      "archetype": "poliwrath-ex-a4a-politoed-a4"
+    }
+  ]
+}
