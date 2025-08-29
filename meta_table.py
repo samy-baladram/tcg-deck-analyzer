@@ -39,7 +39,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
         WITH total_players_in_period AS (
             SELECT SUM(t.total_players) as total_count
             FROM tournaments t
-            WHERE t.date >= date('now', '-{} days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-{} days') 
         ),
         archetype_share AS (
             SELECT 
@@ -53,7 +53,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
             JOIN tournaments t ON aa.tournament_id = t.tournament_id
             LEFT JOIN player_performance pp ON aa.tournament_id = pp.tournament_id 
                 AND aa.archetype = pp.archetype
-            WHERE t.date >= date('now', '-{} days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-{} days') 
             GROUP BY aa.archetype
             HAVING archetype_count >= 5
         )
@@ -131,7 +131,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
                 t.date,
                 SUM(t.total_players) as total_players
             FROM tournaments t
-            WHERE t.date >= date('now', '-{} days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-{} days') 
             GROUP BY t.date
         ),
         archetype_daily AS (
@@ -268,12 +268,12 @@ class MetaTableBuilder(MetaAnalyzer):
         WITH total_players_7d AS (
             SELECT SUM(t.total_players) as total_count
             FROM tournaments t
-            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-7 days') 
         ),
         total_players_3d AS (
             SELECT SUM(t.total_players) as total_count
             FROM tournaments t
-            WHERE t.date >= date('now', '-3 days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-3 days') 
         ),
         meta_data_7d AS (
             SELECT 
@@ -282,7 +282,7 @@ class MetaTableBuilder(MetaAnalyzer):
                 COUNT(DISTINCT aa.tournament_id) as tournament_count_7d
             FROM archetype_appearances aa
             JOIN tournaments t ON aa.tournament_id = t.tournament_id
-            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-7 days') 
             GROUP BY aa.archetype
             HAVING archetype_count_7d >= 5
         ),
@@ -293,7 +293,7 @@ class MetaTableBuilder(MetaAnalyzer):
                 COUNT(DISTINCT aa.tournament_id) as tournament_count_3d
             FROM archetype_appearances aa
             JOIN tournaments t ON aa.tournament_id = t.tournament_id
-            WHERE t.date >= date('now', '-3 days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-3 days') 
             GROUP BY aa.archetype
         ),
         performance_data AS (
@@ -304,7 +304,7 @@ class MetaTableBuilder(MetaAnalyzer):
                 SUM(pp.ties) as total_ties
             FROM player_performance pp
             JOIN tournaments t ON pp.tournament_id = t.tournament_id
-            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-7 days') 
             GROUP BY pp.archetype
         ),
         daily_shares AS (
@@ -315,7 +315,7 @@ class MetaTableBuilder(MetaAnalyzer):
                 (SELECT SUM(total_players) FROM tournaments WHERE date = t.date) as daily_total
             FROM archetype_appearances aa
             JOIN tournaments t ON aa.tournament_id = t.tournament_id
-            WHERE t.date >= date('now', '-7 days') AND t.date < date('now')
+            WHERE t.date >= date('now', '-7 days') 
             GROUP BY aa.archetype, t.date
         )
         SELECT 
