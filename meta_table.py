@@ -55,7 +55,7 @@ class ArchetypeAnalyzer(MetaAnalyzer):
                 AND aa.archetype = pp.archetype
             WHERE t.date >= date('now', '-{} days') 
             GROUP BY aa.archetype
-            HAVING archetype_count >= 5
+            HAVING archetype_count >= 2
         )
         SELECT 
             archetype as deck_name,
