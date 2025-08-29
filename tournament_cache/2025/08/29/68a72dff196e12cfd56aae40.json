@@ -1,0 +1,87 @@
+{
+  "tournament_id": "68a72dff196e12cfd56aae40",
+  "name": "Pregio Tournament Pocket #01",
+  "timestamp": 1756468800000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Sokumai_asu",
+      "record": "5 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Seedax",
+      "record": "4 - 2 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "Fall88",
+      "record": "3 - 1 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Magnetman",
+      "record": "2 - 3 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Aaronymus",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "alpyapiw",
+      "record": "2 - 2 - 0",
+      "archetype": "umbreon-ex-a4-umbreon-a3b"
+    },
+    {
+      "placement": 7,
+      "player_name": "Nameless10",
+      "record": "2 - 2 - 0",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Marker1199",
+      "record": "2 - 0 - 0drop",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 9,
+      "player_name": "johnhaven10",
+      "record": "1 - 1 - 0drop",
+      "archetype": "suicune-ex-milotic-a4a"
+    },
+    {
+      "placement": 10,
+      "player_name": "HeartBreakKid",
+      "record": "0 - 2 - 0drop",
+      "archetype": "ho-oh-ex-a4-dragonite-ex-a3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "puunnkeed",
+      "record": "0 - 2 - 0drop",
+      "archetype": "magnezone-a2-raikou-ex-a4a"
+    },
+    {
+      "placement": 12,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Raigun",
+      "record": "0 - 2 - 0drop",
+      "archetype": "jumpluff-ex-galarian-cursola-a4a"
+    },
+    {
+      "placement": 13,
+      "player_name": "Feherlac",
+      "record": "0 - 1 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    }
+  ]
+}
