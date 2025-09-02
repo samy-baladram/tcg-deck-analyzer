@@ -648,10 +648,11 @@
     "68b344b4827e9d163f83339f",
     "68998367196e12cfd56a52f6",
     "68b5f150827e9d163f834ac6",
-    "68b531ef827e9d163f8345fc"
+    "68b531ef827e9d163f8345fc",
+    "68b15467da2bf11ab1d5e27f"
   ],
-  "last_updated": 1756786925,
-  "total_tournaments": 649,
+  "last_updated": 1756794491,
+  "total_tournaments": 650,
   "tournaments_by_path": {
     "2025/06/12": [
       "68425e2827d8bc24cf24e4cb",
@@ -1550,7 +1551,8 @@
     ],
     "2025/09/01": [
       "68b344b4827e9d163f83339f",
-      "68b5f150827e9d163f834ac6"
+      "68b5f150827e9d163f834ac6",
+      "68b15467da2bf11ab1d5e27f"
     ],
     "2025/09/02": [
       "68b531ef827e9d163f8345fc"
