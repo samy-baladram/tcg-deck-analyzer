@@ -1,0 +1,87 @@
+{
+  "tournament_id": "6890cdea9e64f4a232d0f44f",
+  "name": "Chaos League Pocket Saturdays #36",
+  "timestamp": 1757194200000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Klk",
+      "record": "7 - 1 - 1",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "ValerieCherish",
+      "record": "6 - 3 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Homanoma",
+      "record": "6 - 2 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "OTKingPetty",
+      "record": "6 - 2 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Aatrox_D",
+      "record": "4 - 3 - 0",
+      "archetype": "raikou-ex-a4a-pikachu-ex-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Silvat170",
+      "record": "3 - 4 - 0",
+      "archetype": "ho-oh-ex-lugia-ex-a4"
+    },
+    {
+      "placement": 7,
+      "player_name": "Cliptonix",
+      "record": "2 - 5 - 0",
+      "archetype": "lunala-ex-a3-giratina-ex-a2b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Kai_to",
+      "record": "0 - 7 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Awbscene",
+      "record": "1 - 2 - 0drop",
+      "archetype": "silvally-a3a-darkrai-ex-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "Coquiswav",
+      "record": "1 - 1 - 0drop",
+      "archetype": "weavile-ex-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "angeluxe",
+      "record": "0 - 1 - 1drop",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Caniuz",
+      "record": "2 - 4 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 13,
+      "player_name": "ONESHOT",
+      "record": "2 - 3 - 0drop",
+      "archetype": "donphan-ex-a4-lucario-a2"
+    }
+  ]
+}
