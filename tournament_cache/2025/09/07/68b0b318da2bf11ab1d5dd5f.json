@@ -1,0 +1,345 @@
+{
+  "tournament_id": "68b0b318da2bf11ab1d5dd5f",
+  "name": "Venova League 3\u00b0 Edici\u00f3n - (USD 25)",
+  "timestamp": 1757271600000,
+  "format": "Standard",
+  "player_count": 56,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Joseph Butler",
+      "record": "8 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ester Ester",
+      "record": "7 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "SG | FEDETET",
+      "record": "5 - 2 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Gerson Cardoso",
+      "record": "5 - 3 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Beto Salinas",
+      "record": "6 - 1 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "PGX| elluquitas",
+      "record": "5 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "\u591c\u306e\u59cb\u307e\u308a Yoru",
+      "record": "5 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Jefferson Hern\u00e1ndez",
+      "record": "4 - 2 - 1",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 9,
+      "player_name": "Shadab Shaikh",
+      "record": "4 - 2 - 0",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Anthony Sandoval",
+      "record": "4 - 2 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 11,
+      "player_name": "SG | DarKus",
+      "record": "4 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Jos\u00e9 Lorenzo \u00c1lvarez L\u00f3pez",
+      "record": "4 - 2 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 13,
+      "player_name": "Sezay Dursun",
+      "record": "4 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "Jos\u00e9 P\u00e9rez",
+      "record": "4 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 15,
+      "player_name": "SG | Metralla",
+      "record": "4 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 16,
+      "player_name": "Andrea Pegoretti",
+      "record": "4 - 2 - 0",
+      "archetype": "umbreon-ex-a4-eevee-ex-a3b"
+    },
+    {
+      "placement": 17,
+      "player_name": "Gerard Aranguren",
+      "record": "3 - 3 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 18,
+      "player_name": "Izan t",
+      "record": "3 - 3 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 19,
+      "player_name": "SG| Billsthetrainer",
+      "record": "3 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 20,
+      "player_name": "Aldy Wijayanto",
+      "record": "3 - 3 - 0",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 21,
+      "player_name": "rafael martine",
+      "record": "3 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 22,
+      "player_name": "Alvaro Cordero",
+      "record": "2 - 3 - 1drop",
+      "archetype": "suicune-ex-a4a-giratina-ex-a2b"
+    },
+    {
+      "placement": 23,
+      "player_name": "Enrique Fern\u00e1ndez",
+      "record": "2 - 3 - 1drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 24,
+      "player_name": "Reed Hartmann",
+      "record": "2 - 3 - 0drop",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 25,
+      "player_name": "S\u00e9rgio Magalh\u00e3es",
+      "record": "2 - 2 - 0drop",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 26,
+      "player_name": "\u677e\u7530 \u62d3\u4e5f",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 27,
+      "player_name": "Emmanuel Pasqualetto",
+      "record": "2 - 4 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 28,
+      "player_name": "Jibri Moore",
+      "record": "2 - 4 - 0",
+      "archetype": "meowscarada-a2b-shuckle-ex-a4"
+    },
+    {
+      "placement": 29,
+      "player_name": "SG | KenriW",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 30,
+      "player_name": "Edoardo Strapazzini",
+      "record": "2 - 2 - 0drop",
+      "archetype": "espeon-ex-a4-eevee-ex-a3b"
+    },
+    {
+      "placement": 31,
+      "player_name": "Oreo Htun",
+      "record": "2 - 2 - 0drop",
+      "archetype": "arceus-ex-crobat-a2a"
+    },
+    {
+      "placement": 32,
+      "player_name": "\u30c0\u30cb\u5b50 \u9b54\u5c0e",
+      "record": "1 - 2 - 0drop",
+      "archetype": "suicune-ex-milotic-a4a"
+    },
+    {
+      "placement": 33,
+      "player_name": "Zakie Nurfaiz",
+      "record": "1 - 2 - 0drop",
+      "archetype": "umbreon-ex-a4-eevee-ex-a3b"
+    },
+    {
+      "placement": 34,
+      "player_name": "Gabriel Ferlin",
+      "record": "1 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 35,
+      "player_name": "Norman White",
+      "record": "1 - 2 - 0drop",
+      "archetype": "umbreon-ex-a4-eevee-ex-a3b"
+    },
+    {
+      "placement": 36,
+      "player_name": "Daniel Nogueira",
+      "record": "1 - 2 - 0drop",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 37,
+      "player_name": "Nolo Boy",
+      "record": "1 - 3 - 0drop",
+      "archetype": "gyarados-ex-a1a-manaphy-a2"
+    },
+    {
+      "placement": 38,
+      "player_name": "Laszlo Feher",
+      "record": "1 - 3 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 39,
+      "player_name": "Eduardo Cavalcanti",
+      "record": "1 - 5 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 40,
+      "player_name": "SG | GATO",
+      "record": "1 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 41,
+      "player_name": "Frost Plaza",
+      "record": "1 - 5 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 42,
+      "player_name": "Nestor Alonso Hernandez Higareda",
+      "record": "1 - 5 - 0",
+      "archetype": "crobat-ex-umbreon-ex-a4"
+    },
+    {
+      "placement": 43,
+      "player_name": "Nicola L\u00f3pez",
+      "record": "1 - 5 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 44,
+      "player_name": "JOSE LUCAS DE SANTOS",
+      "record": "0 - 1 - 0drop",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 45,
+      "player_name": "David Sch\u00fctz",
+      "record": "0 - 2 - 0drop",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 46,
+      "player_name": "Randy Goat",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 47,
+      "player_name": "Abraham de Jes\u00fas Mendoza Casta\u00f1eda",
+      "record": "0 - 6 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 48,
+      "player_name": "Bruno Hiago",
+      "record": "0 - 6 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 49,
+      "player_name": "thiago felipe",
+      "record": "0 - 6 - 0",
+      "archetype": "donphan-ex-a4-rampardos-a2"
+    },
+    {
+      "placement": 50,
+      "player_name": "Francisco Fernandez",
+      "record": "0 - 6 - 0",
+      "archetype": "lucario-a2-hitmontop-a4"
+    },
+    {
+      "placement": 51,
+      "player_name": "Althea Alessi",
+      "record": "0 - 2 - 0drop",
+      "archetype": "darkrai-ex-a2-giratina-ex-a2b"
+    },
+    {
+      "placement": 52,
+      "player_name": "Hazel Rosas",
+      "record": "0 - 6 - 0",
+      "archetype": "raikou-ex-a4a-arceus-ex-a2a"
+    },
+    {
+      "placement": 53,
+      "player_name": "Sapari M",
+      "record": "0 - 6 - 0",
+      "archetype": "espeon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 54,
+      "player_name": "faizal khan",
+      "record": "0 - 6 - 0",
+      "archetype": "suicune-ex-a4a-giratina-ex-a2b"
+    },
+    {
+      "placement": 55,
+      "player_name": "Josh Kavil",
+      "record": "0 - 6 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 56,
+      "player_name": "Brandon Harris",
+      "record": "0 - 3 - 0drop",
+      "archetype": "silvally-a3a-oricorio-a3"
+    }
+  ]
+}
