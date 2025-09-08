@@ -1,0 +1,57 @@
+{
+  "tournament_id": "68ba58f0da2bf11ab1d6362e",
+  "name": "BEC RANKED FINALS",
+  "timestamp": 1757250000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PGX | EvanD",
+      "record": "5 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "SBS| wongtw",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Ishaan",
+      "record": "3 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "stormcastle21",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Syr",
+      "record": "1 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "OjisanAthee",
+      "record": "1 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || ziquan",
+      "record": "0 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "MaxMolly",
+      "record": "0 - 2 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    }
+  ]
+}
