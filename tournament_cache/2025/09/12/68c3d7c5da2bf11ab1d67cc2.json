@@ -1,0 +1,45 @@
+{
+  "tournament_id": "68c3d7c5da2bf11ab1d67cc2",
+  "name": "Standard Tournament #3",
+  "timestamp": 1757667600000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Rockfeller",
+      "record": "3 - 0 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "NunoGDM",
+      "record": "2 - 1 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "WxChAn",
+      "record": "2 - 1 - 0",
+      "archetype": "raikou-ex-a4a-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Elijah B",
+      "record": "1 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Hardbanger",
+      "record": "1 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Raigun",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-latias-a4a"
+    }
+  ]
+}
