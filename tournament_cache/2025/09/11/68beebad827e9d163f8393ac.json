@@ -1,0 +1,81 @@
+{
+  "tournament_id": "68beebad827e9d163f8393ac",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Liga S3 Fecha 11",
+  "timestamp": 1757631600000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Hardbanger",
+      "record": "4 - 0 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Fredward",
+      "record": "3 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Syr",
+      "record": "3 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "llulean",
+      "record": "2 - 2 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 5,
+      "player_name": "JAL15",
+      "record": "2 - 2 - 0",
+      "archetype": "raikou-ex-a4a-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Joselfie",
+      "record": "2 - 2 - 0",
+      "archetype": "donphan-ex-a4-lucario-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "dakka_1988",
+      "record": "2 - 2 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "PGX | Malditto",
+      "record": "2 - 2 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 9,
+      "player_name": "PGX| ElAtomico",
+      "record": "1 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Benligt",
+      "record": "1 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 11,
+      "player_name": "saberjohn",
+      "record": "1 - 3 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 12,
+      "player_name": "Hector G",
+      "record": "0 - 3 - 0drop",
+      "archetype": "solgaleo-ex-a3-entei-ex-a4a"
+    }
+  ]
+}
