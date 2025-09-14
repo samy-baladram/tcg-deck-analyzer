@@ -1,14 +1,14 @@
 {
-  "last_updated": 1757740531,
-  "total_tournaments": 556,
+  "last_updated": 1757818864,
+  "total_tournaments": 559,
   "format_distribution": {
-    "Standard": 484,
+    "Standard": 487,
     "STANDARD": 49,
     "NOEX": 23
   },
   "date_range": {
     "earliest": "2025-04-27",
-    "latest": "2025-09-13"
+    "latest": "2025-09-14"
   },
   "top_archetypes": [
     "giratina-ex-a2b-darkrai-ex-a2",
@@ -20,7 +20,7 @@
     "buzzwole-ex-celesteela-a3a",
     "silvally-a3a-oricorio-a3",
     "espeon-ex-a4-sylveon-ex-a3b",
-    "guzzlord-ex-nihilego-a3a"
+    "greninja-a1-oricorio-a3"
   ],
   "top_archetypes_by_format": {
     "Standard": [

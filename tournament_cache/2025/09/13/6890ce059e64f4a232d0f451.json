@@ -1,0 +1,135 @@
+{
+  "tournament_id": "6890ce059e64f4a232d0f451",
+  "name": "Chaos League Pocket Saturdays #37",
+  "timestamp": 1757799000000,
+  "format": "Standard",
+  "player_count": 21,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "professormarth",
+      "record": "7 - 0 - 1",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Szy",
+      "record": "4 - 2 - 2",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Koukangas",
+      "record": "4 - 2 - 1",
+      "archetype": "dragonite-ex-a3b-mantyke-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "mguardado1",
+      "record": "4 - 3 - 0",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "ARExande",
+      "record": "3 - 3 - 0",
+      "archetype": "alolan-raichu-ex-a3-pichu-a4"
+    },
+    {
+      "placement": 6,
+      "player_name": "Mufasa777",
+      "record": "3 - 3 - 0",
+      "archetype": "suicune-ex-a4a-palkia-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "StovetopTCG",
+      "record": "2 - 3 - 1",
+      "archetype": "raikou-ex-a4a-electivire-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Fredward",
+      "record": "1 - 5 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "MeatGrinder224",
+      "record": "1 - 4 - 0",
+      "archetype": "solgaleo-ex-a3-skarmory-ex-a4"
+    },
+    {
+      "placement": 10,
+      "player_name": "dakka_1988",
+      "record": "2 - 2 - 0drop",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "Anonimous21",
+      "record": "0 - 1 - 0drop",
+      "archetype": "solgaleo-ex-a3-entei-ex-a4a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Homanoma",
+      "record": "1 - 0 - 0drop",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "johnhaven10",
+      "record": "1 - 3 - 0drop",
+      "archetype": "incineroar-ex-a3-entei-ex-a4a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Normo360",
+      "record": "2 - 2 - 0drop",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 15,
+      "player_name": "proto1994",
+      "record": "1 - 3 - 0drop",
+      "archetype": "darkrai-ex-a2-miltank-a4a"
+    },
+    {
+      "placement": 16,
+      "player_name": "GByrne",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 17,
+      "player_name": "PGX | SekinoKatsu",
+      "record": "0 - 1 - 0drop",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 18,
+      "player_name": "057",
+      "record": "1 - 0 - 0drop",
+      "archetype": "tapu-koko-ex-a3a-oricorio-a3"
+    },
+    {
+      "placement": 19,
+      "player_name": "ChIvO",
+      "record": "2 - 2 - 1drop",
+      "archetype": "tapu-koko-ex-a3a-oricorio-a3"
+    },
+    {
+      "placement": 20,
+      "player_name": "Ktech3224",
+      "record": "1 - 1 - 0drop",
+      "archetype": "raikou-ex-a4a-pikachu-ex-a2b"
+    },
+    {
+      "placement": 21,
+      "player_name": "Shellj25",
+      "record": "4 - 1 - 0drop",
+      "archetype": "raikou-ex-a4a-magnezone-a2"
+    }
+  ]
+}
