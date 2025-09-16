@@ -1,0 +1,93 @@
+{
+  "tournament_id": "68c88a0eda2bf11ab1d69f92",
+  "name": "Umbreon League - Daily Tournament #13",
+  "timestamp": 1757979000000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "iyla sutherland",
+      "record": "5 - 1 - 2",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "NunoGDM",
+      "record": "5 - 2 - 1",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "JHove",
+      "record": "4 - 1 - 2",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "CaptainLevi16",
+      "record": "4 - 2 - 1",
+      "archetype": "magcargo-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "johnhaven10",
+      "record": "3 - 3 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "LionKing",
+      "record": "2 - 3 - 1",
+      "archetype": "tapu-koko-ex-a3a-pikachu-ex-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "sZero | frappesdrinker",
+      "record": "2 - 3 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Shebokshy",
+      "record": "2 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Mufasa777",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "Ktech3224",
+      "record": "1 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Chris_Alvarez",
+      "record": "0 - 5 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "proto1994",
+      "record": "2 - 2 - 0drop",
+      "archetype": "skarmory-ex-a4"
+    },
+    {
+      "placement": 13,
+      "player_name": "sZero | Lv80Mewtwo",
+      "record": "1 - 1 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 14,
+      "player_name": "antoniosafe",
+      "record": "0 - 2 - 0drop",
+      "archetype": "exeggutor-ex-a1-alolan-exeggutor-a3"
+    }
+  ]
+}
