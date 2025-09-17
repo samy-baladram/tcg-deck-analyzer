@@ -1,0 +1,51 @@
+{
+  "tournament_id": "68c362bb827e9d163f83b83d",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Liga S3 Fecha FINAL",
+  "timestamp": 1758063600000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PGX| ElAtomico",
+      "record": "3 - 0 - 0",
+      "archetype": "guzzlord-ex-naganadel-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "syr",
+      "record": "3 - 0 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Joselfie",
+      "record": "2 - 1 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Jworld",
+      "record": "1 - 2 - 0",
+      "archetype": "meowscarada-a2b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Koukangas",
+      "record": "1 - 1 - 0drop",
+      "archetype": "dragonite-ex-a3b-mantyke-a4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "JAL15",
+      "record": "0 - 3 - 0",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Hardbanger",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-silvally-a3a"
+    }
+  ]
+}
