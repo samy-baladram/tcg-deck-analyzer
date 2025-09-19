@@ -1,0 +1,93 @@
+{
+  "tournament_id": "68cc5394827e9d163f83f71a",
+  "name": "Umbreon League - Daily Tournament #16",
+  "timestamp": 1758238200000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "sZero | frappesdrinker",
+      "record": "5 - 2 - 1",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ktech3224",
+      "record": "7 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Mashu_TCG",
+      "record": "4 - 2 - 1",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "ghostdevitt",
+      "record": "4 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Numb",
+      "record": "3 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "iyla sutherland",
+      "record": "3 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "sassypikachu",
+      "record": "2 - 3 - 0",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Claudia_uwu",
+      "record": "2 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Boglio",
+      "record": "1 - 4 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "EddieK1ng",
+      "record": "2 - 3 - 0drop",
+      "archetype": "alolan-raichu-ex-a3-raikou-ex-a4a"
+    },
+    {
+      "placement": 11,
+      "player_name": "LelloMafiaUsc",
+      "record": "1 - 3 - 0drop",
+      "archetype": "sylveon-ex-a3b-suicune-ex-a4a"
+    },
+    {
+      "placement": 12,
+      "player_name": "proto1994",
+      "record": "1 - 1 - 0drop",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Himura1982",
+      "record": "0 - 3 - 0drop",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Koukangas",
+      "record": "0 - 1 - 0drop",
+      "archetype": "dragonite-ex-a3b-pichu-a4"
+    }
+  ]
+}
