@@ -1,0 +1,45 @@
+{
+  "tournament_id": "68b6fa5fda2bf11ab1d61726",
+  "name": "\ud83c\udfaf 3v3 Team Tournament - Set #1 - \ud83c\udde7\ud83c\uddf7 Bolados TCG",
+  "timestamp": 1758078000000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "BIG Team II",
+      "record": "0-0-0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Big Team III",
+      "record": "0-0-0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "TRI-POISON",
+      "record": "0-0-0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Triquetra",
+      "record": "0-0-0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "NLC",
+      "record": "0-0-0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Immortal Ones",
+      "record": "0-0-0",
+      "archetype": null
+    }
+  ]
+}
