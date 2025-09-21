@@ -1,0 +1,69 @@
+{
+  "tournament_id": "68b4d5b6da2bf11ab1d604f6",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile Open #15",
+  "timestamp": 1758474000000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "JUAN SALVO",
+      "record": "3 - 1 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "Oscar Parra",
+      "record": "3 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "yoshitake pokepoke",
+      "record": "3 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Frederik Zilcher",
+      "record": "1 - 3 - 0",
+      "archetype": "raikou-ex-a4a-magnezone-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "HeartBreak Kid",
+      "record": "0 - 2 - 0drop",
+      "archetype": "pikachu-ex-zapdos-ex-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Enrique Fern\u00e1ndez",
+      "record": "0 - 2 - 0drop",
+      "archetype": "dragonite-ex-a3b-mantyke-a4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Jonathan Baeza",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Omar Camez",
+      "record": "0 - 2 - 0drop",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Maximilian French",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Dean Smith",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    }
+  ]
+}
