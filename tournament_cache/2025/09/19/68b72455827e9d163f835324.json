@@ -1,0 +1,99 @@
+{
+  "tournament_id": "68b72455827e9d163f835324",
+  "name": "KaBuM! TCG Pocket | Semanal #19",
+  "timestamp": 1758319200000,
+  "format": "Standard",
+  "player_count": 15,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Arlokong",
+      "record": "5 - 1 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "KaizenFloku (ytb",
+      "record": "7 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "WIZRD",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "yamaduts",
+      "record": "4 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Lazili",
+      "record": "2 - 2 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "surdao123",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Alemonstro",
+      "record": "2 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Baiano",
+      "record": "2 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "Apolo716",
+      "record": "1 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 10,
+      "player_name": "Rezito07",
+      "record": "1 - 2 - 0",
+      "archetype": "silvally-a3a-pichu-a4"
+    },
+    {
+      "placement": 11,
+      "player_name": "ARExande",
+      "record": "1 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Tamivendo",
+      "record": "1 - 2 - 0",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "Guif",
+      "record": "0 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Elton S",
+      "record": "0 - 2 - 0",
+      "archetype": "espeon-ex-a4-eevee-ex-a3b"
+    },
+    {
+      "placement": 15,
+      "player_name": "mmertens",
+      "record": "0 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    }
+  ]
+}
