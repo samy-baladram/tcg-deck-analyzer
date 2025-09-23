@@ -1,0 +1,63 @@
+{
+  "tournament_id": "686544c027d8bc24cf25f421",
+  "name": "Game Corner - TCGPocket Ver\u00e3o 2025",
+  "timestamp": 1757167200000,
+  "format": "Standard",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "WifiiZin",
+      "record": "5 - 1 - 1",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "rafac33",
+      "record": "4 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Ricardo Mendes",
+      "record": "5 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "nanmig9",
+      "record": "3 - 3 - 0",
+      "archetype": "jumpluff-ex-a4a-oricorio-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "Batcel",
+      "record": "1 - 4 - 0",
+      "archetype": "jumpluff-ex-a4a-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "Leonardo Martins",
+      "record": "2 - 1 - 1drop",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Kaiser25",
+      "record": "0 - 2 - 0drop",
+      "archetype": "gallade-ex-lucario-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Ruben P",
+      "record": "0 - 2 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Arrombado",
+      "record": "1 - 0 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
