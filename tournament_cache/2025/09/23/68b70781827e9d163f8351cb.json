@@ -1,0 +1,87 @@
+{
+  "tournament_id": "68b70781827e9d163f8351cb",
+  "name": "Pokepal Pocket Smackdown #3",
+  "timestamp": 1758670200000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "EagleSteve",
+      "record": "4 - 1 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Shankar",
+      "record": "4 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Tobias_Oak",
+      "record": "4 - 1 - 0",
+      "archetype": "solgaleo-ex-a3-suicune-ex-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "DrakeThePokeMaster",
+      "record": "4 - 1 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "TheRockyStone21",
+      "record": "3 - 2 - 0",
+      "archetype": "altaria-a4a-ultra-necrozma-ex-p-a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Gunburn",
+      "record": "3 - 2 - 0",
+      "archetype": "tapu-koko-ex-a3a-pikachu-ex-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "Parker",
+      "record": "2 - 3 - 0",
+      "archetype": "jumpluff-ex-zangoose-a4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Kifa527",
+      "record": "2 - 3 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 9,
+      "player_name": "BilltheHawk",
+      "record": "2 - 3 - 0",
+      "archetype": "arceus-ex-a2a-raikou-ex-a4a"
+    },
+    {
+      "placement": 10,
+      "player_name": "Wave_Marx",
+      "record": "1 - 4 - 0",
+      "archetype": "silvally-a3a-oricorio-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "Mistymigraine",
+      "record": "1 - 4 - 0",
+      "archetype": "venusaur-ex-a1-leafeon-ex-a2a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Necroblaze",
+      "record": "1 - 2 - 0drop",
+      "archetype": "dragonite-ex-sylveon-ex-a3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "Giovannimr",
+      "record": "0 - 2 - 0drop",
+      "archetype": "solgaleo-ex-a3-entei-ex-a4a"
+    }
+  ]
+}
