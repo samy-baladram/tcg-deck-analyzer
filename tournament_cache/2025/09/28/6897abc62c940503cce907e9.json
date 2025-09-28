@@ -1,0 +1,63 @@
+{
+  "tournament_id": "6897abc62c940503cce907e9",
+  "name": "BABY BATTLES",
+  "timestamp": 1759023600000,
+  "format": "NOEX",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Zegger",
+      "record": "3 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "RCollinZ",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Rt_kc",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Grandrew",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "sZero | Lv80Mewtwo",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Mitar",
+      "record": "0 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Carver",
+      "record": "0 - 1 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "KingDamien1996",
+      "record": "0 - 1 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "timothyher",
+      "record": "2 - 0 - 0drop",
+      "archetype": null
+    }
+  ]
+}
