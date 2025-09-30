@@ -1,6 +1,12 @@
 {
-  "last_updated": "2025-09-30T14:18:15.504959",
+  "last_updated": "2025-09-30T15:16:21.740461",
   "sets": [
+    {
+      "set_name": "Deluxe Pack: ex",
+      "set_code": "A4b",
+      "release_date": "2025-09-30",
+      "card_count": 379
+    },
     {
       "set_name": "Secluded Springs",
       "set_code": "A4a",
