@@ -59,6 +59,12 @@ POKEMON_URL_EXCEPTIONS = {
     'alolan-dugtrio': {
         'default': 'dugtrio-alola'  # fallback
     },
+    'alolan-exeggutor': {
+        'default': 'exeggutor-alola'  # fallback
+    },
+    'galarian-cursola': {
+        'default': 'cursola'  # fallback
+    },
     'dusk-mane-necrozma': {
         'default': 'necrozma-dusk-mane'  # fallback
     },
