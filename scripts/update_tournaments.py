@@ -85,9 +85,6 @@ def scrape_tournament_data(tournament_id):
     """Scrape tournament data using actual hex tournament ID"""
     print(f"Scraping tournament: {tournament_id}")
     
-    # Since we now always receive actual hex IDs, use them directly
-    # But we might need to try both the hex ID and check if there's a friendly URL
-    
     # First, try using the hex ID directly
     details_response = requests.get(f"https://play.limitlesstcg.com/tournament/{tournament_id}/details")
     
@@ -96,6 +93,24 @@ def scrape_tournament_data(tournament_id):
         return None
         
     details_soup = BeautifulSoup(details_response.text, 'html.parser')
+    
+    # Get page text for checking special rules or suspended cards
+    page_text = details_soup.get_text()
+    
+    # CHECK FOR EXCLUSION PHRASES
+    exclusion_phrases = [
+        'special rules',
+        'suspended cards',
+        'suspended card',
+        'special rule'
+    ]
+    
+    # Search for exclusion phrases (case insensitive)
+    page_text_lower = page_text.lower()
+    for phrase in exclusion_phrases:
+        if phrase in page_text_lower:
+            print(f"⚠️ SKIPPING {tournament_id}: Contains '{phrase}'")
+            return None  # Return None to skip this tournament
     
     # Extract tournament name
     title_element = details_soup.find('title')
@@ -113,7 +128,6 @@ def scrape_tournament_data(tournament_id):
     timestamp = int(time_element.get('data-time')) if time_element else None
     
     # Extract format information
-    page_text = details_soup.get_text()
     format_type = "Standard"  # Default fallback
     
     # Pattern 1: "- NOEX format -" or "- Standard format -"
@@ -149,14 +163,6 @@ def scrape_tournament_data(tournament_id):
         archetype = None
         if len(cells) > 7:
             archetype_link = cells[7].find('a')
-            if archetype_link:
-                match = re.search(r'/metagame/([^/?]+)', archetype_link.get('href', ''))
-                if match:
-                    archetype = match.group(1)  # Keep raw URL slug format
-        
-        # Fallback: Check cell 4 if archetype is still None
-        if archetype is None and len(cells) > 4:
-            archetype_link = cells[4].find('a')
             if archetype_link:
                 match = re.search(r'/metagame/([^/?]+)', archetype_link.get('href', ''))
                 if match:
