@@ -1,0 +1,81 @@
+{
+  "tournament_id": "68e818fc19d864a4aea5003d",
+  "name": "Umbreon League - Daily Tournament #33",
+  "timestamp": 1760052600000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "NunoGDM",
+      "record": "6 - 0 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Russ_II",
+      "record": "4 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Dr_Darkrai",
+      "record": "3 - 2 - 0",
+      "archetype": "crobat-ex-a4-darkrai-ex-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "TomN0okTTV",
+      "record": "2 - 3 - 0",
+      "archetype": "dugtrio-a4a-lucario-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "sZero | frappesdrinker",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-palkia-ex-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "\u1876\uaaae\u194a\u1ec9\uaa96\uaa8a\uaac0\u30b7 \u1876",
+      "record": "1 - 3 - 0drop",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 7,
+      "player_name": "aiueoniisan",
+      "record": "1 - 3 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "JackKetchum90",
+      "record": "1 - 3 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "FTWSilva",
+      "record": "0 - 4 - 0drop",
+      "archetype": "pikachu-ex-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "TELA",
+      "record": "1 - 3 - 0drop",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Awbscene",
+      "record": "0 - 2 - 0drop",
+      "archetype": "meowscarada-a2b-leafeon-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "TheSkullyDrops",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    }
+  ]
+}
