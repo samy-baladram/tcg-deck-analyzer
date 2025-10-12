@@ -1,0 +1,87 @@
+{
+  "tournament_id": "6890ced99e64f4a232d0f45d",
+  "name": "Chaos League Pocket Saturdays #41",
+  "timestamp": 1760218200000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "SG | TTV_jmpm9",
+      "record": "7 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "SG | FEDETET",
+      "record": "7 - 1 - 0",
+      "archetype": "pikachu-ex-a2b-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "WxChAn",
+      "record": "5 - 2 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "NunoGDM",
+      "record": "5 - 2 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Russ_II",
+      "record": "3 - 3 - 0",
+      "archetype": "charizard-ex-a2b"
+    },
+    {
+      "placement": 6,
+      "player_name": "Argothrax",
+      "record": "2 - 4 - 0",
+      "archetype": "arceus-ex-a2a-oricorio-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "TobiasDrei",
+      "record": "0 - 5 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 8,
+      "player_name": "belceboss",
+      "record": "0 - 5 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Homanoma",
+      "record": "1 - 1 - 0drop",
+      "archetype": "charizard-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "\u1876\uaaae\u194a\u1ec9\uaa96\uaa8a\uaac0\u30b7 \u1876",
+      "record": "1 - 2 - 0drop",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 11,
+      "player_name": "SG | Komala",
+      "record": "0 - 2 - 0drop",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Dr_Darkrai",
+      "record": "0 - 1 - 0drop",
+      "archetype": "umbreon-ex-a4-eevee-ex-a3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "Shellj25",
+      "record": "1 - 2 - 0drop",
+      "archetype": "tsareena-a3b"
+    }
+  ]
+}
