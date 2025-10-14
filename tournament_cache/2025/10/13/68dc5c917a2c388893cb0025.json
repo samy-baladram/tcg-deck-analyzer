@@ -1,0 +1,81 @@
+{
+  "tournament_id": "68dc5c917a2c388893cb0025",
+  "name": "Pokepal Pocket Smackdown #4",
+  "timestamp": 1760398200000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "EagleSteve",
+      "record": "5 - 0 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Russ_II",
+      "record": "4 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "zadium",
+      "record": "3 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "TomN0okTTV",
+      "record": "3 - 2 - 0",
+      "archetype": "pikachu-ex-a1-oricorio-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "Gunburn",
+      "record": "3 - 2 - 0",
+      "archetype": "pikachu-ex-a2b-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "NunoGDM",
+      "record": "3 - 2 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Piggy",
+      "record": "1 - 4 - 0",
+      "archetype": "aerodactyl-ex-a1a-rampardos-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "AshKetchup777",
+      "record": "0 - 5 - 0",
+      "archetype": "darkrai-ex-a2-zoroark-a4a"
+    },
+    {
+      "placement": 9,
+      "player_name": "ColtZz",
+      "record": "1 - 2 - 0drop",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Isaiaslima",
+      "record": "1 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 11,
+      "player_name": "AjnaScript",
+      "record": "0 - 2 - 0drop",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 12,
+      "player_name": "dakka_1988",
+      "record": "1 - 1 - 0drop",
+      "archetype": "arceus-ex-a2a-darkrai-ex-a2"
+    }
+  ]
+}
