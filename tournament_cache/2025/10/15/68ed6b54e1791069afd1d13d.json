@@ -1,0 +1,75 @@
+{
+  "tournament_id": "68ed6b54e1791069afd1d13d",
+  "name": "BZGC Pocket\ud83d\udd25 - LVL. 2 ~ Exp Share",
+  "timestamp": 1760486400000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Emil P",
+      "record": "6 - 0 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "jevito06",
+      "record": "4 - 2 - 0",
+      "archetype": "silvally-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Julius_119",
+      "record": "3 - 2 - 0",
+      "archetype": "incineroar-ex-salazzle-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "spartacus45",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Bingka",
+      "record": "2 - 2 - 0",
+      "archetype": "pikachu-ex-a2b-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Axxolute",
+      "record": "2 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "Isaias Lima",
+      "record": "2 - 2 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 8,
+      "player_name": "Dmartin",
+      "record": "1 - 1 - 0drop",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Lunnes",
+      "record": "1 - 3 - 0drop",
+      "archetype": "garchomp-ex-a2a-passimian-ex-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "Luis Miranda",
+      "record": "1 - 3 - 0",
+      "archetype": "zapdos-ex-a1-pichu-a4"
+    },
+    {
+      "placement": 11,
+      "player_name": "SKL | EllieDark",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
