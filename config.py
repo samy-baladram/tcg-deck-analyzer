@@ -184,7 +184,16 @@ POKEMON_NAME_PATTERNS = {
     },
     
     # Pokemon suffixes
-    'POKEMON_SUFFIXES': ['ex', 'v', 'vmax', 'vstar', 'gx', 'sp']
+    'POKEMON_SUFFIXES': ['ex', 'v', 'vmax', 'vstar', 'gx', 'sp'],
+
+    'SPECIAL_CASING': {
+        'ho-oh-ex': 'Ho-Oh ex',
+        'porygon-z': 'Porygon-Z',
+        # Add other Pokemon with special casing needs here
+        # Examples:
+        # 'porygon-z-ex': 'Porygon-Z ex',
+        # 'type-null-ex': 'Type: Null ex',
+    }
 }
 # Text for sidebar
 # POWER_INDEX_EXPLANATION = """
