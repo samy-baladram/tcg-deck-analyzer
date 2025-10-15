@@ -413,15 +413,12 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     
     # Check for special casing rules from config
     SPECIAL_CASING = POKEMON_NAME_PATTERNS.get('SPECIAL_CASING', {})
-    normalized_name = pokemon_name.lower()
+    normalized_name = pokemon_name.lower().replace(' ', '-')
     
     if normalized_name in SPECIAL_CASING:
         special_name = SPECIAL_CASING[normalized_name]
-        # Add special cased name at the beginning if it starts with this Pokemon
-        if normalized_name.startswith(pokemon_name.lower().split('-')[0]):
-            names_to_try.insert(0, special_name)
-        else:
-            names_to_try.append(special_name)
+        # Insert at beginning for priority
+        names_to_try.insert(0, special_name)
     
     print(f"Pokemon name: {pokemon_name}")
     print(f"Pokemon names_to_try: {names_to_try}\n")
