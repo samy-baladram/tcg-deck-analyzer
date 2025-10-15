@@ -9,10 +9,17 @@ def format_deck_name(deck_name):
     """
     Convert deck names from URL format to display format.
     Example: garchomp-ex-a2a-rampardos-a2 -> Garchomp Ex (A2a) Rampardos (A2)
+    Special handling for hyphenated Pokemon like Porygon-Z, Ho-Oh
     """
+    from config import POKEMON_NAME_PATTERNS
+    
     parts = deck_name.split('-')
     result = []
     i = 0
+    
+    # Get Pokemon names that should preserve hyphens
+    PRESERVE_HYPHENS = POKEMON_NAME_PATTERNS.get('PRESERVE_HYPHENS', [])
+    SPECIAL_CASING = POKEMON_NAME_PATTERNS.get('SPECIAL_CASING', {})
     
     while i < len(parts):
         part = parts[i]
@@ -24,18 +31,57 @@ def format_deck_name(deck_name):
                 result[-1] += f" ({formatted})"
             i += 1
         else:
-            word = part.title()
+            # Check if this starts a multi-word Pokemon that preserves hyphens
+            matched_pokemon = None
+            for preserve_name in PRESERVE_HYPHENS:
+                preserve_parts = preserve_name.split('-')
+                # Check if we have enough parts remaining
+                if i + len(preserve_parts) <= len(parts):
+                    # Check if parts match
+                    candidate = '-'.join(parts[i:i+len(preserve_parts)]).lower()
+                    if candidate == preserve_name:
+                        matched_pokemon = preserve_name
+                        word_count = len(preserve_parts)
+                        break
             
-            # Check if next part is a set code
-            if i + 1 < len(parts) and is_set_code(parts[i + 1]):
-                set_code = parts[i + 1]
-                formatted = format_set_code(set_code)
-                word += " " #f" ({formatted})"
-                i += 2
-            else:
-                i += 1
+            if matched_pokemon:
+                # Use special casing if available, otherwise title case with hyphen
+                if matched_pokemon in SPECIAL_CASING:
+                    word = SPECIAL_CASING[matched_pokemon]
+                else:
+                    word = '-'.join([p.title() for p in matched_pokemon.split('-')])
                 
-            result.append(word)
+                # Check for suffixes (ex, v, etc.)
+                suffix_start = i + word_count
+                if suffix_start < len(parts) and parts[suffix_start].lower() in ['ex', 'v', 'vmax', 'vstar', 'gx']:
+                    word += f" {parts[suffix_start].lower()}"
+                    word_count += 1
+                
+                # Check if next part after Pokemon is a set code
+                set_idx = i + word_count
+                if set_idx < len(parts) and is_set_code(parts[set_idx]):
+                    set_code = parts[set_idx]
+                    formatted = format_set_code(set_code)
+                    word += " " # f" ({formatted})"
+                    i = set_idx + 1
+                else:
+                    i += word_count
+                
+                result.append(word)
+            else:
+                # Normal single word processing
+                word = part.title()
+                
+                # Check if next part is a set code
+                if i + 1 < len(parts) and is_set_code(parts[i + 1]):
+                    set_code = parts[i + 1]
+                    formatted = format_set_code(set_code)
+                    word += " " # f" ({formatted})"
+                    i += 2
+                else:
+                    i += 1
+                    
+                result.append(word)
     
     return ' '.join(result).strip()
 
