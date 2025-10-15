@@ -189,6 +189,7 @@ POKEMON_NAME_PATTERNS = {
     'SPECIAL_CASING': {
         'ho-oh-ex': 'Ho-Oh ex',
         'porygon-z': 'Porygon-Z',
+        'porygon-z': 'Porygon Z',
         # Add other Pokemon with special casing needs here
         # Examples:
         # 'porygon-z-ex': 'Porygon-Z ex',
