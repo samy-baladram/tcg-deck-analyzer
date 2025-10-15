@@ -396,6 +396,8 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     Find the card info for a Pokemon from analysis results
     Returns dict with set and number, or None if not found
     """
+    from config import POKEMON_NAME_PATTERNS
+    
     # Create both versions of the Pokemon name
     name_with_spaces = pokemon_name.replace('-', ' ').title()
     name_with_hyphens = pokemon_name.replace(' ', '-').title()
@@ -409,16 +411,20 @@ def get_pokemon_card_info(pokemon_name, analysis_results):
     # Try both versions when searching
     names_to_try = [name_with_spaces, name_with_hyphens]
     
-    # MINIMAL FIX: Add "Ho-Oh ex" search when "ho-oh-ex" is detected
-    if "ho-oh-ex" in pokemon_name.lower():
-        if pokemon_name.lower().startswith("ho-oh-ex"):
-            # Add to first entry if ho-oh-ex is at start
-            names_to_try.insert(0, "Ho-Oh ex")
+    # Check for special casing rules from config
+    SPECIAL_CASING = POKEMON_NAME_PATTERNS.get('SPECIAL_CASING', {})
+    normalized_name = pokemon_name.lower()
+    
+    if normalized_name in SPECIAL_CASING:
+        special_name = SPECIAL_CASING[normalized_name]
+        # Add special cased name at the beginning if it starts with this Pokemon
+        if normalized_name.startswith(pokemon_name.lower().split('-')[0]):
+            names_to_try.insert(0, special_name)
         else:
-            # Add to last entry if ho-oh-ex is elsewhere
-            names_to_try.append("Ho-Oh ex")
-    print(f"Pokemon name:{pokemon_name}")
-    print(f"Pokemon names_to_try:{names_to_try}\n")
+            names_to_try.append(special_name)
+    
+    print(f"Pokemon name: {pokemon_name}")
+    print(f"Pokemon names_to_try: {names_to_try}\n")
     
     for search_name in names_to_try:
         # Search for the Pokemon in the results
