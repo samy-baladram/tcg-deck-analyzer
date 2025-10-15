@@ -1,0 +1,75 @@
+{
+  "tournament_id": "68ed62dc37fd405fb6a80790",
+  "name": "Umbreon League - Daily Tournament #36",
+  "timestamp": 1760484600000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Russ_II",
+      "record": "5 - 1 - 0",
+      "archetype": "silvally-a3a-rampardos-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "ValerieCherish",
+      "record": "3 - 3 - 0",
+      "archetype": "tapu-koko-ex-a3a-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Mistymigraine",
+      "record": "3 - 1 - 1",
+      "archetype": "solgaleo-ex-a3-suicune-ex-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "\u1876\uaaae\u194a\u1ec9\uaa96\uaa8a\uaac0\u30b7 \u1876",
+      "record": "3 - 1 - 1",
+      "archetype": "porygon-z-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "AbMen21",
+      "record": "2 - 2 - 0",
+      "archetype": "silvally-zeraora-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "TomN0okTTV",
+      "record": "2 - 2 - 0drop",
+      "archetype": "pikachu-ex-a1-oricorio-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Boogy904",
+      "record": "0 - 2 - 0drop",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    },
+    {
+      "placement": 8,
+      "player_name": "ColtZz",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "GeqnDuGeila",
+      "record": "1 - 2 - 0drop",
+      "archetype": "porygon-z-a4"
+    },
+    {
+      "placement": 10,
+      "player_name": "sLam",
+      "record": "2 - 2 - 0drop",
+      "archetype": "snorlax-ex-a3b-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "SKL | EllieDark",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
