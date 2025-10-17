@@ -1,0 +1,63 @@
+{
+  "tournament_id": "68ea24e037fd405fb6a7ec4c",
+  "name": "Hanafuda Pocket Clash #8",
+  "timestamp": 1760720400000,
+  "format": "Standard",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Fairynanbawan",
+      "record": "4 - 0 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "Jep1223",
+      "record": "2 - 2 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "Lotso27",
+      "record": "2 - 2 - 0",
+      "archetype": "crobat-ex-a4-darkrai-ex-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Thomas Carter",
+      "record": "2 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "NosLeakiM",
+      "record": "2 - 2 - 0",
+      "archetype": "tapu-koko-ex-a3a-raikou-ex-a4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "fijidr1nker",
+      "record": "1 - 3 - 0",
+      "archetype": "arceus-ex-abomasnow-a2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "DrollTurtle",
+      "record": "1 - 3 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 8,
+      "player_name": "9FDxDOK99",
+      "record": "0 - 1 - 0drop",
+      "archetype": "darkrai-ex-a2-giratina-ex-a2b"
+    },
+    {
+      "placement": 9,
+      "player_name": "Mingooooooooooooooo 9",
+      "record": "0 - 1 - 0drop",
+      "archetype": "golem-druddigon-a1a"
+    }
+  ]
+}
