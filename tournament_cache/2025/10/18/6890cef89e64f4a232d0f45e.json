@@ -1,0 +1,81 @@
+{
+  "tournament_id": "6890cef89e64f4a232d0f45e",
+  "name": "Chaos League Pocket Saturdays #42",
+  "timestamp": 1760823000000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "NunoGDM",
+      "record": "5 - 1 - 1",
+      "archetype": "pikachu-ex-a2b-tapu-koko-ex-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Rockfeller",
+      "record": "5 - 2 - 0",
+      "archetype": "charizard-ex-a2b"
+    },
+    {
+      "placement": 3,
+      "player_name": "Awbscene",
+      "record": "3 - 2 - 1",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Almerias",
+      "record": "3 - 3 - 0",
+      "archetype": "togekiss-a2-shiinotic-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "\u1876\uaaae\u194a\u1ec9\uaa96\uaa8a\uaac0\u30b7 \u1876",
+      "record": "2 - 3 - 0",
+      "archetype": "silvally-a3a-giratina-ex-a2b"
+    },
+    {
+      "placement": 6,
+      "player_name": "Hyokami",
+      "record": "1 - 4 - 0",
+      "archetype": "beedrill-ex-a2b-sylveon-ex-a3b"
+    },
+    {
+      "placement": 7,
+      "player_name": "sZero | frappesdrinker",
+      "record": "0 - 1 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Yizzy1",
+      "record": "3 - 2 - 0drop",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Tommot",
+      "record": "2 - 1 - 0drop",
+      "archetype": "tapu-koko-ex-a3a-pikachu-ex-a2b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Nantelor",
+      "record": "1 - 3 - 0drop",
+      "archetype": "snorlax-ex-a3b-darkrai-ex-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "purple_raichu",
+      "record": "2 - 3 - 0drop",
+      "archetype": "paldean-clodsire-ex-a2b-nihilego-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "antoniosafe",
+      "record": "0 - 1 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    }
+  ]
+}
