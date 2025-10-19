@@ -1,0 +1,75 @@
+{
+  "tournament_id": "68dc0eaaf661e4a158de437f",
+  "name": "\ud83c\udfc6P.P.i.T\ud83c\udfc624H OctTour\ud83c\udfc6#1 ROUND\ud83c\udfc6WITH PRIZE\ud83c\udfc6",
+  "timestamp": 1760295600000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | Manutan",
+      "record": "6 - 1 - 0",
+      "archetype": "raikou-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ghost_319",
+      "record": "5 - 2 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | Mr. Bago",
+      "record": "4 - 2 - 0",
+      "archetype": "silvally-a3a-pichu-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "Ulisse",
+      "record": "3 - 3 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Luca_T",
+      "record": "3 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "dakka_1988",
+      "record": "3 - 2 - 0",
+      "archetype": "arceus-ex-a2a-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "charlie_zard",
+      "record": "2 - 3 - 0",
+      "archetype": "crobat-ex-a4-nihilego-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "ienicus",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-silvally-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Baldax699",
+      "record": "2 - 3 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Caniuz",
+      "record": "2 - 3 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "X Y",
+      "record": "1 - 4 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    }
+  ]
+}
