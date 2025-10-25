@@ -1,0 +1,51 @@
+{
+  "tournament_id": "68f4b6fcdd7011c665c3b942",
+  "name": "\ud83d\udc38FrogEX Major Series Autumn 2025 Group F\ud83d\udc38",
+  "timestamp": 1761408000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Ishaan",
+      "record": "6 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "FrogEX | Valden",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "SG | TTV_jmpm9",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | islo",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "windupbirdMitya",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Brendon",
+      "record": "2 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Liamkrew",
+      "record": "0 - 6 - 0",
+      "archetype": null
+    }
+  ]
+}

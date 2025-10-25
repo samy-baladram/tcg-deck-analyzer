@@ -1,0 +1,57 @@
+{
+  "tournament_id": "68f4b72c24b8f37ae93c3bdc",
+  "name": "\ud83d\udc38FrogEX Major Series Autumn 2025 Group H\ud83d\udc38",
+  "timestamp": 1761408000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Bixie",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Esdeath",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Nabugu",
+      "record": "4 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Aeterna",
+      "record": "4 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "M4kia_t",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "FrogEX | Joe",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "FrogEx | Wawan S",
+      "record": "2 - 5 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "PGX| elluquitas",
+      "record": "2 - 5 - 0",
+      "archetype": null
+    }
+  ]
+}

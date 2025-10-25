@@ -1,0 +1,57 @@
+{
+  "tournament_id": "68f4b608dd7011c665c3b93a",
+  "name": "\ud83d\udc38FrogEX Major Series Autumn 2025 Group B\ud83d\udc38",
+  "timestamp": 1761408000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "SG | DarKus",
+      "record": "6 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Yiidrazil",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udde2\ud835\udde0\ud835\uddd5\ud835\udde5\ud835\uddd4 ~ Timo",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "minato",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "FrogEX | Numatinale",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "SamAC",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "KatsuoNakahara",
+      "record": "1 - 6 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "FrogEX | Higumi",
+      "record": "0 - 7 - 0",
+      "archetype": null
+    }
+  ]
+}
