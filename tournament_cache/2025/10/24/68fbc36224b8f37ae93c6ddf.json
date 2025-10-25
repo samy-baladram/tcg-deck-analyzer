@@ -1,0 +1,75 @@
+{
+  "tournament_id": "68fbc36224b8f37ae93c6ddf",
+  "name": "Umbreon League - Daily Tournament #39",
+  "timestamp": 1761348600000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "NunoGDM",
+      "record": "5 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "KnowticeTkO",
+      "record": "4 - 2 - 0",
+      "archetype": "ho-oh-ex-a4-snorlax-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "sZero | CJ",
+      "record": "4 - 1 - 0",
+      "archetype": "tapu-koko-ex-a3a-pikachu-ex-a2b"
+    },
+    {
+      "placement": 4,
+      "player_name": "johnhaven10",
+      "record": "3 - 2 - 0",
+      "archetype": "wishiwashi-ex-wishiwashi-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "TomN0okTTV",
+      "record": "2 - 2 - 0",
+      "archetype": "flareon-ex-a3b-leafeon-ex-a2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "A_goat",
+      "record": "2 - 2 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Redkom04",
+      "record": "1 - 3 - 0",
+      "archetype": "lugia-ex-ho-oh-ex-a4"
+    },
+    {
+      "placement": 8,
+      "player_name": "Russ_II",
+      "record": "1 - 3 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "igotochurch",
+      "record": "2 - 2 - 0drop",
+      "archetype": "flareon-ex-a3b-entei-ex-a4a"
+    },
+    {
+      "placement": 10,
+      "player_name": "TELA",
+      "record": "0 - 2 - 0drop",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 11,
+      "player_name": "aiueoniisan",
+      "record": "1 - 2 - 0drop",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    }
+  ]
+}
