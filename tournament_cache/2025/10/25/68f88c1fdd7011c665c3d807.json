@@ -1,0 +1,51 @@
+{
+  "tournament_id": "68f88c1fdd7011c665c3d807",
+  "name": "Pre-Halloween 25.10.2025 [only-PL]",
+  "timestamp": 1761390000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PokeFunky",
+      "record": "4 - 1 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "CloudyPanda",
+      "record": "4 - 1 - 0",
+      "archetype": "ampharos-a4-raikou-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "isuexe",
+      "record": "2 - 2 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "DariusPopek",
+      "record": "2 - 2 - 0",
+      "archetype": "paldean-clodsire-ex-grafaiai-a2b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Takijakimam",
+      "record": "1 - 2 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 6,
+      "player_name": "Akeno_666",
+      "record": "1 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Pokelek_TCG",
+      "record": "1 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
