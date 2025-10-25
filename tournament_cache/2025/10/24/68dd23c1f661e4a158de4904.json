@@ -1,0 +1,63 @@
+{
+  "tournament_id": "68dd23c1f661e4a158de4904",
+  "name": "KaBuM! TCG Pocket | Semanal #23",
+  "timestamp": 1761343200000,
+  "format": "Standard",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "luantrap",
+      "record": "5 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Niximilliam",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Adonai (Daniel)",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc08\ud835\udc0c\ud835\udc0e | CR7!",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "yamaduts",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udde3\ud835\uddd7\ud835\udddf MAICONRED",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "A_goat",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Elton S",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "NosLeakiM",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
