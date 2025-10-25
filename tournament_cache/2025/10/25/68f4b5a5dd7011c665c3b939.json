@@ -1,0 +1,57 @@
+{
+  "tournament_id": "68f4b5a5dd7011c665c3b939",
+  "name": "\ud83d\udc38FrogEX Major Series Autumn 2025 Group A\ud83d\udc38",
+  "timestamp": 1761408000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "springgg",
+      "record": "6 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Shubham",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Ester",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "GACKT",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee TheViice",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Silk24",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "mspinguino",
+      "record": "2 - 5 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\uddd4\ud835\ude02\ud835\uddff\ud835\uddfc\ud835\uddff\ud835\uddee Lakzy",
+      "record": "0 - 7 - 0",
+      "archetype": null
+    }
+  ]
+}

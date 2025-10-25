@@ -1,0 +1,57 @@
+{
+  "tournament_id": "68f4b637dd7011c665c3b93b",
+  "name": "\ud83d\udc38FrogEX Major Series Autumn 2025 Group C\ud83d\udc38",
+  "timestamp": 1761408000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Shadow",
+      "record": "7 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd4\ud835\ude02\ud835\uddff\ud835\uddfc\ud835\uddff\ud835\uddee Levnato",
+      "record": "6 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "quetzalyami",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "MarHaDi",
+      "record": "4 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "luantrap",
+      "record": "3 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Lbn",
+      "record": "2 - 5 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "yoji14",
+      "record": "0 - 7 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Ktech3224",
+      "record": "0 - 7 - 0",
+      "archetype": null
+    }
+  ]
+}
