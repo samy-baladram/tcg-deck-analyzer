@@ -1,6 +1,12 @@
 {
-  "last_updated": "2025-10-30T01:27:02.939818",
+  "last_updated": "2025-10-30T03:10:22.948987",
   "sets": [
+    {
+      "set_name": "Mega Rising",
+      "set_code": "B1",
+      "release_date": "2025-10-30",
+      "card_count": 331
+    },
     {
       "set_name": "Deluxe Pack: ex",
       "set_code": "A4b",
