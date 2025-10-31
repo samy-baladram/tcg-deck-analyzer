@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6903d33224b8f37ae93ca752",
+  "name": "B1 Monometa internal celebration Tournament #2",
+  "timestamp": 1761937200000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 .dersd",
+      "record": "4 - 1 - 0",
+      "archetype": "jolteon-ex-b1-pikachu-ex-a2b"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Miyagi",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-blaziken-ex-blaziken-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Dandy",
+      "record": "3 - 2 - 0",
+      "archetype": "jolteon-ex-b1-jolteon-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Fucuro",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-dusknoir-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 .  Implo",
+      "record": "2 - 3 - 0",
+      "archetype": "lanturn-ex-pichu-a4"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . M\u00f6nne",
+      "record": "1 - 4 - 0",
+      "archetype": "slurpuff-alcremie-a3b"
+    }
+  ]
+}
