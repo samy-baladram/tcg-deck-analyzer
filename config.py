@@ -50,33 +50,352 @@ POKEMON_URL_EXCEPTIONS = {
         'rampardos': 'lycanroc-midnight',
         'default': 'lycanroc-midnight'  # fallback
     },
-    'alolan-raichu': {
-        'default': 'raichu-alola'  # fallback
-    },
-    'paldean-clodsire': {
-        'default': 'clodsire'  # fallback
-    },
-    'alolan-dugtrio': {
-        'default': 'dugtrio-alola'  # fallback
-    },
-    'alolan-exeggutor': {
-        'default': 'exeggutor-alola'  # fallback
-    },
-    'galarian-cursola': {
-        'default': 'cursola'  # fallback
-    },
     'dusk-mane-necrozma': {
         'default': 'necrozma-dusk-mane'  # fallback
     },
     'ultra-necrozma': {
         'default': 'necrozma-ultra'  # fallback
     },
-    # Add more exceptions as needed
-    # 'rotom': {
-    #     'pikachu': 'rotom-wash',
-    #     'charizard': 'rotom-heat',
-    #     'default': 'rotom-wash'
-    # }
+    
+    # Alolan forms (18 total)
+    'alolan-rattata': {
+        'default': 'rattata-alola'
+    },
+    'alolan-raticate': {
+        'default': 'raticate-alola'
+    },
+    'alolan-raichu': {
+        'default': 'raichu-alola'
+    },
+    'alolan-sandshrew': {
+        'default': 'sandshrew-alola'
+    },
+    'alolan-sandslash': {
+        'default': 'sandslash-alola'
+    },
+    'alolan-vulpix': {
+        'default': 'vulpix-alola'
+    },
+    'alolan-ninetales': {
+        'default': 'ninetales-alola'
+    },
+    'alolan-diglett': {
+        'default': 'diglett-alola'
+    },
+    'alolan-dugtrio': {
+        'default': 'dugtrio-alola'
+    },
+    'alolan-meowth': {
+        'default': 'meowth-alola'
+    },
+    'alolan-persian': {
+        'default': 'persian-alola'
+    },
+    'alolan-geodude': {
+        'default': 'geodude-alola'
+    },
+    'alolan-graveler': {
+        'default': 'graveler-alola'
+    },
+    'alolan-golem': {
+        'default': 'golem-alola'
+    },
+    'alolan-grimer': {
+        'default': 'grimer-alola'
+    },
+    'alolan-muk': {
+        'default': 'muk-alola'
+    },
+    'alolan-exeggutor': {
+        'default': 'exeggutor-alola'
+    },
+    'alolan-marowak': {
+        'default': 'marowak-alola'
+    },
+    
+    # Galarian forms (19 total)
+    'galarian-meowth': {
+        'default': 'meowth-galar'
+    },
+    'galarian-persian': {
+        'default': 'persian-galar'  # Note: Perrserker is the evolution, not Persian
+    },
+    'galarian-ponyta': {
+        'default': 'ponyta-galar'
+    },
+    'galarian-rapidash': {
+        'default': 'rapidash-galar'
+    },
+    'galarian-slowpoke': {
+        'default': 'slowpoke-galar'
+    },
+    'galarian-slowbro': {
+        'default': 'slowbro-galar'
+    },
+    'galarian-slowking': {
+        'default': 'slowking-galar'
+    },
+    'galarian-farfetchd': {
+        'default': 'farfetchd-galar'
+    },
+    'galarian-weezing': {
+        'default': 'weezing-galar'
+    },
+    'galarian-mr-mime': {
+        'default': 'mr-mime-galar'
+    },
+    'galarian-articuno': {
+        'default': 'articuno-galar'
+    },
+    'galarian-zapdos': {
+        'default': 'zapdos-galar'
+    },
+    'galarian-moltres': {
+        'default': 'moltres-galar'
+    },
+    'galarian-corsola': {
+        'default': 'corsola-galar'
+    },
+    'galarian-zigzagoon': {
+        'default': 'zigzagoon-galar'
+    },
+    'galarian-linoone': {
+        'default': 'linoone-galar'
+    },
+    'galarian-darumaka': {
+        'default': 'darumaka-galar'
+    },
+    'galarian-darmanitan': {
+        'default': 'darmanitan-galar'
+    },
+    'galarian-yamask': {
+        'default': 'yamask-galar'
+    },
+    'galarian-stunfisk': {
+        'default': 'stunfisk-galar'
+    },
+    'galarian-cursola': {
+        'default': 'cursola'  # Cursola only has Galarian form, no original
+    },
+    
+    # Hisuian forms (17 total)
+    'hisuian-growlithe': {
+        'default': 'growlithe-hisui'
+    },
+    'hisuian-arcanine': {
+        'default': 'arcanine-hisui'
+    },
+    'hisuian-voltorb': {
+        'default': 'voltorb-hisui'
+    },
+    'hisuian-electrode': {
+        'default': 'electrode-hisui'
+    },
+    'hisuian-typhlosion': {
+        'default': 'typhlosion-hisui'
+    },
+    'hisuian-qwilfish': {
+        'default': 'qwilfish-hisui'
+    },
+    'hisuian-sneasel': {
+        'default': 'sneasel-hisui'
+    },
+    'hisuian-samurott': {
+        'default': 'samurott-hisui'
+    },
+    'hisuian-lilligant': {
+        'default': 'lilligant-hisui'
+    },
+    'hisuian-zorua': {
+        'default': 'zorua-hisui'
+    },
+    'hisuian-zoroark': {
+        'default': 'zoroark-hisui'
+    },
+    'hisuian-braviary': {
+        'default': 'braviary-hisui'
+    },
+    'hisuian-sliggoo': {
+        'default': 'sliggoo-hisui'
+    },
+    'hisuian-goodra': {
+        'default': 'goodra-hisui'
+    },
+    'hisuian-avalugg': {
+        'default': 'avalugg-hisui'
+    },
+    'hisuian-decidueye': {
+        'default': 'decidueye-hisui'
+    },
+    'hisuian-basculin': {
+        'default': 'basculin-white-striped'  # White-Striped form
+    },
+    
+    # Paldean forms (4 total - Wooper + 3 Tauros variants)
+    'paldean-wooper': {
+        'default': 'wooper-paldea'
+    },
+    'paldean-clodsire': {
+        'default': 'clodsire'  # Clodsire only exists as Paldean evolution
+    },
+    'paldean-tauros': {
+        'default': 'tauros-paldea-combat'  # Default to Combat Breed
+    },
+    'paldean-tauros-combat': {
+        'default': 'tauros-paldea-combat'
+    },
+    'paldean-tauros-blaze': {
+        'default': 'tauros-paldea-blaze'
+    },
+    'paldean-tauros-aqua': {
+        'default': 'tauros-paldea-aqua'
+    },
+    
+    # Mega Evolution forms (48 forms total - includes X/Y variants)
+    'mega-venusaur': {
+        'default': 'venusaur-mega'
+    },
+    'mega-charizard-x': {
+        'default': 'charizard-mega-x'
+    },
+    'mega-charizard-y': {
+        'default': 'charizard-mega-y'
+    },
+    'mega-blastoise': {
+        'default': 'blastoise-mega'
+    },
+    'mega-beedrill': {
+        'default': 'beedrill-mega'
+    },
+    'mega-pidgeot': {
+        'default': 'pidgeot-mega'
+    },
+    'mega-alakazam': {
+        'default': 'alakazam-mega'
+    },
+    'mega-slowbro': {
+        'default': 'slowbro-mega'
+    },
+    'mega-gengar': {
+        'default': 'gengar-mega'
+    },
+    'mega-kangaskhan': {
+        'default': 'kangaskhan-mega'
+    },
+    'mega-pinsir': {
+        'default': 'pinsir-mega'
+    },
+    'mega-gyarados': {
+        'default': 'gyarados-mega'
+    },
+    'mega-aerodactyl': {
+        'default': 'aerodactyl-mega'
+    },
+    'mega-mewtwo-x': {
+        'default': 'mewtwo-mega-x'
+    },
+    'mega-mewtwo-y': {
+        'default': 'mewtwo-mega-y'
+    },
+    'mega-ampharos': {
+        'default': 'ampharos-mega'
+    },
+    'mega-steelix': {
+        'default': 'steelix-mega'
+    },
+    'mega-scizor': {
+        'default': 'scizor-mega'
+    },
+    'mega-heracross': {
+        'default': 'heracross-mega'
+    },
+    'mega-houndoom': {
+        'default': 'houndoom-mega'
+    },
+    'mega-tyranitar': {
+        'default': 'tyranitar-mega'
+    },
+    'mega-sceptile': {
+        'default': 'sceptile-mega'
+    },
+    'mega-blaziken': {
+        'default': 'blaziken-mega'
+    },
+    'mega-swampert': {
+        'default': 'swampert-mega'
+    },
+    'mega-gardevoir': {
+        'default': 'gardevoir-mega'
+    },
+    'mega-mawile': {
+        'default': 'mawile-mega'
+    },
+    'mega-aggron': {
+        'default': 'aggron-mega'
+    },
+    'mega-medicham': {
+        'default': 'medicham-mega'
+    },
+    'mega-manectric': {
+        'default': 'manectric-mega'
+    },
+    'mega-sharpedo': {
+        'default': 'sharpedo-mega'
+    },
+    'mega-camerupt': {
+        'default': 'camerupt-mega'
+    },
+    'mega-altaria': {
+        'default': 'altaria-mega'
+    },
+    'mega-banette': {
+        'default': 'banette-mega'
+    },
+    'mega-absol': {
+        'default': 'absol-mega'
+    },
+    'mega-glalie': {
+        'default': 'glalie-mega'
+    },
+    'mega-salamence': {
+        'default': 'salamence-mega'
+    },
+    'mega-metagross': {
+        'default': 'metagross-mega'
+    },
+    'mega-latias': {
+        'default': 'latias-mega'
+    },
+    'mega-latios': {
+        'default': 'latios-mega'
+    },
+    'mega-rayquaza': {
+        'default': 'rayquaza-mega'
+    },
+    'mega-lopunny': {
+        'default': 'lopunny-mega'
+    },
+    'mega-garchomp': {
+        'default': 'garchomp-mega'
+    },
+    'mega-lucario': {
+        'default': 'lucario-mega'
+    },
+    'mega-abomasnow': {
+        'default': 'abomasnow-mega'
+    },
+    'mega-gallade': {
+        'default': 'gallade-mega'
+    },
+    'mega-audino': {
+        'default': 'audino-mega'
+    },
+    'mega-diancie': {
+        'default': 'diancie-mega'
+    },
+    'mega-sableye': {
+        'default': 'sableye-mega'
+    },
 }
 
 # Pokemon suffixes to filter out
