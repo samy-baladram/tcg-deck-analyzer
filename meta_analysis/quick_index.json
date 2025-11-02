@@ -1,8 +1,8 @@
 {
-  "last_updated": 1762114777,
-  "total_tournaments": 694,
+  "last_updated": 1762118187,
+  "total_tournaments": 695,
   "format_distribution": {
-    "Standard": 617,
+    "Standard": 618,
     "STANDARD": 49,
     "NOEX": 28
   },
@@ -19,8 +19,8 @@
     "charizard-ex-a2b-sylveon-ex-a3b",
     "solgaleo-ex-a3-shiinotic-a3a",
     "buzzwole-ex-celesteela-a3a",
-    "espeon-ex-a4-sylveon-ex-a3b",
-    "greninja-a1-oricorio-a3"
+    "greninja-a1-oricorio-a3",
+    "espeon-ex-a4-sylveon-ex-a3b"
   ],
   "top_archetypes_by_format": {
     "Standard": [
