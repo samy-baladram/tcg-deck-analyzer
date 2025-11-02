@@ -1,0 +1,105 @@
+{
+  "tournament_id": "68dc10697a2c388893cafe57",
+  "name": "\ud83c\udfc6P.P.i.T\ud83c\udfc624H OctTour\ud83c\udfc6#3 ROUND\ud83c\udfc6WITH PRIZE\ud83c\udfc6",
+  "timestamp": 1761508800000,
+  "format": "Standard",
+  "player_count": 16,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | Indren",
+      "record": "6 - 1 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "ienicus",
+      "record": "5 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Ghost_319",
+      "record": "4 - 2 - 0",
+      "archetype": "tapu-koko-ex-a3a-oricorio-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "Brk91",
+      "record": "4 - 2 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "ilchunchu",
+      "record": "3 - 2 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Lenz97",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | Manutan",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | Mr. Bago",
+      "record": "3 - 2 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "AleM_5",
+      "record": "2 - 3 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Ulisse",
+      "record": "2 - 3 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Luca_T",
+      "record": "2 - 3 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 12,
+      "player_name": "Argio",
+      "record": "2 - 3 - 0",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "dakka_1988",
+      "record": "1 - 4 - 0",
+      "archetype": "arceus-ex-a2a-darkrai-ex-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "Caniuz",
+      "record": "1 - 4 - 0",
+      "archetype": "darkrai-ex-a2-arceus-ex-a2a"
+    },
+    {
+      "placement": 15,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | Thanos",
+      "record": "1 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 16,
+      "player_name": "Akiller_Lauro",
+      "record": "1 - 4 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
