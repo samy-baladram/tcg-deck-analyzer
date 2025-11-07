@@ -1,0 +1,201 @@
+{
+  "tournament_id": "6907c9f4fde2eb785721c585",
+  "name": "Fans Pok\u00e9mon TCGP Chile LIGA S4 Fecha 1",
+  "timestamp": 1762466400000,
+  "format": "Standard",
+  "player_count": 32,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Mowbes",
+      "record": "7 - 0 - 1",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "kodai",
+      "record": "6 - 1 - 1",
+      "archetype": "greninja-ex-b1-suicune-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "ADK",
+      "record": "5 - 2 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "John25Wick",
+      "record": "4 - 3 - 0",
+      "archetype": "umbreon-ex-a4-sylveon-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "iyla sutherland",
+      "record": "4 - 2 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "QuasarMage",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "udon4027",
+      "record": "4 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Aliahmed1000",
+      "record": "3 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Fredward",
+      "record": "3 - 2 - 0",
+      "archetype": "greninja-ex-b1-suicune-ex-a4a"
+    },
+    {
+      "placement": 10,
+      "player_name": "PGX | ArrozConLeche",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-jirachi-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "duduzi",
+      "record": "3 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 12,
+      "player_name": "Znatan",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    },
+    {
+      "placement": 13,
+      "player_name": "Jonathan Souza",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 14,
+      "player_name": "sZero | frappesdrinker",
+      "record": "2 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Alexrodriguezsm",
+      "record": "2 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-mismagius-a4a"
+    },
+    {
+      "placement": 16,
+      "player_name": "Joselfie",
+      "record": "2 - 3 - 0",
+      "archetype": "infernape-ex-a2-entei-ex-a4a"
+    },
+    {
+      "placement": 17,
+      "player_name": "Osho",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 18,
+      "player_name": "Zdawg9999",
+      "record": "2 - 3 - 0drop",
+      "archetype": "mega-ampharos-ex-b1-oricorio-a3"
+    },
+    {
+      "placement": 19,
+      "player_name": "Estanky0000",
+      "record": "2 - 3 - 0",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    },
+    {
+      "placement": 20,
+      "player_name": "tangoxbravo",
+      "record": "2 - 3 - 0",
+      "archetype": "jumpluff-ex-a4a"
+    },
+    {
+      "placement": 21,
+      "player_name": "Rafael C",
+      "record": "1 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 22,
+      "player_name": "NeoNox40",
+      "record": "1 - 3 - 0drop",
+      "archetype": "solgaleo-ex-a3-skarmory-a2"
+    },
+    {
+      "placement": 23,
+      "player_name": "JaczTrainer",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    },
+    {
+      "placement": 24,
+      "player_name": "Thunderguy",
+      "record": "1 - 4 - 0",
+      "archetype": "hitmonchan-ex-b1-rampardos-a2"
+    },
+    {
+      "placement": 25,
+      "player_name": "FTWSilva",
+      "record": "1 - 4 - 0",
+      "archetype": "charizard-ex-moltres-ex-a1"
+    },
+    {
+      "placement": 26,
+      "player_name": "Ninjasolo",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    },
+    {
+      "placement": 27,
+      "player_name": "Especialista22",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 28,
+      "player_name": "Syrio",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-altaria-b1"
+    },
+    {
+      "placement": 29,
+      "player_name": "\ud835\uddd6\ud835\uddd5\ud835\uddde | Just For Fun",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-ampharos-ex-b1-raikou-ex-a4a"
+    },
+    {
+      "placement": 30,
+      "player_name": "dakka_1988",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-tyrogue-a4"
+    },
+    {
+      "placement": 31,
+      "player_name": "OSS2069",
+      "record": "0 - 2 - 0drop",
+      "archetype": "entei-ex-a4a-mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 32,
+      "player_name": "VermiCL",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    }
+  ]
+}
