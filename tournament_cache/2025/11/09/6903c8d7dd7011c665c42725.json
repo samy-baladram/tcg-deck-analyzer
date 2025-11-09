@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6903c8d7dd7011c665c42725",
+  "name": "Fans Pok\u00e9mon TCG Pocket Chile B series Open #1",
+  "timestamp": 1762709400000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Amelia Michea",
+      "record": "3 - 0 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Aidan Meister",
+      "record": "2 - 1 - 0",
+      "archetype": "eevee-ex-a3b-umbreon-ex-a4"
+    },
+    {
+      "placement": 3,
+      "player_name": "Guilherme Land",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Ricardo Bahamondes Torres",
+      "record": "1 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Daniel V\u00e1zquez Pereira",
+      "record": "1 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Sebastian Ramos Diaz",
+      "record": "0 - 3 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Sergio Olivares",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "crodar F",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    }
+  ]
+}
