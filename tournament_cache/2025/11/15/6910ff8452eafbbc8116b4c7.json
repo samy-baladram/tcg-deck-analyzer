@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6910ff8452eafbbc8116b4c7",
+  "name": "\ud83c\udf0eCOMIC-CON\ud83c\udf0eMITICAS| Terremoto x Trainers TCG",
+  "timestamp": 1763238600000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "moisorama",
+      "record": "4 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Etoledo",
+      "record": "2 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Yoshibiri",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Zrex",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Andresrgv",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "CarlittosP",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Francescosepe",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Lumoonlu",
+      "record": "0 - 3 - 0",
+      "archetype": null
+    }
+  ]
+}
