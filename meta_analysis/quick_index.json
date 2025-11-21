@@ -1,14 +1,14 @@
 {
-  "last_updated": 1763706650,
-  "total_tournaments": 764,
+  "last_updated": 1763709593,
+  "total_tournaments": 765,
   "format_distribution": {
-    "Standard": 687,
+    "Standard": 688,
     "STANDARD": 49,
     "NOEX": 28
   },
   "date_range": {
     "earliest": "2025-04-27",
-    "latest": "2025-11-20"
+    "latest": "2025-11-21"
   },
   "top_archetypes": [
     "giratina-ex-a2b-darkrai-ex-a2",
