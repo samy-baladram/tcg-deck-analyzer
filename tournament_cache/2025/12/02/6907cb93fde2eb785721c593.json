@@ -1,0 +1,33 @@
+{
+  "tournament_id": "6907cb93fde2eb785721c593",
+  "name": "Fans Pok\u00e9mon TCGP Chile LIGA S4 Fecha 8",
+  "timestamp": 1764712800000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "markoh",
+      "record": "3 - 0 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Joselfie",
+      "record": "2 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "dakka_1988",
+      "record": "1 - 2 - 0",
+      "archetype": "hitmonchan-ex-b1-lucario-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Oscarparra",
+      "record": "0 - 1 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    }
+  ]
+}
