@@ -1,0 +1,111 @@
+{
+  "tournament_id": "693214dc1b3b036ef6db980d",
+  "name": "MLA Crew - Pocket Rapid #5",
+  "timestamp": 1764893700000,
+  "format": "Standard",
+  "player_count": 17,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Ted0918",
+      "record": "6 - 1 - 0",
+      "archetype": "mega-blaziken-ex-blaziken-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Zegger",
+      "record": "4 - 3 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Noobslybot_01",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "OriGaming",
+      "record": "4 - 2 - 0",
+      "archetype": "arceus-ex-a2a-raikou-ex-a4a"
+    },
+    {
+      "placement": 5,
+      "player_name": "NeoNox40",
+      "record": "3 - 2 - 0",
+      "archetype": "hitmonchan-ex-b1-rampardos-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Hasan Latif",
+      "record": "3 - 2 - 0",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Naik16",
+      "record": "2 - 2 - 1",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 8,
+      "player_name": "HeartBreakKid",
+      "record": "2 - 2 - 0drop",
+      "archetype": "alolan-exeggutor-a3-mega-pinsir-ex-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "ToadSage27",
+      "record": "2 - 3 - 0",
+      "archetype": "luxray-b1-oricorio-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\udc00\ud835\udc1d\ud835\udc28\ud835\udc27 | \ud835\udc0c\ud835\udc0b\ud835\udc00\ud835\udc02",
+      "record": "2 - 2 - 0drop",
+      "archetype": "greninja-a1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Zachgv",
+      "record": "2 - 3 - 0drop",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 12,
+      "player_name": "gonzalito",
+      "record": "1 - 2 - 2",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Bimbo_Ray",
+      "record": "1 - 3 - 1",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 14,
+      "player_name": "LuciferMS",
+      "record": "1 - 3 - 0drop",
+      "archetype": "jumpluff-ex-a4a-goomy-b1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Oddy",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-ampharos-ex-b1-pichu-a4"
+    },
+    {
+      "placement": 16,
+      "player_name": "Lebneck",
+      "record": "1 - 4 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 17,
+      "player_name": "sneakAttack",
+      "record": "0 - 1 - 0drop",
+      "archetype": "crobat-ex-a4-nihilego-a3a"
+    }
+  ]
+}
