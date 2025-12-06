@@ -1,0 +1,63 @@
+{
+  "tournament_id": "69320e441b3b036ef6db97b0",
+  "name": "BZGC Pocket\ud83d\udd25 ~ Mega Shinka!",
+  "timestamp": 1764979200000,
+  "format": "Standard",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "tonyrsr",
+      "record": "3 - 0 - 0",
+      "archetype": "naganadel-a3a-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "LuciferMS",
+      "record": "2 - 1 - 0",
+      "archetype": "toxapex-b1-naganadel-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "monburan_ppab",
+      "record": "1 - 1 - 0drop",
+      "archetype": "weezing-a1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "HunterHunter",
+      "record": "1 - 2 - 0",
+      "archetype": "leafeon-ex-a2a-alolan-exeggutor-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "King_Solomon",
+      "record": "1 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Russ_II",
+      "record": "1 - 2 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "NeoNox40",
+      "record": "1 - 0 - 0drop",
+      "archetype": "greninja-a1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Oddy",
+      "record": "0 - 1 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "ibi0307ibi",
+      "record": "0 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    }
+  ]
+}

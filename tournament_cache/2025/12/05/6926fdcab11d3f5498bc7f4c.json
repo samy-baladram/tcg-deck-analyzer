@@ -1,0 +1,81 @@
+{
+  "tournament_id": "6926fdcab11d3f5498bc7f4c",
+  "name": "KaBuM! TCG Pocket | Semanal #29",
+  "timestamp": 1764972000000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "luantrap",
+      "record": "6 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Lebneck",
+      "record": "4 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Thii8",
+      "record": "4 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Marakin",
+      "record": "3 - 3 - 0",
+      "archetype": "espeon-ex-a4-indeedee-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "yamaduts",
+      "record": "3 - 2 - 0",
+      "archetype": "crobat-ex-a4-nihilego-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Ismerino999",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Kaizen",
+      "record": "3 - 2 - 0",
+      "archetype": "greninja-ex-b1-suicune-ex-a4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Dougz",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-blaziken-ex-heatmor-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\udc02\ud835\udc0b\ud835\udc13 | Shadow",
+      "record": "2 - 3 - 0drop",
+      "archetype": "jolteon-ex-b1-leafeon-ex-a2a"
+    },
+    {
+      "placement": 10,
+      "player_name": "CAOS | Exprode",
+      "record": "1 - 4 - 0drop",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 11,
+      "player_name": "ARExande",
+      "record": "1 - 3 - 0drop",
+      "archetype": "golem-a1a-passimian-ex-a3"
+    },
+    {
+      "placement": 12,
+      "player_name": "Niximilliam",
+      "record": "0 - 1 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    }
+  ]
+}
