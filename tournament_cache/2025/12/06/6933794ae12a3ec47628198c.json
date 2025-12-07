@@ -1,0 +1,39 @@
+{
+  "tournament_id": "6933794ae12a3ec47628198c",
+  "name": "Chaos League Pocket Saturdays #47",
+  "timestamp": 1765060200000,
+  "format": "Standard",
+  "player_count": 5,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "7earless",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-gyarados-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Zalanto",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "WainesWorld",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-gyarados-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Artsan90",
+      "record": "2 - 3 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Claudia_uwu",
+      "record": "1 - 3 - 0",
+      "archetype": "suicune-ex-a4a-magnezone-a2"
+    }
+  ]
+}
