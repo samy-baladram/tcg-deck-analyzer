@@ -1,0 +1,63 @@
+{
+  "tournament_id": "6939fa6f1b3b036ef6dbe1e5",
+  "name": "MLA Crew - Pocket Rapid #6 [FA Trainer]",
+  "timestamp": 1765409400000,
+  "format": "Standard",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Nantelor",
+      "record": "6 - 0 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "S4T0SH1",
+      "record": "3 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "NunoGDM",
+      "record": "3 - 2 - 0",
+      "archetype": "magnezone-a2-oricorio-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "Noobslybot_01",
+      "record": "2 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "FrozenOutcast",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Pix",
+      "record": "2 - 2 - 0",
+      "archetype": "greninja-a1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udc00\ud835\udc1d\ud835\udc28\ud835\udc27 | \ud835\udc0c\ud835\udc0b\ud835\udc00\ud835\udc02",
+      "record": "1 - 2 - 0drop",
+      "archetype": "silvally-a3a-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "tobyforce",
+      "record": "1 - 3 - 0",
+      "archetype": "rampardos-a2-archeops-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "xorcist",
+      "record": "0 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    }
+  ]
+}
