@@ -505,6 +505,9 @@ POKEMON_NAME_PATTERNS = {
     # Pokemon suffixes
     'POKEMON_SUFFIXES': ['ex', 'v', 'vmax', 'vstar', 'gx', 'sp'],
 
+    # NEW: Variant suffixes (form variants like X/Y, forms, etc.)
+    'VARIANT_SUFFIXES': ['x', 'y', 'origin', 'altered', 'attack', 'defense', 'speed', 'heat', 'wash', 'frost', 'fan', 'mow', 'sky', 'land', 'therian', 'incarnate'],
+ 
     'SPECIAL_CASING': {
         'ho-oh-ex': 'Ho-Oh ex',
         'porygon-z': 'Porygon-Z',
