@@ -345,21 +345,31 @@ def extract_pokemon_from_deck_name(deck_name):
             return None
         
         # STEP 1: Check special multi-word names first (exact matches)
-        # This handles Tapu Pokemon, Mr. Mime, Great Tusk, etc.
         for word_count in range(2, min(5, len(parts) - start_idx + 1)):
             potential_name = '-'.join(parts[start_idx:start_idx + word_count]).lower()
             if potential_name in SPECIAL_MULTIWORD:
                 return start_idx + word_count - 1
         
         # STEP 2: Check prefix-based multi-word Pokemon
-        # This handles Alolan, Mega, Iron, etc.
         current_part = parts[start_idx].lower()
         
         if (current_part in REGIONAL_PREFIXES or 
             current_part in FORM_PREFIXES or 
             current_part in PARADOX_PREFIXES):
             if start_idx + 1 < len(parts):
-                return start_idx + 1
+                # NEW: Check for variant suffix after the base name
+                # e.g., mega-charizard-y, mega-mewtwo-x
+                base_end_idx = start_idx + 1
+                
+                # Load variant suffixes from config
+                VARIANT_SUFFIXES = POKEMON_NAME_PATTERNS.get('VARIANT_SUFFIXES', [])
+                
+                # Check if next part is a variant suffix
+                if (base_end_idx + 1 < len(parts) and 
+                    parts[base_end_idx + 1].lower() in VARIANT_SUFFIXES):
+                    return base_end_idx + 1  # Include variant suffix (3 words)
+                
+                return base_end_idx  # Default 2 words
         
         return None
     
