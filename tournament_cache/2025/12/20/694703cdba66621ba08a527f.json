@@ -1,0 +1,75 @@
+{
+  "tournament_id": "694703cdba66621ba08a527f",
+  "name": "MLA Crew - Pocket Rapid #8 [Choose your FA]",
+  "timestamp": 1766266200000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Bgc",
+      "record": "5 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udc00\ud835\udc1d\ud835\udc28\ud835\udc27 | \ud835\udc0c\ud835\udc0b\ud835\udc00\ud835\udc02",
+      "record": "6 - 1 - 0",
+      "archetype": "mega-lopunny-ex-b1a-lucario-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Gooberman54",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-blastoise-ex-b1a-manaphy-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "ValeKemp",
+      "record": "3 - 3 - 0",
+      "archetype": "jolteon-ex-b1-jolteon-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Bomar14",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-lopunny-ex-b1a-lucario-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "JHove",
+      "record": "2 - 1 - 0drop",
+      "archetype": "sylveon-ex-a3b-ditto-b1a"
+    },
+    {
+      "placement": 7,
+      "player_name": "JohnyWar",
+      "record": "1 - 1 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Sauroc",
+      "record": "1 - 2 - 0drop",
+      "archetype": "charizard-ex-a2b-flareon-ex-a3b"
+    },
+    {
+      "placement": 9,
+      "player_name": "Feherlac",
+      "record": "1 - 4 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Kanouyou22",
+      "record": "1 - 1 - 0drop",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 11,
+      "player_name": "CDK_IFB_Yami",
+      "record": "0 - 2 - 0drop",
+      "archetype": "rampardos-a2-chingling-b1"
+    }
+  ]
+}
