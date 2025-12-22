@@ -1,0 +1,93 @@
+{
+  "tournament_id": "694567b5ba66621ba08a3c2c",
+  "name": "Pre-XMASS 21.12.2025 [only-PL]",
+  "timestamp": 1766340000000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PokeFunky",
+      "record": "7 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Takijakimam",
+      "record": "6 - 2 - 0",
+      "archetype": "arceus-ex-a2a-pichu-a4"
+    },
+    {
+      "placement": 3,
+      "player_name": "p1ksel",
+      "record": "4 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Rashpultu",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-lopunny-ex-magnezone-b1a"
+    },
+    {
+      "placement": 5,
+      "player_name": "1337_krakeN",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-venusaur-ex-b1a-nihilego-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Najasho",
+      "record": "3 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Tetrycy",
+      "record": "3 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "ConquestCQN",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-lopunny-ex-magnezone-b1a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Wojdylak",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-venusaur-ex-venusaur-b1a"
+    },
+    {
+      "placement": 10,
+      "player_name": "AhmeDZIK",
+      "record": "2 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Skelecross",
+      "record": "2 - 3 - 0",
+      "archetype": "ditto-b1a-hitmontop-a4"
+    },
+    {
+      "placement": 12,
+      "player_name": "DariusPopek",
+      "record": "1 - 4 - 0",
+      "archetype": "magnezone-b1a-mega-absol-ex-b1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Snezw",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-turtonator-a3"
+    },
+    {
+      "placement": 14,
+      "player_name": "mvsky",
+      "record": "0 - 5 - 0",
+      "archetype": "poliwrath-ex-a4a-politoed-a4"
+    }
+  ]
+}
