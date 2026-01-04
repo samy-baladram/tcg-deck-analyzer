@@ -1,0 +1,39 @@
+{
+  "tournament_id": "695820b74500833d870209ce",
+  "name": "Mini Tournament Blitz| 4\u20136 Players | $20\u2013$30 Pool",
+  "timestamp": 1767492000000,
+  "format": "Standard",
+  "player_count": 5,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "KnowticeTkO",
+      "record": "4 - 0 - 0",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 2,
+      "player_name": "sZero | frappesdrinker",
+      "record": "3 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "johnhaven10",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lopunny-ex-b1a-ambipom-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "PikaIcetea",
+      "record": "1 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udc00\ud835\udc1d\ud835\udc28\ud835\udc27 | \ud835\udc0c\ud835\udc0b\ud835\udc00\ud835\udc02",
+      "record": "0 - 4 - 0drop",
+      "archetype": "magnezone-b1a-jolteon-ex-b1"
+    }
+  ]
+}
