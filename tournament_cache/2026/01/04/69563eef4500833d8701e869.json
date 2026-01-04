@@ -1,0 +1,57 @@
+{
+  "tournament_id": "69563eef4500833d8701e869",
+  "name": "BEC RANKED FINALS(SEASON 5) ($100 USD)",
+  "timestamp": 1767528000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "syr",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Number_C32",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "PkmnTrainerJoey",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "SBS| wongtw",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "giaacomoo",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Zelphyr",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Zegger",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "D10",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
