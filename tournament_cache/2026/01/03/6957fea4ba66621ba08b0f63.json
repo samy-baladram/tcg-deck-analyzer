@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6957fea4ba66621ba08b0f63",
+  "name": "Chaos League Pocket Saturdays #49",
+  "timestamp": 1767479400000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Antacumbo",
+      "record": "6 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ashcantcatchem",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "CrieghZ",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-xatu-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "ShippyTSK",
+      "record": "3 - 3 - 0",
+      "archetype": "magnezone-b1a-oricorio-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "tobyforce",
+      "record": "3 - 2 - 0",
+      "archetype": "wugtrio-ex-a2b-mantyke-a4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Kevin G",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udc01\ud835\udc13|frxnz_ _",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "shady1",
+      "record": "0 - 1 - 0drop",
+      "archetype": "magnezone-b1a-mega-absol-ex-b1"
+    }
+  ]
+}
