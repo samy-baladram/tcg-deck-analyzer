@@ -1,0 +1,33 @@
+{
+  "tournament_id": "69523150ba66621ba08acdf0",
+  "name": "underground women's only pocket league 5$usd",
+  "timestamp": 1767573000000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "EllieDark",
+      "record": "2 - 0 - 1",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "SongBird7",
+      "record": "2 - 1 - 0",
+      "archetype": "whimsicott-ex-b1-ariados-b1a"
+    },
+    {
+      "placement": 3,
+      "player_name": "iyla sutherland",
+      "record": "1 - 1 - 1",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "BlueGlace",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-lopunny-ex-b1a-lucario-a2"
+    }
+  ]
+}
