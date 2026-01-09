@@ -1,0 +1,75 @@
+{
+  "tournament_id": "69587d5f4500833d87020ef6",
+  "name": "Traditional Series Kickoff || $202 + 2* Shiny Zard",
+  "timestamp": 1767923700000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "thang1429",
+      "record": "5 - 1 - 0",
+      "archetype": "magnezone-heliolisk-b1a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Jonnycat",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "RigoX",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "MosDeaf",
+      "record": "3 - 2 - 0",
+      "archetype": "porygon-z-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "maims123",
+      "record": "2 - 1 - 0drop",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Val22",
+      "record": "2 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "CrieghZ",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Headache",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-lopunny-ex-b1a-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Alisson007",
+      "record": "0 - 1 - 0drop",
+      "archetype": "indeedee-ex-b1-mismagius-a4a"
+    },
+    {
+      "placement": 10,
+      "player_name": "Locus",
+      "record": "0 - 2 - 0drop",
+      "archetype": "melmetal-ex-b1-melmetal-a3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Sovereign028",
+      "record": "0 - 2 - 0drop",
+      "archetype": "entei-ex-a4a-mega-charizard-y-ex-b1a"
+    }
+  ]
+}
