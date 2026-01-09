@@ -1,0 +1,33 @@
+{
+  "tournament_id": "6959e278ba66621ba08b33e8",
+  "name": "Tournament Blitz|4\u20136 Players|$8-$12 Pool|$2 entry",
+  "timestamp": 1767922200000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "KnowticeTkO",
+      "record": "3 - 0 - 0",
+      "archetype": "mega-lopunny-ex-b1a-lucario-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Porygon3",
+      "record": "2 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "PiedKuiper",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-charizard-ex-a2b"
+    },
+    {
+      "placement": 4,
+      "player_name": "iyla sutherland",
+      "record": "0 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    }
+  ]
+}
