@@ -1,0 +1,75 @@
+{
+  "tournament_id": "6962744fba66621ba08b8bff",
+  "name": "Chaos League Pocket Saturdays #50",
+  "timestamp": 1768084200000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "StrawberryCrepeCookie",
+      "record": "8 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "lightletter",
+      "record": "5 - 4 - 0",
+      "archetype": "galarian-cursola-a4a-banette-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "JJ12101",
+      "record": "7 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-giratina-ex-a2b"
+    },
+    {
+      "placement": 4,
+      "player_name": "CrieghZ",
+      "record": "4 - 4 - 0",
+      "archetype": "guzzlord-ex-a3a-hydreigon-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "MadaraUchiwa",
+      "record": "3 - 4 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Ferneyfp",
+      "record": "2 - 5 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "RafaelLouz",
+      "record": "2 - 1 - 0drop",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Nms",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Mart95 \ud835\ude49\ud835\ude47\ud835\ude3e",
+      "record": "1 - 1 - 0drop",
+      "archetype": "magnezone-b1a-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Christopher Vaughan",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-blaziken-ex-heatmor-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "tlyre",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-venusaur-ex-venusaur-b1a"
+    }
+  ]
+}
