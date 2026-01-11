@@ -1,0 +1,93 @@
+{
+  "tournament_id": "69625028ba66621ba08b8b12",
+  "name": "#1 2026 - 11.01.2025 [PL-only]",
+  "timestamp": 1768154400000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Skelecross",
+      "record": "7 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-silvally-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Tetrycy",
+      "record": "4 - 4 - 0",
+      "archetype": "magnezone-b1a-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Najasho",
+      "record": "5 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "MrCin0091",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "DariusPopek",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Rashpultu",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-blaziken-ex-heatmor-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "PokeFunky",
+      "record": "3 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "mvsky",
+      "record": "2 - 4 - 0",
+      "archetype": "mega-lopunny-ex-b1a-silvally-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Cachorress",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-lopunny-ex-b1a-lucario-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "AhmeDZIK",
+      "record": "2 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "panarturek",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 12,
+      "player_name": "isuexe",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-steelix-ex-b1a-skarmory-a2"
+    },
+    {
+      "placement": 13,
+      "player_name": "ConquestCQN",
+      "record": "1 - 4 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Wojdylak",
+      "record": "0 - 4 - 0drop",
+      "archetype": "mega-altaria-ex-b1-furfrou-b1a"
+    }
+  ]
+}
