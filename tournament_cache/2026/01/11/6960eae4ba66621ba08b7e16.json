@@ -1,0 +1,75 @@
+{
+  "tournament_id": "6960eae4ba66621ba08b7e16",
+  "name": "Pokebait Pocket Cup #1",
+  "timestamp": 1768129200000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Shkuku",
+      "record": "5 - 1 - 0",
+      "archetype": "jolteon-ex-b1-pikachu-ex-a2b"
+    },
+    {
+      "placement": 2,
+      "player_name": "Flamily",
+      "record": "5 - 1 - 0",
+      "archetype": "indeedee-ex-mega-altaria-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "linuslinus",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Leo10531",
+      "record": "3 - 2 - 0",
+      "archetype": "charizard-ex-a1-ho-oh-ex-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "Gream",
+      "record": "2 - 2 - 0",
+      "archetype": "celebi-ex-serperior-a1a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Hoshaqi",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-venusaur-ex-venusaur-b1a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Kalininiliya",
+      "record": "2 - 2 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Mawile91",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-steelix-ex-b1a-delcatty-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "ParadoxBeast",
+      "record": "1 - 3 - 0",
+      "archetype": "wigglytuff-ex-a1-wigglytuff-a2b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Slcotix",
+      "record": "1 - 3 - 0",
+      "archetype": "bibarel-ex-a2b-indeedee-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Ven0ve",
+      "record": "1 - 3 - 0",
+      "archetype": "indeedee-ex-b1-golem-a1a"
+    }
+  ]
+}
