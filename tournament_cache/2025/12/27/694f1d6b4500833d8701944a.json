@@ -1,0 +1,63 @@
+{
+  "tournament_id": "694f1d6b4500833d8701944a",
+  "name": "Scrimmage at the Sereitei",
+  "timestamp": 1766793600000,
+  "format": "Standard",
+  "player_count": 9,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "sZero | KoNoR",
+      "record": "7 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "sZero | Owen",
+      "record": "7 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Ger272",
+      "record": "7 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "sZero | CJ",
+      "record": "6 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "SMIKKELBEER",
+      "record": "5 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "ProofMagnet",
+      "record": "4 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Randomways",
+      "record": "1 - 7 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "BOAT | Lv80Mew2.0",
+      "record": "1 - 7 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "sZero | Ace",
+      "record": "0 - 8 - 0drop",
+      "archetype": null
+    }
+  ]
+}
