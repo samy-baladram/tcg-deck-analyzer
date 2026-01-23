@@ -1,0 +1,57 @@
+{
+  "tournament_id": "696d635db1294bfab720103a",
+  "name": "Hanafuda Pocket Clash #14",
+  "timestamp": 1769191200000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "E0",
+      "record": "4 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "lotiax",
+      "record": "4 - 1 - 0",
+      "archetype": "greninja-ex-b1-suicune-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Uahawke",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-giratina-ex-a2b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Feherlac",
+      "record": "2 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "InfernalJelly",
+      "record": "1 - 3 - 0",
+      "archetype": "magnezone-b1a-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "tralalerodan",
+      "record": "1 - 3 - 0",
+      "archetype": "leafeon-ex-a2a-celebi-ex-a1a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Amruth Varma",
+      "record": "0 - 1 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "RafaelLouz",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-venusaur-ex-b1a-venusaur-a1"
+    }
+  ]
+}
