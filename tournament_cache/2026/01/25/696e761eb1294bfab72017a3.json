@@ -1,0 +1,45 @@
+{
+  "tournament_id": "696e761eb1294bfab72017a3",
+  "name": "Pok\u00e9mon TCGP women\u2019s league",
+  "timestamp": 1769299200000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "iyla sutherland",
+      "record": "3 - 0 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "lil_things",
+      "record": "2 - 1 - 0",
+      "archetype": "primarina-ex-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "EllieDark",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "lonelyVoxel",
+      "record": "2 - 1 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "BrooklynLovesRain",
+      "record": "0 - 3 - 0",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "GymLeaderEllie",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-absol-ex-hydreigon-b1"
+    }
+  ]
+}
