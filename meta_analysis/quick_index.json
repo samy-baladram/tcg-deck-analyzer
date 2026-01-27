@@ -1,14 +1,14 @@
 {
-  "last_updated": 1769495759,
-  "total_tournaments": 1028,
+  "last_updated": 1769498900,
+  "total_tournaments": 1029,
   "format_distribution": {
-    "Standard": 951,
+    "Standard": 952,
     "STANDARD": 49,
     "NOEX": 28
   },
   "date_range": {
     "earliest": "2025-04-27",
-    "latest": "2026-01-26"
+    "latest": "2026-01-27"
   },
   "top_archetypes": [
     "suicune-ex-a4a-greninja-ex-b1",
