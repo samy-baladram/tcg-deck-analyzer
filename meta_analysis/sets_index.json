@@ -1,6 +1,12 @@
 {
-  "last_updated": "2026-01-28T23:25:50.778726",
+  "last_updated": "2026-01-29T01:59:15.083265",
   "sets": [
+    {
+      "set_name": "Fantastical Parade",
+      "set_code": "B2",
+      "release_date": "2026-01-29",
+      "card_count": 234
+    },
     {
       "set_name": "Crimson Blaze",
       "set_code": "B1a",
