@@ -1,0 +1,39 @@
+{
+  "tournament_id": "6977cb1bb1294bfab7206903",
+  "name": "Women Unite! ($5 USD + RR Mega Lopunny)",
+  "timestamp": 1769898000000,
+  "format": "Standard",
+  "player_count": 5,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "lonelyVoxel",
+      "record": "3 - 0 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "BlueGlace",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-lopunny-ex-b1a-lucario-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "BrooklynLovesRain",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-kangaskhan-ex-b2-pichu-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "EllieDark",
+      "record": "1 - 2 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 5,
+      "player_name": "iyla sutherland",
+      "record": "0 - 1 - 0drop",
+      "archetype": "greninja-a1-oricorio-a3"
+    }
+  ]
+}
