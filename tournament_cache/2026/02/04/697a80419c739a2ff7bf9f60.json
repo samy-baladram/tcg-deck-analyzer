@@ -1,0 +1,81 @@
+{
+  "tournament_id": "697a80419c739a2ff7bf9f60",
+  "name": "Recrutement team XTREM Objectif GGB",
+  "timestamp": 1770231600000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Axel Pikaks",
+      "record": "4 - 1 - 0",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Flutter Mane",
+      "record": "4 - 1 - 0",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Grayden Wheeler",
+      "record": "3 - 2 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "stefano granara",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-kangaskhan-ex-b2-pichu-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "TDL | EllieDark",
+      "record": "1 - 4 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "Alejandro M",
+      "record": "1 - 4 - 0",
+      "archetype": "galarian-obstagoon-b2-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "NeoNox 40",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Ismael Gonzalez",
+      "record": "0 - 1 - 0drop",
+      "archetype": "indeedee-ex-b1-gengar-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Anthony L",
+      "record": "2 - 2 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "remi dorez",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-gyarados-ex-jellicent-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Luis Carlos Castillo",
+      "record": "2 - 0 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Dylan Tracy",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
