@@ -1,8 +1,8 @@
 {
-  "last_updated": 1770449500,
-  "total_tournaments": 1087,
+  "last_updated": 1770453096,
+  "total_tournaments": 1088,
   "format_distribution": {
-    "Standard": 1010,
+    "Standard": 1011,
     "STANDARD": 49,
     "NOEX": 28
   },
@@ -25,8 +25,8 @@
   "top_archetypes_by_format": {
     "Standard": [
       "suicune-ex-a4a-greninja-ex-b1",
-      "giratina-ex-a2b-darkrai-ex-a2",
       "hydreigon-mega-absol-ex-b1",
+      "giratina-ex-a2b-darkrai-ex-a2",
       "mega-altaria-ex-indeedee-ex-b1",
       "suicune-ex-a4a-greninja-a1"
     ],
