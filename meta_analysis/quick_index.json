@@ -1,14 +1,14 @@
 {
-  "last_updated": 1770517905,
-  "total_tournaments": 1089,
+  "last_updated": 1770527006,
+  "total_tournaments": 1090,
   "format_distribution": {
-    "Standard": 1012,
+    "Standard": 1013,
     "STANDARD": 49,
     "NOEX": 28
   },
   "date_range": {
     "earliest": "2025-04-27",
-    "latest": "2026-02-07"
+    "latest": "2026-02-08"
   },
   "top_archetypes": [
     "suicune-ex-a4a-greninja-ex-b1",
@@ -18,8 +18,8 @@
     "suicune-ex-a4a-greninja-a1",
     "buzzwole-ex-pheromosa-a3a",
     "sylveon-ex-a3b-greninja-a1",
-    "mega-altaria-ex-b1-greninja-a1",
     "greninja-a1-oricorio-a3",
+    "mega-altaria-ex-b1-greninja-a1",
     "decidueye-ex-a3-decidueye-a3a"
   ],
   "top_archetypes_by_format": {
