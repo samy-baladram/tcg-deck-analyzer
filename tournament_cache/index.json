@@ -1353,10 +1353,13 @@
     "698ba7316235e3ab106c065a",
     "69853519287864eaf0dc8043",
     "698b57df988cfc979bd0ce58",
-    "6980300dbd2fb4559555981d"
+    "6980300dbd2fb4559555981d",
+    "698ca3e76235e3ab106c0f5e",
+    "698a5e5d6235e3ab106bf6cf",
+    "696e62969c739a2ff7bf36ce"
   ],
-  "last_updated": 1770852713,
-  "total_tournaments": 1354,
+  "last_updated": 1770862188,
+  "total_tournaments": 1357,
   "tournaments_by_path": {
     "2025/06/12": [
       "68425e2827d8bc24cf24e4cb",
@@ -3265,7 +3268,8 @@
       "6981ea30bd2fb4559555ace1",
       "69856549287864eaf0dc8328",
       "6981f541287864eaf0dc4cfe",
-      "6980fec4287864eaf0dc3f21"
+      "6980fec4287864eaf0dc3f21",
+      "696e62969c739a2ff7bf36ce"
     ],
     "2026/02/09": [
       "69891be3988cfc979bd0b803",
@@ -3283,7 +3287,9 @@
       "6983efedbd2fb4559555d394",
       "698ba7316235e3ab106c065a",
       "698b57df988cfc979bd0ce58",
-      "6980300dbd2fb4559555981d"
+      "6980300dbd2fb4559555981d",
+      "698ca3e76235e3ab106c0f5e",
+      "698a5e5d6235e3ab106bf6cf"
     ]
   }
 }
