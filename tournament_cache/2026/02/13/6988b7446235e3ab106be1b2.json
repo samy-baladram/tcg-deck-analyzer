@@ -1,0 +1,93 @@
+{
+  "tournament_id": "6988b7446235e3ab106be1b2",
+  "name": "Fans Pok\u00e9mon TCGP Chile Open #2",
+  "timestamp": 1771020300000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Leonn Leonn",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Daniel Burger",
+      "record": "4 - 2 - 0",
+      "archetype": "victreebel-a1-chingling-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Oscar Alho",
+      "record": "4 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Matt ferone",
+      "record": "3 - 2 - 0",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Nicolas Villagra",
+      "record": "2 - 2 - 0",
+      "archetype": "whimsicott-ex-b1-ariados-b1a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Miguel Vicente",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-banette-a3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Marcel Sawatzki",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-entei-ex-a4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Duvan LIZCANO",
+      "record": "1 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Andres MF",
+      "record": "0 - 4 - 0",
+      "archetype": "mega-kangaskhan-ex-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "Angel Morales",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-swampert-ex-b2-mantyke-a4a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Anthony Flags",
+      "record": "2 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 12,
+      "player_name": "David L\u00f3pez",
+      "record": "1 - 0 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Plasma | Yizzy_TCG",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 14,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Preluxe",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    }
+  ]
+}
