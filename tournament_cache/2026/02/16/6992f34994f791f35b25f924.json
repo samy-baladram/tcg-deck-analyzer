@@ -1,0 +1,75 @@
+{
+  "tournament_id": "6992f34994f791f35b25f924",
+  "name": "#2 2026 - 16.02.2025 [PL-only]",
+  "timestamp": 1771264800000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PokeFunky",
+      "record": "6 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Takijakimam",
+      "record": "5 - 2 - 0",
+      "archetype": "mega-kangaskhan-ex-b2-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Najasho",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Rashpultu",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-gardevoir-ex-meloetta-b2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Kartonx6",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "ConquestCQN",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-unown-a4"
+    },
+    {
+      "placement": 7,
+      "player_name": "Akeno_666",
+      "record": "2 - 3 - 0",
+      "archetype": "magnezone-a2-hypno-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Marichuaniak",
+      "record": "2 - 3 - 0",
+      "archetype": "banette-a3-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "DariusPopek",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Skelecross",
+      "record": "2 - 3 - 0",
+      "archetype": "solgaleo-ex-a3-galarian-perrserker-b2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Tetrycy",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-blastoise-ex-b1a-suicune-ex-a4a"
+    }
+  ]
+}
