@@ -1,0 +1,75 @@
+{
+  "tournament_id": "69934dcc94f791f35b25faa2",
+  "name": "Fans Pok\u00e9mon TCGP Chile Open #3",
+  "timestamp": 1771625400000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Yumi | BOAT",
+      "record": "5 - 0 - 1",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "\u308b \u3057*",
+      "record": "4 - 1 - 1",
+      "archetype": "mega-altaria-ex-jirachi-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "asura wakr",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Guto Coral",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-indeedee-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Nathan Kuntz",
+      "record": "2 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Ochito Aya",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-gyarados-ex-b1-milotic-a4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Goblin Sama",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Leonardo Serrano",
+      "record": "0 - 4 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Robert Willey",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-venusaur-ex-b1a-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\udc12\ud835\udc0a\ud835\udc0b| Yizzy",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Kurt Wilson-Luck",
+      "record": "1 - 2 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    }
+  ]
+}
