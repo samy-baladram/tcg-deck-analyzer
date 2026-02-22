@@ -1,0 +1,87 @@
+{
+  "tournament_id": "69994a8d3ef65252b05735b8",
+  "name": "Cyrus Cup - 22.02.2025 [PL-only]",
+  "timestamp": 1771783200000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Skelecross",
+      "record": "8 - 0 - 0",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Takijakimam",
+      "record": "6 - 2 - 0",
+      "archetype": "mega-kangaskhan-ex-b2-oricorio-a3"
+    },
+    {
+      "placement": 3,
+      "player_name": "rubinek",
+      "record": "5 - 2 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "PokeFunky",
+      "record": "4 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Rashpultu",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-blaziken-ex-heatmor-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Tetrycy",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "isuexe",
+      "record": "2 - 4 - 0",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "DariusPopek",
+      "record": "2 - 4 - 0",
+      "archetype": "jumpluff-ex-a4a-meowth-b2"
+    },
+    {
+      "placement": 9,
+      "player_name": "MrCin0091",
+      "record": "2 - 3 - 0",
+      "archetype": "chandelure-meowth-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "panarturek",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 11,
+      "player_name": "ConquestCQN",
+      "record": "1 - 4 - 0",
+      "archetype": "decidueye-ex-a3-decidueye-a3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Akeno_666",
+      "record": "1 - 4 - 0",
+      "archetype": "suicune-ex-a4a-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Kartonx6",
+      "record": "0 - 2 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    }
+  ]
+}
