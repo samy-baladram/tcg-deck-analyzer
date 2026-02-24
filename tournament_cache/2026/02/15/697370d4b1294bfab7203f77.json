@@ -1,0 +1,81 @@
+{
+  "tournament_id": "697370d4b1294bfab7203f77",
+  "name": "\ud83c\udfc6P.P.i.T\ud83c\udfc624H FebTour\ud83c\udfc6#2 ROUND\ud83c\udfc6WITH PRIZE",
+  "timestamp": 1771185600000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "thanos9_9",
+      "record": "7 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Gubbo",
+      "record": "7 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Luca_T",
+      "record": "4 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "ValeKemp",
+      "record": "4 - 3 - 0",
+      "archetype": "leafeon-ex-a2a-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 5,
+      "player_name": "THEUNCLEMUSTANG",
+      "record": "3 - 3 - 0",
+      "archetype": "magnezone-b1a-oricorio-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "Caniuz",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "AleM_5",
+      "record": "2 - 2 - 1",
+      "archetype": "mega-gardevoir-ex-mimikyu-ex-b2"
+    },
+    {
+      "placement": 8,
+      "player_name": "Piccirko",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Baldax699",
+      "record": "1 - 3 - 1",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "stracchino22",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Vimos",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 12,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Thunder",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-steelix-ex-b1a-indeedee-ex-b1"
+    }
+  ]
+}
