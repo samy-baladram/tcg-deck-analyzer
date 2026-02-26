@@ -1,6 +1,12 @@
 {
-  "last_updated": "2026-02-26T13:05:10.097428",
+  "last_updated": "2026-02-26T14:46:12.537201",
   "sets": [
+    {
+      "set_name": "Paldean Wonders",
+      "set_code": "B2a",
+      "release_date": "2026-02-26",
+      "card_count": 131
+    },
     {
       "set_name": "Fantastical Parade",
       "set_code": "B2",
