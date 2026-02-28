@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6996d170c9dc8186f7607d72",
+  "name": "\ud83d\udc38FrogEX Major Series Winter 2026 Group F\ud83d\udc38",
+  "timestamp": 1772298000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Frozen",
+      "record": "5 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Preluxe",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "TB | IQHAWAY",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "springgg",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde2\ud835\udde0\ud835\uddd5\ud835\udde5\ud835\uddd4 ~ Harian",
+      "record": "2 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Hamza",
+      "record": "2 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "DG | Juanpcv",
+      "record": "0 - 6 - 0",
+      "archetype": null
+    }
+  ]
+}

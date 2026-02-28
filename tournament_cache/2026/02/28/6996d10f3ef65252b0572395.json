@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6996d10f3ef65252b0572395",
+  "name": "\ud83d\udc38FrogEX Major Series Winter 2026 Group C\ud83d\udc38",
+  "timestamp": 1772298000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PGX | victorssito",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "FrogEX | Arca",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udc04\ud835\udc25\ud835\udc22\ud835\udc2d\ud835\udc1e\ud835\udfd2 wooz7yy",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "FrogEX | Fab",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Fedex2729",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "AbnerMoyai",
+      "record": "2 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "DNS Braver",
+      "record": "1 - 5 - 0",
+      "archetype": null
+    }
+  ]
+}

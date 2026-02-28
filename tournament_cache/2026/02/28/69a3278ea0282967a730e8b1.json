@@ -1,0 +1,51 @@
+{
+  "tournament_id": "69a3278ea0282967a730e8b1",
+  "name": "\ud83d\udc38FrogEX Major Series Winter 2026 Group H\ud83d\udc38",
+  "timestamp": 1772297100000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Jm96",
+      "record": "5 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "BigManBlastoise69",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Haryanto",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc04\ud835\udc25\ud835\udc22\ud835\udc2d\ud835\udc1e\ud835\udfd2 Lakzy",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Azelma",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "DariusPopek",
+      "record": "2 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "SamAC",
+      "record": "0 - 6 - 0",
+      "archetype": null
+    }
+  ]
+}
