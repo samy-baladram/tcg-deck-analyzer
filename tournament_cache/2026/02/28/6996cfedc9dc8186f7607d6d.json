@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6996cfedc9dc8186f7607d6d",
+  "name": "\ud83d\udc38FrogEX Major Series Winter 2026 Group A\ud83d\udc38",
+  "timestamp": 1772298000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Kurage",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | islo",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "SKY_SkyWolf93",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "yoji14",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "McLeoid",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "MarHaDi",
+      "record": "3 - 3 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Godi",
+      "record": "0 - 6 - 0",
+      "archetype": null
+    }
+  ]
+}

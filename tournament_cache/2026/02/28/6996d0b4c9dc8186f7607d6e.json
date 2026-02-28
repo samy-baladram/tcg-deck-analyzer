@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6996d0b4c9dc8186f7607d6e",
+  "name": "\ud83d\udc38FrogEX Major Series Winter 2026 Group B\ud83d\udc38",
+  "timestamp": 1772298000000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udc04\ud835\udc25\ud835\udc22\ud835\udc2d\ud835\udc1e\ud835\udfd2 Zeublai",
+      "record": "4 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Sbug",
+      "record": "4 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "FrogEX | Valden",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc7b\ud835\udc69  / Hasalf",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Lbn",
+      "record": "1 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "HoshinoAimi",
+      "record": "0 - 5 - 0",
+      "archetype": null
+    }
+  ]
+}
