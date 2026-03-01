@@ -1,0 +1,495 @@
+{
+  "tournament_id": "69a377a4a0282967a730ef52",
+  "name": "Pride's Popup (FA Oak - read description)",
+  "timestamp": 1772332200000,
+  "format": "Standard",
+  "player_count": 81,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || ERIKITOH",
+      "record": "11 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "S1GuN",
+      "record": "7 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Wall456",
+      "record": "6 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "ilikecheese216",
+      "record": "6 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Jonnycat",
+      "record": "9 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "onlyx07",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "KoNoRd",
+      "record": "8 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "FudiFudi",
+      "record": "6 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "kodai",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 10,
+      "player_name": "Troopscoop",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 11,
+      "player_name": "Oddy",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 12,
+      "player_name": "Val22",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 13,
+      "player_name": "Seiren",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 14,
+      "player_name": "Rfrey",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 15,
+      "player_name": "DG | Hisoka .",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 16,
+      "player_name": "\ud835\udc7d\ud835\udc69  | Xari",
+      "record": "6 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 17,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Thunder",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 18,
+      "player_name": "snub",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 19,
+      "player_name": "BOAT | jjet",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 20,
+      "player_name": "Darffan",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 21,
+      "player_name": "Caminknight",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 22,
+      "player_name": "bengganator",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 23,
+      "player_name": "CheeryDog",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 24,
+      "player_name": "[\ud835\udc13\ud835\udc0c] PoKeBoM",
+      "record": "5 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 25,
+      "player_name": "PapotePaleta",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 26,
+      "player_name": "Immolate",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 27,
+      "player_name": "Im_NotRyan",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 28,
+      "player_name": "nayaraPOKE",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 29,
+      "player_name": "PGX | Nandosgude",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 30,
+      "player_name": "Peeg",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 31,
+      "player_name": "okarun",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 32,
+      "player_name": "7earless",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 33,
+      "player_name": "Zesty | BOAT",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 34,
+      "player_name": "Birikinn",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 35,
+      "player_name": "KareboVIPpass",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 36,
+      "player_name": "BOAT | Koe",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 37,
+      "player_name": "H1kaKinnn",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 38,
+      "player_name": "LOW BUSIN",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 39,
+      "player_name": "KevnOH",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 40,
+      "player_name": "HadderM",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 41,
+      "player_name": "Luxmea",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 42,
+      "player_name": "ygh",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 43,
+      "player_name": "Cloud77",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 44,
+      "player_name": "ChIvO",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 45,
+      "player_name": "so_so",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 46,
+      "player_name": "Plasma hihi",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 47,
+      "player_name": "Bixie",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 48,
+      "player_name": "Mo0nWa1k3r",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 49,
+      "player_name": "Javiee333",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 50,
+      "player_name": "golfermt",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 51,
+      "player_name": "UGPsycho",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 52,
+      "player_name": "Wuggzy1",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 53,
+      "player_name": "GriffSama",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 54,
+      "player_name": "grmn1993",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 55,
+      "player_name": "ELNico6754",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 56,
+      "player_name": "BALD Najmeddine",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 57,
+      "player_name": "RACSO1",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 58,
+      "player_name": "Bard0",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 59,
+      "player_name": "\ud835\udc01\ud835\udc13|frozzin _",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 60,
+      "player_name": "PYH",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 61,
+      "player_name": "BOAT | Madara",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 62,
+      "player_name": "Sagekcd",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 63,
+      "player_name": "cupcake222",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 64,
+      "player_name": "Einstun",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 65,
+      "player_name": "sZero | Owen",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 66,
+      "player_name": "iplaypokemans",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 67,
+      "player_name": "mamas",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 68,
+      "player_name": "JHove",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 69,
+      "player_name": "Faded7",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 70,
+      "player_name": "Porygon3",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 71,
+      "player_name": "Yogz04",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 72,
+      "player_name": "Inkai_Yagami",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 73,
+      "player_name": "Warpis",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 74,
+      "player_name": "szow_iri",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 75,
+      "player_name": "Tobias_Oak",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 76,
+      "player_name": "Itati",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 77,
+      "player_name": "Kayyyy",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 78,
+      "player_name": "IfnotBenedict",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 79,
+      "player_name": "bobby02",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 80,
+      "player_name": "CAOS | Exprode",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 81,
+      "player_name": "OGProf151",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
