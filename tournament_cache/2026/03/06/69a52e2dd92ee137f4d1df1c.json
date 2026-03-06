@@ -1,0 +1,27 @@
+{
+  "tournament_id": "69a52e2dd92ee137f4d1df1c",
+  "name": "Hanafuda Pocket Clash #15",
+  "timestamp": 1772820000000,
+  "format": "Standard",
+  "player_count": 3,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "pokeguy41",
+      "record": "3 - 0 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Pocket",
+      "record": "2 - 1 - 0",
+      "archetype": "bellibolt-ex-b2a-zeraora-a3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Sergyo91",
+      "record": "1 - 0 - 0drop",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    }
+  ]
+}
