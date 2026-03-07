@@ -1,0 +1,111 @@
+{
+  "tournament_id": "699af3453ef65252b057440b",
+  "name": "Fans Pok\u00e9mon TCGP Chile Open #4",
+  "timestamp": 1772835000000,
+  "format": "Standard",
+  "player_count": 17,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Yumi | BOAT",
+      "record": "6 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Pat Dixon",
+      "record": "5 - 2 - 0",
+      "archetype": "leafeon-ex-a2a-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 3,
+      "player_name": "Robert Florent",
+      "record": "5 - 1 - 0",
+      "archetype": "greninja-a1-oricorio-a3"
+    },
+    {
+      "placement": 4,
+      "player_name": "Jesse Brown",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Nicolas Villagra",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "quinton szeto",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Brayan Alexander Berrios Flores",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Jworld | Slowjuan",
+      "record": "2 - 3 - 0",
+      "archetype": "meowscarada-ex-b2a-meowscarada-a2b"
+    },
+    {
+      "placement": 9,
+      "player_name": "Conquest CQN",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Javier Salinas",
+      "record": "2 - 3 - 0",
+      "archetype": "greninja-a1-mega-kangaskhan-ex-b2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Analeze Lobo",
+      "record": "2 - 3 - 0",
+      "archetype": "greninja-a1-mega-kangaskhan-ex-b2"
+    },
+    {
+      "placement": 12,
+      "player_name": "\u4e09\u6751 \u78a7",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Raymond H",
+      "record": "1 - 4 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Goblin Sama",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 15,
+      "player_name": "\u60a0\u592a \u5e02\u4e38",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 16,
+      "player_name": "Lorenzo Astoreca",
+      "record": "1 - 4 - 0drop",
+      "archetype": "alolan-ninetales-ex-b2-crawdaunt-a4"
+    },
+    {
+      "placement": 17,
+      "player_name": "Zachary Ebenroth",
+      "record": "0 - 2 - 0drop",
+      "archetype": "skeledirge-b2a-oricorio-b2"
+    }
+  ]
+}
