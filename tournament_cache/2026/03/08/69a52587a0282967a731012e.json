@@ -1,0 +1,45 @@
+{
+  "tournament_id": "69a52587a0282967a731012e",
+  "name": "BEC RANKED FIRNALS SEASON 6 (50 USD)",
+  "timestamp": 1772967600000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "syr",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Zelphyr",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "DaniMartinez97",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Alana",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "thischase",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "D10",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
