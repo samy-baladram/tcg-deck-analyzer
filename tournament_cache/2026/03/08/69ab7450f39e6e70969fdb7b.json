@@ -1,0 +1,45 @@
+{
+  "tournament_id": "69ab7450f39e6e70969fdb7b",
+  "name": "3v3 TEST TOURNAMENT",
+  "timestamp": 1772931900000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Darksiders",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "BOAT | SDE",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Armada",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud83c\udd7d\ud83c\udd7e \ud83c\udd72\ud83c\udd81\ud83c\udd88\ud83c\udd7f\ud83c\udd83\ud83c\udd7e \ud83c\udd83\ud83c\udd74\ud83c\udd70\ud83c\udd7c",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Tyrant triplets",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Mickey Mouse Club House?",
+      "record": "0 - 1 - 0drop",
+      "archetype": null
+    }
+  ]
+}
