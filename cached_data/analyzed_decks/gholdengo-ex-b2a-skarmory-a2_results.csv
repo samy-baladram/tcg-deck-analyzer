@@ -1,0 +1,25 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Gholdengo ex,B2a,78,0,19,0,100,100,Core,2
+Pokemon,Skarmory,A2,111,0,19,0,100,100,Core,2
+Pokemon,Gimmighoul,B2a,54,2,15,10,78,88,Core,2
+Pokemon,Chingling,B1,109,9,0,47,0,47,Standard,1
+Pokemon,Gimmighoul,A2b,36,0,2,0,10,10,Tech,2
+Pokemon,Igglybuff,A4a,59,1,0,5,0,5,Tech,1
+Trainer,Metal Core Barrier,B2,148,0,19,0,100,100,Core,2
+Trainer,Poké Ball,P-A,5,0,19,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,19,0,100,100,Core,2
+Trainer,Copycat,B1,225,13,6,68,31,99,Core,1
+Trainer,Guzma,A3,151,17,0,89,0,89,Core,1
+Trainer,Mars,A2,155,17,0,89,0,89,Core,1
+Trainer,Steel Apron,A4,153,0,17,0,89,89,Core,2
+Trainer,Lucky Ice Pop,B2,145,1,10,5,52,57,Standard,2
+Trainer,Giovanni,A1,223,5,0,26,0,26,Standard,1
+Trainer,Arven,B2a,91,4,0,21,0,21,Tech,1
+Trainer,Cyrus,A2,150,3,0,15,0,15,Tech,1
+Trainer,Pokémon Center Lady,A2b,70,3,0,15,0,15,Tech,1
+Trainer,X Speed,P-A,2,3,0,15,0,15,Tech,1
+Trainer,Giant Cape,A2,147,0,2,0,10,10,Tech,2
+Trainer,Leaf,A1a,68,2,0,10,0,10,Tech,1
+Trainer,Protective Poncho,B2,147,2,0,10,0,10,Tech,1
+Trainer,Red Card,P-A,6,2,0,10,0,10,Tech,1
+Trainer,Sabrina,A1,225,2,0,10,0,10,Tech,1

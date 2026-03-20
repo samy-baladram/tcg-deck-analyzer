@@ -1,0 +1,22 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Lucario,A2,92,11,0,100,0,100,Core,1
+Pokemon,Rampardos,A2,89,0,11,0,100,100,Core,2
+Pokemon,Hitmontop,A4,102,10,0,90,0,90,Core,1
+Pokemon,Riolu,A2,91,10,0,90,0,90,Core,1
+Pokemon,Shaymin,A2a,69,10,0,90,0,90,Core,1
+Pokemon,Cranidos,A2,88,1,0,9,0,9,Tech,1
+Pokemon,Hitmonlee,A1,154,1,0,9,0,9,Tech,1
+Pokemon,Riolu,A2b,42,1,0,9,0,9,Tech,1
+Trainer,Cyrus,A2,150,11,0,100,0,100,Core,1
+Trainer,Professor's Research,P-A,7,0,11,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,11,0,100,100,Core,2
+Trainer,Skull Fossil,A2,144,0,11,0,100,100,Core,2
+Trainer,Copycat,B1,225,1,10,9,90,99,Core,2
+Trainer,Poké Ball,P-A,5,1,10,9,90,99,Core,2
+Trainer,Mesagoza,B2a,93,10,0,90,0,90,Core,1
+Trainer,Giant Cape,A2,147,8,1,72,9,81,Core,1
+Trainer,Rocky Helmet,A2,148,7,1,63,9,72,Standard,1
+Trainer,Giovanni,A1,223,3,0,27,0,27,Standard,1
+Trainer,Arven,B2a,91,1,0,9,0,9,Tech,1
+Trainer,Lucky Ice Pop,B2,145,1,0,9,0,9,Tech,1
+Trainer,Red,A2b,71,1,0,9,0,9,Tech,1

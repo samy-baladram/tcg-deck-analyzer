@@ -1,0 +1,21 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Greninja,A1,89,0,20,0,100,100,Core,2
+Pokemon,Oricorio,A3,66,0,20,0,100,100,Core,2
+Pokemon,Froakie,A1,87,0,19,0,95,95,Core,2
+Pokemon,Mega Kangaskhan ex,B2,127,19,0,95,0,95,Core,1
+Pokemon,Pichu,A4,66,2,16,10,80,90,Core,2
+Pokemon,Chingling,B1,109,0,1,0,5,5,Tech,2
+Pokemon,Froakie,B1,71,0,1,0,5,5,Tech,2
+Pokemon,Mantyke,A4a,23,0,1,0,5,5,Tech,2
+Trainer,Copycat,B1,225,17,3,85,15,100,Core,1
+Trainer,Cyrus,A2,150,2,18,10,90,100,Core,2
+Trainer,Poké Ball,P-A,5,0,20,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,Ilima,A3,149,18,0,90,0,90,Core,1
+Trainer,Irida,A2a,72,18,0,90,0,90,Core,1
+Trainer,Serena,B1a,69,2,0,10,0,10,Tech,1
+Trainer,Lucky Ice Pop,B2,145,1,0,5,0,5,Tech,1
+Trainer,Mesagoza,B2a,93,1,0,5,0,5,Tech,1
+Trainer,Red Card,P-A,6,1,0,5,0,5,Tech,1
+Trainer,Rocky Helmet,A2,148,1,0,5,0,5,Tech,1

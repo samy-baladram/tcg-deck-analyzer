@@ -1,0 +1,17 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Mega Steelix ex,B1a,52,0,7,0,100,100,Core,2
+Pokemon,Skarmory,A2,111,0,7,0,100,100,Core,2
+Pokemon,Onix,B1a,38,1,6,14,85,99,Core,2
+Pokemon,Onix,A4,92,1,0,14,0,14,Tech,1
+Trainer,Brock,A1,224,0,7,0,100,100,Core,2
+Trainer,Cyrus,A2,150,7,0,100,0,100,Core,1
+Trainer,Poké Ball,P-A,5,0,7,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,7,0,100,100,Core,2
+Trainer,Lucky Ice Pop,B2,145,1,6,14,85,99,Core,2
+Trainer,Heavy Helmet,B1,219,0,6,0,85,85,Core,2
+Trainer,Protective Poncho,B2,147,0,5,0,71,71,Standard,2
+Trainer,Training Area,B2,153,5,0,71,0,71,Standard,1
+Trainer,Rocky Helmet,A2,148,2,0,28,0,28,Standard,1
+Trainer,Sabrina,A1,225,2,0,28,0,28,Standard,1
+Trainer,Steel Apron,A4,153,1,1,14,14,28,Standard,1
+Trainer,Copycat,B1,225,0,1,0,14,14,Tech,2
