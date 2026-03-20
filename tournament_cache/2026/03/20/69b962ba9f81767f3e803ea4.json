@@ -1,0 +1,57 @@
+{
+  "tournament_id": "69b962ba9f81767f3e803ea4",
+  "name": "Fans Pok\u00e9mon TCGP Chile Open #6",
+  "timestamp": 1774044600000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Nicolas Villagra",
+      "record": "2 - 0 - 1",
+      "archetype": "magnezone-b1a-bellibolt-ex-b2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Max Mustermann",
+      "record": "2 - 0 - 1",
+      "archetype": "guzzlord-ex-a3a-indeedee-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "DG | Hisoka .",
+      "record": "2 - 1 - 0",
+      "archetype": "bellibolt-ex-b2a-zeraora-a3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Sergio Samuel",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Xavier Rus",
+      "record": "1 - 2 - 0",
+      "archetype": "guzzlord-ex-a3a-indeedee-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Marc C",
+      "record": "0 - 3 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Yumi | \ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7",
+      "record": "0 - 2 - 0drop",
+      "archetype": "guzzlord-ex-a3a-indeedee-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Victoe Rito",
+      "record": "1 - 1 - 0drop",
+      "archetype": "gholdengo-ex-b2a-dialga-ex-a2"
+    }
+  ]
+}
