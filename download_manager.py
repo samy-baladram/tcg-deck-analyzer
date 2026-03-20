@@ -194,6 +194,3 @@ def create_export_zip():
     
     zip_buffer.seek(0)
     return zip_buffer
-    
-    zip_buffer.seek(0)
-    return zip_buffer
