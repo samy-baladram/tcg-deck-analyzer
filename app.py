@@ -360,6 +360,35 @@ if 'analyze' in st.session_state and selected_option and st.session_state.get('d
                 # Display deck header
                 display_tabs.display_deck_header(original_deck_info, results)
                 
+                # Add download button in top right
+                st.markdown("---")
+                col_space, col_download = st.columns([4, 1])
+                with col_download:
+                    from download_manager import create_export_zip
+                    
+                    # Initialize download cache in session state
+                    if 'meta_download_cache' not in st.session_state:
+                        st.session_state.meta_download_cache = None
+                    
+                    # Only prepare zip file if not already cached
+                    if st.session_state.meta_download_cache is None:
+                        try:
+                            with st.spinner("📥 Preparing..."):
+                                st.session_state.meta_download_cache = create_export_zip()
+                        except Exception as e:
+                            st.error(f"Error preparing download: {e}")
+                            print(f"Download error: {e}")
+                    
+                    # Show download button with cached zip
+                    if st.session_state.meta_download_cache is not None:
+                        st.download_button(
+                            label="📥 Download Data",
+                            data=st.session_state.meta_download_cache,
+                            file_name="metagame_data.zip",
+                            mime="application/zip",
+                            key="download_meta_data"
+                        )
+                
                 # Create tab container
                 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Deck Info", 
                                                         "Deck Gallery",
