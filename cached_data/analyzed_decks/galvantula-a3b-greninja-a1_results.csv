@@ -1,0 +1,15 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Froakie,A1,87,0,20,0,100,100,Core,2
+Pokemon,Galvantula,A3b,27,0,20,0,100,100,Core,2
+Pokemon,Greninja,A1,89,0,20,0,100,100,Core,2
+Pokemon,Joltik,A3b,26,0,20,0,100,100,Core,2
+Pokemon,Dunsparce,A4,144,17,0,85,0,85,Core,1
+Pokemon,Mantyke,A4a,23,2,0,10,0,10,Tech,1
+Pokemon,Igglybuff,A4a,59,1,0,5,0,5,Tech,1
+Trainer,Copycat,B1,225,0,20,0,100,100,Core,2
+Trainer,Cyrus,A2,150,20,0,100,0,100,Core,1
+Trainer,Poké Ball,P-A,5,1,19,5,95,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,Will,A4,156,2,18,10,90,100,Core,2
+Trainer,Lisia,B1,226,3,0,15,0,15,Tech,1
