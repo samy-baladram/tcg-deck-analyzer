@@ -1,0 +1,32 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Indeedee ex,B1,121,16,4,80,20,100,Core,1
+Pokemon,Mega Altaria ex,B1,102,0,20,0,100,100,Core,2
+Pokemon,Swablu,B1,196,0,19,0,95,95,Core,2
+Pokemon,Chingling,B1,109,4,12,20,60,80,Core,2
+Pokemon,Jirachi,B1,106,16,0,80,0,80,Core,1
+Pokemon,Klefki,B1,120,9,0,45,0,45,Standard,1
+Pokemon,Altaria,B1,197,8,0,40,0,40,Standard,1
+Pokemon,Furfrou,B1a,65,4,1,20,5,25,Tech,1
+Pokemon,Meloetta,B2,70,0,3,0,15,15,Tech,2
+Pokemon,Tapu Lele,A3,84,3,0,15,0,15,Tech,1
+Pokemon,Comfey,A3,80,1,0,5,0,5,Tech,1
+Pokemon,Swablu,A4a,64,0,1,0,5,5,Tech,2
+Trainer,Cyrus,A2,150,18,2,90,10,100,Core,1
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Lisia,B1,226,8,9,40,45,85,Core,2
+Trainer,Sabrina,A1,225,17,0,85,0,85,Core,1
+Trainer,Copycat,B1,225,15,1,75,5,80,Core,1
+Trainer,Training Area,B2,153,16,0,80,0,80,Core,1
+Trainer,Poké Ball,P-A,5,12,1,60,5,65,Standard,1
+Trainer,Red Card,P-A,6,13,0,65,0,65,Standard,1
+Trainer,Mars,A2,155,11,0,55,0,55,Standard,1
+Trainer,Lucky Ice Pop,B2,145,6,4,30,20,50,Standard,1
+Trainer,Rocky Helmet,A2,148,3,3,15,15,30,Standard,1
+Trainer,Guzma,A3,151,4,0,20,0,20,Tech,1
+Trainer,Peculiar Plaza,B2,155,4,0,20,0,20,Tech,1
+Trainer,Giant Cape,A2,147,3,0,15,0,15,Tech,1
+Trainer,Protective Poncho,B2,147,1,2,5,10,15,Tech,2
+Trainer,Pokémon Center Lady,A2b,70,1,0,5,0,5,Tech,1
+Trainer,Red,A2b,71,1,0,5,0,5,Tech,1
+Trainer,Repel,A3a,64,1,0,5,0,5,Tech,1
+Trainer,X Speed,P-A,2,1,0,5,0,5,Tech,1
