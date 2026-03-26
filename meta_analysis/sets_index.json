@@ -1,6 +1,12 @@
 {
-  "last_updated": "2026-03-26T13:14:42.806718",
+  "last_updated": "2026-03-26T15:03:09.967153",
   "sets": [
+    {
+      "set_name": "Mega Shine",
+      "set_code": "B2b",
+      "release_date": "2026-03-26",
+      "card_count": 117
+    },
     {
       "set_name": "Paldean Wonders",
       "set_code": "B2a",
