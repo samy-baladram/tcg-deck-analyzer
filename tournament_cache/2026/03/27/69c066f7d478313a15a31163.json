@@ -1,0 +1,33 @@
+{
+  "tournament_id": "69c066f7d478313a15a31163",
+  "name": "Fans Pok\u00e9mon TCGP Chile Open #7",
+  "timestamp": 1774649700000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Yumi | \ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7",
+      "record": "3 - 0 - 0",
+      "archetype": "mega-altaria-ex-b1-igglybuff-a4a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Nicolas Villagra",
+      "record": "1 - 2 - 0",
+      "archetype": "magnezone-b1a-bellibolt-ex-b2a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Mauricio Lobos",
+      "record": "1 - 2 - 0",
+      "archetype": "gholdengo-ex-orthworm-b2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Milton cabrera",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-igglybuff-a4a"
+    }
+  ]
+}
