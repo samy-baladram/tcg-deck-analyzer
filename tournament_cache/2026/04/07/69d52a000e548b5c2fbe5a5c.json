@@ -1,0 +1,57 @@
+{
+  "tournament_id": "69d52a000e548b5c2fbe5a5c",
+  "name": "\u208d\ud834\udd10 \u032b\ud834\udd10\u208e BOAT CLAN TOURNAMENT \u208d\ud834\udd10 \u032b\ud834\udd10\u208e",
+  "timestamp": 1775592000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Luan",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-slowbro-ex-b2b-mantyke-a4a"
+    },
+    {
+      "placement": 2,
+      "player_name": "u\u0250\u028dS | \ua4d5\u2c6fO\ua4ed",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Shifu",
+      "record": "4 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-mismagius-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Yumi | \ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Koe",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | RC",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-altaria-a4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "BOAT | Akuma_z6",
+      "record": "1 - 3 - 0",
+      "archetype": "snorlax-ex-a3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Hyperion",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mismagius-ex-a2-greninja-a1"
+    }
+  ]
+}
