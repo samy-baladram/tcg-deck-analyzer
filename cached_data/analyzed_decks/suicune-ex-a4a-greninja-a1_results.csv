@@ -1,0 +1,24 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Greninja,A1,89,0,14,0,100,100,Core,2
+Pokemon,Suicune ex,A4a,20,0,14,0,100,100,Core,2
+Pokemon,Froakie,B1,71,0,9,0,64,64,Standard,2
+Pokemon,Chien-Pao ex,B2a,37,6,0,42,0,42,Standard,1
+Pokemon,Froakie,A1,87,0,5,0,35,35,Standard,2
+Pokemon,Giratina ex,A2b,35,5,0,35,0,35,Standard,1
+Pokemon,Frogadier,A1,88,4,0,28,0,28,Standard,1
+Pokemon,Indeedee ex,B1,121,3,0,21,0,21,Tech,1
+Trainer,Professor's Research,P-A,7,0,14,0,100,100,Core,2
+Trainer,Cyrus,A2,150,6,8,42,57,99,Core,2
+Trainer,Giant Cape,A2,147,9,5,64,35,99,Core,1
+Trainer,Irida,A2a,72,10,4,71,28,99,Core,1
+Trainer,Poké Ball,P-A,5,3,11,21,78,99,Core,2
+Trainer,Rare Candy,A3,144,4,10,28,71,99,Core,2
+Trainer,Mars,A2,155,10,0,71,0,71,Standard,1
+Trainer,Starting Plains,B2,154,7,0,50,0,50,Standard,1
+Trainer,Lucky Ice Pop,B2,145,5,0,35,0,35,Standard,1
+Trainer,Misty,A1,220,5,0,35,0,35,Standard,1
+Trainer,Copycat,B1,225,4,0,28,0,28,Standard,1
+Trainer,Pokémon Communication,A2,146,4,0,28,0,28,Standard,1
+Trainer,Guzma,A3,151,3,0,21,0,21,Tech,1
+Trainer,Inflatable Boat,A4a,67,2,0,14,0,14,Tech,1
+Trainer,Mesagoza,B2a,93,2,0,14,0,14,Tech,1

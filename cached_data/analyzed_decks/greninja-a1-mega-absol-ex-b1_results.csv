@@ -1,0 +1,19 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Darkrai ex,A2,110,20,0,100,0,100,Core,1
+Pokemon,Froakie,A1,87,0,20,0,100,100,Core,2
+Pokemon,Greninja,A1,89,0,20,0,100,100,Core,2
+Pokemon,Mega Absol ex,B1,151,20,0,100,0,100,Core,1
+Pokemon,Chingling,B1,109,0,19,0,95,95,Core,2
+Pokemon,Tyrogue,A4,101,0,1,0,5,5,Tech,2
+Trainer,Copycat,B1,225,0,20,0,100,100,Core,2
+Trainer,Cyrus,A2,150,18,2,90,10,100,Core,1
+Trainer,Poké Ball,P-A,5,0,20,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,Rocky Helmet,A2,148,18,1,90,5,95,Core,1
+Trainer,Inflatable Boat,A4a,67,16,0,80,0,80,Core,1
+Trainer,Red Card,P-A,6,14,0,70,0,70,Standard,1
+Trainer,Mars,A2,155,3,0,15,0,15,Tech,1
+Trainer,Lucky Ice Pop,B2,145,1,1,5,5,10,Tech,1
+Trainer,Giant Cape,A2,147,1,0,5,0,5,Tech,1
+Trainer,Starting Plains,B2,154,1,0,5,0,5,Tech,1

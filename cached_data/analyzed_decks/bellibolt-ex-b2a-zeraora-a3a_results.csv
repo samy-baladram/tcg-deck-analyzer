@@ -1,0 +1,29 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Bellibolt ex,B2a,42,0,20,0,100,100,Core,2
+Pokemon,Zeraora,A3a,21,0,20,0,100,100,Core,2
+Pokemon,Tadbulb,B2,56,0,19,0,95,95,Core,2
+Pokemon,Pichu,A4,66,11,0,55,0,55,Standard,1
+Pokemon,Oricorio,A3,66,9,0,45,0,45,Standard,1
+Pokemon,Tadbulb,B2a,41,0,1,0,5,5,Tech,2
+Pokemon,Tyrogue,A4,101,1,0,5,0,5,Tech,1
+Trainer,Copycat,B1,225,1,19,5,95,100,Core,2
+Trainer,Cyrus,A2,150,20,0,100,0,100,Core,1
+Trainer,Poké Ball,P-A,5,1,19,5,95,100,Core,2
+Trainer,Professor's Research,P-A,7,0,19,0,95,95,Core,2
+Trainer,Electric Generator,B2a,86,6,12,30,60,90,Core,2
+Trainer,Sabrina,A1,225,17,0,85,0,85,Core,1
+Trainer,Training Area,B2,153,15,0,75,0,75,Standard,1
+Trainer,Rocky Helmet,A2,148,6,8,30,40,70,Standard,2
+Trainer,Lucky Ice Pop,B2,145,8,0,40,0,40,Standard,1
+Trainer,Protective Poncho,B2,147,6,0,30,0,30,Standard,1
+Trainer,X Speed,P-A,2,3,1,15,5,20,Tech,1
+Trainer,Elemental Switch,A4,151,3,0,15,0,15,Tech,1
+Trainer,Heavy Helmet,B1,219,3,0,15,0,15,Tech,1
+Trainer,Lisia,B1,226,3,0,15,0,15,Tech,1
+Trainer,Giovanni,A1,223,2,0,10,0,10,Tech,1
+Trainer,Guzma,A3,151,2,0,10,0,10,Tech,1
+Trainer,Red Card,P-A,6,2,0,10,0,10,Tech,1
+Trainer,Electrical Cord,A3a,65,1,0,5,0,5,Tech,1
+Trainer,Giant Cape,A2,147,0,1,0,5,5,Tech,2
+Trainer,Mars,A2,155,1,0,5,0,5,Tech,1
+Trainer,Mesagoza,B2a,93,1,0,5,0,5,Tech,1
