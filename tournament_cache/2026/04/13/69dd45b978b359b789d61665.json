@@ -1,0 +1,51 @@
+{
+  "tournament_id": "69dd45b978b359b789d61665",
+  "name": "Squad Zero Only Clash #2",
+  "timestamp": 1776114000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "sZero | frappesdrinker",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "sZero | Salad",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "sZero | Easy",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "sZero NastKon",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "sZero | Katsuo Nakahara",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "YaBoiPride",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "sZero | guunnz",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
