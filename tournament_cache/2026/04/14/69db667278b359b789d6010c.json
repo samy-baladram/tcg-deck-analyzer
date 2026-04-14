@@ -1,0 +1,99 @@
+{
+  "tournament_id": "69db667278b359b789d6010c",
+  "name": "Pregio Tournament Pocket #05",
+  "timestamp": 1776168000000,
+  "format": "Standard",
+  "player_count": 15,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Einstun",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "TB | Nyphyx",
+      "record": "4 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Christopher Vaughan",
+      "record": "4 - 1 - 0",
+      "archetype": "gholdengo-ex-orthworm-b2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "GuinarTD",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-manectric-ex-b2b-zeraora-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Gengars",
+      "record": "3 - 1 - 0",
+      "archetype": "greninja-a1-decidueye-ex-a3"
+    },
+    {
+      "placement": 6,
+      "player_name": "Tesla20",
+      "record": "2 - 2 - 0",
+      "archetype": "vikavolt-a3-pikachu-ex-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "LeRouxDuWeb",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "BarlouPike",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-igglybuff-a4a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Jervis382000",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-manectric-ex-b2b-oricorio-a3"
+    },
+    {
+      "placement": 10,
+      "player_name": "Warsito",
+      "record": "1 - 3 - 0",
+      "archetype": "mew-ex-a1a-giratina-ex-a2b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Flipinton",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-igglybuff-a4a"
+    },
+    {
+      "placement": 12,
+      "player_name": "DarkMaster",
+      "record": "0 - 1 - 0drop",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 13,
+      "player_name": "Neitantei",
+      "record": "0 - 4 - 0",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    },
+    {
+      "placement": 14,
+      "player_name": "Duval",
+      "record": "0 - 4 - 0",
+      "archetype": "mega-altaria-ex-b1-darkrai-b2b"
+    },
+    {
+      "placement": 15,
+      "player_name": "Zegger",
+      "record": "0 - 4 - 0",
+      "archetype": "greninja-a1-decidueye-ex-a3"
+    }
+  ]
+}
