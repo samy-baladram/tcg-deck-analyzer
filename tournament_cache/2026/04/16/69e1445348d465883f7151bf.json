@@ -1,0 +1,51 @@
+{
+  "tournament_id": "69e1445348d465883f7151bf",
+  "name": "Squad Zero Only Clash #3",
+  "timestamp": 1776374100000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "sZero | frappesdrinker",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "sZero | guunnz",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "sZero | CJ",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "sZero | Salad",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "sZero | Katsuo Nakahara",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "sZero | NastKon",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "iplaypokemans",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
