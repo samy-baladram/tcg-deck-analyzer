@@ -1,0 +1,31 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Charmeleon,B1a,12,0,20,0,100,100,Core,2
+Pokemon,Entei ex,A4a,10,0,20,0,100,100,Core,2
+Pokemon,Mega Charizard Y ex,B1a,14,20,0,100,0,100,Core,1
+Pokemon,Charmander,A1,33,1,10,5,50,55,Standard,2
+Pokemon,Charmander,A2b,8,0,8,0,40,40,Standard,2
+Pokemon,Charizard,B1a,13,7,0,35,0,35,Standard,1
+Pokemon,Araquanid,A3,53,2,0,10,0,10,Tech,1
+Pokemon,Charizard,A1,35,2,0,10,0,10,Tech,1
+Pokemon,Charmander,B1a,11,1,1,5,5,10,Tech,1
+Pokemon,Dewpider,A3,52,2,0,10,0,10,Tech,1
+Pokemon,Indeedee ex,B1,121,2,0,10,0,10,Tech,1
+Trainer,Flame Patch,B1,217,0,20,0,100,100,Core,2
+Trainer,Poké Ball,P-A,5,0,20,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,May,B1,223,9,9,45,45,90,Core,1
+Trainer,Sabrina,A1,225,16,0,80,0,80,Core,1
+Trainer,Giant Cape,A2,147,11,4,55,20,75,Standard,1
+Trainer,Protective Poncho,B2,147,8,3,40,15,55,Standard,1
+Trainer,Mars,A2,155,9,0,45,0,45,Standard,1
+Trainer,Lucky Ice Pop,B2,145,8,0,40,0,40,Standard,1
+Trainer,Copycat,B1,225,7,0,35,0,35,Standard,1
+Trainer,Pokémon Center Lady,A2b,70,7,0,35,0,35,Standard,1
+Trainer,Repel,A3a,64,5,0,25,0,25,Tech,1
+Trainer,Lillie,A3,155,3,0,15,0,15,Tech,1
+Trainer,Lana,A3,152,0,2,0,10,10,Tech,2
+Trainer,Mesagoza,B2a,93,2,0,10,0,10,Tech,1
+Trainer,Arven,B2a,91,1,0,5,0,5,Tech,1
+Trainer,Cyrus,A2,150,1,0,5,0,5,Tech,1
+Trainer,Leaf,A1a,68,1,0,5,0,5,Tech,1
+Trainer,Starting Plains,B2,154,1,0,5,0,5,Tech,1

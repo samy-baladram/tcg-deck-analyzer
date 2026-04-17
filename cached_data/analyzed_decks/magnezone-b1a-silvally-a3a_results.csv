@@ -1,0 +1,18 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Chingling,B1,109,7,0,100,0,100,Core,1
+Pokemon,Magnemite,B1a,24,0,7,0,100,100,Core,2
+Pokemon,Magneton,A1,98,0,7,0,100,100,Core,2
+Pokemon,Magnezone,B1a,26,0,7,0,100,100,Core,2
+Pokemon,Silvally,A3a,61,7,0,100,0,100,Core,1
+Pokemon,Type: Null,A3a,60,7,0,100,0,100,Core,1
+Pokemon,Ditto,A1,205,5,0,71,0,71,Standard,1
+Pokemon,Oricorio,A3,66,2,0,28,0,28,Standard,1
+Trainer,Cyrus,A2,150,7,0,100,0,100,Core,1
+Trainer,Gladion,A3a,67,7,0,100,0,100,Core,1
+Trainer,Lisia,B1,226,7,0,100,0,100,Core,1
+Trainer,Mars,A2,155,7,0,100,0,100,Core,1
+Trainer,Poké Ball,P-A,5,7,0,100,0,100,Core,1
+Trainer,Professor's Research,P-A,7,0,7,0,100,100,Core,2
+Trainer,Sabrina,A1,225,7,0,100,0,100,Core,1
+Trainer,Copycat,B1,225,3,4,42,57,99,Core,2
+Trainer,Clemont,B1a,68,3,0,42,0,42,Standard,1

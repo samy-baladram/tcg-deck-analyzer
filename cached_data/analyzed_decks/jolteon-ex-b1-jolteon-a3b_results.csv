@@ -1,0 +1,24 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Eevee,B1,184,0,20,0,100,100,Core,2
+Pokemon,Jolteon,A3b,25,2,18,10,90,100,Core,2
+Pokemon,Jolteon ex,B1,81,0,20,0,100,100,Core,2
+Pokemon,Eevee ex,A3b,56,9,0,45,0,45,Standard,1
+Pokemon,Oricorio,A3,66,0,1,0,5,5,Tech,2
+Trainer,Copycat,B1,225,5,15,25,75,100,Core,2
+Trainer,Cyrus,A2,150,8,12,40,60,100,Core,2
+Trainer,Poké Ball,P-A,5,11,9,55,45,100,Core,1
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Eevee Bag,A3b,66,0,19,0,95,95,Core,2
+Trainer,Training Area,B2,153,18,0,90,0,90,Core,1
+Trainer,Sabrina,A1,225,16,0,80,0,80,Core,1
+Trainer,Guzma,A3,151,10,0,50,0,50,Standard,1
+Trainer,Rocky Helmet,A2,148,4,6,20,30,50,Standard,2
+Trainer,Repel,A3a,64,7,0,35,0,35,Standard,1
+Trainer,Penny,B2a,92,6,0,30,0,30,Standard,1
+Trainer,Red,A2b,71,6,0,30,0,30,Standard,1
+Trainer,May,B1,223,5,0,25,0,25,Tech,1
+Trainer,Giant Cape,A2,147,4,0,20,0,20,Tech,1
+Trainer,Red Card,P-A,6,3,0,15,0,15,Tech,1
+Trainer,Sightseer,B2,150,3,0,15,0,15,Tech,1
+Trainer,Iono,B2a,89,1,0,5,0,5,Tech,1
+Trainer,Lucky Ice Pop,B2,145,0,1,0,5,5,Tech,2

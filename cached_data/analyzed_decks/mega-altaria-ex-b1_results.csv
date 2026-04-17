@@ -1,0 +1,25 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Jirachi,B1,106,20,0,100,0,100,Core,1
+Pokemon,Mega Altaria ex,B1,102,0,20,0,100,100,Core,2
+Pokemon,Chingling,B1,109,19,0,95,0,95,Core,1
+Pokemon,Furfrou,B1a,65,19,0,95,0,95,Core,1
+Pokemon,Klefki,B1,120,19,0,95,0,95,Core,1
+Pokemon,Swablu,B1,196,0,19,0,95,95,Core,2
+Pokemon,Tapu Lele,A3,84,19,0,95,0,95,Core,1
+Pokemon,Carbink,B1,119,1,0,5,0,5,Tech,1
+Pokemon,Cleffa,A4,77,1,0,5,0,5,Tech,1
+Pokemon,Igglybuff,A4a,59,1,0,5,0,5,Tech,1
+Pokemon,Meloetta,B2,70,1,0,5,0,5,Tech,1
+Pokemon,Swablu,P-B,17,0,1,0,5,5,Tech,2
+Trainer,Copycat,B1,225,19,1,95,5,100,Core,1
+Trainer,Cyrus,A2,150,3,17,15,85,100,Core,2
+Trainer,Lisia,B1,226,1,19,5,95,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Training Area,B2,153,20,0,100,0,100,Core,1
+Trainer,Mars,A2,155,19,0,95,0,95,Core,1
+Trainer,Rocky Helmet,A2,148,18,1,90,5,95,Core,1
+Trainer,Lucky Ice Pop,B2,145,16,0,80,0,80,Core,1
+Trainer,Sabrina,A1,225,3,0,15,0,15,Tech,1
+Trainer,Poké Ball,P-A,5,2,0,10,0,10,Tech,1
+Trainer,Pokémon Center Lady,A2b,70,2,0,10,0,10,Tech,1
+Trainer,Red Card,P-A,6,1,0,5,0,5,Tech,1
