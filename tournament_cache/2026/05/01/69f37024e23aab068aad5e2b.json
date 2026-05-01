@@ -1,0 +1,69 @@
+{
+  "tournament_id": "69f37024e23aab068aad5e2b",
+  "name": "\u208d\ud834\udd10 \u032b\ud834\udd10\u208e BOAT CLAN TOURNAMENT \u208d\ud834\udd10 \u032b\ud834\udd10\u208e",
+  "timestamp": 1777601100000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | RC",
+      "record": "4 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | raiderboy",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-castform-sunny-form-b3"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | sneakAttack",
+      "record": "3 - 2 - 0",
+      "archetype": "zoroark-ex-b3-darkrai-ex-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | TMan",
+      "record": "3 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Yumi | \ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-igglybuff-a4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Toxology",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7| Wuggzy",
+      "record": "2 - 2 - 0",
+      "archetype": "mandibuzz-b3-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Zesty | \ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-sceptile-ex-b3-pheromosa-a3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7| Satoru Gojo",
+      "record": "0 - 2 - 0drop",
+      "archetype": "infernape-ex-a2-mega-kangaskhan-ex-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | RavSix",
+      "record": "0 - 2 - 0drop",
+      "archetype": "emboar-b3-magby-a4"
+    }
+  ]
+}
