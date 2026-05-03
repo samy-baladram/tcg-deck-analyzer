@@ -1,0 +1,33 @@
+{
+  "tournament_id": "69aa9be56a05f00a8c4a5635",
+  "name": "\ud83d\udc38FrogEX B2-Season Invitational Group A\ud83d\udc38",
+  "timestamp": 1777820400000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "FrogEX | Wawan S",
+      "record": "3 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\ude44\ud835\ude48\ud835\ude4b | Brendon .",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "FrogEX | Atomiix",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Xm4te",
+      "record": "0 - 3 - 0",
+      "archetype": null
+    }
+  ]
+}

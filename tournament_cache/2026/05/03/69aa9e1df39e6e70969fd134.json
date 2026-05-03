@@ -1,0 +1,33 @@
+{
+  "tournament_id": "69aa9e1df39e6e70969fd134",
+  "name": "\ud83d\udc38FrogEX B2-Season Invitational Group B\ud83d\udc38",
+  "timestamp": 1777820400000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Evan34",
+      "record": "3 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "FrogEX | Takahiro",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "FrogEX | Momo",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "FrogEX | Njord",
+      "record": "0 - 3 - 0",
+      "archetype": null
+    }
+  ]
+}
