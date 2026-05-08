@@ -1,0 +1,33 @@
+{
+  "tournament_id": "69fd347a4f71d664893efcf9",
+  "name": "First time tournament players welcome",
+  "timestamp": 1778202780000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "NeoNox40",
+      "record": "4 - 0 - 0",
+      "archetype": "mega-blaziken-ex-heatmor-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Pumoba",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "RaphMec",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 4,
+      "player_name": "WarlynGM",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-manectric-ex-b2b-zeraora-a3a"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "tournament_id": "69fcc460e23aab068aadd47f",
+  "name": "\u208d\ud834\udd10 \u032b\ud834\udd10\u208e 20$ PRIZE BOAT CLAN TOURNAMENT \u208d\ud834\udd10 \u032b\ud834\udd10\u208e",
+  "timestamp": 1778193000000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Shifu",
+      "record": "6 - 1 - 0",
+      "archetype": "mega-lucario-ex-b3-hitmontop-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Ibte10",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-sceptile-ex-sceptile-b3"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | RavSix",
+      "record": "4 - 2 - 0",
+      "archetype": "chandelure-meowth-b2"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Luan",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Hyperion",
+      "record": "3 - 2 - 0",
+      "archetype": "greninja-a1-giratina-ex-a2b"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Koe",
+      "record": "2 - 3 - 0",
+      "archetype": "zoroark-ex-b3-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "u\u0250\u028dS | \ua4d5\u2c6fO\ua4ed",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-altaria-ex-rillaboom-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | RC",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-hitmontop-a4"
+    },
+    {
+      "placement": 9,
+      "player_name": "Yumi | \ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | sneakAttack",
+      "record": "0 - 2 - 0drop",
+      "archetype": "zoroark-ex-b3-mega-absol-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Thugs Bunny",
+      "record": "1 - 2 - 0drop",
+      "archetype": "meowscarada-ex-b2a-mega-sceptile-ex-b3"
+    }
+  ]
+}
