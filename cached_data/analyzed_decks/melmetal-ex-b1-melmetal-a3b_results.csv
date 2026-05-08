@@ -1,0 +1,23 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Melmetal,A3b,50,20,0,100,0,100,Core,1
+Pokemon,Melmetal ex,B1,174,0,20,0,100,100,Core,2
+Pokemon,Meltan,A1,181,0,20,0,100,100,Core,2
+Pokemon,Orthworm,B2a,77,1,2,5,10,15,Tech,2
+Trainer,Copycat,B1,225,4,16,20,80,100,Core,2
+Trainer,Metal Core Barrier,B2,148,0,20,0,100,100,Core,2
+Trainer,Poké Ball,P-A,5,18,2,90,10,100,Core,1
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Sabrina,A1,225,9,11,45,55,100,Core,2
+Trainer,Training Area,B2,153,19,0,95,0,95,Core,1
+Trainer,Lucky Ice Pop,B2,145,0,17,0,85,85,Core,2
+Trainer,Rocky Helmet,A2,148,1,16,5,80,85,Core,2
+Trainer,Adaman,A2a,75,10,1,50,5,55,Standard,1
+Trainer,Cyrus,A2,150,8,0,40,0,40,Standard,1
+Trainer,Pokémon Center Lady,A2b,70,3,1,15,5,20,Tech,1
+Trainer,Red Card,P-A,6,4,0,20,0,20,Tech,1
+Trainer,Steel Apron,A4,153,3,0,15,0,15,Tech,1
+Trainer,Heavy Helmet,B1,219,1,1,5,5,10,Tech,1
+Trainer,Leaf,A1a,68,2,0,10,0,10,Tech,1
+Trainer,Arven,B2a,91,1,0,5,0,5,Tech,1
+Trainer,Sightseer,B2,150,1,0,5,0,5,Tech,1
+Trainer,X Speed,P-A,2,1,0,5,0,5,Tech,1

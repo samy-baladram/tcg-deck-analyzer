@@ -1,0 +1,29 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Gholdengo ex,B2a,78,1,19,5,95,100,Core,2
+Pokemon,Orthworm,B2a,77,0,20,0,100,100,Core,2
+Pokemon,Gimmighoul,B2a,54,0,16,0,80,80,Core,2
+Pokemon,Magearna,A3,123,9,0,45,0,45,Standard,1
+Pokemon,Gimmighoul,A2b,36,0,4,0,20,20,Tech,2
+Pokemon,Stakataka,A3a,53,1,0,5,0,5,Tech,1
+Trainer,Poké Ball,P-A,5,0,20,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Copycat,B1,225,8,11,40,55,95,Core,2
+Trainer,Metal Core Barrier,B2,148,0,19,0,95,95,Core,2
+Trainer,Lucky Ice Pop,B2,145,4,14,20,70,90,Core,2
+Trainer,Steel Apron,A4,153,11,2,55,10,65,Standard,1
+Trainer,Guzma,A3,151,12,0,60,0,60,Standard,1
+Trainer,Protective Poncho,B2,147,11,1,55,5,60,Standard,1
+Trainer,Lyra,A4,157,9,0,45,0,45,Standard,1
+Trainer,Red Card,P-A,6,7,0,35,0,35,Standard,1
+Trainer,Arven,B2a,91,6,0,30,0,30,Standard,1
+Trainer,Adaman,A2a,75,5,0,25,0,25,Tech,1
+Trainer,Mars,A2,155,4,0,20,0,20,Tech,1
+Trainer,May,B1,223,4,0,20,0,20,Tech,1
+Trainer,Pokémon Center Lady,A2b,70,3,0,15,0,15,Tech,1
+Trainer,X Speed,P-A,2,2,1,10,5,15,Tech,1
+Trainer,Leaf,A1a,68,2,0,10,0,10,Tech,1
+Trainer,Sabrina,A1,225,2,0,10,0,10,Tech,1
+Trainer,Sightseer,B2,150,2,0,10,0,10,Tech,1
+Trainer,Repel,A3a,64,1,0,5,0,5,Tech,1
+Trainer,Starting Plains,B2,154,1,0,5,0,5,Tech,1
+Trainer,Training Area,B2,153,1,0,5,0,5,Tech,1
