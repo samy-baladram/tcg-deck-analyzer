@@ -1,0 +1,75 @@
+{
+  "tournament_id": "69f510884f71d664893e962b",
+  "name": "Maj\u00f3wka Cup - 3/05/2026 [PL]",
+  "timestamp": 1778425200000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Rashpultu",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-igglybuff-a4a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Akeno_666",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 3,
+      "player_name": "rubinek",
+      "record": "5 - 2 - 0",
+      "archetype": "flygon-ex-b3"
+    },
+    {
+      "placement": 4,
+      "player_name": "ConquestCQN",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Tetrycy",
+      "record": "5 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Najasho",
+      "record": "3 - 3 - 0",
+      "archetype": "meowscarada-ex-b2a-meowscarada-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "Skelecross",
+      "record": "2 - 4 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Takijakimam",
+      "record": "2 - 4 - 0",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 9,
+      "player_name": "DariusPopek",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "panarturek",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 11,
+      "player_name": "PokeFunky",
+      "record": "1 - 2 - 0drop",
+      "archetype": "flygon-ex-b3-indeedee-ex-b1"
+    }
+  ]
+}
