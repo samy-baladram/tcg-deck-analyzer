@@ -1,0 +1,99 @@
+{
+  "tournament_id": "6a030fa013f957d6d4b468b3",
+  "name": "PKM: Torneo pocket 12/05/26",
+  "timestamp": 1778629500000,
+  "format": "Standard",
+  "player_count": 15,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Sumier Sookdeo",
+      "record": "5 - 0 - 0",
+      "archetype": "mega-charizard-x-ex-b2b-mega-charizard-y-ex-b1a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Marc C",
+      "record": "4 - 1 - 0",
+      "archetype": "mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Natanael La Rosa",
+      "record": "3 - 2 - 0",
+      "archetype": "flareon-ex-eevee-ex-a3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Daniel Bernardo",
+      "record": "3 - 2 - 0",
+      "archetype": "zoroark-ex-b3-mega-absol-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Guillermo Plata",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Mariana Corvaglia",
+      "record": "2 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Jes\u00fas Canelones",
+      "record": "2 - 3 - 0",
+      "archetype": "jolteon-ex-b1-jolteon-a3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Anne Ortega",
+      "record": "2 - 1 - 2",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Dasun Abeykoon",
+      "record": "2 - 2 - 1",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Angel Tovar",
+      "record": "2 - 2 - 1",
+      "archetype": "mega-charizard-y-ex-b1a-moltres-ex-a1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Julian Roberto Perez Carbajal",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 12,
+      "player_name": "Fernando Buenrostro Preciado",
+      "record": "1 - 0 - 0drop",
+      "archetype": "mega-charizard-x-ex-b2b-mega-charizard-y-ex-b1a"
+    },
+    {
+      "placement": 13,
+      "player_name": "Aldrin Perez Figuera",
+      "record": "0 - 1 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Guilherme Paula",
+      "record": "0 - 1 - 1drop",
+      "archetype": "mega-steelix-ex-b1a-indeedee-ex-b1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Rafael Frutuoso",
+      "record": "0 - 4 - 1",
+      "archetype": "mega-lucario-ex-b3-igglybuff-a4a"
+    }
+  ]
+}
