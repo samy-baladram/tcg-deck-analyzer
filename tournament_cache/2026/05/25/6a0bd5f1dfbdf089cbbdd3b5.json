@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6a0bd5f1dfbdf089cbbdd3b5",
+  "name": "Women\u2019s pocket league $5",
+  "timestamp": 1779669000000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "4 - 1 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Nizul",
+      "record": "3 - 2 - 0",
+      "archetype": "incineroar-ex-a3-entei-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "milkymiau",
+      "record": "3 - 1 - 0",
+      "archetype": "espeon-ex-a4-leafeon-ex-a2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Resan44",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-igglybuff-a4a"
+    },
+    {
+      "placement": 5,
+      "player_name": "mspinguino",
+      "record": "1 - 2 - 0",
+      "archetype": "buzzwole-ex-celesteela-a3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "r0zey",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Mega Hanna EX",
+      "record": "1 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Speedy_Paws",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-igglybuff-a4a"
+    }
+  ]
+}
