@@ -1,0 +1,75 @@
+{
+  "tournament_id": "6a154b0b8c163b8097997aee",
+  "name": "Dark league Pocket Pop Up",
+  "timestamp": 1779793200000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TDL| EllieDark",
+      "record": "5 - 0 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Octavianus",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-manectric-ex-b2b-jolteon-a3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "evadeXO",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-hitmontop-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "Hansonlg100",
+      "record": "2 - 2 - 1",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Thila",
+      "record": "2 - 2 - 0",
+      "archetype": "zoroark-ex-b3-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Brian Chang",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-castform-sunny-form-b3"
+    },
+    {
+      "placement": 7,
+      "player_name": "ChIvO",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-annihilape-b2a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Warpis",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "TrainerYalcn",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mimikyu-ex-b2-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Gohan28",
+      "record": "0 - 1 - 0drop",
+      "archetype": "magnezone-b1a-pikachu-ex-a2b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Tesla20",
+      "record": "0 - 2 - 0drop",
+      "archetype": "lickilicky-ex-a2-teal-mask-ogerpon-ex-b2"
+    }
+  ]
+}
