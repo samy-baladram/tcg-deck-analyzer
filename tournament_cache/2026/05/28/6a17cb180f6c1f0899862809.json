@@ -1,0 +1,33 @@
+{
+  "tournament_id": "6a17cb180f6c1f0899862809",
+  "name": "Bolt Revolt \u26a1 Speed Strikes #02",
+  "timestamp": 1779946200000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Pocket",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Koe",
+      "record": "2 - 1 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Yumi | \ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7",
+      "record": "0 - 2 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "DragonKni8",
+      "record": "0 - 3 - 0",
+      "archetype": null
+    }
+  ]
+}
