@@ -1,6 +1,12 @@
 {
-  "last_updated": "2026-05-28T11:39:37.401668",
+  "last_updated": "2026-05-28T15:52:24.094182",
   "sets": [
+    {
+      "set_name": "Paradox Drive",
+      "set_code": "B3a",
+      "release_date": "2026-05-28",
+      "card_count": 109
+    },
     {
       "set_name": "Pulsing Aura",
       "set_code": "B3",
