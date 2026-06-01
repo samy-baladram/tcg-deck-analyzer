@@ -1,0 +1,69 @@
+{
+  "tournament_id": "6a14f0cd0f6c1f0899861255",
+  "name": "Women's pocket league $5",
+  "timestamp": 1780272600000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "EnvyEnby",
+      "record": "4 - 1 - 1",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "ibi0307ibi",
+      "record": "3 - 2 - 1",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "oncinha1",
+      "record": "3 - 1 - 1",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "ronskin",
+      "record": "2 - 2 - 0",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 6,
+      "player_name": "lonelyVoxel",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "r0zey",
+      "record": "1 - 2 - 1",
+      "archetype": "iron-moth-dudunsparce-b3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "TDL| EllieDark",
+      "record": "1 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "RF | Em",
+      "record": "0 - 2 - 0drop",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 10,
+      "player_name": "xXEmmaBooXx",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-blaziken-ex-b1-castform-sunny-form-b3"
+    }
+  ]
+}
