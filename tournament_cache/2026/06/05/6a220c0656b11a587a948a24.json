@@ -1,0 +1,27 @@
+{
+  "tournament_id": "6a220c0656b11a587a948a24",
+  "name": "HERVICANELONES TRIAL",
+  "timestamp": 1780690200000,
+  "format": "Standard",
+  "player_count": 3,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TheMakyokyo",
+      "record": "5 - 0 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 2,
+      "player_name": "isanpum",
+      "record": "2 - 2 - 1",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Canelont",
+      "record": "1 - 2 - 1",
+      "archetype": "mewtwo-ex-gardevoir-a1"
+    }
+  ]
+}
