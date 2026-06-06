@@ -1,8 +1,8 @@
 {
-  "last_updated": 1780700952,
-  "total_tournaments": 1493,
+  "last_updated": 1780716419,
+  "total_tournaments": 1495,
   "format_distribution": {
-    "Standard": 1416,
+    "Standard": 1418,
     "STANDARD": 49,
     "NOEX": 28
   },
@@ -20,7 +20,7 @@
     "greninja-a1-mega-absol-ex-b1",
     "suicune-ex-a4a-greninja-a1",
     "buzzwole-ex-pheromosa-a3a",
-    "greninja-a1-oricorio-a3"
+    "mega-altaria-ex-b1-gourgeist-b2"
   ],
   "top_archetypes_by_format": {
     "Standard": [
