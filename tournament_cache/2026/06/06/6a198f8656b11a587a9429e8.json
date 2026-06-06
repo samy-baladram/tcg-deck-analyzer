@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6a198f8656b11a587a9429e8",
+  "name": "Season 1 Finale | $5",
+  "timestamp": 1780774200000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Aldwende",
+      "record": "4 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "PRIDE| Dexter Morgan",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Ling Hiu Lok",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | DjMarnel",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "TDL| EllieDark",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\u1d20\u0299 \u00b2\ua731\u026a\u1d04\u1d0b",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Dexkul",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
