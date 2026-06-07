@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6a1b1a7556b11a587a943eb2",
+  "name": "Lagoon Crew Members BO3 Round Robin (FA Choice)",
+  "timestamp": 1780797600000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "IDN | Ryuu",
+      "record": "5 - 2 - 0",
+      "archetype": "zoroark-ex-b3-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "SkateBors",
+      "record": "5 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "CDPlayorr",
+      "record": "5 - 2 - 0",
+      "archetype": "greninja-a1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Ghost_319",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7| Satoru Gojo",
+      "record": "3 - 4 - 0",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Voltrax",
+      "record": "3 - 4 - 0",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 7,
+      "player_name": "Luffytaro_91",
+      "record": "3 - 4 - 0",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 8,
+      "player_name": "JackyLeggs",
+      "record": "0 - 7 - 0",
+      "archetype": "mega-sceptile-ex-sceptile-b3"
+    }
+  ]
+}
