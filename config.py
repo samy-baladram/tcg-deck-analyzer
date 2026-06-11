@@ -59,6 +59,9 @@ POKEMON_URL_EXCEPTIONS = {
     'teal-mask-ogerpon': {
         'default': 'ogerpon'  # fallback
     },
+    'teal-mask': {
+        'default': 'ogerpon'  # fallback
+    },
     
     # Alolan forms (18 total)
     'alolan-rattata': {
