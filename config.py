@@ -56,6 +56,9 @@ POKEMON_URL_EXCEPTIONS = {
     'ultra-necrozma': {
         'default': 'necrozma-ultra'  # fallback
     },
+    'teal-mask-ogerpon': {
+        'default': 'ogerpon'  # fallback
+    },
     
     # Alolan forms (18 total)
     'alolan-rattata': {
