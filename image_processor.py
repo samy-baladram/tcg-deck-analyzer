@@ -542,6 +542,12 @@ def find_pokemon_images(deck_info, analysis_results=None):
                         names_to_try.insert(0, "Ho-Oh ex")  # Try first if at start
                     else:
                         names_to_try.append("Ho-Oh ex")     # Try last if elsewhere
+
+                if "teal-mask-ogerpon-ex" in pokemon_name.lower():
+                    if pokemon_name.lower().startswith("teal-mask-ogerpon-ex"):
+                        names_to_try.insert(0, "Teal Mask Ogerpon ex")  # Try first if at start
+                    else:
+                        names_to_try.append("Teal Mask Ogerpon ex")     # Try last if elsewhere
                 
                 # Find matching card (try each name in order)
                 card_found = False
