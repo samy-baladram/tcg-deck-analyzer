@@ -1,0 +1,69 @@
+{
+  "tournament_id": "6a344ff42d97f3b0c26196b7",
+  "name": "Women's League Pocket #1",
+  "timestamp": 1782091800000,
+  "format": "STANDARD",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi",
+      "record": "4 - 1 - 1",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "oncinha1",
+      "record": "4 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | RC",
+      "record": "3 - 1 - 1",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Evelyn P",
+      "record": "3 - 2 - 0",
+      "archetype": "solgaleo-ex-a3-snorlax-ex-a3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "keeks",
+      "record": "2 - 2 - 0",
+      "archetype": "zoroark-ex-b3-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "rinnraga",
+      "record": "2 - 2 - 0",
+      "archetype": "meowscarada-ex-b2a-meowscarada-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "BlueJun99",
+      "record": "2 - 2 - 0",
+      "archetype": "vaporeon-ex-b3-greninja-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "LoLoCatchEm",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 9,
+      "player_name": "suzietoot",
+      "record": "1 - 3 - 0",
+      "archetype": "meowscarada-ex-b2a-meowscarada-a2b"
+    },
+    {
+      "placement": 10,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "0 - 2 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
