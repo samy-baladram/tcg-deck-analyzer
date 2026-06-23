@@ -1,0 +1,20 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Froakie,A1,87,0,20,0,100,100,Core,2
+Pokemon,Greninja,A1,89,0,20,0,100,100,Core,2
+Pokemon,Mega Altaria ex,B1,102,3,17,15,85,100,Core,2
+Pokemon,Swablu,B1,196,0,20,0,100,100,Core,2
+Pokemon,Chingling,B1,109,1,15,5,75,80,Core,2
+Pokemon,Frogadier,A1,88,9,0,45,0,45,Standard,1
+Pokemon,Meowth,B2,124,0,4,0,20,20,Tech,2
+Pokemon,Jirachi,B1,106,1,0,5,0,5,Tech,1
+Trainer,Copycat,B1,225,6,14,30,70,100,Core,2
+Trainer,Cyrus,A2,150,15,5,75,25,100,Core,1
+Trainer,Poké Ball,P-A,5,19,1,95,5,100,Core,1
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,9,11,45,55,100,Core,2
+Trainer,Lisia,B1,226,19,0,95,0,95,Core,1
+Trainer,Training Area,B2,153,14,0,70,0,70,Standard,1
+Trainer,Mars,A2,155,3,0,15,0,15,Tech,1
+Trainer,Protective Poncho,B2,147,1,2,5,10,15,Tech,2
+Trainer,Mesagoza,B2a,93,1,0,5,0,5,Tech,1
+Trainer,Rocky Helmet,A2,148,1,0,5,0,5,Tech,1

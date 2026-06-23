@@ -1,0 +1,22 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Cosmog,A3,85,0,11,0,100,100,Core,2
+Pokemon,Skarmory,A2,111,0,11,0,100,100,Core,2
+Pokemon,Solgaleo ex,A3,122,0,11,0,100,100,Core,2
+Pokemon,Cosmoem,A3,86,7,0,63,0,63,Standard,1
+Trainer,Professor's Research,P-A,7,0,11,0,100,100,Core,2
+Trainer,Poké Ball,P-A,5,3,8,27,72,99,Core,2
+Trainer,Rare Candy,A3,144,2,9,18,81,99,Core,2
+Trainer,Cyrus,A2,150,10,0,90,0,90,Core,1
+Trainer,Copycat,B1,225,4,4,36,36,72,Standard,1
+Trainer,Rocky Helmet,A2,148,0,8,0,72,72,Standard,2
+Trainer,Lillie,A3,155,2,5,18,45,63,Standard,2
+Trainer,Sabrina,A1,225,6,0,54,0,54,Standard,1
+Trainer,Steel Apron,A4,153,3,1,27,9,36,Standard,1
+Trainer,Giant Cape,A2,147,0,3,0,27,27,Standard,2
+Trainer,Poison Barb,A3,146,1,2,9,18,27,Standard,2
+Trainer,Red,A2b,71,0,3,0,27,27,Standard,2
+Trainer,Metal Core Barrier,B2,148,1,1,9,9,18,Tech,1
+Trainer,Arven,B2a,91,0,1,0,9,9,Tech,2
+Trainer,Lucky Ice Pop,B2,145,1,0,9,0,9,Tech,1
+Trainer,Red Card,P-A,6,1,0,9,0,9,Tech,1
+Trainer,Repel,A3a,64,1,0,9,0,9,Tech,1

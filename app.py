@@ -11,6 +11,7 @@ from local_metagame import display_local_metagame_comparison
 from header_image_cache import clear_expired_cache, get_cache_stats
 from card_cache import clear_expired_cache as clear_card_cache
 from meta_table import display_extended_meta_table
+from datetime import datetime
 
 from PIL import Image
 
@@ -280,6 +281,33 @@ div[data-testid="stVerticalBlock"] button p {
 
 # Display banner
 ui_helpers.display_banner("assets/title_banner.png")
+
+# Download button in top right corner of header
+col_space, col_download = st.columns([10, 1])
+with col_download:
+    from download_manager import create_export_zip
+    
+    # Initialize download cache in session state
+    if 'meta_download_cache' not in st.session_state:
+        st.session_state.meta_download_cache = None
+    
+    # Only prepare zip file if not already cached
+    if st.session_state.meta_download_cache is None:
+        try:
+            st.session_state.meta_download_cache = create_export_zip()
+        except Exception as e:
+            print(f"Download error: {e}")
+    
+    # Show download button with cached zip
+    if st.session_state.meta_download_cache is not None:
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+        st.download_button(
+            label="⬇️",
+            data=st.session_state.meta_download_cache,
+            file_name=f"metagame_data_{timestamp}.zip",
+            mime="application/zip",
+            key="download_meta_data"
+        )
 
 # Create deck selector AFTER initialization
 

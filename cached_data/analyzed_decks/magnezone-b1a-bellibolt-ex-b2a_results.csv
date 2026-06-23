@@ -1,0 +1,24 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Bellibolt ex,B2a,42,20,0,100,0,100,Core,1
+Pokemon,Magnemite,B1a,24,0,20,0,100,100,Core,2
+Pokemon,Magneton,A1,98,0,20,0,100,100,Core,2
+Pokemon,Magnezone,B1a,26,0,20,0,100,100,Core,2
+Pokemon,Oricorio,A3,66,16,4,80,20,100,Core,1
+Pokemon,Tadbulb,B2,56,20,0,100,0,100,Core,1
+Trainer,Copycat,B1,225,8,12,40,60,100,Core,2
+Trainer,Cyrus,A2,150,20,0,100,0,100,Core,1
+Trainer,Lisia,B1,226,20,0,100,0,100,Core,1
+Trainer,Poké Ball,P-A,5,15,5,75,25,100,Core,1
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Clemont,B1a,68,18,0,90,0,90,Core,1
+Trainer,Lucky Ice Pop,B2,145,15,0,75,0,75,Standard,1
+Trainer,Protective Poncho,B2,147,10,0,50,0,50,Standard,1
+Trainer,Giant Cape,A2,147,6,3,30,15,45,Standard,1
+Trainer,Red Card,P-A,6,6,0,30,0,30,Standard,1
+Trainer,Sabrina,A1,225,6,0,30,0,30,Standard,1
+Trainer,Pokémon Center Lady,A2b,70,5,0,25,0,25,Tech,1
+Trainer,Mars,A2,155,2,0,10,0,10,Tech,1
+Trainer,Rocky Helmet,A2,148,2,0,10,0,10,Tech,1
+Trainer,Elemental Switch,A4,151,1,0,5,0,5,Tech,1
+Trainer,Guzma,A3,151,1,0,5,0,5,Tech,1
+Trainer,Mesagoza,B2a,93,1,0,5,0,5,Tech,1

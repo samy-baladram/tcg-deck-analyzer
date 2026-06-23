@@ -1,0 +1,28 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Crobat ex,A4,109,0,18,0,100,100,Core,2
+Pokemon,Mega Absol ex,B1,151,18,0,100,0,100,Core,1
+Pokemon,Zubat,A4,107,0,18,0,100,100,Core,2
+Pokemon,Nihilego,A3a,42,3,15,16,83,99,Core,2
+Pokemon,Chingling,B1,109,3,0,16,0,16,Tech,1
+Pokemon,Zangoose,A4a,65,2,0,11,0,11,Tech,1
+Pokemon,Absol,A4,120,1,0,5,0,5,Tech,1
+Pokemon,Darkrai ex,A2,110,1,0,5,0,5,Tech,1
+Pokemon,Golbat,A1,173,1,0,5,0,5,Tech,1
+Pokemon,Tyrogue,A4,101,1,0,5,0,5,Tech,1
+Trainer,Professor's Research,P-A,7,0,18,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,18,0,100,100,Core,2
+Trainer,Copycat,B1,225,2,16,11,88,99,Core,2
+Trainer,Cyrus,A2,150,17,1,94,5,99,Core,1
+Trainer,Poké Ball,P-A,5,1,17,5,94,99,Core,2
+Trainer,Poison Barb,A3,146,0,17,0,94,94,Core,2
+Trainer,Rocky Helmet,A2,148,6,0,33,0,33,Standard,1
+Trainer,Sabrina,A1,225,6,0,33,0,33,Standard,1
+Trainer,Lucky Ice Pop,B2,145,2,3,11,16,27,Standard,2
+Trainer,X Speed,P-A,2,4,0,22,0,22,Tech,1
+Trainer,Lillie,A3,155,3,0,16,0,16,Tech,1
+Trainer,Arven,B2a,91,2,0,11,0,11,Tech,1
+Trainer,Giant Cape,A2,147,1,0,5,0,5,Tech,1
+Trainer,Guzma,A3,151,1,0,5,0,5,Tech,1
+Trainer,Mars,A2,155,1,0,5,0,5,Tech,1
+Trainer,Pokémon Center Lady,A2b,70,1,0,5,0,5,Tech,1
+Trainer,Red,A2b,71,1,0,5,0,5,Tech,1

@@ -1,0 +1,26 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Floragato,B2a,2,20,0,100,0,100,Core,1
+Pokemon,Meowscarada,A2b,7,20,0,100,0,100,Core,1
+Pokemon,Meowscarada ex,B2a,3,1,19,5,95,100,Core,2
+Pokemon,Sprigatito,A2b,5,0,20,0,100,100,Core,2
+Pokemon,Teal Mask Ogerpon ex,B2,17,2,0,10,0,10,Tech,1
+Pokemon,Celebi,A4a,6,1,0,5,0,5,Tech,1
+Pokemon,Chingling,B1,109,1,0,5,0,5,Tech,1
+Pokemon,Pheromosa,A3a,7,0,1,0,5,5,Tech,2
+Trainer,Copycat,B1,225,14,6,70,30,100,Core,1
+Trainer,Cyrus,A2,150,7,13,35,65,100,Core,2
+Trainer,Poké Ball,P-A,5,17,3,85,15,100,Core,1
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,Leaf Cape,A3,147,2,17,10,85,95,Core,2
+Trainer,Lillie,A3,155,14,0,70,0,70,Standard,1
+Trainer,Lucky Ice Pop,B2,145,12,0,60,0,60,Standard,1
+Trainer,Mesagoza,B2a,93,12,0,60,0,60,Standard,1
+Trainer,Guzma,A3,151,9,0,45,0,45,Standard,1
+Trainer,Erika,A1,219,7,0,35,0,35,Standard,1
+Trainer,Arven,B2a,91,6,0,30,0,30,Standard,1
+Trainer,Giovanni,A1,223,5,0,25,0,25,Tech,1
+Trainer,Mars,A2,155,4,0,20,0,20,Tech,1
+Trainer,Quick-Grow Extract,B1a,67,3,0,15,0,15,Tech,1
+Trainer,Rocky Helmet,A2,148,2,1,10,5,15,Tech,1
+Trainer,Red,A2b,71,1,0,5,0,5,Tech,1

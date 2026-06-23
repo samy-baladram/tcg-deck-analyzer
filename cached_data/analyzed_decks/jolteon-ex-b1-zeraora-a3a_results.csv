@@ -1,0 +1,14 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Eevee,B1,184,0,8,0,100,100,Core,2
+Pokemon,Jolteon ex,B1,81,0,8,0,100,100,Core,2
+Pokemon,Zeraora,A3a,21,0,8,0,100,100,Core,2
+Trainer,Copycat,B1,225,8,0,100,0,100,Core,1
+Trainer,Cyrus,A2,150,0,8,0,100,100,Core,2
+Trainer,Eevee Bag,A3b,66,0,8,0,100,100,Core,2
+Trainer,Elemental Switch,A4,151,0,8,0,100,100,Core,2
+Trainer,Lisia,B1,226,8,0,100,0,100,Core,1
+Trainer,May,B1,223,8,0,100,0,100,Core,1
+Trainer,Poké Ball,P-A,5,8,0,100,0,100,Core,1
+Trainer,Professor's Research,P-A,7,0,8,0,100,100,Core,2
+Trainer,Sabrina,A1,225,8,0,100,0,100,Core,1
+Trainer,Training Area,B2,153,8,0,100,0,100,Core,1
