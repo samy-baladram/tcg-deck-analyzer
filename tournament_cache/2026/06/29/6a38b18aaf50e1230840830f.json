@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6a38b18aaf50e1230840830f",
+  "name": "Women's League Pocket #2",
+  "timestamp": 1782692100000,
+  "format": "STANDARD",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TDL| EllieDark",
+      "record": "3 - 0 - 0",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Evelyn P",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi",
+      "record": "2 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "suzietoot",
+      "record": "1 - 2 - 0",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "LoLoCatchEm",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "0 - 1 - 0drop",
+      "archetype": "suicune-ex-a4a-greninja-ex-b1"
+    }
+  ]
+}
