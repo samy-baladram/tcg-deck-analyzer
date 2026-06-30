@@ -1,6 +1,12 @@
 {
-  "last_updated": "2026-06-30T15:26:25.690782",
+  "last_updated": "2026-06-30T17:52:23.667512",
   "sets": [
+    {
+      "set_name": "Everyday Wonders",
+      "set_code": "B3b",
+      "release_date": "2026-06-30",
+      "card_count": 106
+    },
     {
       "set_name": "Paradox Drive",
       "set_code": "B3a",
