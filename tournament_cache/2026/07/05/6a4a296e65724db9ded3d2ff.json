@@ -1,0 +1,69 @@
+{
+  "tournament_id": "6a4a296e65724db9ded3d2ff",
+  "name": "Quick Niedziela - 05/07/2026 [PL]",
+  "timestamp": 1783267200000,
+  "format": "Standard",
+  "player_count": 10,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "PokeFunky",
+      "record": "5 - 3 - 0",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 2,
+      "player_name": "DariusPopek",
+      "record": "5 - 3 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Tetrycy",
+      "record": "6 - 1 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 4,
+      "player_name": "Ripi0",
+      "record": "3 - 4 - 0",
+      "archetype": "mega-lucario-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Skelecross",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Rashpultu",
+      "record": "3 - 3 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 7,
+      "player_name": "ConquestCQN",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Takijakimam",
+      "record": "2 - 4 - 0",
+      "archetype": "greninja-a1-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 9,
+      "player_name": "Najasho",
+      "record": "1 - 4 - 0",
+      "archetype": "milotic-ex-b3b-vaporeon-ex-b3"
+    },
+    {
+      "placement": 10,
+      "player_name": "Kartonx6",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-gardevoir-ex-b2-mega-diancie-ex-b3b"
+    }
+  ]
+}
