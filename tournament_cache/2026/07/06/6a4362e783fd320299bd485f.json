@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6a4362e783fd320299bd485f",
+  "name": "Women's League Pocket #3",
+  "timestamp": 1783297200000,
+  "format": "STANDARD",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "DS | MoonlightshurikenVT",
+      "record": "3 - 0 - 0",
+      "archetype": "indeedee-ex-b1-giratina-ex-a2b"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-gardevoir-ex-b2-mega-diancie-ex-b3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "MoonshadeLull",
+      "record": "2 - 1 - 0",
+      "archetype": "milotic-ex-b3b-chien-pao-ex-b2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Speedy_Paws",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-slowbro-ex-b2b-vaporeon-ex-b3"
+    },
+    {
+      "placement": 5,
+      "player_name": "LoLoCatchEm",
+      "record": "1 - 2 - 0",
+      "archetype": "alolan-ninetales-ex-b2-milotic-ex-b3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "rinnraga",
+      "record": "0 - 2 - 0drop",
+      "archetype": "meowscarada-ex-b2a-meowscarada-a2b"
+    }
+  ]
+}
