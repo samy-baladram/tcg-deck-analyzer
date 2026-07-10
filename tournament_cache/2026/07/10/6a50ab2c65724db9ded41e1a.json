@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6a50ab2c65724db9ded41e1a",
+  "name": "Dark League Pop Up Card Prizing",
+  "timestamp": 1783674000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "sZero | frappesdrinker",
+      "record": "5 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "kodai",
+      "record": "3 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "sana_37",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Atemus95Gr",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "sZero | NastKon",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Eku",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "DS | MoonlightshurikenVT",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
