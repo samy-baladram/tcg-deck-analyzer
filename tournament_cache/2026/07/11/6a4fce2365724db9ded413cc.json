@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6a4fce2365724db9ded413cc",
+  "name": "\ud83c\udde7\ud83c\uddf7 Beneficente | TCG Pocket",
+  "timestamp": 1783803600000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "moserk",
+      "record": "3 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udc08\ud835\udc0c\ud835\udc0e | Kazuno",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Paulo_Natan",
+      "record": "1 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Centaurus",
+      "record": "1 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "DonattasXD",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "Agnera420",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Carlosburgues",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Rafael_Soares",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    }
+  ]
+}
