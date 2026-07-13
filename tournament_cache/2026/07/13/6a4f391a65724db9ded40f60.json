@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6a4f391a65724db9ded40f60",
+  "name": "Women's League Pocket #4",
+  "timestamp": 1783900800000,
+  "format": "STANDARD",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi",
+      "record": "5 - 1 - 0",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 2,
+      "player_name": "suzietoot",
+      "record": "3 - 3 - 0",
+      "archetype": "butterfree-hisuian-zoroark-ex-b3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\uddd4\ud835\uddd7\ud835\uddd7\ud835\udddc\ud835\uddd8 | Blork",
+      "record": "4 - 1 - 0",
+      "archetype": "growlithe-b3b-lillipup-b3"
+    },
+    {
+      "placement": 4,
+      "player_name": "DS| EllieDark",
+      "record": "2 - 2 - 1",
+      "archetype": "indeedee-ex-b1-giratina-ex-a2b"
+    },
+    {
+      "placement": 5,
+      "player_name": "LoLoCatchEm",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "DS | MoonlightshurikenVT",
+      "record": "1 - 2 - 1",
+      "archetype": "indeedee-ex-b1-giratina-ex-a2b"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\uddd5\ud835\uddd4\ud835\uddd7\ud835\uddd7\ud835\udddc\ud835\uddd8 | Eve",
+      "record": "1 - 3 - 0",
+      "archetype": "great-tusk-koraidon-ex-b3a"
+    }
+  ]
+}
