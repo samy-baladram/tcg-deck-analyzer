@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6a555f5b6355385f44dd411b",
+  "name": "\ud83d\udd34 iluchien\u2019s Type Tournament \ud83d\udd35",
+  "timestamp": 1783990800000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "jrab",
+      "record": "4 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Shinylapse",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "iluchien",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Ktech3224",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Preluxe",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "NicNick",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Kicz",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "Nabrix",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
