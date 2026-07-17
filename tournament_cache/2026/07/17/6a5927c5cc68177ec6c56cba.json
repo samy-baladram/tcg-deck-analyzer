@@ -1,0 +1,75 @@
+{
+  "tournament_id": "6a5927c5cc68177ec6c56cba",
+  "name": "Dark League Pop-Up",
+  "timestamp": 1784246400000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Edielsonfilho",
+      "record": "5 - 0 - 1",
+      "archetype": "magnezone-ex-b3-miraidon-ex-b3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udc04\ud835\udc25\ud835\udc22\ud835\udc2d\ud835\udc1e\ud835\udfd2 hofuruhoshi",
+      "record": "4 - 1 - 1",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 3,
+      "player_name": "PierFigo",
+      "record": "2 - 2 - 1",
+      "archetype": "zoroark-ex-b3-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "shmo",
+      "record": "2 - 2 - 1",
+      "archetype": "butterfree-hisuian-zoroark-ex-b3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "vnecnx",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "CDK_IFB_Yami",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-kangaskhan-ex-b2-darkrai-ex-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "BirdNest",
+      "record": "2 - 2 - 0",
+      "archetype": "meowscarada-ex-b2a-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 8,
+      "player_name": "KnowticeTkO",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "flipand11",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3"
+    },
+    {
+      "placement": 10,
+      "player_name": "DS | MoonlightshurikenVT",
+      "record": "0 - 1 - 0drop",
+      "archetype": "indeedee-ex-b1-giratina-ex-a2b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Fokker111",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-blaziken-ex-b1-castform-sunny-form-b3"
+    }
+  ]
+}
