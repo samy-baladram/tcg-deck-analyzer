@@ -1,0 +1,26 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Mega Gardevoir ex,B2,66,1,19,5,95,100,Core,2
+Pokemon,Meloetta,B2,70,0,20,0,100,100,Core,2
+Pokemon,Kirlia,B2,64,19,0,95,0,95,Core,1
+Pokemon,Ralts,B2,63,0,16,0,80,80,Core,2
+Pokemon,Xerneas,B1a,37,12,0,60,0,60,Standard,1
+Pokemon,Ralts,A2,68,1,3,5,15,20,Tech,2
+Pokemon,Jirachi,B1,106,3,0,15,0,15,Tech,1
+Pokemon,Indeedee,B2,76,2,0,10,0,10,Tech,1
+Pokemon,Kirlia,A2,69,1,0,5,0,5,Tech,1
+Trainer,Cyrus,A2,150,19,1,95,5,100,Core,1
+Trainer,Diantha,B2,149,0,20,0,100,100,Core,2
+Trainer,Peculiar Plaza,B2,155,6,14,30,70,100,Core,2
+Trainer,Poké Ball,P-A,5,5,15,25,75,100,Core,2
+Trainer,Professor's Research,P-A,7,1,19,5,95,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,May,B1,223,11,0,55,0,55,Standard,1
+Trainer,Lucky Ice Pop,B2,145,6,0,30,0,30,Standard,1
+Trainer,Sabrina,A1,225,6,0,30,0,30,Standard,1
+Trainer,Red Card,P-A,6,4,0,20,0,20,Tech,1
+Trainer,Lillie,A3,155,2,0,10,0,10,Tech,1
+Trainer,Pokémon Center Lady,A2b,70,2,0,10,0,10,Tech,1
+Trainer,Copycat,B1,225,1,0,5,0,5,Tech,1
+Trainer,Guzma,A3,151,1,0,5,0,5,Tech,1
+Trainer,Mars,A2,155,1,0,5,0,5,Tech,1
+Trainer,Rocky Helmet,A2,148,0,1,0,5,5,Tech,2

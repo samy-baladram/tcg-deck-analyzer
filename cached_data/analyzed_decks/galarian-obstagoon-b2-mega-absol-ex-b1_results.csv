@@ -1,0 +1,23 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Galarian Obstagoon,B2,100,0,8,0,100,100,Core,2
+Pokemon,Galarian Zigzagoon,B2,98,0,8,0,100,100,Core,2
+Pokemon,Mega Absol ex,B1,151,8,0,100,0,100,Core,1
+Pokemon,Chingling,B1,109,2,5,25,62,87,Core,2
+Pokemon,Darkrai ex,A2,110,5,0,62,0,62,Standard,1
+Pokemon,Galarian Linoone,B2,99,2,0,25,0,25,Tech,1
+Pokemon,Furfrou,B1a,65,1,0,12,0,12,Tech,1
+Pokemon,Guzzlord ex,A3a,43,1,0,12,0,12,Tech,1
+Trainer,Piers,B2,152,0,8,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,8,0,100,100,Core,2
+Trainer,Copycat,B1,225,3,5,37,62,99,Core,2
+Trainer,Poké Ball,P-A,5,1,7,12,87,99,Core,2
+Trainer,Rare Candy,A3,144,1,7,12,87,99,Core,2
+Trainer,Cyrus,A2,150,7,0,87,0,87,Core,1
+Trainer,Rocky Helmet,A2,148,5,1,62,12,74,Standard,1
+Trainer,Sabrina,A1,225,2,0,25,0,25,Tech,1
+Trainer,Arven,B2a,91,1,0,12,0,12,Tech,1
+Trainer,Dark Pendant,A4,154,0,1,0,12,12,Tech,2
+Trainer,Lucky Ice Pop,B2,145,1,0,12,0,12,Tech,1
+Trainer,Mars,A2,155,1,0,12,0,12,Tech,1
+Trainer,Protective Poncho,B2,147,1,0,12,0,12,Tech,1
+Trainer,Team Rocket Grunt,A2b,72,0,1,0,12,12,Tech,2

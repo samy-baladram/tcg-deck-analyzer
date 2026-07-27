@@ -1,0 +1,32 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Darkrai ex,A2,110,20,0,100,0,100,Core,1
+Pokemon,Mega Kangaskhan ex,B2,127,17,3,85,15,100,Core,1
+Pokemon,Pichu,A4,66,1,19,5,95,100,Core,2
+Pokemon,Nihilego,A3a,42,1,14,5,70,75,Standard,2
+Pokemon,Oricorio,A3,66,8,0,40,0,40,Standard,1
+Pokemon,Magby,A4,32,3,3,15,15,30,Standard,1
+Pokemon,Mantyke,A4a,23,2,1,10,5,15,Tech,1
+Pokemon,Tornadus,B2,138,0,2,0,10,10,Tech,2
+Pokemon,Tyrogue,A4,101,2,0,10,0,10,Tech,1
+Pokemon,Furfrou,B2,141,1,0,5,0,5,Tech,1
+Pokemon,Igglybuff,A4a,59,1,0,5,0,5,Tech,1
+Trainer,Cyrus,A2,150,20,0,100,0,100,Core,1
+Trainer,Ilima,A3,149,18,2,90,10,100,Core,1
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Red,A2b,71,19,1,95,5,100,Core,1
+Trainer,Copycat,B1,225,13,5,65,25,90,Core,1
+Trainer,Poké Ball,P-A,5,1,15,5,75,80,Core,2
+Trainer,Serena,B1a,69,16,0,80,0,80,Core,1
+Trainer,Giovanni,A1,223,14,1,70,5,75,Standard,1
+Trainer,Poison Barb,A3,146,0,15,0,75,75,Standard,2
+Trainer,Lucky Ice Pop,B2,145,8,2,40,10,50,Standard,1
+Trainer,Guzma,A3,151,6,0,30,0,30,Standard,1
+Trainer,Starting Plains,B2,154,4,0,20,0,20,Tech,1
+Trainer,May,B1,223,3,0,15,0,15,Tech,1
+Trainer,Mesagoza,B2a,93,3,0,15,0,15,Tech,1
+Trainer,Rocky Helmet,A2,148,3,0,15,0,15,Tech,1
+Trainer,Sabrina,A1,225,3,0,15,0,15,Tech,1
+Trainer,Mars,A2,155,2,0,10,0,10,Tech,1
+Trainer,Protective Poncho,B2,147,2,0,10,0,10,Tech,1
+Trainer,X Speed,P-A,2,2,0,10,0,10,Tech,1
+Trainer,Big Air Balloon,B2a,87,1,0,5,0,5,Tech,1

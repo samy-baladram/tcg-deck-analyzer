@@ -1,0 +1,19 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Alolan Ninetales ex,B2,29,0,20,0,100,100,Core,2
+Pokemon,Alolan Vulpix,A3,40,0,20,0,100,100,Core,2
+Pokemon,Baxcalibur,B2a,36,0,20,0,100,100,Core,2
+Pokemon,Frigibax,B2a,34,0,19,0,95,95,Core,2
+Pokemon,Chien-Pao ex,B2a,37,18,0,90,0,90,Core,1
+Pokemon,Frigibax,P-B,37,0,1,0,5,5,Tech,2
+Trainer,Copycat,B1,225,0,20,0,100,100,Core,2
+Trainer,Poké Ball,P-A,5,0,20,0,100,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,Inflatable Boat,A4a,67,19,0,95,0,95,Core,1
+Trainer,Training Area,B2,153,17,0,85,0,85,Core,1
+Trainer,Team Star Grunt,B2a,88,16,0,80,0,80,Core,1
+Trainer,Giant Cape,A2,147,2,1,10,5,15,Tech,1
+Trainer,Irida,A2a,72,3,0,15,0,15,Tech,1
+Trainer,Cyrus,A2,150,1,0,5,0,5,Tech,1
+Trainer,Lucky Ice Pop,B2,145,1,0,5,0,5,Tech,1
+Trainer,Sabrina,A1,225,1,0,5,0,5,Tech,1
