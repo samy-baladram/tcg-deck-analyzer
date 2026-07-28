@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6a60cc3952c24ac2da648dc3",
+  "name": "Temple Games - POKEMON POCKET - 1\u00b0 Amichevole",
+  "timestamp": 1785180600000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "lorenzo zappi",
+      "record": "1 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Dag Pussi",
+      "record": "1 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "Conquest CQN",
+      "record": "1 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "Vincenzo Quadalti",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "Francesco Campanella",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "luis chacon",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Stanislav Bene\u0161",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    }
+  ]
+}
