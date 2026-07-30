@@ -1,6 +1,12 @@
 {
-  "last_updated": "2026-07-30T08:24:16.083027",
+  "last_updated": "2026-07-30T11:06:54.363216",
   "sets": [
+    {
+      "set_name": "Ruler of the Skies",
+      "set_code": "B4",
+      "release_date": "2026-07-30",
+      "card_count": 233
+    },
     {
       "set_name": "Everyday Wonders",
       "set_code": "B3b",
