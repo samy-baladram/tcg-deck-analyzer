@@ -1,0 +1,27 @@
+{
+  "tournament_id": "6a6acfd352c24ac2da64fa44",
+  "name": "\u26c5 iluchien\u2019s SINGLE ELIMINATION Tournament \u26c5 FIX",
+  "timestamp": 1785385320000,
+  "format": "Standard",
+  "player_count": 3,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7| gengR",
+      "record": "2 - 0 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "Acacia",
+      "record": "1 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udc7a\ud835\udc74\ud835\udc7b | Necroblaze",
+      "record": "0 - 1 - 0",
+      "archetype": null
+    }
+  ]
+}
