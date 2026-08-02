@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6a6ae9e752c24ac2da64faa3",
+  "name": "Women's League Pocket #7 FA Copycat Prize!",
+  "timestamp": 1785708900000,
+  "format": "STANDARD",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi",
+      "record": "3 - 0 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "r0zey",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 3,
+      "player_name": "Flipsicle",
+      "record": "2 - 1 - 0",
+      "archetype": "great-tusk-koraidon-ex-b3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\uddd5\ud835\uddd4\ud835\uddd7\ud835\uddd7\ud835\udddc\ud835\uddd8 | Blork",
+      "record": "1 - 2 - 0",
+      "archetype": "growlithe-b3b-lillipup-b3"
+    },
+    {
+      "placement": 5,
+      "player_name": "LionKing",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "0 - 1 - 0drop",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    }
+  ]
+}
