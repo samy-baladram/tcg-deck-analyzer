@@ -1,0 +1,33 @@
+{
+  "tournament_id": "6a718479cdc0391d7fa5c28f",
+  "name": "Women's League Pocket #8",
+  "timestamp": 1786323600000,
+  "format": "STANDARD",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | RC",
+      "record": "2 - 0 - 1",
+      "archetype": "beautifly-dustox-b4"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi",
+      "record": "1 - 1 - 1",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\uddd4\ud835\uddd7\ud835\uddd7\ud835\udddc\ud835\uddd8 | Blork",
+      "record": "1 - 1 - 0",
+      "archetype": "growlithe-b3b-lillipup-b3"
+    },
+    {
+      "placement": 4,
+      "player_name": "Moka",
+      "record": "0 - 1 - 0drop",
+      "archetype": "indeedee-ex-b1-giratina-ex-a2b"
+    }
+  ]
+}
