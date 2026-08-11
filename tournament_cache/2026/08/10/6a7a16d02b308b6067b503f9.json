@@ -1,0 +1,819 @@
+{
+  "tournament_id": "6a7a16d02b308b6067b503f9",
+  "name": "The Breakfast Club x KnowticeTKO Pop Up-$10",
+  "timestamp": 1786398300000,
+  "format": "Standard",
+  "player_count": 135,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "BigSlowpokeFan",
+      "record": "10 - 1 - 1",
+      "archetype": "chandelure-b2-oricorio-b4"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Akage",
+      "record": "9 - 2 - 1",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udc03\ud835\udc0d\ud835\udc13 | DjMarnel",
+      "record": "8 - 2 - 1",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Fasting",
+      "record": "7 - 3 - 1",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 5,
+      "player_name": "iluchien",
+      "record": "8 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "zVerum",
+      "record": "7 - 3 - 0",
+      "archetype": "rotom-ex-b4"
+    },
+    {
+      "placement": 7,
+      "player_name": "elluquitas96",
+      "record": "6 - 3 - 1",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "BirdNest",
+      "record": "6 - 4 - 0",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Razbersky202",
+      "record": "6 - 2 - 1",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 10,
+      "player_name": "GIVE | AngryPikachu",
+      "record": "6 - 3 - 0",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Plasma hihi",
+      "record": "6 - 3 - 0",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 12,
+      "player_name": "PGX | Likowo",
+      "record": "6 - 3 - 0",
+      "archetype": "rotom-ex-b4"
+    },
+    {
+      "placement": 13,
+      "player_name": "sZero | frappesdrinker",
+      "record": "6 - 3 - 0",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 14,
+      "player_name": "iplaypokemans",
+      "record": "5 - 2 - 2",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 15,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Ibte10",
+      "record": "5 - 3 - 1",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 16,
+      "player_name": "konono",
+      "record": "5 - 3 - 1",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 17,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Dandy",
+      "record": "6 - 1 - 1",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 18,
+      "player_name": "Berlusconismurf",
+      "record": "6 - 1 - 1",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 19,
+      "player_name": "kodai",
+      "record": "6 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 20,
+      "player_name": "Godi",
+      "record": "5 - 2 - 1",
+      "archetype": "mega-gardevoir-ex-gardevoir-b2"
+    },
+    {
+      "placement": 21,
+      "player_name": "Christopher_0626",
+      "record": "5 - 2 - 1",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 22,
+      "player_name": "MacuD",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 23,
+      "player_name": "DKVCarloswolf",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 24,
+      "player_name": "LiquidHunter",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 25,
+      "player_name": "TheIllusionFox",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-gardevoir-ex-b2-mega-diancie-ex-b3b"
+    },
+    {
+      "placement": 26,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Thugs Bunny",
+      "record": "4 - 2 - 2",
+      "archetype": "mega-sceptile-ex-b3-vespiquen-ex-b4"
+    },
+    {
+      "placement": 27,
+      "player_name": "FrogEX | Wawan S",
+      "record": "4 - 2 - 2",
+      "archetype": "indeedee-ex-b1-mega-audino-ex-b3"
+    },
+    {
+      "placement": 28,
+      "player_name": "gosulek",
+      "record": "4 - 2 - 2",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 29,
+      "player_name": "DarCasL",
+      "record": "4 - 3 - 1",
+      "archetype": "mega-sharpedo-ex-b4-chien-pao-ex-b2a"
+    },
+    {
+      "placement": 30,
+      "player_name": "Pauk55",
+      "record": "4 - 3 - 1",
+      "archetype": "wailord-ex-b4-indeedee-ex-b1"
+    },
+    {
+      "placement": 31,
+      "player_name": "\ud835\uddd5\ud835\uddd4\ud835\uddd7\ud835\uddd7\ud835\udddc\ud835\uddd8| \u00b2\ua731\u026a\u1d04\u1d0b",
+      "record": "4 - 3 - 1",
+      "archetype": "mega-lucario-ex-b3-hitmonchan-ex-b1"
+    },
+    {
+      "placement": 32,
+      "player_name": "DenExwTrixes",
+      "record": "4 - 3 - 1",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 33,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee SIPRAW \ud835\uddd8\ud835\uddeb",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-rayquaza-ex-dragonair-b4"
+    },
+    {
+      "placement": 34,
+      "player_name": "hakitcgp",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-medicham-ex-p-b-bonsly-b3"
+    },
+    {
+      "placement": 35,
+      "player_name": "hextor",
+      "record": "4 - 3 - 0",
+      "archetype": "venusaur-ex-venusaur-a1"
+    },
+    {
+      "placement": 36,
+      "player_name": "Caniuz",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 37,
+      "player_name": "okarun",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 38,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1 \u2b50| Suede",
+      "record": "4 - 3 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 39,
+      "player_name": "pprt_math",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 40,
+      "player_name": "Shinylapse",
+      "record": "4 - 3 - 0",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 41,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\u2b50\ufe0f| KnowticeTkO",
+      "record": "4 - 3 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 42,
+      "player_name": "golfermt",
+      "record": "4 - 3 - 0",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 43,
+      "player_name": "M issy",
+      "record": "4 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 44,
+      "player_name": "Regulus12",
+      "record": "4 - 3 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 45,
+      "player_name": "TBC|| JPhenomenal",
+      "record": "4 - 3 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 46,
+      "player_name": "PattyD",
+      "record": "3 - 3 - 0drop",
+      "archetype": "meowscarada-ex-b2a-meowscarada-a2b"
+    },
+    {
+      "placement": 47,
+      "player_name": "DeKuFGC",
+      "record": "3 - 4 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 48,
+      "player_name": "eLMarcoO",
+      "record": "3 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 49,
+      "player_name": "\ud835\uddd5\ud835\uddee\ud835\uddf9\ud835\uddf1 Supreme",
+      "record": "3 - 4 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 50,
+      "player_name": "Drumma01",
+      "record": "3 - 3 - 0drop",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 51,
+      "player_name": "kto206",
+      "record": "3 - 4 - 0",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 52,
+      "player_name": "Sparadrap",
+      "record": "3 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 53,
+      "player_name": "FrogEX | BMvK7",
+      "record": "3 - 2 - 0drop",
+      "archetype": "indeedee-ex-b1-mega-audino-ex-b3"
+    },
+    {
+      "placement": 54,
+      "player_name": "Tesla20",
+      "record": "3 - 3 - 0drop",
+      "archetype": "pikachu-ex-a1-pichu-a4"
+    },
+    {
+      "placement": 55,
+      "player_name": "ytheandre",
+      "record": "3 - 4 - 0",
+      "archetype": "meowscarada-ex-b2a-meowscarada-a2b"
+    },
+    {
+      "placement": 56,
+      "player_name": "Spyxz",
+      "record": "3 - 4 - 0",
+      "archetype": "dragonite-ex-a3b-walking-wake-b3a"
+    },
+    {
+      "placement": 57,
+      "player_name": "Ghalileo",
+      "record": "3 - 3 - 0drop",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 58,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7| Satoru Gojo",
+      "record": "3 - 3 - 0drop",
+      "archetype": "mega-blaziken-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 59,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee StorM",
+      "record": "3 - 4 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 60,
+      "player_name": "Azin",
+      "record": "3 - 4 - 0",
+      "archetype": "mega-sharpedo-ex-b4-gyarados-a4"
+    },
+    {
+      "placement": 61,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\u2b50\ufe0f | guunnz",
+      "record": "3 - 3 - 0drop",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 62,
+      "player_name": "Luna \u30fb\u03c9\u30fb",
+      "record": "2 - 3 - 0drop",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 63,
+      "player_name": "Crash12",
+      "record": "2 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 64,
+      "player_name": "Celteex",
+      "record": "2 - 4 - 0drop",
+      "archetype": "chandelure-b2-oricorio-b4"
+    },
+    {
+      "placement": 65,
+      "player_name": "Swaggydrew",
+      "record": "2 - 3 - 0drop",
+      "archetype": "mega-steelix-ex-b1a-indeedee-ex-b1"
+    },
+    {
+      "placement": 66,
+      "player_name": "Crankin",
+      "record": "2 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 67,
+      "player_name": "IEONTE",
+      "record": "2 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 68,
+      "player_name": "Soulidus",
+      "record": "2 - 5 - 0drop",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 69,
+      "player_name": "Tommot",
+      "record": "2 - 2 - 0drop",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 70,
+      "player_name": "hamuou",
+      "record": "2 - 2 - 0drop",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 71,
+      "player_name": "el_giu1223",
+      "record": "2 - 3 - 0drop",
+      "archetype": "mega-sableye-ex-b3b-hydreigon-b1"
+    },
+    {
+      "placement": 72,
+      "player_name": "AkaseAhri",
+      "record": "2 - 2 - 0drop",
+      "archetype": "buzzwole-ex-pheromosa-a3a"
+    },
+    {
+      "placement": 73,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee H",
+      "record": "2 - 3 - 0drop",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 74,
+      "player_name": "BminTonno05",
+      "record": "2 - 5 - 0",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 75,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | OJitTiK",
+      "record": "2 - 4 - 0drop",
+      "archetype": "vespiquen-ex-b4-serperior-a1a"
+    },
+    {
+      "placement": 76,
+      "player_name": "BugMane",
+      "record": "2 - 2 - 0drop",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 77,
+      "player_name": "mspinguino",
+      "record": "2 - 3 - 0drop",
+      "archetype": "mega-scizor-ex-revavroom-b2b"
+    },
+    {
+      "placement": 78,
+      "player_name": "LuckyEX888",
+      "record": "2 - 5 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 79,
+      "player_name": "Danimal",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-gardevoir-ex-b2-mega-diancie-ex-b3b"
+    },
+    {
+      "placement": 80,
+      "player_name": "PGX| El Atomico",
+      "record": "1 - 2 - 0drop",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 81,
+      "player_name": "making venusaur meta",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 82,
+      "player_name": "Breaking2mirror",
+      "record": "1 - 3 - 0drop",
+      "archetype": "dragonite-ex-a3b-dragonite-a1"
+    },
+    {
+      "placement": 83,
+      "player_name": "IBeanJuiceI",
+      "record": "1 - 3 - 0drop",
+      "archetype": "butterfree-b3b-snorlax-ex-a3b"
+    },
+    {
+      "placement": 84,
+      "player_name": "Aidentony",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 85,
+      "player_name": "S\u30b7\u30e5\u30f3\u30bf",
+      "record": "1 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 86,
+      "player_name": "FrogEX | Numatinale",
+      "record": "1 - 3 - 0drop",
+      "archetype": "indeedee-ex-b1-mega-audino-ex-b3"
+    },
+    {
+      "placement": 87,
+      "player_name": "AoiSora",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3-hitmonchan-ex-b1"
+    },
+    {
+      "placement": 88,
+      "player_name": "Umbreon099",
+      "record": "1 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 89,
+      "player_name": "OMarkzTV",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 90,
+      "player_name": "Plasma | Reality",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 91,
+      "player_name": "JLNG",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 92,
+      "player_name": "hell",
+      "record": "1 - 6 - 0",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 93,
+      "player_name": "GranZ",
+      "record": "1 - 3 - 0drop",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 94,
+      "player_name": "GS | Chronos",
+      "record": "1 - 2 - 0drop",
+      "archetype": "beautifly-dustox-b4"
+    },
+    {
+      "placement": 95,
+      "player_name": "\ud835\uddd5\ud835\uddd4\ud835\uddd7\ud835\uddd7\ud835\udddc\ud835\uddd8| LoloCatchem -",
+      "record": "1 - 6 - 0",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 96,
+      "player_name": "Altkyle",
+      "record": "1 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 97,
+      "player_name": "{\ud835\udc11\ud835\udc02\ud835\udc01} Lenny",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 98,
+      "player_name": "Dougz \u30fb\u03c9\u30fb",
+      "record": "1 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 99,
+      "player_name": "Xastur",
+      "record": "1 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 100,
+      "player_name": "\ud835\udc04\ud835\udc25\ud835\udc22\ud835\udc2d\ud835\udc1e\ud835\udfd2 \ud835\udd39\ud835\udd66\ud835\udd6b\ud835\udd6b",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 101,
+      "player_name": "\ud835\udc04\ud835\udc25\ud835\udc22\ud835\udc2d\ud835\udc1e\ud835\udfd2 Zeublai",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-venusaur-ex-b1a"
+    },
+    {
+      "placement": 102,
+      "player_name": "insomniak",
+      "record": "1 - 6 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 103,
+      "player_name": "maxiiiii",
+      "record": "1 - 6 - 0",
+      "archetype": "mega-metagross-ex-b4-dialga-ex-a2"
+    },
+    {
+      "placement": 104,
+      "player_name": "Ethan455",
+      "record": "1 - 3 - 0drop",
+      "archetype": "mega-venusaur-ex-venusaur-b1a"
+    },
+    {
+      "placement": 105,
+      "player_name": "PikaIcetea",
+      "record": "1 - 2 - 0drop",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 106,
+      "player_name": "syova",
+      "record": "1 - 6 - 0",
+      "archetype": "sylveon-ex-a3b-greninja-a1"
+    },
+    {
+      "placement": 107,
+      "player_name": "notgio",
+      "record": "1 - 2 - 0drop",
+      "archetype": "jolteon-ex-b1-mega-manectric-ex-b2b"
+    },
+    {
+      "placement": 108,
+      "player_name": "Lamain",
+      "record": "1 - 2 - 0drop",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 109,
+      "player_name": "maims123",
+      "record": "0 - 1 - 0drop",
+      "archetype": "magnezone-b1a-heliolisk-b4"
+    },
+    {
+      "placement": 110,
+      "player_name": "nahxav",
+      "record": "0 - 1 - 0drop",
+      "archetype": "magnezone-ex-b3-heliolisk-b4"
+    },
+    {
+      "placement": 111,
+      "player_name": "Donalberto987",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 112,
+      "player_name": "Javiercazorla",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 113,
+      "player_name": "RedFlag",
+      "record": "0 - 1 - 0drop",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 114,
+      "player_name": "Super_Peace",
+      "record": "0 - 1 - 0drop",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 115,
+      "player_name": "SamirDarkZero",
+      "record": "0 - 2 - 0drop",
+      "archetype": "wailord-ex-b4-indeedee-ex-b1"
+    },
+    {
+      "placement": 116,
+      "player_name": "TBC || Russ",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 117,
+      "player_name": "Porygon3",
+      "record": "0 - 2 - 0drop",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 118,
+      "player_name": "Lord_Vader",
+      "record": "0 - 3 - 0drop",
+      "archetype": "luxray-b4-zeraora-a3a"
+    },
+    {
+      "placement": 119,
+      "player_name": "deister",
+      "record": "0 - 2 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 120,
+      "player_name": "FrogEX | Babar",
+      "record": "0 - 3 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 121,
+      "player_name": "UNL | Kong",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-sceptile-ex-sceptile-b3"
+    },
+    {
+      "placement": 122,
+      "player_name": "WetWitch",
+      "record": "0 - 3 - 0drop",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 123,
+      "player_name": "ThomasXavier21",
+      "record": "0 - 5 - 0drop",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 124,
+      "player_name": "painv",
+      "record": "0 - 4 - 0drop",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 125,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Ivee",
+      "record": "0 - 7 - 0",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 126,
+      "player_name": "GigaGoat",
+      "record": "0 - 7 - 0",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 127,
+      "player_name": "christia1993n",
+      "record": "0 - 1 - 0drop",
+      "archetype": "dragonite-a1-druddigon-a1a"
+    },
+    {
+      "placement": 128,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee LaNora \ud835\uddd8\ud835\uddeb",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 129,
+      "player_name": "Flipinton",
+      "record": "0 - 7 - 0",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 130,
+      "player_name": "SuperBichoZ",
+      "record": "0 - 7 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 131,
+      "player_name": "JoaoCM",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3"
+    },
+    {
+      "placement": 132,
+      "player_name": "PGX | Nandosgude",
+      "record": "0 - 2 - 0drop",
+      "archetype": "great-tusk-koraidon-ex-b3a"
+    },
+    {
+      "placement": 133,
+      "player_name": "Glare",
+      "record": "0 - 1 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 134,
+      "player_name": "\ud835\ude48\ud835\ude5a\ud835\ude5c\ud835\ude56 Einstun \ud835\ude40\ud835\ude6d",
+      "record": "0 - 3 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 135,
+      "player_name": "sekensirazu",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    }
+  ]
+}
