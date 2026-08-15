@@ -1,0 +1,27 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Chingling,B1,109,0,20,0,100,100,Core,2
+Pokemon,Jirachi,B1,106,20,0,100,0,100,Core,1
+Pokemon,Mega Altaria ex,B1,102,0,20,0,100,100,Core,2
+Pokemon,Swablu,B1,196,0,20,0,100,100,Core,2
+Pokemon,Tapu Lele,A3,84,13,0,65,0,65,Standard,1
+Pokemon,Klefki,B1,120,7,0,35,0,35,Standard,1
+Pokemon,Furfrou,B1a,65,3,0,15,0,15,Tech,1
+Pokemon,Oricorio,A3,77,3,0,15,0,15,Tech,1
+Pokemon,Comfey,A3,80,2,0,10,0,10,Tech,1
+Pokemon,Elekid,A4,70,1,0,5,0,5,Tech,1
+Pokemon,Nihilego,A3a,42,1,0,5,0,5,Tech,1
+Trainer,Copycat,B1,225,20,0,100,0,100,Core,1
+Trainer,Cyrus,A2,150,9,11,45,55,100,Core,2
+Trainer,Lisia,B1,226,3,17,15,85,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Training Area,B2,153,20,0,100,0,100,Core,1
+Trainer,Rocky Helmet,A2,148,10,9,50,45,95,Core,1
+Trainer,Mars,A2,155,16,0,80,0,80,Core,1
+Trainer,Lucky Ice Pop,B2,145,15,0,75,0,75,Standard,1
+Trainer,Sabrina,A1,225,7,0,35,0,35,Standard,1
+Trainer,Red Card,P-A,6,6,0,30,0,30,Standard,1
+Trainer,Poké Ball,P-A,5,3,1,15,5,20,Tech,1
+Trainer,Guzma,A3,151,1,0,5,0,5,Tech,1
+Trainer,Poison Barb,A3,146,0,1,0,5,5,Tech,2
+Trainer,Pokémon Center Lady,A2b,70,1,0,5,0,5,Tech,1
+Trainer,Protective Poncho,B2,147,1,0,5,0,5,Tech,1

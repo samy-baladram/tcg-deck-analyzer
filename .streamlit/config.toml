@@ -1,6 +1,18 @@
 [theme]
 # Primary color (blue theme to match your app)
 primaryColor = "#00A0FF"
-
 # Set dark mode as default
 base = "dark"
+
+[client]
+# Minimal toolbar for cleaner interface
+toolbarMode = "minimal"
+# Hide error details for cleaner look
+showErrorDetails = false
+
+[logger]
+level = "error"
+
+[browser]
+# Disable telemetry
+gatherUsageStats = false

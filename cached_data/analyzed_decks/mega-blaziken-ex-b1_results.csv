@@ -1,0 +1,33 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Mega Blaziken ex,B1,36,1,19,5,95,100,Core,2
+Pokemon,Torchic,B1,33,0,20,0,100,100,Core,2
+Pokemon,Heatmor,B1,44,18,0,90,0,90,Core,1
+Pokemon,Combusken,B1,34,13,1,65,5,70,Standard,1
+Pokemon,Furfrou,B1a,65,10,0,50,0,50,Standard,1
+Pokemon,Cleffa,A4,77,3,0,15,0,15,Tech,1
+Pokemon,Chi-Yu,B2a,21,1,0,5,0,5,Tech,1
+Pokemon,Furfrou,B1,208,1,0,5,0,5,Tech,1
+Pokemon,Magby,A4,32,1,0,5,0,5,Tech,1
+Pokemon,Nihilego,A3a,42,1,0,5,0,5,Tech,1
+Pokemon,Oricorio,B2,22,1,0,5,0,5,Tech,1
+Pokemon,Spinda,B1,195,1,0,5,0,5,Tech,1
+Pokemon,Torkoal,A3b,10,1,0,5,0,5,Tech,1
+Trainer,Copycat,B1,225,9,11,45,55,100,Core,2
+Trainer,Poké Ball,P-A,5,4,16,20,80,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,Cyrus,A2,150,14,5,70,25,95,Core,1
+Trainer,Flame Patch,B1,217,14,5,70,25,95,Core,1
+Trainer,Lillie,A3,155,16,2,80,10,90,Core,1
+Trainer,Rocky Helmet,A2,148,12,2,60,10,70,Standard,1
+Trainer,Sabrina,A1,225,14,0,70,0,70,Standard,1
+Trainer,Lucky Ice Pop,B2,145,4,1,20,5,25,Tech,1
+Trainer,Guzma,A3,151,3,0,15,0,15,Tech,1
+Trainer,Mesagoza,B2a,93,3,0,15,0,15,Tech,1
+Trainer,Arven,B2a,91,2,0,10,0,10,Tech,1
+Trainer,Mars,A2,155,2,0,10,0,10,Tech,1
+Trainer,Serena,B1a,69,2,0,10,0,10,Tech,1
+Trainer,Iono,B2a,89,1,0,5,0,5,Tech,1
+Trainer,Poison Barb,A3,146,0,1,0,5,5,Tech,2
+Trainer,Protective Poncho,B2,147,1,0,5,0,5,Tech,1
+Trainer,Red,A2b,71,1,0,5,0,5,Tech,1

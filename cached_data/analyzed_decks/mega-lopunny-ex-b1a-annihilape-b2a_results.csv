@@ -1,0 +1,18 @@
+type,card_name,set,num,count_1,count_2,pct_1,pct_2,pct_total,category,majority
+Pokemon,Annihilape,B2a,57,0,20,0,100,100,Core,2
+Pokemon,Mankey,A1a,41,0,20,0,100,100,Core,2
+Pokemon,Mega Lopunny ex,B1a,42,0,20,0,100,100,Core,2
+Pokemon,Primeape,A1a,42,19,0,95,0,95,Core,1
+Pokemon,Buneary,B1a,62,0,18,0,90,90,Core,2
+Pokemon,Buneary,A2b,66,0,2,0,10,10,Tech,2
+Pokemon,Primeape,B2a,56,1,0,5,0,5,Tech,1
+Trainer,Copycat,B1,225,3,17,15,85,100,Core,2
+Trainer,Poké Ball,P-A,5,1,19,5,95,100,Core,2
+Trainer,Professor's Research,P-A,7,0,20,0,100,100,Core,2
+Trainer,Rare Candy,A3,144,0,20,0,100,100,Core,2
+Trainer,Will,A4,156,0,20,0,100,100,Core,2
+Trainer,Cyrus,A2,150,19,0,95,0,95,Core,1
+Trainer,Lisia,B1,226,2,0,10,0,10,Tech,1
+Trainer,Giant Cape,A2,147,1,0,5,0,5,Tech,1
+Trainer,Memory Light,A4a,68,1,0,5,0,5,Tech,1
+Trainer,Sabrina,A1,225,1,0,5,0,5,Tech,1
