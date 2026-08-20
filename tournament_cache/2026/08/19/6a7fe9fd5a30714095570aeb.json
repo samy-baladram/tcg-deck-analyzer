@@ -1,0 +1,123 @@
+{
+  "tournament_id": "6a7fe9fd5a30714095570aeb",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Sparrow #8 | TCG Pocket",
+  "timestamp": 1787176800000,
+  "format": "Standard",
+  "player_count": 19,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Jo\u00e3o Vitor",
+      "record": "5 - 1 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 2,
+      "player_name": "Jo\u00e3o Maekawa",
+      "record": "4 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Theodoro Melo",
+      "record": "4 - 1 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Rafael Faramiglio",
+      "record": "3 - 2 - 0",
+      "archetype": "gouging-fire-b3a-dragonair-b4"
+    },
+    {
+      "placement": 5,
+      "player_name": "Joao Pedro",
+      "record": "3 - 1 - 0",
+      "archetype": "hitmonchan-ex-b1-rampardos-a2"
+    },
+    {
+      "placement": 6,
+      "player_name": "Bernardo Seibert",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Gustavo Pereira",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Cayo Lucas",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3"
+    },
+    {
+      "placement": 9,
+      "player_name": "Maur\u00edcio Wendell",
+      "record": "2 - 1 - 0",
+      "archetype": "hisuian-zoroark-ex-b3b-meloetta-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "Henrique Vieira",
+      "record": "1 - 1 - 1",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Thiago Soares",
+      "record": "1 - 1 - 1",
+      "archetype": "walking-wake-b3a-dragonair-b4"
+    },
+    {
+      "placement": 12,
+      "player_name": "Rafael Soares",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-gallade-ex-b4-gallade-b3"
+    },
+    {
+      "placement": 13,
+      "player_name": "Denis Lima",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-sharpedo-ex-b4-mega-blastoise-ex-b1a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Alexandre Galdino",
+      "record": "1 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Francisco Ara\u00fajo",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-latios-ex-p-b-dragonair-b4"
+    },
+    {
+      "placement": 16,
+      "player_name": "Maur\u00edcio Junior",
+      "record": "0 - 1 - 2",
+      "archetype": "mega-venusaur-ex-b1a-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 17,
+      "player_name": "Graciliano Neto",
+      "record": "0 - 2 - 1",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 18,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Jhon Lenon",
+      "record": "0 - 2 - 1",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 19,
+      "player_name": "Bruno Sales",
+      "record": "0 - 2 - 0drop",
+      "archetype": "rotom-ex-b4-smeargle-b2"
+    }
+  ]
+}
