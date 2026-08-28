@@ -1,0 +1,135 @@
+{
+  "tournament_id": "6a91426eabb94822375023de",
+  "name": "Dark League Pop Up",
+  "timestamp": 1787910600000,
+  "format": "Standard",
+  "player_count": 21,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Xastur",
+      "record": "7 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-hoopa-ex-b4"
+    },
+    {
+      "placement": 2,
+      "player_name": "FrogEX | Cosmo",
+      "record": "6 - 3 - 0",
+      "archetype": "garchomp-b4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee Iduh \ud835\uddd8\ud835\uddeb",
+      "record": "5 - 3 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee Karasu \ud835\uddd8\ud835\uddeb",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Nifaa",
+      "record": "5 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "5 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "nakopol91",
+      "record": "5 - 2 - 0",
+      "archetype": "heliolisk-b4-team-rockets-zapdos-ex-b4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "moserk",
+      "record": "5 - 2 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Ibrakadabra",
+      "record": "3 - 3 - 0",
+      "archetype": "team-rockets-raticate-ex-b4a-suicune-ex-a4a"
+    },
+    {
+      "placement": 10,
+      "player_name": "BALD_Hoang",
+      "record": "3 - 3 - 0",
+      "archetype": "leafeon-ex-a2a-serperior-b4a"
+    },
+    {
+      "placement": 11,
+      "player_name": "sZero | frappesdrinker",
+      "record": "2 - 3 - 0",
+      "archetype": "sylveon-ex-a3b-team-rockets-slowking-ex-b4a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Sheriff_James",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 13,
+      "player_name": "Roky",
+      "record": "2 - 3 - 0",
+      "archetype": "dragonair-b4-altaria-a4a"
+    },
+    {
+      "placement": 14,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee Alana \ud835\uddd8\ud835\uddeb",
+      "record": "1 - 4 - 0",
+      "archetype": "jolteon-ex-b1-team-rockets-zapdos-ex-b4a"
+    },
+    {
+      "placement": 15,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee Banzai \ud835\uddd8\ud835\uddeb",
+      "record": "1 - 4 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-hoopa-ex-b4"
+    },
+    {
+      "placement": 16,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Pauk",
+      "record": "1 - 4 - 0",
+      "archetype": "garchomp-b4a-mantyke-a4a"
+    },
+    {
+      "placement": 17,
+      "player_name": "MikaMika_tti",
+      "record": "0 - 5 - 0",
+      "archetype": "garchomp-b4a"
+    },
+    {
+      "placement": 18,
+      "player_name": "PierFigo",
+      "record": "1 - 3 - 0drop",
+      "archetype": "sylveon-ex-a3b-team-rockets-slowking-ex-b4a"
+    },
+    {
+      "placement": 19,
+      "player_name": "sho@ S",
+      "record": "2 - 3 - 0drop",
+      "archetype": "team-rockets-weezing-ex-b4a-hoopa-ex-b4"
+    },
+    {
+      "placement": 20,
+      "player_name": "P\u042f | \u306f\u308b\u3072",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-gourgeist-b2"
+    },
+    {
+      "placement": 21,
+      "player_name": "DenExwTrixes",
+      "record": "2 - 3 - 0drop",
+      "archetype": "team-rockets-articuno-ex-gholdengo-b4a"
+    }
+  ]
+}
