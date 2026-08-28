@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6a827b0778baaa6d1c221f3f",
+  "name": "Meteor Cup #1 | Autumn Season 26",
+  "timestamp": 1787878800000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Queen13",
+      "record": "4 - 0 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "Mo1245",
+      "record": "3 - 1 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "msbh",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "kastro93",
+      "record": "1 - 2 - 1",
+      "archetype": "chandelure-b2-oricorio-b4"
+    },
+    {
+      "placement": 5,
+      "player_name": "KyLorde",
+      "record": "1 - 0 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Ayase",
+      "record": "0 - 2 - 2",
+      "archetype": "mega-lucario-ex-b3-igglybuff-a4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Semitse",
+      "record": "0 - 3 - 1",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "LionKing",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-gardevoir-ex-b2-mega-diancie-ex-b3b"
+    }
+  ]
+}
