@@ -1,0 +1,93 @@
+{
+  "tournament_id": "6a9b22fba4272c53be646f96",
+  "name": "OTS Pokemon TCG Pocket Arena Pop Up",
+  "timestamp": 1788559200000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "waittilltmrw",
+      "record": "7 - 0 - 0",
+      "archetype": "milotic-ex-b3b-eevee-ex-a3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "Muswa",
+      "record": "5 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-hoopa-ex-b4"
+    },
+    {
+      "placement": 3,
+      "player_name": "DraXoZ",
+      "record": "3 - 2 - 1",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udde6\ud835\uddec\ud835\udde1 BlueJun99",
+      "record": "3 - 2 - 1",
+      "archetype": "garchomp-ex-a2a-mega-lucario-ex-b3"
+    },
+    {
+      "placement": 5,
+      "player_name": "Acad",
+      "record": "2 - 2 - 1",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "2 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "nyrq",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-manectric-ex-b2b-team-rockets-electrode-b4a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Brxlyy",
+      "record": "2 - 2 - 0",
+      "archetype": "heliolisk-b4-team-rockets-zapdos-ex-b4a"
+    },
+    {
+      "placement": 9,
+      "player_name": "r0zey",
+      "record": "1 - 2 - 1drop",
+      "archetype": "team-rockets-tinkaton-b4a-orthworm-b2a"
+    },
+    {
+      "placement": 10,
+      "player_name": "matthewalex638",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "Flipinton",
+      "record": "1 - 3 - 0",
+      "archetype": "jumpluff-ex-a4a-team-rockets-electrode-b4a"
+    },
+    {
+      "placement": 12,
+      "player_name": "NunoGDM",
+      "record": "1 - 2 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 13,
+      "player_name": "Hunter_316",
+      "record": "0 - 1 - 0drop",
+      "archetype": "team-rockets-raticate-ex-b4a-alolan-ninetales-ex-b2"
+    },
+    {
+      "placement": 14,
+      "player_name": "\ud835\udde6\ud835\uddec\ud835\udde1 Jkhaled",
+      "record": "0 - 3 - 0drop",
+      "archetype": "team-rockets-raticate-ex-b4a-jolteon-ex-b1"
+    }
+  ]
+}
