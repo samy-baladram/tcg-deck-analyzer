@@ -1,0 +1,57 @@
+{
+  "tournament_id": "6a9c4f47a4272c53be647ff7",
+  "name": "notChaser CUP#2 Equipe Rocket!",
+  "timestamp": 1788645600000,
+  "format": "Standard",
+  "player_count": 8,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Drakioxp",
+      "record": "6 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "Sahara_Ishizu",
+      "record": "5 - 3 - 0",
+      "archetype": "flygon-ex-b3"
+    },
+    {
+      "placement": 3,
+      "player_name": "Victor13",
+      "record": "4 - 3 - 0",
+      "archetype": "team-rockets-raticate-ex-b4a-vaporeon-ex-b3"
+    },
+    {
+      "placement": 4,
+      "player_name": "ChaserZ",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-manectric-ex-b2b-team-rockets-electrode-b4a"
+    },
+    {
+      "placement": 5,
+      "player_name": "JeffRJ021",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-blaziken-ex-heatmor-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Roderick",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-manectric-ex-b2b-team-rockets-electrode-b4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Bart22",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-sharpedo-ex-b4-milotic-ex-b3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Azin",
+      "record": "0 - 4 - 0drop",
+      "archetype": "team-rockets-slowking-ex-b4a-meloetta-b2"
+    }
+  ]
+}
