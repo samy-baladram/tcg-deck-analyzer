@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6a9fe0c7ab080c8c957fdde4",
+  "name": "Meteor Cup #3 | Autumn Season 26",
+  "timestamp": 1789088400000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Tobias_Oak",
+      "record": "3 - 1 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd9\ud835\uddda\ud835\udde5 || Sinorci200",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "DellfrmMONKSCafe",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Ayase",
+      "record": "1 - 3 - 0",
+      "archetype": "greninja-a1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 5,
+      "player_name": "Queen13",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-happiny-b4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Almezda",
+      "record": "0 - 1 - 0drop",
+      "archetype": "team-rockets-weezing-ex-b4a-hoopa-ex-b4"
+    }
+  ]
+}
