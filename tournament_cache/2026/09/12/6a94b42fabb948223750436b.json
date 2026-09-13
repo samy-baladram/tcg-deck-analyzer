@@ -1,0 +1,93 @@
+{
+  "tournament_id": "6a94b42fabb948223750436b",
+  "name": "OTS Pokemon TCG Pocket Arena #1",
+  "timestamp": 1789250400000,
+  "format": "Standard",
+  "player_count": 14,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Tobias_Oak",
+      "record": "7 - 0 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 2,
+      "player_name": "sZero | frappesdrinker",
+      "record": "5 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "TK37Z",
+      "record": "3 - 2 - 1",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 4,
+      "player_name": "Acad",
+      "record": "3 - 2 - 1",
+      "archetype": "mega-blaziken-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Ibrakadabra",
+      "record": "2 - 2 - 1",
+      "archetype": "greninja-a1-dragonite-ex-a3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "Vitorinsky",
+      "record": "2 - 2 - 0",
+      "archetype": "decidueye-ex-a3-team-rockets-electrode-b4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee RGZ",
+      "record": "2 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-zoroark-ex-b3"
+    },
+    {
+      "placement": 8,
+      "player_name": "den670",
+      "record": "2 - 2 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee Preluxe",
+      "record": "1 - 2 - 1",
+      "archetype": "team-rockets-slowking-ex-b4a-meloetta-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "iiTzJonny95",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "tendoreezy",
+      "record": "1 - 3 - 0drop",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 12,
+      "player_name": "xXEmmaBooXx",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 13,
+      "player_name": "\ud835\udc13\ud835\udc0c I OldCaT .",
+      "record": "0 - 2 - 0drop",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 14,
+      "player_name": "\ud835\udde5\ud835\uddd9 | Tan Sama",
+      "record": "0 - 2 - 0drop",
+      "archetype": "team-rockets-slowking-ex-b4a-meloetta-b2"
+    }
+  ]
+}
