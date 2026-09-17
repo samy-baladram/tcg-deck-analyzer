@@ -1,0 +1,111 @@
+{
+  "tournament_id": "6aa5a7da38886b36383bdfcd",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Sparrow #12 | TCG Pocket",
+  "timestamp": 1789596000000,
+  "format": "Standard",
+  "player_count": 17,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Cayo Lucas",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Thiago Diaz",
+      "record": "5 - 1 - 0",
+      "archetype": "hoopa-ex-b4-hydreigon-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Thiago Augusto",
+      "record": "3 - 2 - 0",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Lucas Sampaio",
+      "record": "3 - 2 - 0",
+      "archetype": "beautifly-dustox-b4"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Eleven Gomes",
+      "record": "3 - 1 - 0",
+      "archetype": "koraidon-ex-great-tusk-b3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Alexandre Galdino",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-castform-sunny-form-b3"
+    },
+    {
+      "placement": 7,
+      "player_name": "Marcos Moreno",
+      "record": "2 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-darkrai-ex-a2"
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Gustavo Pereira",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Theodoro Melo",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-blaziken-ex-b1-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 10,
+      "player_name": "Marcus Adriano",
+      "record": "1 - 2 - 0",
+      "archetype": "team-rockets-raticate-ex-b4a-alolan-ninetales-ex-b2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Guilherme Santos",
+      "record": "1 - 2 - 0",
+      "archetype": "magcargo-a4"
+    },
+    {
+      "placement": 12,
+      "player_name": "Thiago Cruz",
+      "record": "1 - 2 - 0",
+      "archetype": "team-rockets-raticate-ex-team-rockets-weezing-ex-b4a"
+    },
+    {
+      "placement": 13,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Jhon Lenon",
+      "record": "0 - 3 - 0",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Ant\u00f4nio Gleisson",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 15,
+      "player_name": "Rafael Silva",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-sharpedo-ex-b4-mega-gyarados-ex-b1"
+    },
+    {
+      "placement": 16,
+      "player_name": "Rafael Faramiglio",
+      "record": "1 - 2 - 0drop",
+      "archetype": "hydreigon-b1-absol-b4"
+    },
+    {
+      "placement": 17,
+      "player_name": "Wagner Moraes",
+      "record": "0 - 1 - 0drop",
+      "archetype": "garchomp-b4a-meowth-b2"
+    }
+  ]
+}
