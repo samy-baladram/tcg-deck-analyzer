@@ -1,0 +1,87 @@
+{
+  "tournament_id": "6ab421caf127b1b52c2808a2",
+  "name": "OTS Pokemon TCG Pocket Pop Up",
+  "timestamp": 1790197200000,
+  "format": "Standard",
+  "player_count": 13,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Taykay99",
+      "record": "6 - 1 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 2,
+      "player_name": "LuckyEX888",
+      "record": "4 - 2 - 1",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\u2b50\ufe0f | guunnz",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Nifaa",
+      "record": "4 - 2 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "2 - 2 - 1",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 6,
+      "player_name": "TL| Nemesis",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-sharpedo-ex-b4-mega-gyarados-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "giaacomoo",
+      "record": "2 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Ember_Elmos",
+      "record": "1 - 3 - 0",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7| Satoru Gojo",
+      "record": "1 - 2 - 0drop",
+      "archetype": "hydreigon-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Acad",
+      "record": "0 - 2 - 0drop",
+      "archetype": "garchomp-b4a-munchlax-b3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "Plasma | NastKon",
+      "record": "0 - 1 - 0drop",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 12,
+      "player_name": "TBC || Russ",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-blaziken-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "PattyD",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-scizor-ex-revavroom-b2b"
+    }
+  ]
+}

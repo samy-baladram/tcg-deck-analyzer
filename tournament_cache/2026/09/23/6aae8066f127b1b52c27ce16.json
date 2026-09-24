@@ -1,0 +1,105 @@
+{
+  "tournament_id": "6aae8066f127b1b52c27ce16",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Sparrow #13 | TCG Pocket",
+  "timestamp": 1790200800000,
+  "format": "Standard",
+  "player_count": 16,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Eleven Gomes",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-lucario-ex-b3-hitmonchan-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Lucas Costa",
+      "record": "5 - 1 - 0",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Nattiel Bezerra",
+      "record": "4 - 1 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Jhon Lenon",
+      "record": "3 - 2 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 5,
+      "player_name": "Jo\u00e3o Duarte",
+      "record": "2 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 6,
+      "player_name": "Matheus Mota",
+      "record": "2 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Thiago Diaz",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Lucas Sampaio",
+      "record": "2 - 2 - 0",
+      "archetype": "beautifly-dustox-b4"
+    },
+    {
+      "placement": 9,
+      "player_name": "Marcos Moreno",
+      "record": "1 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-zoroark-ex-b3"
+    },
+    {
+      "placement": 10,
+      "player_name": "Alexandre Galdino",
+      "record": "1 - 2 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 11,
+      "player_name": "Cayo Lucas",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 12,
+      "player_name": "Emanuele Prado",
+      "record": "1 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-team-rockets-magmar-b4a"
+    },
+    {
+      "placement": 13,
+      "player_name": "Gabriel Furquim",
+      "record": "1 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-hoopa-ex-b4"
+    },
+    {
+      "placement": 14,
+      "player_name": "Thiago Cruz",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-houndoom-ex-p-b-castform-sunny-form-b3"
+    },
+    {
+      "placement": 15,
+      "player_name": "Henrique Vieira",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 16,
+      "player_name": "Thiago Augusto",
+      "record": "0 - 2 - 0drop",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    }
+  ]
+}
