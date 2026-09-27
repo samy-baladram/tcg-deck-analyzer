@@ -1,0 +1,99 @@
+{
+  "tournament_id": "6ab875b9783097f8dcb71b53",
+  "name": "Block Dragon Pop Up (RR Team Rockets Slowking)",
+  "timestamp": 1790478900000,
+  "format": "Standard",
+  "player_count": 15,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "sZero | frappesdrinker",
+      "record": "6 - 0 - 1",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Nicoz",
+      "record": "5 - 1 - 1",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Sychillz",
+      "record": "4 - 2 - 0",
+      "archetype": "garchomp-b4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Wall456",
+      "record": "3 - 1 - 2",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 5,
+      "player_name": "INVINCIB13",
+      "record": "3 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7| Satoru Gojo",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Xastur",
+      "record": "2 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 8,
+      "player_name": "ConquestCQN",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-altaria-ex-chingling-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "eeveeon",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 10,
+      "player_name": "AllNyta",
+      "record": "1 - 3 - 0",
+      "archetype": "galarian-obstagoon-b2-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 11,
+      "player_name": "AsterPhoenix",
+      "record": "1 - 2 - 0drop",
+      "archetype": "team-rockets-weezing-ex-b4a-zoroark-ex-b3"
+    },
+    {
+      "placement": 12,
+      "player_name": "DashMD",
+      "record": "0 - 1 - 0drop",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 13,
+      "player_name": "S\u30b7\u30e5\u30f3\u30bf",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Ratatouillet27",
+      "record": "0 - 2 - 0drop",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Luffytaro_91",
+      "record": "0 - 2 - 0drop",
+      "archetype": "hoopa-ex-b4-tyranitar-a4"
+    }
+  ]
+}
