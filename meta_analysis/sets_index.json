@@ -1,6 +1,12 @@
 {
-  "last_updated": "2026-09-30T15:38:43.507131",
+  "last_updated": "2026-09-30T20:33:18.785942",
   "sets": [
+    {
+      "set_name": "Deluxe Pack: Mega",
+      "set_code": "B4b",
+      "release_date": "2026-09-30",
+      "card_count": 429
+    },
     {
       "set_name": "Team Rocket's Ambition",
       "set_code": "B4a",
