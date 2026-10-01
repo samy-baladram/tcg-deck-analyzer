@@ -1,0 +1,111 @@
+{
+  "tournament_id": "6ab717ff783097f8dcb70ba4",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Sparrow #14 | TCG Pocket",
+  "timestamp": 1790805600000,
+  "format": "Standard",
+  "player_count": 17,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Theodoro Melo",
+      "record": "6 - 0 - 0",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Graciliano Neto",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "Gabriel Furquim",
+      "record": "4 - 1 - 0",
+      "archetype": "mega-gardevoir-ex-b2-mewtwo-ex-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Daniel Souza",
+      "record": "3 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Henrique Vieira",
+      "record": "3 - 1 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Jhon Lenon",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Eleven Gomes",
+      "record": "2 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-hoopa-ex-b4"
+    },
+    {
+      "placement": 8,
+      "player_name": "Alexandre Galdino",
+      "record": "2 - 2 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 9,
+      "player_name": "Cayo Lucas",
+      "record": "1 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Felipe Ryan",
+      "record": "1 - 2 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "\ud835\uddd7\ud835\uddda\ud835\udde6 | Nicholas Leme",
+      "record": "1 - 2 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 12,
+      "player_name": "Marcos Moreno",
+      "record": "1 - 2 - 0",
+      "archetype": "team-rockets-raticate-ex-b4a-mega-kangaskhan-ex-b2"
+    },
+    {
+      "placement": 13,
+      "player_name": "Thiago Diaz",
+      "record": "1 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Thiago Cruz",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-houndoom-ex-p-b-castform-sunny-form-b3"
+    },
+    {
+      "placement": 15,
+      "player_name": "Alex Sandro",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 16,
+      "player_name": "Bruno Sales",
+      "record": "0 - 2 - 0drop",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 17,
+      "player_name": "Thiago Augusto",
+      "record": "0 - 1 - 0drop",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    }
+  ]
+}
