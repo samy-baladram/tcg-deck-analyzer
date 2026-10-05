@@ -1,0 +1,33 @@
+{
+  "tournament_id": "6ab4bec1f127b1b52c280fe6",
+  "name": "Women's League Pocket #15",
+  "timestamp": 1791154800000,
+  "format": "STANDARD",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "3 - 0 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ember_Elmos",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-diancie-ex-b3b-flutter-mane-ex-b3a"
+    },
+    {
+      "placement": 4,
+      "player_name": "aeoness",
+      "record": "0 - 3 - 0",
+      "archetype": "indeedee-ex-b1-togekiss-a2"
+    }
+  ]
+}
