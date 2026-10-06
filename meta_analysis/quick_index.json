@@ -1,14 +1,14 @@
 {
-  "last_updated": 1791290890,
-  "total_tournaments": 1881,
+  "last_updated": 1791312404,
+  "total_tournaments": 1882,
   "format_distribution": {
-    "Standard": 1794,
+    "Standard": 1795,
     "STANDARD": 59,
     "NOEX": 28
   },
   "date_range": {
     "earliest": "2025-04-27",
-    "latest": "2026-10-05"
+    "latest": "2026-10-06"
   },
   "top_archetypes": [
     "hydreigon-mega-absol-ex-b1",
