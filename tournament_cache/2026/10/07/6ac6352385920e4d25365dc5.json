@@ -1,0 +1,117 @@
+{
+  "tournament_id": "6ac6352385920e4d25365dc5",
+  "name": "OTS Pokemon TCG Pocket Arena Pop Up",
+  "timestamp": 1791403200000,
+  "format": "Standard",
+  "player_count": 18,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Plasma | NastKon",
+      "record": "6 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "AsterPhoenix",
+      "record": "5 - 3 - 0",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 3,
+      "player_name": "Vitorinsky",
+      "record": "5 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 4,
+      "player_name": "hakitcgp",
+      "record": "4 - 3 - 0",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "LuckyEX888",
+      "record": "5 - 1 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 6,
+      "player_name": "MateusHO",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "jessicafknj",
+      "record": "3 - 3 - 0",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 9,
+      "player_name": "Tesla20",
+      "record": "2 - 3 - 0drop",
+      "archetype": "dedenne-ex-b3b-pichu-a4"
+    },
+    {
+      "placement": 10,
+      "player_name": "marione",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Acad",
+      "record": "2 - 2 - 0drop",
+      "archetype": "mega-sharpedo-ex-b4-gyarados-a4"
+    },
+    {
+      "placement": 12,
+      "player_name": "Ember_Elmos",
+      "record": "2 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "PattyD",
+      "record": "1 - 3 - 0drop",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 14,
+      "player_name": "Acacia",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 15,
+      "player_name": "LordRoldemort",
+      "record": "1 - 2 - 0drop",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 16,
+      "player_name": "Flipinton",
+      "record": "1 - 4 - 0",
+      "archetype": "team-rockets-slowking-ex-b4a-meloetta-b2"
+    },
+    {
+      "placement": 17,
+      "player_name": "sleepy512pete",
+      "record": "0 - 2 - 0drop",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 18,
+      "player_name": "TDL| EllieDark",
+      "record": "0 - 3 - 0drop",
+      "archetype": "hisuian-zoroark-ex-b3b-team-rockets-electrode-b4a"
+    }
+  ]
+}
