@@ -1,0 +1,99 @@
+{
+  "tournament_id": "6acd688e115c12b73a5a2925",
+  "name": "Dark League Pop Up",
+  "timestamp": 1791855000000,
+  "format": "Standard",
+  "player_count": 15,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "FrogEX | frappesdrinker",
+      "record": "6 - 1 - 1",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Bernian",
+      "record": "6 - 1 - 1",
+      "archetype": "mega-diancie-ex-b3b-flutter-mane-ex-b3a"
+    },
+    {
+      "placement": 3,
+      "player_name": "LoLoCatchEm",
+      "record": "5 - 1 - 1",
+      "archetype": "hydreigon-b1-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "TDL| EllieDark",
+      "record": "4 - 2 - 1",
+      "archetype": "giratina-ex-a2b-darkrai-ex-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "Above_fr",
+      "record": "4 - 2 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 6,
+      "player_name": "PattyD",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-sceptile-ex-b3-greninja-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "MrD",
+      "record": "3 - 3 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 8,
+      "player_name": "JayButterdog",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Speedy_Paws",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Chewy007",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-hitmonchan-ex-b1"
+    },
+    {
+      "placement": 11,
+      "player_name": "AsterPhoenix",
+      "record": "1 - 3 - 0drop",
+      "archetype": "zoroark-ex-b3-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 12,
+      "player_name": "CatchDeezNotz",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 13,
+      "player_name": "Xastur",
+      "record": "0 - 2 - 0drop",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 14,
+      "player_name": "flipand11",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-sharpedo-ex-b4-chien-pao-ex-b2a"
+    },
+    {
+      "placement": 15,
+      "player_name": "rhegims",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    }
+  ]
+}
