@@ -1,0 +1,27 @@
+{
+  "tournament_id": "6acbf87f8a8383117e3e9c5b",
+  "name": "Women's League Pocket #16",
+  "timestamp": 1792350000000,
+  "format": "STANDARD",
+  "player_count": 3,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "3 - 0 - 0",
+      "archetype": "indeedee-ex-b1-oricorio-a3"
+    },
+    {
+      "placement": 2,
+      "player_name": "Ember_Elmos",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi :3",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    }
+  ]
+}
