@@ -1,0 +1,75 @@
+{
+  "tournament_id": "6ad6681f115c12b73a5a7c97",
+  "name": "OTS Pokemon TCG Pocket Arena Pop Up | CARD PRIZES",
+  "timestamp": 1792445400000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi :3",
+      "record": "5 - 1 - 1",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\u2b50\ufe0f | Suede",
+      "record": "4 - 2 - 1",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 3,
+      "player_name": "LuckyEX888",
+      "record": "4 - 1 - 1",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "nyrq the rookie",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee LaNora \ud835\uddd8\ud835\uddeb",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Mirinie",
+      "record": "2 - 2 - 1",
+      "archetype": "mega-charizard-y-ex-b1a-charizard-ex-a1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Soulidus",
+      "record": "2 - 2 - 0",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 8,
+      "player_name": "tendoreezy",
+      "record": "2 - 2 - 0",
+      "archetype": "rotom-ex-b4"
+    },
+    {
+      "placement": 9,
+      "player_name": "DashMD",
+      "record": "1 - 2 - 0drop",
+      "archetype": "greninja-a1-dragonite-ex-a3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Awbscene",
+      "record": "0 - 2 - 0drop",
+      "archetype": "iron-bundle-ex-iron-valiant-b3a"
+    },
+    {
+      "placement": 11,
+      "player_name": "max astro",
+      "record": "0 - 4 - 0",
+      "archetype": "mega-absol-ex-b1-darkrai-ex-a2"
+    }
+  ]
+}
