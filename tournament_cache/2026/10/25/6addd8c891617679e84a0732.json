@@ -1,0 +1,81 @@
+{
+  "tournament_id": "6addd8c891617679e84a0732",
+  "name": "OTS Pokemon TCG Pocket Arena Tournament",
+  "timestamp": 1792965600000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "DashMD",
+      "record": "6 - 0 - 1",
+      "archetype": "hydreigon-b1-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi :3",
+      "record": "4 - 2 - 1",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 3,
+      "player_name": "LuckyEX888",
+      "record": "4 - 1 - 1",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 4,
+      "player_name": "thefunk1",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 5,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "2 - 2 - 1",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "SimonTCG",
+      "record": "2 - 2 - 0",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 7,
+      "player_name": "Leonard_Ferrer",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-gardevoir-ex-b2-mega-diancie-ex-b3b"
+    },
+    {
+      "placement": 8,
+      "player_name": "Xastur",
+      "record": "1 - 3 - 0drop",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Silvk",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 10,
+      "player_name": "AsterPhoenix",
+      "record": "0 - 2 - 0drop",
+      "archetype": "garchomp-ex-a2a-rampardos-a2"
+    },
+    {
+      "placement": 11,
+      "player_name": "Loaf026",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 12,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\u2b50\ufe0f | RichyRich",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    }
+  ]
+}

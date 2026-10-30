@@ -1,0 +1,147 @@
+{
+  "tournament_id": "6ae12ced22fd412b92a4e4d9",
+  "name": "OTS Pokemon TCG Pocket Arena Double-Deck Test",
+  "timestamp": 1793215800000,
+  "format": "Standard",
+  "player_count": 23,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi :3",
+      "record": "7 - 1 - 1",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "Hisoka .",
+      "record": "7 - 2 - 0",
+      "archetype": "mega-sharpedo-ex-b4-chien-pao-ex-b2a"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\uddee\ud835\uddf9\ud835\uddf1 Supreme",
+      "record": "7 - 1 - 0",
+      "archetype": "hoopa-ex-b4-mega-absol-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "AVELINO_OFF",
+      "record": "5 - 2 - 1",
+      "archetype": "hydreigon-b1-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Matheusmota",
+      "record": "4 - 2 - 1drop",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "LuckyEX888",
+      "record": "4 - 2 - 1",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udde0\ud835\udde2\ud835\udde1\ud835\udde2 . Pauk",
+      "record": "4 - 3 - 0",
+      "archetype": "flygon-ex-b3"
+    },
+    {
+      "placement": 8,
+      "player_name": "Awbscene",
+      "record": "2 - 2 - 0drop",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "juandeacu",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-ampharos-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Tesla20",
+      "record": "2 - 3 - 0drop",
+      "archetype": "dedenne-ex-b3b-pichu-a4"
+    },
+    {
+      "placement": 11,
+      "player_name": "TDL| EllieDark",
+      "record": "2 - 3 - 0drop",
+      "archetype": "mega-blaziken-ex-b1"
+    },
+    {
+      "placement": 12,
+      "player_name": "ProtoTCG",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 13,
+      "player_name": "\ud835\udde0\ud835\uddf2\ud835\uddf4\ud835\uddee Yamirai \ud835\uddd8\ud835\uddeb",
+      "record": "1 - 4 - 0drop",
+      "archetype": "mega-sharpedo-ex-b4-chien-pao-ex-b2a"
+    },
+    {
+      "placement": 14,
+      "player_name": "sunfighter",
+      "record": "1 - 4 - 0drop",
+      "archetype": "mega-gardevoir-ex-b2-gengar-ex-a1"
+    },
+    {
+      "placement": 15,
+      "player_name": "ChIvO",
+      "record": "1 - 0 - 0drop",
+      "archetype": "dragonair-b4-haxorus-b2b"
+    },
+    {
+      "placement": 16,
+      "player_name": "Mirinie",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 17,
+      "player_name": "PattyD",
+      "record": "0 - 2 - 0drop",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 18,
+      "player_name": "\ud835\udde0\ud835\uddee\ud835\uddf4\ud835\uddfa\ud835\uddee StorM",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 19,
+      "player_name": "r0zey",
+      "record": "0 - 1 - 0drop",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 20,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "0 - 1 - 0drop",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 21,
+      "player_name": "ProskiFTW",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 22,
+      "player_name": "DaDonGaby",
+      "record": "4 - 3 - 0",
+      "archetype": "charizard-ex-greninja-a1"
+    },
+    {
+      "placement": 23,
+      "player_name": "Miles_Exceed",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    }
+  ]
+}

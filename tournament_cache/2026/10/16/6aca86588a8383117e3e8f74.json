@@ -1,0 +1,105 @@
+{
+  "tournament_id": "6aca86588a8383117e3e8f74",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Pocket #4 | TCG Pocket",
+  "timestamp": 1792108800000,
+  "format": "Standard",
+  "player_count": 16,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Alexandre Galdino",
+      "record": "5 - 0 - 1",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Thiago Martins",
+      "record": "4 - 1 - 1",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Graciliano Neto",
+      "record": "3 - 2 - 0",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 4,
+      "player_name": "Gabriel Furquim",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-sceptile-ex-b3-nihilego-a3a"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Lucas Sampaio",
+      "record": "3 - 1 - 0",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Marcel Petines",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 7,
+      "player_name": "Marcos Moreno",
+      "record": "2 - 2 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-zoroark-ex-b3"
+    },
+    {
+      "placement": 8,
+      "player_name": "Thiago Augusto",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-lucario-ex-b3-lucario-a2"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Lucas Costa",
+      "record": "2 - 2 - 0",
+      "archetype": "dragonair-mega-rayquaza-ex-b4"
+    },
+    {
+      "placement": 10,
+      "player_name": "Leonardo Reis",
+      "record": "1 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-igglybuff-a4a"
+    },
+    {
+      "placement": 11,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Theodoro Melo",
+      "record": "1 - 3 - 0",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 12,
+      "player_name": "Gabriel Gurgel",
+      "record": "1 - 3 - 0",
+      "archetype": "team-rockets-weezing-ex-b4a-nidoking-a1"
+    },
+    {
+      "placement": 13,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Matheus Yudi",
+      "record": "0 - 4 - 0",
+      "archetype": "greninja-a1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Murilo Moreira",
+      "record": "0 - 4 - 0",
+      "archetype": "mega-blaziken-ex-b1-castform-sunny-form-b3"
+    },
+    {
+      "placement": 15,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Eleven Gomes",
+      "record": "1 - 1 - 0drop",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 16,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Carlos Eduardo",
+      "record": "0 - 4 - 0drop",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    }
+  ]
+}

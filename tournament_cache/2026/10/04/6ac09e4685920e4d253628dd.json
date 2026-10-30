@@ -1,0 +1,75 @@
+{
+  "tournament_id": "6ac09e4685920e4d253628dd",
+  "name": "\ud83c\udde7\ud83c\uddf7 Big Team Galar & Hit Legends | TCG Pocket",
+  "timestamp": 1791153000000,
+  "format": "Standard",
+  "player_count": 11,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Lucas Costa",
+      "record": "8 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Thiago Prado",
+      "record": "8 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Iago Cyriaco",
+      "record": "6 - 3 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Nathan Rodrigues",
+      "record": "6 - 4 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Matheus Yudi",
+      "record": "5 - 4 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Agner Siqueira",
+      "record": "5 - 4 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Felipe Martinez",
+      "record": "3 - 4 - 3",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Rafael Chagas",
+      "record": "3 - 6 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Joilson Meneses",
+      "record": "1 - 8 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Aender Josefe",
+      "record": "0 - 9 - 1",
+      "archetype": null
+    },
+    {
+      "placement": 11,
+      "player_name": "\ud835\udc01\ud835\udc13\ud835\udc06 | Graciliano Neto",
+      "record": "3 - 6 - 1drop",
+      "archetype": null
+    }
+  ]
+}

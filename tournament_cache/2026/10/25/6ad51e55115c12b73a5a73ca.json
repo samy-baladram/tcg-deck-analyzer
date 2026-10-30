@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6ad51e55115c12b73a5a73ca",
+  "name": "Women's League Pocket #17 | CARD PRIZE",
+  "timestamp": 1792954800000,
+  "format": "STANDARD",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "3 - 0 - 0",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "Bernian",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-lucario-ex-b3-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 3,
+      "player_name": "r0zey",
+      "record": "1 - 2 - 0",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "Ember_Elmos",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-castform-sunny-form-b3"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi :3",
+      "record": "0 - 1 - 0drop",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 6,
+      "player_name": "TDL| EllieDark",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-blaziken-ex-b1"
+    }
+  ]
+}
