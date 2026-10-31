@@ -1,0 +1,33 @@
+{
+  "tournament_id": "6ae56ced0d00101b48bf3156",
+  "name": "TESTING",
+  "timestamp": 1793419200000,
+  "format": "Standard",
+  "player_count": 4,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Fall88",
+      "record": "3 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "hi1214",
+      "record": "2 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "LeoWyses",
+      "record": "1 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "quackquack",
+      "record": "0 - 2 - 0",
+      "archetype": null
+    }
+  ]
+}
