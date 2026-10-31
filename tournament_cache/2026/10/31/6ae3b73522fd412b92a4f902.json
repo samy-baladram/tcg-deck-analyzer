@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6ae3b73522fd412b92a4f902",
+  "name": "OTS Pokemon TCG Pocket Arena Double-Deck Test #2",
+  "timestamp": 1793455200000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "KyorakuST",
+      "record": "3 - 0 - 0",
+      "archetype": "umbreon-c1-hydreigon-b1"
+    },
+    {
+      "placement": 2,
+      "player_name": "DragonKni8",
+      "record": "2 - 1 - 0",
+      "archetype": "pikachu-ex-pawmot-c1"
+    },
+    {
+      "placement": 3,
+      "player_name": "surdao123",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "AVELINO_OFF",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-gardevoir-ex-b2-mega-diancie-ex-b3b"
+    },
+    {
+      "placement": 5,
+      "player_name": "Laytox",
+      "record": "0 - 1 - 0drop",
+      "archetype": "umbreon-c1-hydreigon-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "Super_Peace",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-greninja-ex-c1-greninja-ex-b1"
+    }
+  ]
+}
