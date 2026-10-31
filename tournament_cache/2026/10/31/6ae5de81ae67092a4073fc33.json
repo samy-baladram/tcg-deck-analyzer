@@ -1,0 +1,45 @@
+{
+  "tournament_id": "6ae5de81ae67092a4073fc33",
+  "name": "TDL Hallows Special",
+  "timestamp": 1793471400000,
+  "format": "Standard",
+  "player_count": 6,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "EnvyEnby",
+      "record": "5 - 2 - 0",
+      "archetype": "hydreigon-b1-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 2,
+      "player_name": "eliasquinn",
+      "record": "5 - 2 - 0",
+      "archetype": "greninja-ex-b1-suicune-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Xastur",
+      "record": "2 - 4 - 0",
+      "archetype": "umbreon-c1-hydreigon-b1"
+    },
+    {
+      "placement": 4,
+      "player_name": "RavenousSix",
+      "record": "2 - 1 - 0drop",
+      "archetype": "mega-dragonite-ex-c1-dragonite-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "FlashFardin",
+      "record": "4 - 1 - 0drop",
+      "archetype": "umbreon-c1-hydreigon-b1"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Mewtwo",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mew-ex-c1-dusknoir-a2"
+    }
+  ]
+}
