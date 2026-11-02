@@ -402,6 +402,12 @@ POKEMON_URL_EXCEPTIONS = {
     'mega-sableye': {
         'default': 'sableye-mega'
     },
+    'mega-dragonite': {
+        'default': 'dragonite-mega'
+    },
+    'mega-greninja': {
+        'default': 'greninja-mega'
+    },
 }
 
 # Pokemon suffixes to filter out
