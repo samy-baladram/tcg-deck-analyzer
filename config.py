@@ -408,6 +408,9 @@ POKEMON_URL_EXCEPTIONS = {
     'mega-greninja': {
         'default': 'greninja-mega'
     },
+    'mega-skarmory': {
+        'default': 'skarmory-mega'
+    },
 }
 
 # Pokemon suffixes to filter out
