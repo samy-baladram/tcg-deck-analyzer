@@ -1,0 +1,81 @@
+{
+  "tournament_id": "6adca2f497e21d82e5c6e108",
+  "name": "Summit Team Tournament",
+  "timestamp": 1792893120000,
+  "format": "Standard",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udc7a\ud835\udc74\ud835\udc7b | Flustered",
+      "record": "5 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\udc7a\ud835\udc74\ud835\udc7b | \ud835\ude54\ud835\ude5e\ud835\ude6f\ud835\ude6f\ud835\ude6e",
+      "record": "4 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udc7a\ud835\udc74\ud835\udc7b | Necroblaze",
+      "record": "4 - 1 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 4,
+      "player_name": "BirdNest",
+      "record": "3 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 5,
+      "player_name": "SMT || Porygon3",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 6,
+      "player_name": "SMT | GriffSama",
+      "record": "2 - 2 - 0",
+      "archetype": null
+    },
+    {
+      "placement": 7,
+      "player_name": "Fuzzyfoot",
+      "record": "1 - 3 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 8,
+      "player_name": "TempestSpeed",
+      "record": "1 - 2 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\udc7a\ud835\udc74\ud835\udc7b | GDM",
+      "record": "1 - 2 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 10,
+      "player_name": "VGTxProm | Akuma.",
+      "record": "0 - 2 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 11,
+      "player_name": "\ud835\uddd5\ud835\uddee\ud835\uddf9\ud835\uddf1 Supreme",
+      "record": "0 - 2 - 0drop",
+      "archetype": null
+    },
+    {
+      "placement": 12,
+      "player_name": "Wall456",
+      "record": "0 - 1 - 0drop",
+      "archetype": null
+    }
+  ]
+}
