@@ -1,0 +1,147 @@
+{
+  "tournament_id": "6adec92991617679e84a1147",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Pocket #6 | TCG Pocket",
+  "timestamp": 1793404800000,
+  "format": "Standard",
+  "player_count": 23,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Alexandre Galdino",
+      "record": "7 - 1 - 0",
+      "archetype": "butterfree-b3b-mega-sceptile-ex-b3"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Matheus Yudi",
+      "record": "5 - 2 - 1",
+      "archetype": "giratina-ex-c1-dragonair-b4"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Carlos Eduardo",
+      "record": "5 - 1 - 1",
+      "archetype": "mega-greninja-ex-c1-suicune-ex-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Mickael Vin\u00edcius",
+      "record": "4 - 1 - 2",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Marcel Petines",
+      "record": "3 - 1 - 2",
+      "archetype": "mega-greninja-ex-c1-suicune-ex-a4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udde5\ud835\uddd6\ud835\uddd5 | Gabriel Tarifa",
+      "record": "3 - 3 - 0",
+      "archetype": "greninja-ex-b1-mega-greninja-ex-c1"
+    },
+    {
+      "placement": 7,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Leonan Ferreira",
+      "record": "3 - 3 - 0",
+      "archetype": "giratina-ex-c1-dragonair-b4"
+    },
+    {
+      "placement": 8,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Jhon Lenon",
+      "record": "3 - 3 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 9,
+      "player_name": "Murilo Moreira",
+      "record": "3 - 2 - 0",
+      "archetype": "magnezone-ex-b3-magnezone-b1a"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Edson Barbosa",
+      "record": "3 - 2 - 0",
+      "archetype": "umbreon-ex-a4-umbreon-c1"
+    },
+    {
+      "placement": 11,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Lucas Costa",
+      "record": "3 - 2 - 0",
+      "archetype": "giratina-ex-c1-dragonair-b4"
+    },
+    {
+      "placement": 12,
+      "player_name": "Leonardo Reis",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-espeon-b3a"
+    },
+    {
+      "placement": 13,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Pedro Brand\u00e3o",
+      "record": "2 - 3 - 0",
+      "archetype": "giratina-ex-c1-dragonair-b4"
+    },
+    {
+      "placement": 14,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Maicon Santos",
+      "record": "2 - 3 - 0",
+      "archetype": "umbreon-c1-hydreigon-b1"
+    },
+    {
+      "placement": 15,
+      "player_name": "Yuri Perucci",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-altaria-ex-b1-igglybuff-a4a"
+    },
+    {
+      "placement": 16,
+      "player_name": "Gabriel Furquim",
+      "record": "2 - 3 - 0",
+      "archetype": "mega-sceptile-ex-b3-nihilego-a3a"
+    },
+    {
+      "placement": 17,
+      "player_name": "Robson Rodrigues",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 18,
+      "player_name": "Marcos Moreno",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-rayquaza-ex-dragonair-b4"
+    },
+    {
+      "placement": 19,
+      "player_name": "Ewerton Josepher",
+      "record": "1 - 4 - 0",
+      "archetype": "mega-rayquaza-ex-dragonair-b4"
+    },
+    {
+      "placement": 20,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Alan Ot\u00e1vio",
+      "record": "1 - 4 - 0",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 21,
+      "player_name": "Thiago Augusto",
+      "record": "1 - 4 - 0drop",
+      "archetype": "mega-greninja-ex-c1-suicune-ex-a4a"
+    },
+    {
+      "placement": 22,
+      "player_name": "Henrique Vieira",
+      "record": "1 - 2 - 0drop",
+      "archetype": "mega-skarmory-ex-c1-mantyke-a4a"
+    },
+    {
+      "placement": 23,
+      "player_name": "Eleven Gomes",
+      "record": "0 - 1 - 0drop",
+      "archetype": "paldean-clodsire-c1"
+    }
+  ]
+}
