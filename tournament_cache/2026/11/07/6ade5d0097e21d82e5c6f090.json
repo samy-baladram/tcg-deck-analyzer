@@ -1,0 +1,81 @@
+{
+  "tournament_id": "6ade5d0097e21d82e5c6f090",
+  "name": "Women's League Pocket #18 | FA Cyrus",
+  "timestamp": 1794093300000,
+  "format": "STANDARD",
+  "player_count": 12,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "LimitlessGG",
+      "record": "4 - 1 - 1",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 2,
+      "player_name": "TDL| EllieDark",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-mewtwo-x-ex-mew-ex-c1"
+    },
+    {
+      "placement": 3,
+      "player_name": "albuus_00",
+      "record": "3 - 1 - 1",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\uddd5\ud835\udde2\ud835\uddd4\ud835\udde7 | Yumi :3",
+      "record": "2 - 1 - 2",
+      "archetype": "mega-manectric-ex-b2b-heliolisk-b4"
+    },
+    {
+      "placement": 5,
+      "player_name": "hairgoesxday",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-tyranitar-ex-c1-tyranitar-a4"
+    },
+    {
+      "placement": 6,
+      "player_name": "analezelol <3",
+      "record": "2 - 2 - 0",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Glacey",
+      "record": "2 - 2 - 0",
+      "archetype": "giratina-ex-c1-dragonair-b4"
+    },
+    {
+      "placement": 8,
+      "player_name": "LunaBunny",
+      "record": "2 - 2 - 0",
+      "archetype": "vaporeon-ex-b3-eevee-ex-a3b"
+    },
+    {
+      "placement": 9,
+      "player_name": "Luksa",
+      "record": "2 - 2 - 0",
+      "archetype": "umbreon-c1-mega-absol-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "Speedy_Paws",
+      "record": "0 - 3 - 0drop",
+      "archetype": "mega-dragonite-ex-c1"
+    },
+    {
+      "placement": 11,
+      "player_name": "MoodyOfThings",
+      "record": "0 - 1 - 0drop",
+      "archetype": "arceus-ex-tyranitar-a2a"
+    },
+    {
+      "placement": 12,
+      "player_name": "TDL | MoonlightshurikenVT",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    }
+  ]
+}
