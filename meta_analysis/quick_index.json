@@ -1,8 +1,8 @@
 {
-  "last_updated": 1794341619,
-  "total_tournaments": 1978,
+  "last_updated": 1794358844,
+  "total_tournaments": 1979,
   "format_distribution": {
-    "Standard": 1885,
+    "Standard": 1886,
     "STANDARD": 65,
     "NOEX": 28
   },
@@ -20,7 +20,7 @@
     "greninja-a1-mega-absol-ex-b1",
     "mega-lucario-ex-b3-lucario-a2",
     "suicune-ex-a4a-greninja-a1",
-    "mega-altaria-ex-b1-espeon-b3a"
+    "mega-charizard-y-ex-b1a-entei-ex-a4a"
   ],
   "top_archetypes_by_format": {
     "Standard": [
