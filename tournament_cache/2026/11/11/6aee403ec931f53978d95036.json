@@ -1,0 +1,129 @@
+{
+  "tournament_id": "6aee403ec931f53978d95036",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Sparrow #20 | TCG Pocket",
+  "timestamp": 1794434400000,
+  "format": "Standard",
+  "player_count": 20,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Theodoro Melo",
+      "record": "6 - 0 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Leonan Ferreira",
+      "record": "5 - 1 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\udddc\ud835\udde0\ud835\udde2 | Edson Barbosa",
+      "record": "4 - 1 - 0",
+      "archetype": "umbreon-c1-mega-sableye-ex-b3b"
+    },
+    {
+      "placement": 4,
+      "player_name": "Henrique Vieira",
+      "record": "3 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 5,
+      "player_name": "Diogo Lima",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Alex Sandro",
+      "record": "2 - 2 - 0",
+      "archetype": "pikachu-ex-pawmot-c1"
+    },
+    {
+      "placement": 7,
+      "player_name": "\u00cdcaro Ramon",
+      "record": "2 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 8,
+      "player_name": "Jo\u00e3o Duarte",
+      "record": "2 - 2 - 0",
+      "archetype": "umbreon-c1-hydreigon-b1"
+    },
+    {
+      "placement": 9,
+      "player_name": "Alexandre Galdino",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-mewtwo-x-ex-c1-mega-diancie-ex-b3b"
+    },
+    {
+      "placement": 10,
+      "player_name": "Renan Azevedo",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 11,
+      "player_name": "Thiago Augusto",
+      "record": "1 - 2 - 0",
+      "archetype": "vespiquen-ex-b4-shuckle-ex-a4"
+    },
+    {
+      "placement": 12,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Felipe Martinez",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-mewtwo-x-ex-c1-mega-diancie-ex-b3b"
+    },
+    {
+      "placement": 13,
+      "player_name": "Thiago Diaz",
+      "record": "1 - 2 - 0",
+      "archetype": "umbreon-c1-hydreigon-b1"
+    },
+    {
+      "placement": 14,
+      "player_name": "Leonardo Vezz\u00e1",
+      "record": "1 - 2 - 0",
+      "archetype": "magnezone-b1a-miraidon-ex-b3a"
+    },
+    {
+      "placement": 15,
+      "player_name": "Damon Silva",
+      "record": "1 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 16,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Jhon Lenon",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-tyranitar-ex-c1-absol-b4"
+    },
+    {
+      "placement": 17,
+      "player_name": "Marcos Moreno",
+      "record": "0 - 3 - 0",
+      "archetype": "blastoise-c1-suicune-ex-a4a"
+    },
+    {
+      "placement": 18,
+      "player_name": "Patric Hernani",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 19,
+      "player_name": "Rafael Faramiglio",
+      "record": "0 - 2 - 0drop",
+      "archetype": "mega-mewtwo-x-ex-mew-ex-c1"
+    },
+    {
+      "placement": 20,
+      "player_name": "Gabriel Furquim",
+      "record": "0 - 2 - 0drop",
+      "archetype": "vespiquen-ex-b4-ribombee-c1"
+    }
+  ]
+}
