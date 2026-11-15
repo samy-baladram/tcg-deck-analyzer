@@ -282,15 +282,15 @@ div[data-testid="stVerticalBlock"] button p {
 ui_helpers.display_banner("assets/title_banner.png")
 
 # Notice (Nov 15, 2026): this app is no longer developed; its data stops in December 2026. Point to the new site.
-st.markdown("""<div style="border: 2px solid #00A0FF; border-radius: 12px; padding: 14px 18px; margin: 4px 0 18px;
-    background: rgba(0, 160, 255, 0.08); text-align: center; line-height: 1.5;">
-    <div style="font-size: 1.15em; font-weight: 700;">📢 This app is no longer being developed</div>
+st.markdown("""<div style="border: 2px solid #00A0FF; border-radius: 12px; padding: 10px 16px; margin: -78px 0 30px;
+    background: rgba(0, 160, 255, 0.08); text-align: center; line-height: 1.45; font-size: 0.85em;">
+    <div style="font-size: 1.1em; font-weight: 700;">📢 This app is no longer being developed</div>
     <div style="margin-top: 4px;">New tournament data will stop in <strong>December 2026</strong>.
     For the latest meta decks, decklists and in-game QR codes (updated every hour), please visit the new site:</div>
-    <a href="https://pocketmetaqr.com" target="_blank" style="display: inline-block; margin-top: 10px; padding: 8px 22px;
+    <a href="https://pocketmetaqr.com" target="_blank" style="display: inline-block; margin-top: 8px; padding: 5px 18px;
        border-radius: 999px; background: #00A0FF; color: #ffffff; font-weight: 700; text-decoration: none;">
        pocketmetaqr.com →</a>
-    <div style="margin-top: 8px; font-size: 0.85em; opacity: 0.8;">Thank you for using PTCGP Deck Analyzer!</div>
+    <div style="margin-top: 6px; font-size: 0.85em; opacity: 0.8;">Thank you for using PTCGP Deck Analyzer!</div>
 </div>""", unsafe_allow_html=True)
 
 # Create deck selector AFTER initialization
