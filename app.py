@@ -282,7 +282,7 @@ div[data-testid="stVerticalBlock"] button p {
 ui_helpers.display_banner("assets/title_banner.png")
 
 # Notice (Nov 15, 2026): this app is no longer developed; its data stops in December 2026. Point to the new site.
-st.markdown("""<div style="border: 2px solid #00A0FF; border-radius: 12px; padding: 10px 16px; margin: -78px 0 30px;
+st.markdown("""<div style="border: 2px solid #00A0FF; border-radius: 12px; padding: 10px 16px; margin: -78px 0 0;
     background: rgba(0, 160, 255, 0.08); text-align: center; line-height: 1.45; font-size: 0.85em;">
     <div style="font-size: 1.1em; font-weight: 700;">📢 This app is no longer being developed</div>
     <div style="margin-top: 4px;">New tournament data will stop in <strong>December 2026</strong>.
@@ -292,6 +292,7 @@ st.markdown("""<div style="border: 2px solid #00A0FF; border-radius: 12px; paddi
        pocketmetaqr.com →</a>
     <div style="margin-top: 6px; font-size: 0.85em; opacity: 0.8;">Thank you for using PTCGP Deck Analyzer!</div>
 </div>""", unsafe_allow_html=True)
+st.markdown("<br>" * 5, unsafe_allow_html=True)   # 5 empty lines under the notice
 
 # Create deck selector AFTER initialization
 
