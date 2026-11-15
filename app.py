@@ -281,6 +281,18 @@ div[data-testid="stVerticalBlock"] button p {
 # Display banner
 ui_helpers.display_banner("assets/title_banner.png")
 
+# Notice (Nov 15, 2026): this app is no longer developed; its data stops in December 2026. Point to the new site.
+st.markdown("""<div style="border: 2px solid #00A0FF; border-radius: 12px; padding: 14px 18px; margin: 4px 0 18px;
+    background: rgba(0, 160, 255, 0.08); text-align: center; line-height: 1.5;">
+    <div style="font-size: 1.15em; font-weight: 700;">📢 This app is no longer being developed</div>
+    <div style="margin-top: 4px;">New tournament data will stop in <strong>December 2026</strong>.
+    For the latest meta decks, decklists and in-game QR codes (updated every hour), please visit the new site:</div>
+    <a href="https://pocketmetaqr.com" target="_blank" style="display: inline-block; margin-top: 10px; padding: 8px 22px;
+       border-radius: 999px; background: #00A0FF; color: #ffffff; font-weight: 700; text-decoration: none;">
+       pocketmetaqr.com →</a>
+    <div style="margin-top: 8px; font-size: 0.85em; opacity: 0.8;">Thank you for using PTCGP Deck Analyzer!</div>
+</div>""", unsafe_allow_html=True)
+
 # Create deck selector AFTER initialization
 
 selected_option = ui_helpers.create_deck_selector()
@@ -453,7 +465,9 @@ st.markdown("""<div style="text-align: center; font-size: 0.8em; color: #777; ma
     Data and images sourced from <a href="https://play.limitlesstcg.com" target="_blank">Limitless TCG</a>. 
     This independent, fan-made analysis tool is for educational purposes only and is not affiliated with 
     any official entities or Limitless TCG.</p>
-    <p>App and analysis © 2025 Samy Baladram. Open source under MIT License.</p></div>""", unsafe_allow_html=True)
+    <p>App and analysis © 2025 Samy Baladram. Open source under MIT License.</p>
+    <p>This app is no longer developed; its data stops in December 2026. New site:
+    <a href="https://pocketmetaqr.com" target="_blank">pocketmetaqr.com</a></p></div>""", unsafe_allow_html=True)
 
 # Rerun button at bottom
 st.markdown("<br>", unsafe_allow_html=True)
