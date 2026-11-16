@@ -1,14 +1,14 @@
 {
-  "last_updated": 1794804851,
-  "total_tournaments": 1998,
+  "last_updated": 1794835329,
+  "total_tournaments": 1999,
   "format_distribution": {
-    "Standard": 1904,
+    "Standard": 1905,
     "STANDARD": 66,
     "NOEX": 28
   },
   "date_range": {
     "earliest": "2025-04-27",
-    "latest": "2026-11-15"
+    "latest": "2026-11-16"
   },
   "top_archetypes": [
     "hydreigon-mega-absol-ex-b1",
@@ -20,7 +20,7 @@
     "greninja-a1-mega-absol-ex-b1",
     "mega-lucario-ex-b3-lucario-a2",
     "mega-charizard-y-ex-b1a-entei-ex-a4a",
-    "suicune-ex-a4a-greninja-a1"
+    "mega-altaria-ex-b1-espeon-b3a"
   ],
   "top_archetypes_by_format": {
     "Standard": [
