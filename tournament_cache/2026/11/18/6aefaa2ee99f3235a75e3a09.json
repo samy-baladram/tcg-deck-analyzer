@@ -1,0 +1,51 @@
+{
+  "tournament_id": "6aefaa2ee99f3235a75e3a09",
+  "name": "\ud83c\udd93 Domino Pocket Free #1 [BETA]",
+  "timestamp": 1794960000000,
+  "format": "Standard",
+  "player_count": 7,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "yas",
+      "record": "3 - 0 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 2,
+      "player_name": "GST_ChienPao",
+      "record": "2 - 1 - 0",
+      "archetype": "garchomp-b4a"
+    },
+    {
+      "placement": 3,
+      "player_name": "Starchaser",
+      "record": "2 - 1 - 0",
+      "archetype": "dragonair-b4-altaria-a4a"
+    },
+    {
+      "placement": 4,
+      "player_name": "Kiddoz",
+      "record": "2 - 1 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 5,
+      "player_name": "claudio745",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-blaziken-ex-b1-entei-ex-a4a"
+    },
+    {
+      "placement": 6,
+      "player_name": "Sirig",
+      "record": "0 - 3 - 0",
+      "archetype": "mega-sceptile-ex-b3-teal-mask-ogerpon-ex-b2"
+    },
+    {
+      "placement": 7,
+      "player_name": "Luis E. G",
+      "record": "0 - 1 - 0drop",
+      "archetype": "musharna-a4-darkrai-b2b"
+    }
+  ]
+}
