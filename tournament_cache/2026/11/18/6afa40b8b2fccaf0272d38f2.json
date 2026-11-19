@@ -1,0 +1,99 @@
+{
+  "tournament_id": "6afa40b8b2fccaf0272d38f2",
+  "name": "\ud83c\udde7\ud83c\uddf7 Hit Sparrow #21 | TCG Pocket",
+  "timestamp": 1795039200000,
+  "format": "Standard",
+  "player_count": 15,
+  "players": [
+    {
+      "placement": 1,
+      "player_name": "Davi Arcanjo",
+      "record": "4 - 1 - 1",
+      "archetype": "miraidon-ex-b3a-magnezone-b1a"
+    },
+    {
+      "placement": 2,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Carlos Eduardo",
+      "record": "4 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 3,
+      "player_name": "\ud835\uddd5\ud835\udde7\ud835\uddda | Leonan Ferreira",
+      "record": "3 - 2 - 0",
+      "archetype": "pikachu-ex-pawmot-c1"
+    },
+    {
+      "placement": 4,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Cayo Lucas",
+      "record": "3 - 2 - 0",
+      "archetype": "suicune-ex-a4a-baxcalibur-b2a"
+    },
+    {
+      "placement": 5,
+      "player_name": "\ud835\udddc\ud835\udde1\ud835\udde6\ud835\udde6 | Alexandre Carmo",
+      "record": "3 - 1 - 0",
+      "archetype": "greninja-a1-mega-mewtwo-x-ex-c1"
+    },
+    {
+      "placement": 6,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Jhon Lenon",
+      "record": "3 - 1 - 0",
+      "archetype": "dedenne-ex-b3b-indeedee-ex-b1"
+    },
+    {
+      "placement": 7,
+      "player_name": "Bruno Mcdonald",
+      "record": "2 - 2 - 0",
+      "archetype": "hoopa-ex-b4-greninja-a1"
+    },
+    {
+      "placement": 8,
+      "player_name": "Patric Hernani",
+      "record": "2 - 2 - 0",
+      "archetype": "mega-mewtwo-x-ex-mew-ex-c1"
+    },
+    {
+      "placement": 9,
+      "player_name": "\ud835\udde0\ud835\udde7\ud835\udddf | Jos\u00e9 Santana",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-greninja-ex-c1-greninja-ex-b1"
+    },
+    {
+      "placement": 10,
+      "player_name": "\ud835\uddd6\ud835\uddd4\ud835\udde2\ud835\udde6 | Anderson Aleixo",
+      "record": "1 - 2 - 0",
+      "archetype": "mega-altaria-ex-b1-greninja-a1"
+    },
+    {
+      "placement": 11,
+      "player_name": "\ud835\udde6\ud835\uddd7\ud835\uddd8 | Thiago Martins",
+      "record": "1 - 2 - 0",
+      "archetype": "pidgeot-umbreon-c1"
+    },
+    {
+      "placement": 12,
+      "player_name": "Leonardo Alvarenga",
+      "record": "1 - 2 - 0",
+      "archetype": "chien-pao-ex-baxcalibur-b2a"
+    },
+    {
+      "placement": 13,
+      "player_name": "Guilherme Santos",
+      "record": "0 - 2 - 1",
+      "archetype": "mega-charizard-y-ex-b1a-entei-ex-a4a"
+    },
+    {
+      "placement": 14,
+      "player_name": "Marcos Moreno",
+      "record": "0 - 3 - 0",
+      "archetype": "blastoise-c1-suicune-ex-a4a"
+    },
+    {
+      "placement": 15,
+      "player_name": "Jo\u00e3o Duarte",
+      "record": "0 - 1 - 0drop",
+      "archetype": "mega-sableye-ex-b3b-darkrai-ex-a2"
+    }
+  ]
+}
